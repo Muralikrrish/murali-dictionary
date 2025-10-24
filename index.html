@@ -21,8 +21,8 @@
         .search-box input { width: 100%; padding: 20px 60px 20px 30px; font-size: 18px; border: none; outline: none; background: transparent; }
         .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); color: #449944; font-size: 24px; }
         .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
-        .main-content { display: grid; grid-template-columns: 2.5fr 1fr; gap: 30px; }
-        .main-content.full-width { grid-template-columns: 2.5fr 1fr; }
+        .main-content { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        .main-content.full-width { grid-template-columns: 1fr; }
         .words-column { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-height: 600px; }
         .sidebar { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); height: fit-content; min-height: 600px; }
         .section-title { font-size: 22px; font-weight: 600; color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #449944; }
@@ -94,7 +94,7 @@
                 <h2 class="section-title">Search Results</h2>
                 <div id="wordsList"><div class="no-words"><div class="no-words-icon">🔍</div><p>Search for a word to see its definition</p></div></div>
             </div>
-            <div class="words-column" style="max-width: 450px;">
+            <div class="words-column">
                 <h2 class="section-title">Word of the Day</h2>
                 <div id="randomWordDisplay"></div>
                 <button class="btn" onclick="showNewRandomWord()" style="margin-top: 20px;">Show Another Word</button>
