@@ -286,7 +286,7 @@
             } else if (searchTerm && !isAdmin) {
                 displaySearchResults(searchTerm);
             } else if (!isAdmin) {
-                document.getElementById('wordsList').innerHTML = `<div class="no-words"><div class="no-words-icon">📖</div><p>Search for a word to see its definition</p></div>`;
+                document.getElementById('wordsList').parentElement.style.display = 'none';
             }
         });
         
