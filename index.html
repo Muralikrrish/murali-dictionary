@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Murali's English Dictionary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header-bar {
+            display: none;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            visibility: hidden;
+        }
+        
+        .header-stats {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+        }
+        
+        .header-stats strong {
+            color: white;
+            font-size: 18px;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #449944 0%, #367a36 100%);
+            padding: 80px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+        
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .search-box {
+            position: relative;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 20px 60px 20px 30px;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            background: transparent;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #449944;
+            font-size: 24px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .main-content.full-width {
+            grid-template-columns: 1fr;
+        }
+        
+        .words-column {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            height: fit-content;
+            min-height: 600px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #449944;
+        }
+        
+        .add-word-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #449944;
+        }
+        
+        .btn {
+            background: #449944;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: #367a36;
+        }
+        
+        .btn-secondary {
+            background: #fff;
+            color: #449944;
+            border: 2px solid #449944;
+            margin-top: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+        
+        .word-entry {
+            padding: 25px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .word-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .word-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .word-definition {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-weight: 500;
+        }
+        
+        .word-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn-action {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-edit {
+            background: #fff;
+            color: #449944;
+            border: 1px solid #449944;
+        }
+        
+        .btn-edit:hover {
+            background: #449944;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: #fff;
+            color: #d9534f;
+            border: 1px solid #d9534f;
+        }
+        
+        .btn-delete:hover {
+            background: #d9534f;
+            color: white;
+        }
+        
+        .no-words {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .no-words-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .utility-buttons {
+            margin-top: 20px;
+        }
+        
+        .info-box {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            border-left: 3px solid #449944;
+        }
+
+        .success-box {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #155724;
+            border-left: 3px solid #28a745;
+        }
+
+        .success-box strong {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .alphabet-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .alphabet-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s;
+        }
+        
+        .alphabet-btn:hover {
+            background: #449944;
+            color: white;
+            border-color: #449944;
+        }
+        
+        .alphabet-btn.active {
+            background: #449944;
+            color: white;
+            border-color: #449944;
+        }
+
+        .admin-mode {
+            display: none;
+        }
+
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #449944;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .admin-toggle:hover {
+            background: #367a36;
+            transform: scale(1.1);
+        }
+
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-modal.show {
+            display: flex;
+        }
+
+        .password-box {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .password-box h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .password-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .password-box button {
+            width: 100%;
+            padding: 12px;
+            background: #449944;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .password-box button:hover {
+            background: #367a36;
+        }
+
+        .password-box .cancel-btn {
+            background: #ccc;
+            margin-top: 10px;
+        }
+
+        .password-box .cancel-btn:hover {
+            background: #999;
+        }
+
+        .edit-result-item {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .edit-result-item:hover {
+            background: #fff;
+            border-color: #449944;
+            box-shadow: 0 2px 8px rgba(68, 153, 68, 0.1);
+        }
+
+        .edit-result-word {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .edit-result-definition {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        #editSearchResults {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        #editSearchResults::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #editSearchResults::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        #editSearchResults::-webkit-scrollbar-thumb {
+            background: #449944;
+            border-radius: 4px;
+        }
+
+        #editSearchResults::-webkit-scrollbar-thumb:hover {
+            background: #367a36;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 968px) {
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .hero-section {
+                padding: 60px 30px;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="header-content">
+            <div class="logo">📖 Murali's Dictionary</div>
+            <div class="header-stats admin-mode" id="headerStats">
+                <strong id="totalWords">0</strong> words
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero-section">
+        <h1 class="hero-title">Murali's Dictionary</h1>
+        <p class="hero-subtitle">Discover, search, and master your vocabulary</p>
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for a word...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="main-content" id="mainContent">
+            <div class="words-column">
+                <div class="alphabet-nav" id="alphabetNav"></div>
+                <h2 class="section-title">Dictionary Entries</h2>
+                <div id="wordsList"></div>
+            </div>
+            
+            <div class="sidebar admin-mode" id="sidebar">
+                <h2 class="section-title">Add New Word</h2>
+                <form id="addWordForm" class="add-word-form">
+                    <div class="form-group">
+                        <label for="wordInput">Word</label>
+                        <input type="text" id="wordInput" required placeholder="Enter word">
+                    </div>
+                    <div class="form-group">
+                        <label for="definitionInput">Definition</label>
+                        <textarea id="definitionInput" required placeholder="Enter definition"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Add to Dictionary</button>
+                </form>
+
+                <h2 class="section-title" style="margin-top: 40px;">Edit Existing Word</h2>
+                <div class="add-word-form">
+                    <div class="form-group">
+                        <label for="editSearchInput">Search Word to Edit</label>
+                        <input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()">
+                    </div>
+                    <div id="editSearchResults"></div>
+                </div>
+                
+                <div class="utility-buttons">
+                    <button class="btn btn-secondary" onclick="exportData()">Export Dictionary</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Dictionary</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ Firebase Connected!</strong>
+                    Your dictionary is now syncing across all devices. Add words here and they'll appear everywhere!
+                </div>
+                
+                <div class="info-box">
+                    <strong>💡 Tip:</strong> Your dictionary automatically saves to the cloud. Access it from any device using this URL!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="admin-toggle" id="adminToggle" onclick="showPasswordModal()">🔒</button>
+
+    <div class="password-modal" id="passwordModal">
+        <div class="password-box">
+            <h3>Enter Admin Password</h3>
+            <input type="password" id="passwordInput" placeholder="Password" onkeypress="if(event.key==='Enter') checkPassword()">
+            <button onclick="checkPassword()">Login</button>
+            <button class="cancel-btn" onclick="hidePasswordModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <script>
+        // Firebase Configuration with Database URL
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOoetJxVn8IJIZayXp-guze0RcZbGbPQs",
+            authDomain: "murali-dictionary.firebaseapp.com",
+            databaseURL: "https://murali-dictionary-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "murali-dictionary",
+            storageBucket: "murali-dictionary.firebasestorage.app",
+            messagingSenderId: "486882382297",
+            appId: "1:486882382297:web:ec61829f79d32597f449c8"
+        };
+
+        // Initialize Firebase
+        let database;
+        let isFirebaseConfigured = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            isFirebaseConfigured = true;
+            console.log("✅ Firebase initialized successfully");
+        } catch (error) {
+            console.error("❌ Firebase initialization error:", error);
+        }
+
+        let dictionary = [];
+        let currentFilter = '';
+        let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+        const ADMIN_PASSWORD = '7412';
+        let isLoading = true;
+        
+        // Initialize
+        createAlphabetNav();
+        loadDictionary();
+        checkAdminStatus();
+        
+        // Load dictionary
+        async function loadDictionary() {
+            if (isFirebaseConfigured) {
+                try {
+                    console.log("📡 Loading from Firebase...");
+                    const snapshot = await database.ref('dictionary').once('value');
+                    const data = snapshot.val();
+                    dictionary = data ? Object.values(data) : [];
+                    console.log(`✅ Loaded ${dictionary.length} words from Firebase`);
+                    
+                    // Save to localStorage as backup
+                    localStorage.setItem('dictionary', JSON.stringify(dictionary));
+                } catch (error) {
+                    console.error("❌ Error loading from Firebase:", error);
+                    console.error("Error details:", error.message);
+                    console.log("📂 Falling back to localStorage");
+                    dictionary = JSON.parse(localStorage.getItem('dictionary')) || [];
+                }
+            } else {
+                dictionary = JSON.parse(localStorage.getItem('dictionary')) || [];
+            }
+            isLoading = false;
+            displayWords();
+        }
+        
+        // Save dictionary
+        async function saveDictionary() {
+            // Always save to localStorage as backup
+            localStorage.setItem('dictionary', JSON.stringify(dictionary));
+            
+            if (isFirebaseConfigured) {
+                try {
+                    const updates = {};
+                    dictionary.forEach(word => {
+                        updates[word.id] = word;
+                    });
+                    await database.ref('dictionary').set(updates);
+                    console.log(`✅ Saved ${dictionary.length} words to Firebase`);
+                    updateStats();
+                } catch (error) {
+                    console.error("❌ Error saving to Firebase:", error);
+                    console.error("Error details:", error.message);
+                    alert('⚠️ Failed to save to cloud: ' + error.message + '\n\nData saved locally instead. Please check Firebase rules.');
+                    updateStats();
+                }
+            } else {
+                updateStats();
+            }
+        }
+        
+        function checkAdminStatus() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const adminToggle = document.getElementById('adminToggle');
+            const wordsColumn = document.querySelector('.words-column');
+            const adminModeElements = document.querySelectorAll('.admin-mode');
+            
+            if (isAdmin) {
+                sidebar.style.display = 'block';
+                mainContent.classList.remove('full-width');
+                adminToggle.textContent = '🔓';
+                wordsColumn.style.display = 'none';
+                adminModeElements.forEach(el => el.style.display = 'block');
+            } else {
+                sidebar.style.display = 'none';
+                mainContent.classList.add('full-width');
+                adminToggle.textContent = '🔒';
+                wordsColumn.style.display = 'block';
+                adminModeElements.forEach(el => el.style.display = 'none');
+            }
+        }
+
+        function showPasswordModal() {
+            if (isAdmin) {
+                isAdmin = false;
+                sessionStorage.setItem('isAdmin', 'false');
+                checkAdminStatus();
+                displayWords();
+            } else {
+                document.getElementById('passwordModal').classList.add('show');
+                document.getElementById('passwordInput').focus();
+            }
+        }
+
+        function hidePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('show');
+            document.getElementById('passwordInput').value = '';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdmin = true;
+                sessionStorage.setItem('isAdmin', 'true');
+                hidePasswordModal();
+                checkAdminStatus();
+                displayWords();
+            } else {
+                alert('Incorrect password!');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+        
+        function createAlphabetNav() {
+            const nav = document.getElementById('alphabetNav');
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            
+            const allBtn = document.createElement('button');
+            allBtn.textContent = 'All';
+            allBtn.className = 'alphabet-btn active';
+            allBtn.onclick = () => filterByLetter('');
+            nav.appendChild(allBtn);
+            
+            alphabet.forEach(letter => {
+                const btn = document.createElement('button');
+                btn.textContent = letter;
+                btn.className = 'alphabet-btn';
+                btn.onclick = () => filterByLetter(letter);
+                nav.appendChild(btn);
+            });
+        }
+        
+        function filterByLetter(letter) {
+            currentFilter = letter;
+            displayWords();
+            
+            document.querySelectorAll('.alphabet-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((letter === '' && btn.textContent === 'All') || btn.textContent === letter) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        document.getElementById('addWordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const word = document.getElementById('wordInput').value.trim();
+            const definition = document.getElementById('definitionInput').value.trim();
+            
+            const existingIndex = dictionary.findIndex(item => 
+                item.word.toLowerCase() === word.toLowerCase()
+            );
+            
+            if (existingIndex !== -1) {
+                if (confirm(`"${word}" already exists. Update it?`)) {
+                    dictionary[existingIndex].definition = definition;
+                    dictionary[existingIndex].dateModified = new Date().toISOString();
+                    await saveDictionary();
+                    displayWords();
+                    this.reset();
+                }
+            } else {
+                dictionary.push({
+                    id: Date.now(),
+                    word: word,
+                    definition: definition,
+                    dateAdded: new Date().toISOString()
+                });
+                
+                await saveDictionary();
+                displayWords();
+                this.reset();
+                
+                const btn = document.querySelector('.btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Added!';
+                setTimeout(() => btn.textContent = originalText, 1500);
+            }
+        });
+        
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm) {
+                document.getElementById('wordsList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            displayWords(searchTerm);
+        });
+        
+        function displayWords(searchTerm = '') {
+            const wordsList = document.getElementById('wordsList');
+            
+            if (isLoading) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">⏳</div>
+                        <p>Loading dictionary...</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let filteredDictionary = dictionary;
+            
+            if (searchTerm) {
+                filteredDictionary = dictionary.filter(item =>
+                    item.word.toLowerCase().includes(searchTerm) ||
+                    item.definition.toLowerCase().includes(searchTerm)
+                );
+            } else if (currentFilter) {
+                filteredDictionary = dictionary.filter(item =>
+                    item.word.toUpperCase().startsWith(currentFilter)
+                );
+            }
+            
+            filteredDictionary.sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (filteredDictionary.length === 0) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">📚</div>
+                        <p>${searchTerm ? 'No words found matching your search.' : currentFilter ? `No words starting with "${currentFilter}".` : 'Your dictionary is empty. Add your first word!'}</p>
+                    </div>
+                `;
+            } else {
+                wordsList.innerHTML = filteredDictionary.map(item => `
+                    <div class="word-entry">
+                        <div class="word-title">${item.word}</div>
+                        <div class="word-definition">${item.definition}</div>
+                        <div class="word-actions" style="display: ${isAdmin ? 'flex' : 'none'};">
+                            <button class="btn-action btn-edit" onclick="editWord(${item.id})">Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteWord(${item.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updateStats();
+        }
+        
+        async function editWord(id) {
+            const item = dictionary.find(w => w.id === id);
+            if (item) {
+                document.getElementById('wordInput').value = item.word;
+                document.getElementById('definitionInput').value = item.definition;
+                
+                dictionary = dictionary.filter(w => w.id !== id);
+                await saveDictionary();
+                displayWords();
+                
+                // Clear edit search
+                document.getElementById('editSearchInput').value = '';
+                document.getElementById('editSearchResults').innerHTML = '';
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function searchWordsToEdit() {
+            const searchTerm = document.getElementById('editSearchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('editSearchResults');
+            
+            if (!searchTerm) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            const matches = dictionary.filter(item =>
+                item.word.toLowerCase().includes(searchTerm) ||
+                item.definition.toLowerCase().includes(searchTerm)
+            ).sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No matching words found</div>';
+            } else {
+                resultsContainer.innerHTML = matches.map(item => `
+                    <div class="edit-result-item" onclick="editWord(${item.id})">
+                        <div class="edit-result-word">${item.word}</div>
+                        <div class="edit-result-definition">${item.definition.length > 100 ? item.definition.substring(0, 100) + '...' : item.definition}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        async function deleteWord(id) {
+            const item = dictionary.find(w => w.id === id);
+            if (item && confirm(`Delete "${item.word}"?`)) {
+                dictionary = dictionary.filter(w => w.id !== id);
+                await saveDictionary();
+                displayWords();
+            }
+        }
+        
+        function updateStats() {
+            document.getElementById('totalWords').textContent = dictionary.length;
+        }
+        
+        function exportData() {
+            const dataStr = JSON.stringify(dictionary, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `dictionary_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        async function importData(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const imported = JSON.parse(e.target.result);
+                        if (Array.isArray(imported)) {
+                            if (confirm(`Import ${imported.length} words? This will merge with existing entries.`)) {
+                                imported.forEach(word => {
+                                    const exists = dictionary.find(w => 
+                                        w.word.toLowerCase() === word.word.toLowerCase()
+                                    );
+                                    if (!exists) {
+                                        dictionary.push(word);
+                                    }
+                                });
+                                await saveDictionary();
+                                displayWords();
+                                alert('Import successful!');
+                            }
+                        } else {
+                            alert('Invalid file format');
+                        }
+                    } catch (error) {
+                        alert('Error reading file');
+                    }
+                };
+                reader.readAsText(file);
+            }
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>
