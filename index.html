@@ -7,85 +7,88 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Georgia, 'Times New Roman', Times, serif; }
-        body { background: #f5f5f5; color: #333; line-height: 1.6; }
+        body { background: #1a1a1a; color: #e8e8e8; line-height: 1.6; }
         .header-bar { display: none; }
         .header-content { max-width: 1200px; margin: 0 auto; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 32px; font-weight: 700; color: white; text-decoration: none; visibility: hidden; }
-        .header-stats { color: rgba(255,255,255,0.9); font-size: 14px; }
-        .header-stats strong { color: white; font-size: 18px; }
-        .hero-section { background: linear-gradient(135deg, #449944 0%, #367a36 100%); padding: 80px 30px; text-align: center; color: white; }
-        .hero-title { font-size: 48px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .hero-subtitle { font-size: 20px; margin-bottom: 40px; opacity: 0.95; }
+        .logo { font-size: 32px; font-weight: 700; color: #e8e8e8; text-decoration: none; visibility: hidden; }
+        .header-stats { color: rgba(232,232,232,0.9); font-size: 14px; }
+        .header-stats strong { color: #e8e8e8; font-size: 18px; }
+        .hero-section { background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%); padding: 80px 30px; text-align: center; color: #e8e8e8; }
+        .hero-title { font-size: 48px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .hero-subtitle { font-size: 20px; margin-bottom: 40px; opacity: 0.85; }
         .search-container { max-width: 700px; margin: 0 auto; }
-        .search-box { position: relative; background: white; border-radius: 50px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
-        .search-box input { width: 100%; padding: 20px 60px 20px 30px; font-size: 18px; border: none; outline: none; background: transparent; }
-        .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); color: #449944; font-size: 24px; }
+        .search-box { position: relative; background: #2d2d2d; border-radius: 50px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border: 1px solid #3d3d3d; }
+        .search-box input { width: 100%; padding: 20px 60px 20px 30px; font-size: 18px; border: none; outline: none; background: transparent; color: #e8e8e8; }
+        .search-box input::placeholder { color: #888; }
+        .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); color: #888; font-size: 24px; }
         .container { max-width: 1200px; margin: 0 auto; padding: 30px; }
         .main-content { display: grid; grid-template-columns: 1fr; gap: 30px; }
         .main-content.full-width { grid-template-columns: 1fr; }
-        .words-column { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .sidebar { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); height: fit-content; min-height: 600px; }
-        .section-title { font-size: 22px; font-weight: 600; color: #333; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #449944; }
+        .words-column { background: #2d2d2d; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1px solid #3d3d3d; }
+        .sidebar { background: #2d2d2d; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); height: fit-content; min-height: 600px; border: 1px solid #3d3d3d; }
+        .section-title { font-size: 22px; font-weight: 600; color: #e8e8e8; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #c87941; }
         .add-word-form { margin-bottom: 30px; }
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 14px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; transition: border-color 0.3s; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #b8b8b8; font-size: 14px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 15px; transition: border-color 0.3s; background: #1a1a1a; color: #e8e8e8; }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: #666; }
         .form-group textarea { min-height: 600px; resize: vertical; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #449944; }
-        .editor-toolbar { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px 6px 0 0; }
-        .editor-btn { background: white; border: 1px solid #ddd; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
-        .editor-btn:hover { background: #449944; color: white; border-color: #449944; }
-        .editor-btn.active { background: #449944; color: white; border-color: #449944; }
-        .editor-content { width: 100%; min-height: 600px; padding: 12px; border: 1px solid #ddd; border-radius: 0 0 6px 6px; border-top: none; font-size: 15px; font-family: inherit; overflow-y: auto; background: white; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #c87941; }
+        .editor-toolbar { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; padding: 10px; background: #1a1a1a; border: 1px solid #3d3d3d; border-radius: 6px 6px 0 0; }
+        .editor-btn { background: #2d2d2d; border: 1px solid #3d3d3d; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 5px; color: #e8e8e8; }
+        .editor-btn:hover { background: #c87941; color: #1a1a1a; border-color: #c87941; }
+        .editor-btn.active { background: #c87941; color: #1a1a1a; border-color: #c87941; }
+        .editor-content { width: 100%; min-height: 600px; padding: 12px; border: 1px solid #3d3d3d; border-radius: 0 0 6px 6px; border-top: none; font-size: 15px; font-family: inherit; overflow-y: auto; background: #1a1a1a; color: #e8e8e8; }
         .editor-content:focus { outline: none; }
-        .editor-content[contenteditable="true"]:empty:before { content: attr(placeholder); color: #999; }
-        .btn { background: #449944; color: white; border: none; padding: 14px 28px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; width: 100%; }
-        .btn:hover { background: #367a36; }
-        .btn-secondary { background: #fff; color: #449944; border: 2px solid #449944; margin-top: 10px; }
-        .btn-secondary:hover { background: #f5f5f5; }
-        .word-entry { padding: 25px 0; border-bottom: 1px solid #e0e0e0; }
+        .editor-content[contenteditable="true"]:empty:before { content: attr(placeholder); color: #666; }
+        .btn { background: #c87941; color: #1a1a1a; border: none; padding: 14px 28px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; width: 100%; }
+        .btn:hover { background: #d89057; }
+        .btn-secondary { background: #2d2d2d; color: #c87941; border: 2px solid #c87941; margin-top: 10px; }
+        .btn-secondary:hover { background: #3d3d3d; }
+        .word-entry { padding: 25px 0; border-bottom: 1px solid #3d3d3d; }
         .word-entry:last-child { border-bottom: none; }
-        .word-title { font-size: 26px; font-weight: 700; color: #333; margin-bottom: 12px; }
-        .word-definition { font-size: 18px; color: #555; line-height: 1.6; margin-bottom: 15px; white-space: normal; word-wrap: break-word; font-weight: 500; }
+        .word-title { font-size: 26px; font-weight: 700; color: #e8e8e8; margin-bottom: 12px; }
+        .word-definition { font-size: 18px; color: #b8b8b8; line-height: 1.6; margin-bottom: 15px; white-space: normal; word-wrap: break-word; font-weight: 500; }
         .word-definition p { margin: 0.5em 0; }
         .word-definition ul, .word-definition ol { margin: 0.5em 0; padding-left: 2em; }
         .word-definition li { margin: 0.25em 0; }
-        .word-definition h1, .word-definition h2, .word-definition h3, .word-definition h4, .word-definition h5, .word-definition h6 { margin: 0.5em 0 0.3em 0; line-height: 1.3; }
+        .word-definition h1, .word-definition h2, .word-definition h3, .word-definition h4, .word-definition h5, .word-definition h6 { margin: 0.5em 0 0.3em 0; line-height: 1.3; color: #e8e8e8; }
         .word-definition br { line-height: 1; }
         .word-actions { display: flex; gap: 15px; }
         .btn-action { padding: 8px 16px; font-size: 13px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn-edit { background: #fff; color: #449944; border: 1px solid #449944; }
-        .btn-edit:hover { background: #449944; color: white; }
-        .btn-delete { background: #fff; color: #d9534f; border: 1px solid #d9534f; }
-        .btn-delete:hover { background: #d9534f; color: white; }
-        .no-words { text-align: center; padding: 60px 20px; color: #999; }
+        .btn-edit { background: #2d2d2d; color: #c87941; border: 1px solid #c87941; }
+        .btn-edit:hover { background: #c87941; color: #1a1a1a; }
+        .btn-delete { background: #2d2d2d; color: #d9534f; border: 1px solid #d9534f; }
+        .btn-delete:hover { background: #d9534f; color: #1a1a1a; }
+        .no-words { text-align: center; padding: 60px 20px; color: #666; }
         .no-words-icon { font-size: 48px; margin-bottom: 15px; }
         .utility-buttons { margin-top: 20px; }
-        .info-box { background: #f9f9f9; padding: 20px; border-radius: 6px; margin-top: 20px; font-size: 14px; color: #666; border-left: 3px solid #449944; }
-        .success-box { background: #d4edda; padding: 20px; border-radius: 6px; margin-top: 20px; font-size: 14px; color: #155724; border-left: 3px solid #28a745; }
+        .info-box { background: #1f1f1f; padding: 20px; border-radius: 6px; margin-top: 20px; font-size: 14px; color: #999; border-left: 3px solid #c87941; }
+        .success-box { background: #1f3a1f; padding: 20px; border-radius: 6px; margin-top: 20px; font-size: 14px; color: #7bc87f; border-left: 3px solid #28a745; }
         .success-box strong { display: block; margin-bottom: 10px; }
         .admin-mode { display: none; }
-        .admin-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #449944; border-radius: 50%; border: none; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: all 0.3s; z-index: 1000; }
-        .admin-toggle:hover { background: #367a36; transform: scale(1.1); }
-        .password-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .admin-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #c87941; border-radius: 50%; border: none; color: #1a1a1a; font-size: 24px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.4); transition: all 0.3s; z-index: 1000; }
+        .admin-toggle:hover { background: #d89057; transform: scale(1.1); }
+        .password-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; }
         .password-modal.show { display: flex; }
-        .password-box { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 400px; width: 90%; }
-        .password-box h3 { margin-bottom: 20px; color: #333; }
-        .password-box input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; margin-bottom: 20px; }
-        .password-box button { width: 100%; padding: 12px; background: #449944; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; }
-        .password-box button:hover { background: #367a36; }
-        .password-box .cancel-btn { background: #ccc; margin-top: 10px; }
-        .password-box .cancel-btn:hover { background: #999; }
-        .edit-result-item { background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #e0e0e0; cursor: pointer; transition: all 0.3s; }
-        .edit-result-item:hover { background: #fff; border-color: #449944; box-shadow: 0 2px 8px rgba(68, 153, 68, 0.1); }
-        .edit-result-word { font-weight: 700; color: #333; margin-bottom: 5px; font-size: 16px; }
-        .edit-result-definition { font-size: 14px; color: #666; line-height: 1.5; }
+        .password-box { background: #2d2d2d; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); max-width: 400px; width: 90%; border: 1px solid #3d3d3d; }
+        .password-box h3 { margin-bottom: 20px; color: #e8e8e8; }
+        .password-box input { width: 100%; padding: 12px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 15px; margin-bottom: 20px; background: #1a1a1a; color: #e8e8e8; }
+        .password-box input::placeholder { color: #666; }
+        .password-box button { width: 100%; padding: 12px; background: #c87941; color: #1a1a1a; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .password-box button:hover { background: #d89057; }
+        .password-box .cancel-btn { background: #3d3d3d; color: #e8e8e8; margin-top: 10px; }
+        .password-box .cancel-btn:hover { background: #4d4d4d; }
+        .edit-result-item { background: #1f1f1f; padding: 15px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #3d3d3d; cursor: pointer; transition: all 0.3s; }
+        .edit-result-item:hover { background: #2d2d2d; border-color: #c87941; box-shadow: 0 2px 8px rgba(200, 121, 65, 0.2); }
+        .edit-result-word { font-weight: 700; color: #e8e8e8; margin-bottom: 5px; font-size: 16px; }
+        .edit-result-definition { font-size: 14px; color: #999; line-height: 1.5; }
         #editSearchResults { max-height: 300px; overflow-y: auto; margin-top: 10px; }
         #editSearchResults::-webkit-scrollbar { width: 8px; }
-        #editSearchResults::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        #editSearchResults::-webkit-scrollbar-thumb { background: #449944; border-radius: 4px; }
-        #editSearchResults::-webkit-scrollbar-thumb:hover { background: #367a36; }
-        .no-results { text-align: center; padding: 20px; color: #999; font-size: 14px; }
+        #editSearchResults::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
+        #editSearchResults::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
+        #editSearchResults::-webkit-scrollbar-thumb:hover { background: #d89057; }
+        .no-results { text-align: center; padding: 20px; color: #666; font-size: 14px; }
         @media (max-width: 968px) { .hero-title { font-size: 36px; } .hero-subtitle { font-size: 18px; } .hero-section { padding: 60px 30px; } .main-content { grid-template-columns: 1fr; } .header-content { flex-direction: column; gap: 10px; text-align: center; } }
     </style>
 </head>
@@ -104,7 +107,7 @@
         <div class="main-content" id="mainContent">
             <div class="words-column">
                 <h2 class="section-title">Search Results</h2>
-                <div id="wordsList"><div class="no-words"><div class="no-words-icon">🔍</div><p>Search for a word to see its definition</p></div></div>
+                <div id="wordsList"><div class="no-words"><div class="no-words-icon">📖</div><p>Search for a word to see its definition</p></div></div>
             </div>
             <div class="words-column">
                 <h2 class="section-title">Word of the Day</h2>
@@ -181,8 +184,8 @@
         function hidePasswordModal(){document.getElementById('passwordModal').classList.remove('show');document.getElementById('passwordInput').value='';}
         function checkPassword(){const password=document.getElementById('passwordInput').value;if(password===ADMIN_PASSWORD){isAdmin=true;sessionStorage.setItem('isAdmin','true');hidePasswordModal();checkAdminStatus();displayWords();}else{alert('Incorrect password!');document.getElementById('passwordInput').value='';document.getElementById('passwordInput').focus();}}
         document.getElementById('addWordForm').addEventListener('submit',async function(e){e.preventDefault();const word=document.getElementById('wordInput').value.trim();const definitionEditor=document.getElementById('definitionInput');const definition=definitionEditor.innerHTML.trim();if(!definition||definition==='<br>'){alert('Please enter a definition');return;}const existingIndex=dictionary.findIndex(item=>item.word.toLowerCase()===word.toLowerCase());if(existingIndex!==-1){if(confirm(`"${word}" already exists. Update it?`)){dictionary[existingIndex].definition=definition;dictionary[existingIndex].dateModified=new Date().toISOString();await saveDictionary();displayWords();document.getElementById('wordInput').value='';definitionEditor.innerHTML='';}}else{dictionary.push({id:Date.now(),word:word,definition:definition,dateAdded:new Date().toISOString()});await saveDictionary();displayWords();document.getElementById('wordInput').value='';definitionEditor.innerHTML='';const btn=document.querySelector('.btn');const originalText=btn.textContent;btn.textContent='✓ Added!';setTimeout(()=>btn.textContent=originalText,1500);}});
-        document.getElementById('searchInput').addEventListener('input',function(e){const searchTerm=e.target.value.toLowerCase();if(searchTerm&&isAdmin){document.getElementById('wordsList').scrollIntoView({behavior:'smooth',block:'start'});displayWords(searchTerm);}else if(searchTerm&&!isAdmin){displaySearchResults(searchTerm);}else if(!isAdmin){const wordsList=document.getElementById('wordsList');wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">🔍</div><p>Search for a word to see its definition</p></div>`;}});
-        function displaySearchResults(searchTerm){const wordsList=document.getElementById('wordsList');const matches=dictionary.filter(item=>{const wordMatch=item.word.toLowerCase().includes(searchTerm);const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();const defMatch=defText.includes(searchTerm);return wordMatch||defMatch;}).sort((a,b)=>a.word.localeCompare(b.word));if(matches.length===0){wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">🔍</div><p>No words found matching "${searchTerm}"</p></div>`;}else{wordsList.innerHTML=matches.map(item=>`<div class="word-entry"><div class="word-definition">${item.definition}</div></div>`).join('');}}
+        document.getElementById('searchInput').addEventListener('input',function(e){const searchTerm=e.target.value.toLowerCase();if(searchTerm&&isAdmin){document.getElementById('wordsList').scrollIntoView({behavior:'smooth',block:'start'});displayWords(searchTerm);}else if(searchTerm&&!isAdmin){displaySearchResults(searchTerm);}else if(!isAdmin){const wordsList=document.getElementById('wordsList');wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>Search for a word to see its definition</p></div>`;}});
+        function displaySearchResults(searchTerm){const wordsList=document.getElementById('wordsList');const matches=dictionary.filter(item=>{const wordMatch=item.word.toLowerCase().includes(searchTerm);const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();const defMatch=defText.includes(searchTerm);return wordMatch||defMatch;}).sort((a,b)=>a.word.localeCompare(b.word));if(matches.length===0){wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${searchTerm}"</p></div>`;}else{wordsList.innerHTML=matches.map(item=>`<div class="word-entry"><div class="word-definition">${item.definition}</div></div>`).join('');}}
         function displayRandomWord(){const randomWordDisplay=document.getElementById('randomWordDisplay');if(isLoading){randomWordDisplay.innerHTML=`<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading...</p></div>`;return;}if(dictionary.length===0){randomWordDisplay.innerHTML=`<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>`;return;}const randomIndex=Math.floor(Math.random()*dictionary.length);currentRandomWord=dictionary[randomIndex];randomWordDisplay.innerHTML=`<div class="word-entry"><div class="word-title">${currentRandomWord.word}</div><div class="word-definition">${currentRandomWord.definition}</div></div>`;}
         function showNewRandomWord(){if(dictionary.length>0){displayRandomWord();}}
         function displayWords(searchTerm=''){const wordsList=document.getElementById('wordsList');if(isLoading){wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading dictionary...</p></div>`;return;}let filteredDictionary=dictionary;if(searchTerm){filteredDictionary=dictionary.filter(item=>{const wordMatch=item.word.toLowerCase().includes(searchTerm);const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();const defMatch=defText.includes(searchTerm);return wordMatch||defMatch;});}else if(currentFilter){filteredDictionary=dictionary.filter(item=>item.word.toUpperCase().startsWith(currentFilter));}filteredDictionary.sort((a,b)=>a.word.localeCompare(b.word));if(filteredDictionary.length===0){wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">📚</div><p>${searchTerm?'No words found matching your search.':currentFilter?`No words starting with "${currentFilter}".`:'Your dictionary is empty. Add your first word!'}</p></div>`;}else{wordsList.innerHTML=filteredDictionary.map(item=>`<div class="word-entry"><div class="word-title">${item.word}</div><div class="word-definition">${item.definition}</div><div class="word-actions" style="display:${isAdmin?'flex':'none'};"><button class="btn-action btn-edit" onclick="editWord(${item.id})">Edit</button><button class="btn-action btn-delete" onclick="deleteWord(${item.id})">Delete</button></div></div>`).join('');}updateStats();}
@@ -191,7 +194,4 @@
         async function deleteWord(id){const item=dictionary.find(w=>w.id===id);if(item&&confirm(`Delete "${item.word}"?`)){dictionary=dictionary.filter(w=>w.id!==id);await saveDictionary();displayWords();}}
         function updateStats(){const totalWordsEl=document.getElementById('totalWords');if(totalWordsEl){totalWordsEl.textContent=dictionary.length;}}
         function exportData(){const dataStr=JSON.stringify(dictionary,null,2);const dataBlob=new Blob([dataStr],{type:'application/json'});const url=URL.createObjectURL(dataBlob);const link=document.createElement('a');link.href=url;link.download=`dictionary_${new Date().toISOString().split('T')[0]}.json`;link.click();URL.revokeObjectURL(url);}
-        async function importData(event){const file=event.target.files[0];if(file){const reader=new FileReader();reader.onload=async function(e){try{const imported=JSON.parse(e.target.result);if(Array.isArray(imported)){if(confirm(`Import ${imported.length} words? This will merge with existing entries.`)){imported.forEach(word=>{const exists=dictionary.find(w=>w.word.toLowerCase()===word.word.toLowerCase());if(!exists){dictionary.push(word);}});await saveDictionary();displayWords();alert('Import successful!');}}else{alert('Invalid file format');}}catch(error){alert('Error reading file');}};reader.readAsText(file);}event.target.value='';}
-    </script>
-</body>
-</html>
+        async function importData(event){const file=event.target.files[0];if(file){const reader=new FileReader();reader.onload=async function(e){try{const imported=JSON.
