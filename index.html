@@ -14,16 +14,16 @@
         .search-box { position: relative; background: #2d2d2d; border-radius: 50px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border: 1px solid #3d3d3d; }
         .search-box input { width: 100%; padding: 20px 60px 20px 30px; font-size: 18px; border: none; outline: none; background: transparent; color: #e8e8e8; }
         .search-box input::placeholder { color: #888; }
-        .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); color: #888; font-size: 24px; }
-        .autocomplete-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: #2d2d2d; border: 1px solid #3d3d3d; border-top: none; border-radius: 0 0 12px 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); max-height: 300px; overflow-y: auto; display: none; z-index: 1000; margin-top: -10px; }
+        .search-icon { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); color: #888; font-size: 24px; pointer-events: none; }
+        .autocomplete-dropdown { position: absolute; top: calc(100% + 10px); left: 0; right: 0; background: #2d2d2d; border: 1px solid #3d3d3d; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); max-height: 300px; overflow-y: auto; display: none; z-index: 1000; }
         .autocomplete-dropdown.show { display: block; }
-        .autocomplete-item { padding: 15px 30px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #3d3d3d; }
+        .autocomplete-item { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #3d3d3d; transition: all 0.2s; }
         .autocomplete-item:last-child { border-bottom: none; }
-        .autocomplete-item:hover, .autocomplete-item.active { background: #3d3d3d; }
-        .autocomplete-word { font-weight: 700; color: #e8e8e8; font-size: 16px; margin-bottom: 4px; }
+        .autocomplete-item:hover, .autocomplete-item.selected { background: #3d3d3d; }
+        .autocomplete-word { font-weight: 600; color: #e8e8e8; font-size: 16px; margin-bottom: 4px; }
         .autocomplete-preview { font-size: 13px; color: #999; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .autocomplete-dropdown::-webkit-scrollbar { width: 8px; }
-        .autocomplete-dropdown::-webkit-scrollbar-track { background: #1a1a1a; }
+        .autocomplete-dropdown::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
         .autocomplete-dropdown::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
         .autocomplete-dropdown::-webkit-scrollbar-thumb:hover { background: #d89057; }
         .container { max-width: 1000px; margin: 0 auto; padding: 30px; }
@@ -171,6 +171,7 @@
         try{firebase.initializeApp(firebaseConfig);database=firebase.database();isFirebaseConfigured=true;}catch(error){console.error("Firebase error:", error);}
         let dictionary=[],isAdmin=sessionStorage.getItem('isAdmin')==='true',ADMIN_PASSWORD='7412',isLoading=true;
         let selectedAutocompleteIndex = -1;
+        
         loadDictionary();checkAdminStatus();
         
         function formatText(command) { document.execCommand(command, false, null); document.getElementById('definitionInput').focus(); }
@@ -196,36 +197,29 @@
             
             if (!searchTerm) {
                 dropdown.classList.remove('show');
-                dropdown.innerHTML = '';
-                selectedAutocompleteIndex = -1;
                 return;
             }
             
             const matches = dictionary.filter(item => {
-                const wordMatch = item.word.toLowerCase().includes(searchTerm);
-                const defText = item.definition.replace(/<[^>]*>/g, '').toLowerCase();
-                return wordMatch || defText.includes(searchTerm);
-            })
-            .sort((a, b) => {
-                const aStartsWith = a.word.toLowerCase().startsWith(searchTerm);
-                const bStartsWith = b.word.toLowerCase().startsWith(searchTerm);
-                if (aStartsWith && !bStartsWith) return -1;
-                if (!aStartsWith && bStartsWith) return 1;
+                return item.word.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+                       item.word.toLowerCase().includes(searchTerm.toLowerCase());
+            }).sort((a, b) => {
+                const aStarts = a.word.toLowerCase().startsWith(searchTerm.toLowerCase());
+                const bStarts = b.word.toLowerCase().startsWith(searchTerm.toLowerCase());
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
                 return a.word.localeCompare(b.word);
-            })
-            .slice(0, 5);
+            }).slice(0, 5);
             
             if (matches.length === 0) {
                 dropdown.classList.remove('show');
-                dropdown.innerHTML = '';
-                selectedAutocompleteIndex = -1;
                 return;
             }
             
             dropdown.innerHTML = matches.map((item, index) => {
                 const defText = item.definition.replace(/<[^>]*>/g, '');
                 const preview = defText.length > 60 ? defText.substring(0, 60) + '...' : defText;
-                return `<div class="autocomplete-item" data-word="${item.word}" data-index="${index}">
+                return `<div class="autocomplete-item" data-index="${index}" onclick="selectAutocompleteItem('${item.word.replace(/'/g, "\\'")}')">
                     <div class="autocomplete-word">${item.word}</div>
                     <div class="autocomplete-preview">${preview}</div>
                 </div>`;
@@ -233,63 +227,22 @@
             
             dropdown.classList.add('show');
             selectedAutocompleteIndex = -1;
-            
-            const items = dropdown.querySelectorAll('.autocomplete-item');
-            items.forEach(item => {
-                item.addEventListener('click', function() {
-                    const word = this.getAttribute('data-word');
-                    document.getElementById('searchInput').value = word;
-                    dropdown.classList.remove('show');
-                    selectedAutocompleteIndex = -1;
-                    if (isAdmin) {
-                        displayWords(word.toLowerCase());
-                    } else {
-                        displaySearchResults(word.toLowerCase());
-                    }
-                });
-            });
         }
         
-        function navigateAutocomplete(direction) {
-            const dropdown = document.getElementById('autocompleteDropdown');
-            const items = dropdown.querySelectorAll('.autocomplete-item');
-            
-            if (items.length === 0) return;
-            
-            items.forEach(item => item.classList.remove('active'));
-            
-            if (direction === 'down') {
-                selectedAutocompleteIndex = (selectedAutocompleteIndex + 1) % items.length;
-            } else if (direction === 'up') {
-                selectedAutocompleteIndex = selectedAutocompleteIndex <= 0 ? items.length - 1 : selectedAutocompleteIndex - 1;
+        function selectAutocompleteItem(word) {
+            document.getElementById('searchInput').value = word;
+            document.getElementById('autocompleteDropdown').classList.remove('show');
+            const searchTerm = word.toLowerCase();
+            if (isAdmin) {
+                displayWords(searchTerm);
+            } else {
+                displaySearchResults(searchTerm);
             }
-            
-            items[selectedAutocompleteIndex].classList.add('active');
-            items[selectedAutocompleteIndex].scrollIntoView({ block: 'nearest' });
-        }
-        
-        function selectAutocompleteItem() {
-            const dropdown = document.getElementById('autocompleteDropdown');
-            const items = dropdown.querySelectorAll('.autocomplete-item');
-            
-            if (selectedAutocompleteIndex >= 0 && selectedAutocompleteIndex < items.length) {
-                const word = items[selectedAutocompleteIndex].getAttribute('data-word');
-                document.getElementById('searchInput').value = word;
-                dropdown.classList.remove('show');
-                selectedAutocompleteIndex = -1;
-                if (isAdmin) {
-                    displayWords(word.toLowerCase());
-                } else {
-                    displaySearchResults(word.toLowerCase());
-                }
-                return true;
-            }
-            return false;
         }
         
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            showAutocomplete(searchTerm);
+            showAutocomplete(e.target.value);
             
             if (searchTerm && isAdmin) {
                 displayWords(searchTerm);
@@ -302,24 +255,37 @@
         
         document.getElementById('searchInput').addEventListener('keydown', function(e) {
             const dropdown = document.getElementById('autocompleteDropdown');
-            if (!dropdown.classList.contains('show')) return;
+            const items = dropdown.querySelectorAll('.autocomplete-item');
+            
+            if (!dropdown.classList.contains('show') || items.length === 0) return;
             
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
-                navigateAutocomplete('down');
+                selectedAutocompleteIndex = Math.min(selectedAutocompleteIndex + 1, items.length - 1);
+                updateAutocompleteSelection(items);
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
-                navigateAutocomplete('up');
-            } else if (e.key === 'Enter') {
-                if (selectedAutocompleteIndex >= 0) {
-                    e.preventDefault();
-                    selectAutocompleteItem();
-                }
+                selectedAutocompleteIndex = Math.max(selectedAutocompleteIndex - 1, -1);
+                updateAutocompleteSelection(items);
+            } else if (e.key === 'Enter' && selectedAutocompleteIndex >= 0) {
+                e.preventDefault();
+                items[selectedAutocompleteIndex].click();
             } else if (e.key === 'Escape') {
                 dropdown.classList.remove('show');
                 selectedAutocompleteIndex = -1;
             }
         });
+        
+        function updateAutocompleteSelection(items) {
+            items.forEach((item, index) => {
+                if (index === selectedAutocompleteIndex) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
         
         document.addEventListener('click', function(e) {
             const searchContainer = document.querySelector('.search-container');
@@ -346,4 +312,7 @@
         
         function exportData(){const dataStr=JSON.stringify(dictionary,null,2);const dataBlob=new Blob([dataStr],{type:'application/json'});const url=URL.createObjectURL(dataBlob);const link=document.createElement('a');link.href=url;link.download=`dictionary_${new Date().toISOString().split('T')[0]}.json`;link.click();URL.revokeObjectURL(url);}
         
-        async function importData(event){const file=event.target.files[0];if(file){const reader=new FileReader();reader.onload=async function(e){try{const imported=JSON.parse(e.target.result);if(Array.isArray(imported)){if(confirm(`Import ${imported.length} words? This will merge with existing entries.`)){imported.forEach(word=>{const exists=dictionary.find(w=>w.word.toLowerCase()===word.word.toLowerCase());if(!exists){dictionary.push(word);}});await saveDictionary();displayWords();alert('Import successful!');}}else{alert('Invalid file format');}}catch(error){alert('Error reading file');}};reader.readAsText(file);}event.target.value='';
+        async function importData(event){const file=event.target.files[0];if(file){const reader=new FileReader();reader.onload=async function(e){try{const imported=JSON.parse(e.target.result);if(Array.isArray(imported)){if(confirm(`Import ${imported.length} words? This will merge with existing entries.`)){imported.forEach(word=>{const exists=dictionary.find(w=>w.word.toLowerCase()===word.word.toLowerCase());if(!exists){dictionary.push(word);}});await saveDictionary();displayWords();alert('Import successful!');}}else{alert('Invalid file format');}}catch(error){alert('Error reading file');}};reader.readAsText(file);}event.target.value='';}
+    </script>
+</body>
+</html>
