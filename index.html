@@ -73,7 +73,6 @@
         .search-container {
             max-width: 700px;
             margin: 0 auto;
-            position: relative;
         }
         
         .search-box {
@@ -101,75 +100,9 @@
             color: #449944;
             font-size: 24px;
         }
-
-        .search-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-            margin-top: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-        }
-
-        .search-dropdown.show {
-            display: block;
-        }
-
-        .search-dropdown-item {
-            padding: 15px 25px;
-            cursor: pointer;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background 0.2s;
-        }
-
-        .search-dropdown-item:hover {
-            background: #f9f9f9;
-        }
-
-        .search-dropdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .search-dropdown-word {
-            font-weight: 700;
-            color: #333;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .search-dropdown-definition {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.4;
-        }
-
-        .search-dropdown::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .search-dropdown::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .search-dropdown::-webkit-scrollbar-thumb {
-            background: #449944;
-            border-radius: 4px;
-        }
-
-        .no-search-results {
-            padding: 20px 25px;
-            text-align: center;
-            color: #999;
-        }
         
         .container {
-            max-width: 1400px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 30px;
         }
@@ -182,26 +115,6 @@
         
         .main-content.full-width {
             grid-template-columns: 1fr;
-        }
-
-        .main-content.admin-layout {
-            grid-template-columns: 2fr 1fr;
-        }
-        
-        .search-result-column {
-            background: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            min-height: 600px;
-        }
-
-        .random-word-column {
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            min-height: 600px;
         }
         
         .words-column {
@@ -304,22 +217,12 @@
         .word-entry:last-child {
             border-bottom: none;
         }
-
-        .word-entry.large {
-            padding: 0;
-            border: none;
-        }
         
         .word-title {
             font-size: 26px;
             font-weight: 700;
             color: #333;
             margin-bottom: 12px;
-        }
-
-        .word-title.large {
-            font-size: 42px;
-            margin-bottom: 20px;
         }
         
         .word-definition {
@@ -330,11 +233,6 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             font-weight: 500;
-        }
-
-        .word-definition.large {
-            font-size: 22px;
-            line-height: 2;
         }
         
         .word-actions {
@@ -448,10 +346,6 @@
         }
 
         .admin-mode {
-            display: none;
-        }
-
-        .user-mode {
             display: none;
         }
 
@@ -601,27 +495,6 @@
             color: #999;
             font-size: 14px;
         }
-
-        .placeholder-text {
-            text-align: center;
-            padding: 100px 40px;
-            color: #999;
-        }
-
-        .placeholder-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-
-        .placeholder-text h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #666;
-        }
-
-        .placeholder-text p {
-            font-size: 16px;
-        }
         
         @media (max-width: 968px) {
             .hero-title {
@@ -636,8 +509,7 @@
                 padding: 60px 30px;
             }
             
-            .main-content,
-            .main-content.admin-layout {
+            .main-content {
                 grid-template-columns: 1fr;
             }
             
@@ -645,14 +517,6 @@
                 flex-direction: column;
                 gap: 10px;
                 text-align: center;
-            }
-
-            .word-title.large {
-                font-size: 32px;
-            }
-
-            .word-definition.large {
-                font-size: 18px;
             }
         }
     </style>
@@ -672,38 +536,21 @@
         <p class="hero-subtitle">Discover, search, and master your vocabulary</p>
         <div class="search-container">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search for a word..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="Search for a word...">
                 <span class="search-icon">🔍</span>
             </div>
-            <div class="search-dropdown" id="searchDropdown"></div>
         </div>
     </div>
     
     <div class="container">
-        <div class="main-content user-mode" id="userContent">
-            <div class="search-result-column" id="searchResultColumn">
-                <div class="placeholder-text">
-                    <div class="placeholder-icon">🔍</div>
-                    <h3>Search for a word</h3>
-                    <p>Use the search bar above to find definitions</p>
-                </div>
-            </div>
-            
-            <div class="random-word-column">
+        <div class="main-content" id="mainContent">
+            <div class="words-column">
                 <h2 class="section-title">Random Word of the Day</h2>
-                <div id="randomWordDisplay"></div>
+                <div id="wordsList"></div>
                 <button class="btn" onclick="showNewRandomWord()" style="margin-top: 30px;">Show Another Random Word</button>
             </div>
-        </div>
-
-        <div class="main-content admin-layout admin-mode" id="adminContent">
-            <div class="words-column">
-                <div class="alphabet-nav" id="alphabetNav"></div>
-                <h2 class="section-title">Dictionary Entries</h2>
-                <div id="wordsList"></div>
-            </div>
             
-            <div class="sidebar">
+            <div class="sidebar admin-mode" id="sidebar">
                 <h2 class="section-title">Add New Word</h2>
                 <form id="addWordForm" class="add-word-form">
                     <div class="form-group">
@@ -787,19 +634,9 @@
         const ADMIN_PASSWORD = '7412';
         let isLoading = true;
         let currentRandomWord = null;
-        let selectedSearchWord = null;
         
         loadDictionary();
         checkAdminStatus();
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            const searchBox = document.querySelector('.search-box');
-            const dropdown = document.getElementById('searchDropdown');
-            if (!searchBox.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.remove('show');
-            }
-        });
         
         async function loadDictionary() {
             if (isFirebaseConfigured) {
@@ -820,7 +657,6 @@
             }
             isLoading = false;
             if (isAdmin) {
-                createAlphabetNav();
                 displayWords();
             } else {
                 displayRandomWord();
@@ -850,25 +686,24 @@
         }
         
         function checkAdminStatus() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
             const adminToggle = document.getElementById('adminToggle');
-            const userContent = document.getElementById('userContent');
-            const adminContent = document.getElementById('adminContent');
+            const wordsColumn = document.querySelector('.words-column');
             const adminModeElements = document.querySelectorAll('.admin-mode');
-            const userModeElements = document.querySelectorAll('.user-mode');
             
             if (isAdmin) {
+                sidebar.style.display = 'block';
+                mainContent.classList.remove('full-width');
                 adminToggle.textContent = '🔓';
-                userContent.style.display = 'none';
-                adminContent.style.display = 'grid';
+                wordsColumn.style.display = 'none';
                 adminModeElements.forEach(el => el.style.display = 'block');
-                userModeElements.forEach(el => el.style.display = 'none');
-                createAlphabetNav();
             } else {
+                sidebar.style.display = 'none';
+                mainContent.classList.add('full-width');
                 adminToggle.textContent = '🔒';
-                userContent.style.display = 'grid';
-                adminContent.style.display = 'none';
+                wordsColumn.style.display = 'block';
                 adminModeElements.forEach(el => el.style.display = 'none');
-                userModeElements.forEach(el => el.style.display = 'grid');
                 displayRandomWord();
             }
         }
@@ -879,7 +714,6 @@
                 sessionStorage.setItem('isAdmin', 'false');
                 checkAdminStatus();
                 displayRandomWord();
-                resetSearchDisplay();
             } else {
                 document.getElementById('passwordModal').classList.add('show');
                 document.getElementById('passwordInput').focus();
@@ -908,7 +742,6 @@
         
         function createAlphabetNav() {
             const nav = document.getElementById('alphabetNav');
-            nav.innerHTML = '';
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
             
             const allBtn = document.createElement('button');
@@ -968,84 +801,240 @@
                 displayWords();
                 this.reset();
                 
-                const btn = document.querySelector('#addWordForm .btn');
+                const btn = document.querySelector('.btn');
                 const originalText = btn.textContent;
                 btn.textContent = '✓ Added!';
                 setTimeout(() => btn.textContent = originalText, 1500);
             }
         });
         
-        // Search input handler - shows dropdown
         document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            const dropdown = document.getElementById('searchDropdown');
+            const searchTerm = e.target.value.toLowerCase();
+            if (searchTerm && isAdmin) {
+                document.getElementById('wordsList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                displayWords(searchTerm);
+            } else if (searchTerm && !isAdmin) {
+                displaySearchResults(searchTerm);
+            } else if (!isAdmin) {
+                displayRandomWord();
+            }
+        });
+        
+        function displaySearchResults(searchTerm) {
+            const wordsList = document.getElementById('wordsList');
+            
+            const matches = dictionary.filter(item =>
+                item.word.toLowerCase().includes(searchTerm) ||
+                item.definition.toLowerCase().includes(searchTerm)
+            ).sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (matches.length === 0) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">🔍</div>
+                        <p>No words found matching "${searchTerm}"</p>
+                    </div>
+                `;
+            } else {
+                wordsList.innerHTML = matches.map(item => `
+                    <div class="word-entry">
+                        <div class="word-title">${item.word}</div>
+                        <div class="word-definition">${item.definition}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function displayRandomWord() {
+            const wordsList = document.getElementById('wordsList');
+            
+            if (isLoading) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">⏳</div>
+                        <p>Loading dictionary...</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (dictionary.length === 0) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">📚</div>
+                        <p>No words in the dictionary yet!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * dictionary.length);
+            currentRandomWord = dictionary[randomIndex];
+            
+            wordsList.innerHTML = `
+                <div class="word-entry">
+                    <div class="word-title">${currentRandomWord.word}</div>
+                    <div class="word-definition">${currentRandomWord.definition}</div>
+                </div>
+            `;
+        }
+        
+        function showNewRandomWord() {
+            if (dictionary.length > 0) {
+                displayRandomWord();
+            }
+        }
+        
+        function displayWords(searchTerm = '') {
+            const wordsList = document.getElementById('wordsList');
+            
+            if (isLoading) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">⏳</div>
+                        <p>Loading dictionary...</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let filteredDictionary = dictionary;
+            
+            if (searchTerm) {
+                filteredDictionary = dictionary.filter(item =>
+                    item.word.toLowerCase().includes(searchTerm) ||
+                    item.definition.toLowerCase().includes(searchTerm)
+                );
+            } else if (currentFilter) {
+                filteredDictionary = dictionary.filter(item =>
+                    item.word.toUpperCase().startsWith(currentFilter)
+                );
+            }
+            
+            filteredDictionary.sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (filteredDictionary.length === 0) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">📚</div>
+                        <p>${searchTerm ? 'No words found matching your search.' : currentFilter ? `No words starting with "${currentFilter}".` : 'Your dictionary is empty. Add your first word!'}</p>
+                    </div>
+                `;
+            } else {
+                wordsList.innerHTML = filteredDictionary.map(item => `
+                    <div class="word-entry">
+                        <div class="word-title">${item.word}</div>
+                        <div class="word-definition">${item.definition}</div>
+                        <div class="word-actions" style="display: ${isAdmin ? 'flex' : 'none'};">
+                            <button class="btn-action btn-edit" onclick="editWord(${item.id})">Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteWord(${item.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updateStats();
+        }
+        
+        async function editWord(id) {
+            const item = dictionary.find(w => w.id === id);
+            if (item) {
+                document.getElementById('wordInput').value = item.word;
+                document.getElementById('definitionInput').value = item.definition;
+                
+                dictionary = dictionary.filter(w => w.id !== id);
+                await saveDictionary();
+                displayWords();
+                
+                document.getElementById('editSearchInput').value = '';
+                document.getElementById('editSearchResults').innerHTML = '';
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function searchWordsToEdit() {
+            const searchTerm = document.getElementById('editSearchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('editSearchResults');
             
             if (!searchTerm) {
-                dropdown.classList.remove('show');
-                dropdown.innerHTML = '';
+                resultsContainer.innerHTML = '';
                 return;
             }
             
             const matches = dictionary.filter(item =>
                 item.word.toLowerCase().includes(searchTerm) ||
                 item.definition.toLowerCase().includes(searchTerm)
-            ).sort((a, b) => {
-                // Prioritize matches at the start of the word
-                const aStartsWith = item.word.toLowerCase().startsWith(searchTerm);
-                const bStartsWith = item.word.toLowerCase().startsWith(searchTerm);
-                if (aStartsWith && !bStartsWith) return -1;
-                if (!aStartsWith && bStartsWith) return 1;
-                return a.word.localeCompare(b.word);
-            }).slice(0, 10); // Limit to 10 results
+            ).sort((a, b) => a.word.localeCompare(b.word));
             
             if (matches.length === 0) {
-                dropdown.innerHTML = '<div class="no-search-results">No words found</div>';
-                dropdown.classList.add('show');
+                resultsContainer.innerHTML = '<div class="no-results">No matching words found</div>';
             } else {
-                dropdown.innerHTML = matches.map(item => `
-                    <div class="search-dropdown-item" onclick="selectWord(${item.id})">
-                        <div class="search-dropdown-word">${item.word}</div>
-                        <div class="search-dropdown-definition">${item.definition.length > 80 ? item.definition.substring(0, 80) + '...' : item.definition}</div>
+                resultsContainer.innerHTML = matches.map(item => `
+                    <div class="edit-result-item" onclick="editWord(${item.id})">
+                        <div class="edit-result-word">${item.word}</div>
+                        <div class="edit-result-definition">${item.definition.length > 100 ? item.definition.substring(0, 100) + '...' : item.definition}</div>
                     </div>
                 `).join('');
-                dropdown.classList.add('show');
-            }
-        });
-        
-        function selectWord(id) {
-            const word = dictionary.find(w => w.id === id);
-            if (word) {
-                selectedSearchWord = word;
-                displaySelectedWord();
-                document.getElementById('searchDropdown').classList.remove('show');
-                document.getElementById('searchInput').value = word.word;
             }
         }
         
-        function displaySelectedWord() {
-            const searchResultColumn = document.getElementById('searchResultColumn');
-            
-            if (selectedSearchWord) {
-                searchResultColumn.innerHTML = `
-                    <div class="word-entry large">
-                        <div class="word-title large">${selectedSearchWord.word}</div>
-                        <div class="word-definition large">${selectedSearchWord.definition}</div>
-                    </div>
-                `;
-            } else {
-                searchResultColumn.innerHTML = `
-                    <div class="placeholder-text">
-                        <div class="placeholder-icon">🔍</div>
-                        <h3>Search for a word</h3>
-                        <p>Use the search bar above to find definitions</p>
-                    </div>
-                `;
+        async function deleteWord(id) {
+            const item = dictionary.find(w => w.id === id);
+            if (item && confirm(`Delete "${item.word}"?`)) {
+                dictionary = dictionary.filter(w => w.id !== id);
+                await saveDictionary();
+                displayWords();
             }
         }
         
-        function resetSearchDisplay() {
-            selectedSearchWord = null;
-            document.getElementById('searchInput').value = '';
-            document.getElementById('searchDropdown').classList.remove('show');
-            displaySelectedWord();
+        function updateStats() {
+            document.getElementById('totalWords').textContent = dictionary.length;
         }
+        
+        function exportData() {
+            const dataStr = JSON.stringify(dictionary, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `dictionary_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        async function importData(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const imported = JSON.parse(e.target.result);
+                        if (Array.isArray(imported)) {
+                            if (confirm(`Import ${imported.length} words? This will merge with existing entries.`)) {
+                                imported.forEach(word => {
+                                    const exists = dictionary.find(w => 
+                                        w.word.toLowerCase() === word.word.toLowerCase()
+                                    );
+                                    if (!exists) {
+                                        dictionary.push(word);
+                                    }
+                                });
+                                await saveDictionary();
+                                displayWords();
+                                alert('Import successful!');
+                            }
+                        } else {
+                            alert('Invalid file format');
+                        }
+                    } catch (error) {
+                        alert('Error reading file');
+                    }
+                };
+                reader.readAsText(file);
+            }
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>
