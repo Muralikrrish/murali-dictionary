@@ -111,7 +111,8 @@
                 <form id="addWordForm">
                     <div class="form-group">
                         <label for="wordInput">Word</label>
-                        <input type="text" id="wordInput" required placeholder="Enter word">
+                        <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()">
+                        <div id="wordWarning" style="color: #f39c12; font-size: 13px; margin-top: 5px; display: none;">⚠️ This word already exists in the dictionary</div>
                     </div>
                     <div class="form-group">
                         <label for="definitionInput">Definition</label>
@@ -160,6 +161,8 @@
         loadDictionary();checkAdminStatus();
         
         function formatText(command) { document.execCommand(command, false, null); document.getElementById('definitionInput').focus(); }
+        
+        function checkExistingWord(){const word=document.getElementById('wordInput').value.trim();const warning=document.getElementById('wordWarning');if(word){const exists=dictionary.find(w=>w.word.toLowerCase()===word.toLowerCase());if(exists){warning.style.display='block';}else{warning.style.display='none';}}else{warning.style.display='none';}}
         
         async function loadDictionary(){if(isFirebaseConfigured){try{const snapshot=await database.ref('dictionary').once('value');const data=snapshot.val();dictionary=data?Object.values(data):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));}catch(error){dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}isLoading=false;if(isAdmin){displayWords();}else{displayRandomWord();}}
         
