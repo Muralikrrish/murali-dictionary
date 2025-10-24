@@ -545,9 +545,9 @@
     <div class="container">
         <div class="main-content" id="mainContent">
             <div class="words-column">
-                <div class="alphabet-nav" id="alphabetNav"></div>
-                <h2 class="section-title">Dictionary Entries</h2>
+                <h2 class="section-title">Random Word of the Day</h2>
                 <div id="wordsList"></div>
+                <button class="btn" onclick="showNewRandomWord()" style="margin-top: 30px;">Show Another Random Word</button>
             </div>
             
             <div class="sidebar admin-mode" id="sidebar">
@@ -602,12 +602,10 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <script>
-        // Firebase Configuration with Database URL
         const firebaseConfig = {
             apiKey: "AIzaSyCOoetJxVn8IJIZayXp-guze0RcZbGbPQs",
             authDomain: "murali-dictionary.firebaseapp.com",
@@ -618,7 +616,6 @@
             appId: "1:486882382297:web:ec61829f79d32597f449c8"
         };
 
-        // Initialize Firebase
         let database;
         let isFirebaseConfigured = false;
 
@@ -636,13 +633,11 @@
         let isAdmin = sessionStorage.getItem('isAdmin') === 'true';
         const ADMIN_PASSWORD = '7412';
         let isLoading = true;
+        let currentRandomWord = null;
         
-        // Initialize
-        createAlphabetNav();
         loadDictionary();
         checkAdminStatus();
         
-        // Load dictionary
         async function loadDictionary() {
             if (isFirebaseConfigured) {
                 try {
@@ -651,12 +646,9 @@
                     const data = snapshot.val();
                     dictionary = data ? Object.values(data) : [];
                     console.log(`✅ Loaded ${dictionary.length} words from Firebase`);
-                    
-                    // Save to localStorage as backup
                     localStorage.setItem('dictionary', JSON.stringify(dictionary));
                 } catch (error) {
                     console.error("❌ Error loading from Firebase:", error);
-                    console.error("Error details:", error.message);
                     console.log("📂 Falling back to localStorage");
                     dictionary = JSON.parse(localStorage.getItem('dictionary')) || [];
                 }
@@ -664,12 +656,14 @@
                 dictionary = JSON.parse(localStorage.getItem('dictionary')) || [];
             }
             isLoading = false;
-            displayWords();
+            if (isAdmin) {
+                displayWords();
+            } else {
+                displayRandomWord();
+            }
         }
         
-        // Save dictionary
         async function saveDictionary() {
-            // Always save to localStorage as backup
             localStorage.setItem('dictionary', JSON.stringify(dictionary));
             
             if (isFirebaseConfigured) {
@@ -683,8 +677,7 @@
                     updateStats();
                 } catch (error) {
                     console.error("❌ Error saving to Firebase:", error);
-                    console.error("Error details:", error.message);
-                    alert('⚠️ Failed to save to cloud: ' + error.message + '\n\nData saved locally instead. Please check Firebase rules.');
+                    alert('⚠️ Failed to save to cloud: ' + error.message + '\n\nData saved locally instead.');
                     updateStats();
                 }
             } else {
@@ -711,6 +704,7 @@
                 adminToggle.textContent = '🔒';
                 wordsColumn.style.display = 'block';
                 adminModeElements.forEach(el => el.style.display = 'none');
+                displayRandomWord();
             }
         }
 
@@ -719,7 +713,7 @@
                 isAdmin = false;
                 sessionStorage.setItem('isAdmin', 'false');
                 checkAdminStatus();
-                displayWords();
+                displayRandomWord();
             } else {
                 document.getElementById('passwordModal').classList.add('show');
                 document.getElementById('passwordInput').focus();
@@ -816,11 +810,80 @@
         
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            if (searchTerm) {
+            if (searchTerm && isAdmin) {
                 document.getElementById('wordsList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                displayWords(searchTerm);
+            } else if (searchTerm && !isAdmin) {
+                displaySearchResults(searchTerm);
+            } else if (!isAdmin) {
+                displayRandomWord();
             }
-            displayWords(searchTerm);
         });
+        
+        function displaySearchResults(searchTerm) {
+            const wordsList = document.getElementById('wordsList');
+            
+            const matches = dictionary.filter(item =>
+                item.word.toLowerCase().includes(searchTerm) ||
+                item.definition.toLowerCase().includes(searchTerm)
+            ).sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (matches.length === 0) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">🔍</div>
+                        <p>No words found matching "${searchTerm}"</p>
+                    </div>
+                `;
+            } else {
+                wordsList.innerHTML = matches.map(item => `
+                    <div class="word-entry">
+                        <div class="word-title">${item.word}</div>
+                        <div class="word-definition">${item.definition}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function displayRandomWord() {
+            const wordsList = document.getElementById('wordsList');
+            
+            if (isLoading) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">⏳</div>
+                        <p>Loading dictionary...</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (dictionary.length === 0) {
+                wordsList.innerHTML = `
+                    <div class="no-words">
+                        <div class="no-words-icon">📚</div>
+                        <p>No words in the dictionary yet!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * dictionary.length);
+            currentRandomWord = dictionary[randomIndex];
+            
+            wordsList.innerHTML = `
+                <div class="word-entry">
+                    <div class="word-title">${currentRandomWord.word}</div>
+                    <div class="word-definition">${currentRandomWord.definition}</div>
+                </div>
+            `;
+        }
+        
+        function showNewRandomWord() {
+            if (dictionary.length > 0) {
+                displayRandomWord();
+            }
+        }
         
         function displayWords(searchTerm = '') {
             const wordsList = document.getElementById('wordsList');
@@ -883,7 +946,6 @@
                 await saveDictionary();
                 displayWords();
                 
-                // Clear edit search
                 document.getElementById('editSearchInput').value = '';
                 document.getElementById('editSearchResults').innerHTML = '';
                 
