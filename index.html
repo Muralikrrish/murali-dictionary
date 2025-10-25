@@ -935,7 +935,12 @@
                 displayWords();
                 document.getElementById('editSearchInput').value = '';
                 document.getElementById('editSearchResults').innerHTML = '';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.getElementById('definitionSearchInput').value = '';
+                document.getElementById('definitionSearchResults').innerHTML = '';
+                
+                // Scroll to the "Add New Word" section
+                const sidebar = document.getElementById('sidebar');
+                sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
         
