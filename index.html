@@ -516,13 +516,49 @@
             localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
             if (isFirebaseConfigured) {
                 try {
+                    // Temporarily turn off the listener to avoid recursive updates
+                    database.ref('quickAddList').off('value');
+                    
                     await database.ref('quickAddList').set(quickAddList);
                     console.log('Quick list saved to Firebase successfully');
-                    const verifySnapshot = await database.ref('quickAddList').once('value');
-                    console.log('Verified data in Firebase:', verifySnapshot.val());
+                    
+                    // Re-enable the listener after a short delay
+                    setTimeout(() => {
+                        database.ref('quickAddList').on('value', (snapshot) => {
+                            const data = snapshot.val();
+                            console.log('Real-time update received for quick list:', data);
+                            if (data && Array.isArray(data)) {
+                                quickAddList = data;
+                            } else if (data && typeof data === 'object') {
+                                quickAddList = Object.values(data);
+                            } else {
+                                quickAddList = [];
+                            }
+                            localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+                            if (isAdmin) {
+                                displayQuickAddList();
+                            }
+                        });
+                    }, 500);
                 } catch (error) {
                     console.error('Failed to save quick list to cloud:', error);
-                    alert('Failed to sync quick list. Please try again.');
+                    // Don't show alert, just log the error
+                    // Re-enable listener even on error
+                    database.ref('quickAddList').on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        console.log('Real-time update received for quick list:', data);
+                        if (data && Array.isArray(data)) {
+                            quickAddList = data;
+                        } else if (data && typeof data === 'object') {
+                            quickAddList = Object.values(data);
+                        } else {
+                            quickAddList = [];
+                        }
+                        localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+                        if (isAdmin) {
+                            displayQuickAddList();
+                        }
+                    });
                 }
             }
         }
