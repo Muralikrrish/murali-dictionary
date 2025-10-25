@@ -981,6 +981,25 @@
             }
             
             const matches = dictionary.filter(item => {
+                const defText = item.definition.replace(/<[^>]*>/g, ' '); // Replace tags with space to preserve word boundaries
+                
+                // Check if search term has spaces at beginning or end
+                const hasLeadingSpace = searchTerm.startsWith(' ');
+                const hasTrailingSpace = searchTerm.endsWith(' ');
+                
+                if (hasLeadingSpace && hasTrailingSpace) {
+                    // Both spaces: look for word boundaries on both sides
+                    const term = searchTerm.trim();
+                    const regex = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\        function searchDefinitions() {
+            const searchTerm = document.getElementById('definitionSearchInput').value.trim();
+            const resultsContainer = document.getElementById('definitionSearchResults');
+            
+            if (!searchTerm) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            const matches = dictionary.filter(item => {
                 const defText = item.definition.replace(/<[^>]*>/g, '');
                 
                 // Check if search term has spaces at beginning or end
@@ -992,6 +1011,101 @@
                     return defText.includes(searchTerm);
                 } else {
                     // Regular case-insensitive search
+                    return defText.toLowerCase().includes(searchTerm.toLowerCase());
+                }
+            }).sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No matching definitions found</div>';
+            } else {
+                resultsContainer.innerHTML = matches.map(item => {
+                    const defText = item.definition.replace(/<[^>]*>/g, '');
+                    const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
+                    return `<div class="definition-result-item" onclick="editWordAndHighlight(${item.id}, '${searchTerm.replace(/'/g, "\\'")}')"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
+                }).join('');
+            }
+        }')}\\b`, 'i');
+                    return regex.test(defText);
+                } else if (hasLeadingSpace) {
+                    // Leading space only: word boundary at start
+                    const term = searchTerm.trimEnd();
+                    const regex = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\        function searchDefinitions() {
+            const searchTerm = document.getElementById('definitionSearchInput').value.trim();
+            const resultsContainer = document.getElementById('definitionSearchResults');
+            
+            if (!searchTerm) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            const matches = dictionary.filter(item => {
+                const defText = item.definition.replace(/<[^>]*>/g, '');
+                
+                // Check if search term has spaces at beginning or end
+                const hasLeadingSpace = searchTerm.startsWith(' ');
+                const hasTrailingSpace = searchTerm.endsWith(' ');
+                
+                if (hasLeadingSpace || hasTrailingSpace) {
+                    // Space-sensitive search: look for exact match with spaces
+                    return defText.includes(searchTerm);
+                } else {
+                    // Regular case-insensitive search
+                    return defText.toLowerCase().includes(searchTerm.toLowerCase());
+                }
+            }).sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No matching definitions found</div>';
+            } else {
+                resultsContainer.innerHTML = matches.map(item => {
+                    const defText = item.definition.replace(/<[^>]*>/g, '');
+                    const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
+                    return `<div class="definition-result-item" onclick="editWordAndHighlight(${item.id}, '${searchTerm.replace(/'/g, "\\'")}')"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
+                }).join('');
+            }
+        }')}`, 'i');
+                    return regex.test(defText);
+                } else if (hasTrailingSpace) {
+                    // Trailing space only: word boundary at end
+                    const term = searchTerm.trimStart();
+                    const regex = new RegExp(`${term.replace(/[.*+?^${}()|[\]\\]/g, '\\        function searchDefinitions() {
+            const searchTerm = document.getElementById('definitionSearchInput').value.trim();
+            const resultsContainer = document.getElementById('definitionSearchResults');
+            
+            if (!searchTerm) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            const matches = dictionary.filter(item => {
+                const defText = item.definition.replace(/<[^>]*>/g, '');
+                
+                // Check if search term has spaces at beginning or end
+                const hasLeadingSpace = searchTerm.startsWith(' ');
+                const hasTrailingSpace = searchTerm.endsWith(' ');
+                
+                if (hasLeadingSpace || hasTrailingSpace) {
+                    // Space-sensitive search: look for exact match with spaces
+                    return defText.includes(searchTerm);
+                } else {
+                    // Regular case-insensitive search
+                    return defText.toLowerCase().includes(searchTerm.toLowerCase());
+                }
+            }).sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No matching definitions found</div>';
+            } else {
+                resultsContainer.innerHTML = matches.map(item => {
+                    const defText = item.definition.replace(/<[^>]*>/g, '');
+                    const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
+                    return `<div class="definition-result-item" onclick="editWordAndHighlight(${item.id}, '${searchTerm.replace(/'/g, "\\'")}')"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
+                }).join('');
+            }
+        }')}\\b`, 'i');
+                    return regex.test(defText);
+                } else {
+                    // No spaces: regular case-insensitive search
                     return defText.toLowerCase().includes(searchTerm.toLowerCase());
                 }
             }).sort((a, b) => a.word.localeCompare(b.word));
