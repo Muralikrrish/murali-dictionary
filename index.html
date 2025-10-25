@@ -972,7 +972,7 @@
         }
         
         function searchDefinitions() {
-            const searchTerm = document.getElementById('definitionSearchInput').value.toLowerCase().trim();
+            const searchTerm = document.getElementById('definitionSearchInput').value.trim();
             const resultsContainer = document.getElementById('definitionSearchResults');
             
             if (!searchTerm) {
@@ -981,8 +981,19 @@
             }
             
             const matches = dictionary.filter(item => {
-                const defText = item.definition.replace(/<[^>]*>/g, '').toLowerCase();
-                return defText.includes(searchTerm);
+                const defText = item.definition.replace(/<[^>]*>/g, '');
+                
+                // Check if search term has spaces at beginning or end
+                const hasLeadingSpace = searchTerm.startsWith(' ');
+                const hasTrailingSpace = searchTerm.endsWith(' ');
+                
+                if (hasLeadingSpace || hasTrailingSpace) {
+                    // Space-sensitive search: look for exact match with spaces
+                    return defText.includes(searchTerm);
+                } else {
+                    // Regular case-insensitive search
+                    return defText.toLowerCase().includes(searchTerm.toLowerCase());
+                }
             }).sort((a, b) => a.word.localeCompare(b.word));
             
             if (matches.length === 0) {
