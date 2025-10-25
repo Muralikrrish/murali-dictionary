@@ -172,9 +172,11 @@
             .section-title { font-size: 20px; }
             .editor-toolbar { padding: 8px; gap: 3px; }
             .editor-btn { padding: 6px 10px; font-size: 13px; }
-            .editor-content { min-height: 400px; }
+            .font-size-dropdown { padding: 6px 10px; font-size: 13px; }
+            .editor-content { min-height: 400px; font-size: 16px; padding: 10px; }
             .word-actions { flex-direction: column; gap: 10px; }
             .btn-action { width: 100%; }
+            .btn { padding: 12px 20px; font-size: 15px; }
             .search-box input { padding: 16px 50px 16px 20px; font-size: 16px; }
             .search-icon { right: 20px; font-size: 20px; }
             .autocomplete-item { padding: 12px 15px; }
@@ -184,7 +186,17 @@
             .quick-add-item { padding: 10px 12px; }
             .quick-add-word { font-size: 14px; min-width: 100px; }
             .quick-add-remove { padding: 5px 10px; font-size: 11px; }
+            .quick-add-controls { flex-direction: column; gap: 8px; }
+            .quick-add-btn { padding: 10px 16px; font-size: 13px; }
             #quickAddList { max-height: 250px; padding: 8px; }
+            .edit-result-item, .definition-result-item, .quick-add-result-item { padding: 12px; }
+            .edit-result-word, .definition-result-word, .quick-add-result-word { font-size: 15px; }
+            .edit-result-definition, .definition-result-definition, .quick-add-result-definition { font-size: 13px; }
+            .form-group label { font-size: 13px; }
+            .form-group input { padding: 10px; font-size: 14px; }
+            .utility-buttons { display: flex; flex-direction: column; gap: 10px; }
+            .btn-secondary { margin-top: 0; }
+            .info-box, .success-box { padding: 15px; font-size: 13px; }
         }
         @media (max-width: 480px) {
             .hero-title { font-size: 28px; }
@@ -205,14 +217,30 @@
             .section-title { font-size: 18px; }
             .btn { padding: 12px 20px; font-size: 15px; }
             .form-group input { padding: 10px; font-size: 14px; }
-            .editor-content { min-height: 300px; font-size: 14px; }
+            .form-group label { font-size: 12px; }
+            .editor-toolbar { padding: 6px; gap: 2px; flex-wrap: wrap; }
+            .editor-btn { padding: 5px 8px; font-size: 12px; }
+            .font-size-dropdown { padding: 5px 8px; font-size: 12px; }
+            .editor-content { min-height: 300px; font-size: 15px; padding: 10px; }
             .autocomplete-item { padding: 10px 12px; }
             .autocomplete-word { font-size: 14px; }
             .admin-toggle { bottom: 12px; right: 12px; width: 40px; height: 40px; font-size: 18px; }
             .quick-add-item { padding: 8px 10px; flex-direction: column; align-items: flex-start; }
             .quick-add-word { font-size: 13px; width: 100%; margin-bottom: 8px; }
             .quick-add-remove { padding: 5px 10px; font-size: 11px; width: 100%; }
+            .quick-add-controls { flex-direction: column; gap: 8px; }
+            .quick-add-btn { padding: 10px 16px; font-size: 13px; }
             #quickAddList { max-height: 200px; padding: 6px; }
+            .edit-result-item, .definition-result-item, .quick-add-result-item { padding: 10px; }
+            .edit-result-word, .definition-result-word, .quick-add-result-word { font-size: 14px; }
+            .edit-result-definition, .definition-result-definition, .quick-add-result-definition { font-size: 12px; }
+            .utility-buttons { display: flex; flex-direction: column; gap: 8px; }
+            .btn-secondary { margin-top: 0; padding: 12px 20px; font-size: 14px; }
+            .info-box, .success-box { padding: 12px; font-size: 12px; }
+            .password-box { padding: 25px 15px; max-width: 95%; }
+            .password-box h3 { font-size: 18px; }
+            .password-box input { padding: 10px; font-size: 14px; }
+            .password-box button { padding: 10px; font-size: 14px; }
         }
     </style>
 </head>
