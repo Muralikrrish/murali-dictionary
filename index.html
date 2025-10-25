@@ -45,9 +45,10 @@
         .font-size-dropdown { background: #242424; border: 1px solid #3d3d3d; padding: 8px 12px; border-radius: 4px; font-size: 14px; font-weight: 600; color: #e8e8e8; cursor: pointer; transition: all 0.2s; }
         .font-size-dropdown:hover { background: #2d2d2d; }
         .font-size-dropdown:focus { outline: none; border-color: #c87941; }
-        .editor-content { width: 100%; min-height: 600px; padding: 12px; border: 1px solid #3d3d3d; border-radius: 0 0 6px 6px; border-top: none; font-size: 15px; font-family: inherit; overflow-y: auto; background: #1a1a1a; color: #e8e8e8; -webkit-overflow-scrolling: touch; }
+        .editor-content { width: 100%; min-height: 600px; padding: 12px; border: 1px solid #3d3d3d; border-radius: 0 0 6px 6px; border-top: none; font-size: 19px; font-family: inherit; overflow-y: auto; background: #1a1a1a; color: #d8d8d8; line-height: 1.6; font-weight: 500; word-spacing: -0.05em; -webkit-overflow-scrolling: touch; }
         .editor-content:focus { outline: none; }
         .editor-content[contenteditable="true"]:empty:before { content: attr(placeholder); color: #666; }
+        .editor-content p { font-size: 19px; color: #d8d8d8; line-height: 1.6; font-weight: 500; word-spacing: -0.05em; }
         .btn { background: #c87941; color: #1a1a1a; border: none; padding: 14px 28px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; width: 100%; }
         .btn:hover { background: #d89057; }
         .btn-secondary { background: #242424; color: #c87941; border: 2px solid #c87941; margin-top: 10px; }
@@ -336,14 +337,22 @@
         }
         
         function formatHeading(tag) {
+            const selection = window.getSelection();
+            const definitionInput = document.getElementById('definitionInput');
+            
             if (tag === '') {
+                // For "Normal", wrap in a <p> tag with the correct styling
                 document.execCommand('formatBlock', false, 'p');
             } else {
                 document.execCommand('formatBlock', false, tag);
             }
-            document.getElementById('definitionInput').focus();
-            // Reset dropdown to default
-            document.querySelector('.font-size-dropdown').value = '';
+            
+            definitionInput.focus();
+            
+            // Reset dropdown to default after applying
+            setTimeout(() => {
+                document.querySelector('.font-size-dropdown').value = '';
+            }, 100);
         }
         
         function checkExistingWord() {
