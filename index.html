@@ -274,7 +274,7 @@
                 <div id="quickAddList">
                     <div class="quick-add-empty">No words in quick list yet</div>
                 </div>
-                <h2 class="section-title" style="margin-top: 40px;">Edit Existing Word</h2>
+                <h2 class="section-title" style="margin-top: 40px;">Edit Existing Word <span id="dictionaryCount" style="font-size: 16px; opacity: 0.7; font-weight: 400;">(0)</span></h2>
                 <div class="form-group"><label for="editSearchInput">Search Word to Edit</label><input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()"></div>
                 <div id="editSearchResults"></div>
                 <div class="utility-buttons">
@@ -885,6 +885,13 @@
         
         function displayWords(searchTerm = '') {
             const wordsList = document.getElementById('wordsList');
+            const countElement = document.getElementById('dictionaryCount');
+            
+            // Update dictionary count
+            if (countElement) {
+                countElement.textContent = `(${dictionary.length})`;
+            }
+            
             if (isLoading) {
                 wordsList.innerHTML = `<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading dictionary...</p></div>`;
                 return;
