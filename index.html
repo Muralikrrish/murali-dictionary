@@ -267,7 +267,7 @@
         
         function checkExistingWord(){const word=document.getElementById('wordInput').value.trim();const warning=document.getElementById('wordWarning');if(word){const exists=dictionary.find(w=>w.word.toLowerCase()===word.toLowerCase());if(exists){warning.style.display='block';}else{warning.style.display='none';}}else{warning.style.display='none';}}
         
-        function addToQuickList(){
+        async function addToQuickList(){
             const input=document.getElementById('quickAddSearch');
             const word=input.value.trim();
             const warning=document.getElementById('quickAddWarning');
@@ -294,6 +294,7 @@
             quickAddList.push(word);
             input.value='';
             warning.style.display='none';
+            await saveQuickAddList();
             displayQuickAddList();
         }
         
@@ -313,8 +314,9 @@
             `).join('');
         }
         
-        function removeFromQuickList(index){
+        async function removeFromQuickList(index){
             quickAddList.splice(index,1);
+            await saveQuickAddList();
             displayQuickAddList();
         }
         
@@ -340,8 +342,7 @@
             
             const matches=dictionary.filter(item=>{
                 const wordMatch=item.word.toLowerCase().includes(searchTerm);
-                const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();
-                return wordMatch||defText.includes(searchTerm);
+                return wordMatch;
             }).sort((a,b)=>a.word.localeCompare(b.word));
             
             if(matches.length===0){
@@ -363,9 +364,11 @@
             document.getElementById('quickAddSearchResults').innerHTML='';
         }
         
-        async function loadDictionary(){if(isFirebaseConfigured){try{const snapshot=await database.ref('dictionary').once('value');const data=snapshot.val();dictionary=data?Object.values(data):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));}catch(error){dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}isLoading=false;if(isAdmin){displayWords();}else{displayRandomWord();}}
+        async function loadDictionary(){if(isFirebaseConfigured){try{const snapshot=await database.ref('dictionary').once('value');const data=snapshot.val();dictionary=data?Object.values(data):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));const quickListSnapshot=await database.ref('quickAddList').once('value');const quickListData=quickListSnapshot.val();quickAddList=quickListData?quickListData:[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));}catch(error){dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[];}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[];}isLoading=false;if(isAdmin){displayWords();displayQuickAddList();}else{displayRandomWord();}}
         
         async function saveDictionary(){localStorage.setItem('dictionary',JSON.stringify(dictionary));if(isFirebaseConfigured){try{const updates={};dictionary.forEach(word=>{updates[word.id]=word;});await database.ref('dictionary').set(updates);}catch(error){alert('Failed to save to cloud. Data saved locally.');}}}
+        
+        async function saveQuickAddList(){localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isFirebaseConfigured){try{await database.ref('quickAddList').set(quickAddList);}catch(error){console.error('Failed to save quick list to cloud.');}}}
         
         function checkAdminStatus(){const sidebar=document.getElementById('sidebar');const mainContent=document.getElementById('mainContent');const adminToggle=document.getElementById('adminToggle');const wordsColumns=document.querySelectorAll('.words-column');const adminModeElements=document.querySelectorAll('.admin-mode');const searchResultsColumn=document.getElementById('searchResultsColumn');if(isAdmin){sidebar.style.display='block';mainContent.classList.remove('full-width');adminToggle.textContent='🔓';wordsColumns.forEach(col=>{if(col.id!=='searchResultsColumn'){col.style.display='none';}});adminModeElements.forEach(el=>el.style.display='block');searchResultsColumn.style.display='none';}else{sidebar.style.display='none';mainContent.classList.add('full-width');adminToggle.textContent='🔒';wordsColumns.forEach(col=>{if(col.id!=='searchResultsColumn'){col.style.display='block';}});adminModeElements.forEach(el=>el.style.display='none');searchResultsColumn.style.display='none';displayRandomWord();}}
         
@@ -503,7 +506,7 @@
         
         async function editWord(id){const item=dictionary.find(w=>w.id===id);if(item){document.getElementById('wordInput').value=item.word;document.getElementById('definitionInput').innerHTML=item.definition;dictionary=dictionary.filter(w=>w.id!==id);await saveDictionary();displayWords();document.getElementById('editSearchInput').value='';document.getElementById('editSearchResults').innerHTML='';window.scrollTo({top:0,behavior:'smooth'});}}
         
-        function searchWordsToEdit(){const searchTerm=document.getElementById('editSearchInput').value.toLowerCase().trim();const resultsContainer=document.getElementById('editSearchResults');if(!searchTerm){resultsContainer.innerHTML='';return;}const matches=dictionary.filter(item=>{const wordMatch=item.word.toLowerCase().includes(searchTerm);const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();return wordMatch||defText.includes(searchTerm);}).sort((a,b)=>a.word.localeCompare(b.word));if(matches.length===0){resultsContainer.innerHTML='<div class="no-results">No matching words found</div>';}else{resultsContainer.innerHTML=matches.map(item=>{const defText=item.definition.replace(/<[^>]*>/g,'');const preview=defText.length>100?defText.substring(0,100)+'...':defText;return`<div class="edit-result-item" onclick="editWord(${item.id})"><div class="edit-result-word">${item.word}</div><div class="edit-result-definition">${preview}</div></div>`;}).join('');}}
+        function searchWordsToEdit(){const searchTerm=document.getElementById('editSearchInput').value.toLowerCase().trim();const resultsContainer=document.getElementById('editSearchResults');if(!searchTerm){resultsContainer.innerHTML='';return;}const matches=dictionary.filter(item=>{const wordMatch=item.word.toLowerCase().includes(searchTerm);return wordMatch;}).sort((a,b)=>a.word.localeCompare(b.word));if(matches.length===0){resultsContainer.innerHTML='<div class="no-results">No matching words found</div>';}else{resultsContainer.innerHTML=matches.map(item=>{const defText=item.definition.replace(/<[^>]*>/g,'');const preview=defText.length>100?defText.substring(0,100)+'...':defText;return`<div class="edit-result-item" onclick="editWord(${item.id})"><div class="edit-result-word">${item.word}</div><div class="edit-result-definition">${preview}</div></div>`;}).join('');}}
         
         async function deleteWord(id){const item=dictionary.find(w=>w.id===id);if(item&&confirm(`Delete "${item.word}"?`)){dictionary=dictionary.filter(w=>w.id!==id);await saveDictionary();displayWords();}}
         
