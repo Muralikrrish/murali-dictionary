@@ -374,6 +374,7 @@
                     
                     const quickListSnapshot=await database.ref('quickAddList').once('value');
                     const quickListData=quickListSnapshot.val();
+                    console.log('Quick list loaded from Firebase:', quickListData);
                     if(quickListData && Array.isArray(quickListData)){
                         quickAddList=quickListData;
                     }else if(quickListData && typeof quickListData === 'object'){
@@ -381,6 +382,7 @@
                     }else{
                         quickAddList=[];
                     }
+                    console.log('Quick list after processing:', quickAddList);
                     localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
                 }catch(error){
                     console.error('Firebase load error:', error);
@@ -402,7 +404,21 @@
         
         async function saveDictionary(){localStorage.setItem('dictionary',JSON.stringify(dictionary));if(isFirebaseConfigured){try{const updates={};dictionary.forEach(word=>{updates[word.id]=word;});await database.ref('dictionary').set(updates);}catch(error){alert('Failed to save to cloud. Data saved locally.');}}}
         
-        async function saveQuickAddList(){localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isFirebaseConfigured){try{await database.ref('quickAddList').set(quickAddList);}catch(error){console.error('Failed to save quick list to cloud.');}}}
+        async function saveQuickAddList(){
+            console.log('Saving quick list:', quickAddList);
+            localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
+            if(isFirebaseConfigured){
+                try{
+                    await database.ref('quickAddList').set(quickAddList);
+                    console.log('Quick list saved to Firebase successfully');
+                    // Verify save
+                    const verifySnapshot = await database.ref('quickAddList').once('value');
+                    console.log('Verified data in Firebase:', verifySnapshot.val());
+                }catch(error){
+                    console.error('Failed to save quick list to cloud:', error);
+                }
+            }
+        }
         
         function checkAdminStatus(){const sidebar=document.getElementById('sidebar');const mainContent=document.getElementById('mainContent');const adminToggle=document.getElementById('adminToggle');const wordsColumns=document.querySelectorAll('.words-column');const adminModeElements=document.querySelectorAll('.admin-mode');const searchResultsColumn=document.getElementById('searchResultsColumn');if(isAdmin){sidebar.style.display='block';mainContent.classList.remove('full-width');adminToggle.textContent='🔓';wordsColumns.forEach(col=>{if(col.id!=='searchResultsColumn'){col.style.display='none';}});adminModeElements.forEach(el=>el.style.display='block');searchResultsColumn.style.display='none';}else{sidebar.style.display='none';mainContent.classList.add('full-width');adminToggle.textContent='🔒';wordsColumns.forEach(col=>{if(col.id!=='searchResultsColumn'){col.style.display='block';}});adminModeElements.forEach(el=>el.style.display='none');searchResultsColumn.style.display='none';displayRandomWord();}}
         
