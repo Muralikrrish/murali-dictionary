@@ -362,19 +362,17 @@
                 <button class="btn" onclick="showNewRandomWord()" style="margin-top: 20px;">Show Another Word</button>
             </div>
             <div class="sidebar admin-mode" id="sidebar">
-                <div class="quick-add-section">
-                    <h2 class="section-title">Quick Add Words</h2>
-                    <div class="form-group">
-                        <label for="quickAddInput">Add Word to List</label>
-                        <div class="quick-add-input-container">
-                            <input type="text" id="quickAddInput" placeholder="Type a word and press Enter" oninput="checkQuickAddWord()">
-                            <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
-                            <div id="quickAddSuccess" class="quick-add-success">✓ Word added to quick list</div>
-                        </div>
+                <h2 class="section-title">Quick Add Words</h2>
+                <div class="form-group">
+                    <label for="quickAddInput">Add Word to List</label>
+                    <div class="quick-add-input-container">
+                        <input type="text" id="quickAddInput" placeholder="Type a word and press Enter" oninput="checkQuickAddWord()">
+                        <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
+                        <div id="quickAddSuccess" class="quick-add-success">✓ Word added to quick list</div>
                     </div>
-                    <div class="quick-add-list" id="quickAddList">
-                        <div class="quick-add-empty">No words in quick add list yet. Start typing above!</div>
-                    </div>
+                </div>
+                <div class="quick-add-list" id="quickAddList">
+                    <div class="quick-add-empty">No words in quick add list yet. Start typing above!</div>
                 </div>
                 
                 <h2 class="section-title" style="margin-top: 40px;">Add New Word</h2>
