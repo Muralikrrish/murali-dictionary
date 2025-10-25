@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Murali's English Dictionary</title>
     <style>
+        
+        async function loadDictionary(){if(isFirebaseConfigured){try{const snapshot=await database.ref('dictionary').once('value');const data=snapshot.val();dictionary=data?Object.values(data):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));}catch(error){dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}isLoading=false;if(isAdmin){displayWords();}else{displayRandomWord();}}
+        
         async function saveDictionary(){localStorage.setItem('dictionary',JSON.stringify(dictionary));if(isFirebaseConfigured){try{const updates={};dictionary.forEach(word=>{updates[word.id]=word;});await database.ref('dictionary').set(updates);}catch(error){alert('Failed to save to cloud. Data saved locally.');}}}
         
         function checkAdminStatus(){const sidebar=document.getElementById('sidebar');const mainContent=document.getElementById('mainContent');const adminToggle=document.getElementById('adminToggle');const wordsColumns=document.querySelectorAll('.words-column');const adminModeElements=document.querySelectorAll('.admin-mode');const searchResultsColumn=document.getElementById('searchResultsColumn');if(isAdmin){sidebar.style.display='block';mainContent.classList.remove('full-width');adminToggle.textContent='🔓';wordsColumns.forEach(col=>{if(col.id!=='searchResultsColumn'){col.style.display='none';}});adminModeElements.forEach(el=>el.style.display='block');searchResultsColumn.style.display='none';}else{sidebar.style.display='none';mainContent.classList.add('full-width');adminToggle.textContent='🔒';wordsColumns.forEach(col=>{if(col.id!=='searchResultsColumn'){col.style.display='block';}});adminModeElements.forEach(el=>el.style.display='none');searchResultsColumn.style.display='none';displayRandomWord();}}
@@ -13,7 +16,7 @@
         
         function hidePasswordModal(){document.getElementById('passwordModal').classList.remove('show');document.getElementById('passwordInput').value='';}
         
-        function checkPassword(){const password=document.getElementById('passwordInput').value;if(password===ADMIN_PASSWORD){isAdmin=true;sessionStorage.setItem('isAdmin','true');hidePasswordModal();checkAdminStatus();displayWords();}else{alert('Incorrect password!');document.getElementById('passwordInput').value='';document.getElementById('passwordInput').focus();}}
+        function checkPassword(){const password=document.getElementById('passwordInput').value;if(password===ADMIN_PASSWORD){isAdmin=true;sessionStorage.setItem('isAdmin','true');hidePasswordModal();checkAdminStatus();displayWords();loadQuickAddList();}else{alert('Incorrect password!');document.getElementById('passwordInput').value='';document.getElementById('passwordInput').focus();}}
         
         document.getElementById('addWordForm').addEventListener('submit',async function(e){e.preventDefault();const word=document.getElementById('wordInput').value.trim();const definitionEditor=document.getElementById('definitionInput');const definition=definitionEditor.innerHTML.trim();if(!definition||definition==='<br>'){alert('Please enter a definition');return;}const existingIndex=dictionary.findIndex(item=>item.word.toLowerCase()===word.toLowerCase());if(existingIndex!==-1){if(confirm(`"${word}" already exists. Update it?`)){dictionary[existingIndex].definition=definition;dictionary[existingIndex].dateModified=new Date().toISOString();await saveDictionary();displayWords();document.getElementById('wordInput').value='';definitionEditor.innerHTML='';}}else{dictionary.push({id:Date.now(),word:word,definition:definition,dateAdded:new Date().toISOString()});await saveDictionary();displayWords();document.getElementById('wordInput').value='';definitionEditor.innerHTML='';}});
         
@@ -152,28 +155,7 @@
         async function importData(event){const file=event.target.files[0];if(file){const reader=new FileReader();reader.onload=async function(e){try{const imported=JSON.parse(e.target.result);if(Array.isArray(imported)){if(confirm(`Import ${imported.length} words? This will merge with existing entries.`)){imported.forEach(word=>{const exists=dictionary.find(w=>w.word.toLowerCase()===word.word.toLowerCase());if(!exists){dictionary.push(word);}});await saveDictionary();displayWords();alert('Import successful!');}}else{alert('Invalid file format');}}catch(error){alert('Error reading file');}};reader.readAsText(file);}event.target.value='';}
     </script>
 </body>
-</html>
-        async function loadDictionary(){
-            if(isFirebaseConfigured){
-                try{
-                    const snapshot=await database.ref('dictionary').once('value');
-                    const data=snapshot.val();
-                    dictionary=data?Object.values(data):[];
-                    localStorage.setItem('dictionary',JSON.stringify(dictionary));
-                }catch(error){
-                    dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];
-                }
-            }else{
-                dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];
-            }
-            isLoading=false;
-            if(isAdmin){
-                displayWords();
-                loadQuickAddList();
-            }else{
-                displayRandomWord();
-            }
-        }* { margin: 0; padding: 0; box-sizing: border-box; font-family: Georgia, 'Times New Roman', Times, serif; }
+</html>* { margin: 0; padding: 0; box-sizing: border-box; font-family: Georgia, 'Times New Roman', Times, serif; }
         body { background: #1a1a1a; color: #e8e8e8; line-height: 1.6; }
         .hero-section { background: linear-gradient(135deg, #242424 0%, #1f1f1f 100%); padding: 40px 30px; text-align: center; color: #e8e8e8; }
         .hero-title { font-size: 48px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
@@ -264,9 +246,6 @@
         #editSearchResults::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
         #editSearchResults::-webkit-scrollbar-thumb:hover { background: #d89057; }
         .no-results { text-align: center; padding: 20px; color: #666; font-size: 14px; }
-        
-        .quick-add-section { margin-top: 40px; padding-top: 30px; border-top: 2px solid #3d3d3d; }
-        .quick-add-input-container { position: relative; margin-bottom: 15px; }
         .quick-add-warning { color: #f39c12; font-size: 13px; margin-top: 5px; display: none; }
         .quick-add-success { color: #28a745; font-size: 13px; margin-top: 5px; display: none; }
         .quick-add-list { margin-top: 20px; max-height: 500px; overflow-y: auto; border: 1px solid #3d3d3d; border-radius: 6px; padding: 10px; background: #1a1a1a; }
@@ -281,7 +260,6 @@
         .quick-add-remove { background: transparent; border: none; color: #d9534f; cursor: pointer; font-size: 18px; padding: 0 8px; transition: all 0.2s; }
         .quick-add-remove:hover { color: #ff6b6b; transform: scale(1.2); }
         .quick-add-empty { text-align: center; padding: 30px; color: #666; font-size: 14px; }
-        
         @media (max-width: 968px) { 
             .hero-title { font-size: 36px; } 
             .hero-subtitle { font-size: 18px; } 
@@ -365,11 +343,9 @@
                 <h2 class="section-title">Quick Add Words</h2>
                 <div class="form-group">
                     <label for="quickAddInput">Add Word to List</label>
-                    <div class="quick-add-input-container">
-                        <input type="text" id="quickAddInput" placeholder="Type a word and press Enter" oninput="checkQuickAddWord()">
-                        <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
-                        <div id="quickAddSuccess" class="quick-add-success">✓ Word added to quick list</div>
-                    </div>
+                    <input type="text" id="quickAddInput" placeholder="Type a word and press Enter">
+                    <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
+                    <div id="quickAddSuccess" class="quick-add-success">✓ Word added to quick list</div>
                 </div>
                 <div class="quick-add-list" id="quickAddList">
                     <div class="quick-add-empty">No words in quick add list yet. Start typing above!</div>
@@ -429,28 +405,13 @@
         let selectedAutocompleteIndex = -1;
         let quickAddList = [];
         
-        loadDictionary();checkAdminStatus();
+        loadDictionary();
+        checkAdminStatus();
+        if(isAdmin){loadQuickAddList();}
         
         function formatText(command) { document.execCommand(command, false, null); document.getElementById('definitionInput').focus(); }
         
         function checkExistingWord(){const word=document.getElementById('wordInput').value.trim();const warning=document.getElementById('wordWarning');if(word){const exists=dictionary.find(w=>w.word.toLowerCase()===word.toLowerCase());if(exists){warning.style.display='block';}else{warning.style.display='none';}}else{warning.style.display='none';}}
-        
-        function checkQuickAddWord() {
-            const input = document.getElementById('quickAddInput');
-            const word = input.value.trim();
-            const warning = document.getElementById('quickAddWarning');
-            const success = document.getElementById('quickAddSuccess');
-            
-            warning.style.display = 'none';
-            success.style.display = 'none';
-            
-            if (word) {
-                const exists = dictionary.find(w => w.word.toLowerCase() === word.toLowerCase());
-                if (exists) {
-                    warning.style.display = 'block';
-                }
-            }
-        }
         
         async function loadQuickAddList() {
             if (isFirebaseConfigured) {
@@ -458,18 +419,14 @@
                     const snapshot = await database.ref('quickAddList').once('value');
                     const data = snapshot.val();
                     quickAddList = data ? Object.values(data) : [];
-                    localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
                 } catch (error) {
-                    quickAddList = JSON.parse(localStorage.getItem('quickAddList')) || [];
+                    console.error('Error loading quick add list:', error);
                 }
-            } else {
-                quickAddList = JSON.parse(localStorage.getItem('quickAddList')) || [];
             }
             displayQuickAddList();
         }
         
         async function saveQuickAddList() {
-            localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
             if (isFirebaseConfigured) {
                 try {
                     const updates = {};
@@ -478,7 +435,7 @@
                     });
                     await database.ref('quickAddList').set(updates);
                 } catch (error) {
-                    console.error('Failed to save quick add list to cloud:', error);
+                    console.error('Failed to save quick add list:', error);
                 }
             }
         }
@@ -543,6 +500,22 @@
             const days = Math.floor(hours / 24);
             return `${days}d ago`;
         }
+        
+        document.getElementById('quickAddInput').addEventListener('input', function() {
+            const word = this.value.trim();
+            const warning = document.getElementById('quickAddWarning');
+            const success = document.getElementById('quickAddSuccess');
+            
+            warning.style.display = 'none';
+            success.style.display = 'none';
+            
+            if (word) {
+                const exists = dictionary.find(w => w.word.toLowerCase() === word.toLowerCase());
+                if (exists) {
+                    warning.style.display = 'block';
+                }
+            }
+        });
         
         document.getElementById('quickAddInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
