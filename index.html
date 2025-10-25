@@ -268,6 +268,10 @@
                         <div id="definitionInput" class="editor-content" contenteditable="true" placeholder="Enter definition with formatting..."></div>
                     </div>
                     <button type="submit" class="btn">Add to Dictionary</button>
+                    <div id="editButtons" style="display: none;">
+                        <button type="button" class="btn" onclick="applyEdit()">Apply Edit</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Nothing to Edit</button>
+                    </div>
                 </form>
                 <h2 class="section-title" style="margin-top: 40px;">Quick Add <span id="quickAddCount" style="font-size: 16px; opacity: 0.7; font-weight: 400;">(0)</span></h2>
                 <div class="form-group">
@@ -351,6 +355,7 @@
         let dictionary = [], isAdmin = sessionStorage.getItem('isAdmin') === 'true', ADMIN_PASSWORD = '7412', isLoading = true;
         let selectedAutocompleteIndex = -1;
         let quickAddList = [];
+        let editingWordId = null; // Track if we're editing an existing word
         
         loadDictionary();
         checkAdminStatus();
@@ -721,6 +726,12 @@
         
         document.getElementById('addWordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // Only allow submit if we're adding a new word (not editing)
+            if (editingWordId !== null) {
+                return;
+            }
+            
             const word = document.getElementById('wordInput').value.trim();
             const definitionEditor = document.getElementById('definitionInput');
             const definition = definitionEditor.innerHTML.trim();
@@ -754,6 +765,82 @@
                 definitionEditor.innerHTML = '';
             }
         });
+        
+        async function applyEdit() {
+            if (editingWordId === null) {
+                alert('No word is being edited');
+                return;
+            }
+            
+            const word = document.getElementById('wordInput').value.trim();
+            const definitionEditor = document.getElementById('definitionInput');
+            const definition = definitionEditor.innerHTML.trim();
+            
+            if (!definition || definition === '<br>') {
+                alert('Please enter a definition');
+                return;
+            }
+            
+            // Add the edited word back to dictionary
+            dictionary.push({
+                id: editingWordId,
+                word: word,
+                definition: definition,
+                dateModified: new Date().toISOString()
+            });
+            
+            await saveDictionary();
+            displayWords();
+            
+            // Clear form and reset editing state
+            document.getElementById('wordInput').value = '';
+            definitionEditor.innerHTML = '';
+            editingWordId = null;
+            toggleEditMode(false);
+        }
+        
+        async function cancelEdit() {
+            if (editingWordId === null) {
+                alert('No word is being edited');
+                return;
+            }
+            
+            const word = document.getElementById('wordInput').value.trim();
+            const definitionEditor = document.getElementById('definitionInput');
+            const definition = definitionEditor.innerHTML.trim();
+            
+            // Add the word back unchanged
+            const originalWord = {
+                id: editingWordId,
+                word: word,
+                definition: definition,
+                dateAdded: new Date().toISOString()
+            };
+            
+            dictionary.push(originalWord);
+            
+            await saveDictionary();
+            displayWords();
+            
+            // Clear form and reset editing state
+            document.getElementById('wordInput').value = '';
+            definitionEditor.innerHTML = '';
+            editingWordId = null;
+            toggleEditMode(false);
+        }
+        
+        function toggleEditMode(isEditing) {
+            const addButton = document.querySelector('#addWordForm button[type="submit"]');
+            const editButtons = document.getElementById('editButtons');
+            
+            if (isEditing) {
+                addButton.style.display = 'none';
+                editButtons.style.display = 'block';
+            } else {
+                addButton.style.display = 'block';
+                editButtons.style.display = 'none';
+            }
+        }
         
         function showAutocomplete(searchTerm) {
             const dropdown = document.getElementById('autocompleteDropdown');
