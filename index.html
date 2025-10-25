@@ -108,6 +108,11 @@
         .quick-add-remove:hover { background: #c9302c; }
         .quick-add-warning { color: #f39c12; font-size: 13px; margin-top: 5px; display: none; }
         .quick-add-empty { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+        .quick-add-controls { display: flex; gap: 10px; margin-top: 10px; }
+        .quick-add-btn { background: #c87941; color: #1a1a1a; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; flex: 1; }
+        .quick-add-btn:hover { background: #d89057; }
+        .quick-add-refresh { background: #242424; color: #c87941; border: 2px solid #c87941; }
+        .quick-add-refresh:hover { background: #3d3d3d; }
         #quickAddSearchResults { max-height: 300px; overflow-y: auto; margin-top: 10px; }
         #quickAddSearchResults::-webkit-scrollbar { width: 8px; }
         #quickAddSearchResults::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
@@ -230,8 +235,12 @@
                 <h2 class="section-title" style="margin-top: 40px;">Quick Add</h2>
                 <div class="form-group">
                     <label for="quickAddSearch">Search Word</label>
-                    <input type="text" id="quickAddSearch" placeholder="Type a word to search..." oninput="searchWordsForQuickAdd()" onkeypress="if(event.key==='Enter') addToQuickList()">
+                    <input type="text" id="quickAddSearch" placeholder="Type a word to search..." oninput="searchWordsForQuickAdd()" onkeypress="if(event.key==='Enter'){event.preventDefault();addToQuickList();}">
                     <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
+                </div>
+                <div class="quick-add-controls">
+                    <button class="quick-add-btn" onclick="addToQuickList()">Add to List</button>
+                    <button class="quick-add-btn quick-add-refresh" onclick="refreshQuickList()">Refresh List</button>
                 </div>
                 <div id="quickAddSearchResults"></div>
                 <div id="quickAddList">
@@ -370,6 +379,31 @@
         function selectQuickAddWord(word){
             document.getElementById('quickAddSearch').value=word;
             document.getElementById('quickAddSearchResults').innerHTML='';
+        }
+        
+        async function refreshQuickList(){
+            if(isFirebaseConfigured){
+                try{
+                    const quickListSnapshot=await database.ref('quickAddList').once('value');
+                    const quickListData=quickListSnapshot.val();
+                    console.log('Manual refresh - Quick list from Firebase:', quickListData);
+                    if(quickListData && Array.isArray(quickListData)){
+                        quickAddList=quickListData;
+                    }else if(quickListData && typeof quickListData === 'object'){
+                        quickAddList=Object.values(quickListData);
+                    }else{
+                        quickAddList=[];
+                    }
+                    localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
+                    displayQuickAddList();
+                    alert('Quick list refreshed! Found ' + quickAddList.length + ' word(s)');
+                }catch(error){
+                    console.error('Refresh error:', error);
+                    alert('Failed to refresh. Error: ' + error.message);
+                }
+            }else{
+                alert('Firebase not connected');
+            }
         }
         
         async function loadDictionary(){
