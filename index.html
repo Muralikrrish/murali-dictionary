@@ -327,7 +327,6 @@
             database = firebase.database();
             isFirebaseConfigured = true;
             
-            // Listen for real-time updates to quick list
             database.ref('quickAddList').on('value', (snapshot) => {
                 const data = snapshot.val();
                 console.log('Real-time update received for quick list:', data);
@@ -444,7 +443,6 @@
                 return;
             }
             
-            // Add to beginning of array instead of end
             quickAddList.unshift(word);
             input.value = '';
             warning.style.display = 'none';
@@ -457,7 +455,6 @@
             const container = document.getElementById('quickAddList');
             const countElement = document.getElementById('quickAddCount');
             
-            // Update count display
             countElement.textContent = `(${quickAddList.length})`;
             
             if (quickAddList.length === 0) {
@@ -465,7 +462,6 @@
                 return;
             }
             
-            // Display in order (most recent first since we use unshift)
             container.innerHTML = quickAddList.map((word, index) => `
                 <div class="quick-add-item">
                     <span class="quick-add-word">${word}</span>
@@ -804,10 +800,8 @@
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
             
-            // Clear previous timeout
             clearTimeout(searchTimeout);
             
-            // Debounce the search operations with longer delay
             searchTimeout = setTimeout(() => {
                 showAutocomplete(e.target.value);
                 
@@ -907,7 +901,6 @@
             const wordsList = document.getElementById('wordsList');
             const countElement = document.getElementById('dictionaryCount');
             
-            // Update dictionary count
             if (countElement) {
                 countElement.textContent = `(${dictionary.length})`;
             }
@@ -972,7 +965,7 @@
         }
         
         function searchDefinitions() {
-            const searchTerm = document.getElementById('definitionSearchInput').value.trim();
+            const searchTerm = document.getElementById('definitionSearchInput').value.toLowerCase().trim();
             const resultsContainer = document.getElementById('definitionSearchResults');
             
             if (!searchTerm) {
@@ -981,38 +974,8 @@
             }
             
             const matches = dictionary.filter(item => {
-                const defText = item.definition.replace(/<[^>]*>/g, ' '); // Replace tags with space to preserve word boundaries
-                
-                // Check if search term has spaces at beginning or end
-                const hasLeadingSpace = searchTerm.startsWith(' ');
-                const hasTrailingSpace = searchTerm.endsWith(' ');
-                
-                if (hasLeadingSpace && hasTrailingSpace) {
-                    // Both spaces: look for word boundaries on both sides
-                    const term = searchTerm.trim();
-                    const regex = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\        function searchDefinitions() {
-            const searchTerm = document.getElementById('definitionSearchInput').value.trim();
-            const resultsContainer = document.getElementById('definitionSearchResults');
-            
-            if (!searchTerm) {
-                resultsContainer.innerHTML = '';
-                return;
-            }
-            
-            const matches = dictionary.filter(item => {
-                const defText = item.definition.replace(/<[^>]*>/g, '');
-                
-                // Check if search term has spaces at beginning or end
-                const hasLeadingSpace = searchTerm.startsWith(' ');
-                const hasTrailingSpace = searchTerm.endsWith(' ');
-                
-                if (hasLeadingSpace || hasTrailingSpace) {
-                    // Space-sensitive search: look for exact match with spaces
-                    return defText.includes(searchTerm);
-                } else {
-                    // Regular case-insensitive search
-                    return defText.toLowerCase().includes(searchTerm.toLowerCase());
-                }
+                const defText = item.definition.replace(/<[^>]*>/g, '').toLowerCase();
+                return defText.includes(searchTerm);
             }).sort((a, b) => a.word.localeCompare(b.word));
             
             if (matches.length === 0) {
@@ -1021,145 +984,8 @@
                 resultsContainer.innerHTML = matches.map(item => {
                     const defText = item.definition.replace(/<[^>]*>/g, '');
                     const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
-                    return `<div class="definition-result-item" onclick="editWordAndHighlight(${item.id}, '${searchTerm.replace(/'/g, "\\'")}')"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
+                    return `<div class="definition-result-item" onclick="editWord(${item.id})"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
                 }).join('');
-            }
-        }')}\\b`, 'i');
-                    return regex.test(defText);
-                } else if (hasLeadingSpace) {
-                    // Leading space only: word boundary at start
-                    const term = searchTerm.trimEnd();
-                    const regex = new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\        function searchDefinitions() {
-            const searchTerm = document.getElementById('definitionSearchInput').value.trim();
-            const resultsContainer = document.getElementById('definitionSearchResults');
-            
-            if (!searchTerm) {
-                resultsContainer.innerHTML = '';
-                return;
-            }
-            
-            const matches = dictionary.filter(item => {
-                const defText = item.definition.replace(/<[^>]*>/g, '');
-                
-                // Check if search term has spaces at beginning or end
-                const hasLeadingSpace = searchTerm.startsWith(' ');
-                const hasTrailingSpace = searchTerm.endsWith(' ');
-                
-                if (hasLeadingSpace || hasTrailingSpace) {
-                    // Space-sensitive search: look for exact match with spaces
-                    return defText.includes(searchTerm);
-                } else {
-                    // Regular case-insensitive search
-                    return defText.toLowerCase().includes(searchTerm.toLowerCase());
-                }
-            }).sort((a, b) => a.word.localeCompare(b.word));
-            
-            if (matches.length === 0) {
-                resultsContainer.innerHTML = '<div class="no-results">No matching definitions found</div>';
-            } else {
-                resultsContainer.innerHTML = matches.map(item => {
-                    const defText = item.definition.replace(/<[^>]*>/g, '');
-                    const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
-                    return `<div class="definition-result-item" onclick="editWordAndHighlight(${item.id}, '${searchTerm.replace(/'/g, "\\'")}')"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
-                }).join('');
-            }
-        }')}`, 'i');
-                    return regex.test(defText);
-                } else if (hasTrailingSpace) {
-                    // Trailing space only: word boundary at end
-                    const term = searchTerm.trimStart();
-                    const regex = new RegExp(`${term.replace(/[.*+?^${}()|[\]\\]/g, '\\        function searchDefinitions() {
-            const searchTerm = document.getElementById('definitionSearchInput').value.trim();
-            const resultsContainer = document.getElementById('definitionSearchResults');
-            
-            if (!searchTerm) {
-                resultsContainer.innerHTML = '';
-                return;
-            }
-            
-            const matches = dictionary.filter(item => {
-                const defText = item.definition.replace(/<[^>]*>/g, '');
-                
-                // Check if search term has spaces at beginning or end
-                const hasLeadingSpace = searchTerm.startsWith(' ');
-                const hasTrailingSpace = searchTerm.endsWith(' ');
-                
-                if (hasLeadingSpace || hasTrailingSpace) {
-                    // Space-sensitive search: look for exact match with spaces
-                    return defText.includes(searchTerm);
-                } else {
-                    // Regular case-insensitive search
-                    return defText.toLowerCase().includes(searchTerm.toLowerCase());
-                }
-            }).sort((a, b) => a.word.localeCompare(b.word));
-            
-            if (matches.length === 0) {
-                resultsContainer.innerHTML = '<div class="no-results">No matching definitions found</div>';
-            } else {
-                resultsContainer.innerHTML = matches.map(item => {
-                    const defText = item.definition.replace(/<[^>]*>/g, '');
-                    const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
-                    return `<div class="definition-result-item" onclick="editWordAndHighlight(${item.id}, '${searchTerm.replace(/'/g, "\\'")}')"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
-                }).join('');
-            }
-        }')}\\b`, 'i');
-                    return regex.test(defText);
-                } else {
-                    // No spaces: regular case-insensitive search
-                    return defText.toLowerCase().includes(searchTerm.toLowerCase());
-                }
-            }).sort((a, b) => a.word.localeCompare(b.word));
-            
-            if (matches.length === 0) {
-                resultsContainer.innerHTML = '<div class="no-results">No matching definitions found</div>';
-            } else {
-                resultsContainer.innerHTML = matches.map(item => {
-                    const defText = item.definition.replace(/<[^>]*>/g, '');
-                    const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
-                    return `<div class="definition-result-item" onclick="editWordAndHighlight(${item.id}, '${searchTerm.replace(/'/g, "\\'")}')"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
-                }).join('');
-            }
-        }
-        
-        async function editWordAndHighlight(id, searchTerm) {
-            const item = dictionary.find(w => w.id === id);
-            if (item) {
-                document.getElementById('wordInput').value = item.word;
-                const definitionInput = document.getElementById('definitionInput');
-                definitionInput.innerHTML = item.definition;
-                
-                dictionary = dictionary.filter(w => w.id !== id);
-                await saveDictionary();
-                displayWords();
-                document.getElementById('definitionSearchInput').value = '';
-                document.getElementById('definitionSearchResults').innerHTML = '';
-                
-                // Scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                // Highlight the search term after a short delay
-                setTimeout(() => {
-                    highlightTextInEditor(searchTerm);
-                }, 500);
-            }
-        }
-        
-        function highlightTextInEditor(searchTerm) {
-            const definitionInput = document.getElementById('definitionInput');
-            const content = definitionInput.innerHTML;
-            
-            // Create a case-insensitive regex to find the search term
-            const regex = new RegExp(`(${searchTerm})`, 'gi');
-            
-            // Replace all occurrences with highlighted version
-            const highlightedContent = content.replace(regex, '<mark style="background-color: #c87941; color: #1a1a1a; padding: 2px 4px; border-radius: 3px;">$1</mark>');
-            
-            definitionInput.innerHTML = highlightedContent;
-            
-            // Find and scroll to the first highlighted term
-            const firstMark = definitionInput.querySelector('mark');
-            if (firstMark) {
-                firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
         
