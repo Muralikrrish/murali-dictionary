@@ -108,6 +108,15 @@
         .quick-add-remove:hover { background: #c9302c; }
         .quick-add-warning { color: #f39c12; font-size: 13px; margin-top: 5px; display: none; }
         .quick-add-empty { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+        #quickAddSearchResults { max-height: 300px; overflow-y: auto; margin-top: 10px; }
+        #quickAddSearchResults::-webkit-scrollbar { width: 8px; }
+        #quickAddSearchResults::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
+        #quickAddSearchResults::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
+        #quickAddSearchResults::-webkit-scrollbar-thumb:hover { background: #d89057; }
+        .quick-add-result-item { background: #1f1f1f; padding: 15px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #3d3d3d; cursor: pointer; transition: all 0.3s; }
+        .quick-add-result-item:hover { background: #242424; border-color: #c87941; box-shadow: 0 2px 8px rgba(200, 121, 65, 0.2); }
+        .quick-add-result-word { font-weight: 700; color: #e8e8e8; margin-bottom: 5px; font-size: 16px; }
+        .quick-add-result-definition { font-size: 14px; color: #999; line-height: 1.5; }
         @media (max-width: 968px) { 
             .hero-title { font-size: 36px; } 
             .hero-subtitle { font-size: 18px; } 
@@ -213,9 +222,10 @@
                 <h2 class="section-title" style="margin-top: 40px;">Quick Add</h2>
                 <div class="form-group">
                     <label for="quickAddSearch">Search Word</label>
-                    <input type="text" id="quickAddSearch" placeholder="Type a word to search..." onkeypress="if(event.key==='Enter') addToQuickList()">
+                    <input type="text" id="quickAddSearch" placeholder="Type a word to search..." oninput="searchWordsForQuickAdd()" onkeypress="if(event.key==='Enter') addToQuickList()">
                     <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
                 </div>
+                <div id="quickAddSearchResults"></div>
                 <div id="quickAddList">
                     <div class="quick-add-empty">No words in quick list yet</div>
                 </div>
@@ -306,6 +316,42 @@
         function removeFromQuickList(index){
             quickAddList.splice(index,1);
             displayQuickAddList();
+        }
+        
+        function searchWordsForQuickAdd(){
+            const searchTerm=document.getElementById('quickAddSearch').value.toLowerCase().trim();
+            const resultsContainer=document.getElementById('quickAddSearchResults');
+            const warning=document.getElementById('quickAddWarning');
+            
+            if(!searchTerm){
+                resultsContainer.innerHTML='';
+                warning.style.display='none';
+                return;
+            }
+            
+            const matches=dictionary.filter(item=>{
+                const wordMatch=item.word.toLowerCase().includes(searchTerm);
+                const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();
+                return wordMatch||defText.includes(searchTerm);
+            }).sort((a,b)=>a.word.localeCompare(b.word));
+            
+            if(matches.length===0){
+                resultsContainer.innerHTML='<div class="no-results">No matching words found in dictionary</div>';
+                warning.style.display='none';
+            }else{
+                resultsContainer.innerHTML=matches.map(item=>{
+                    const defText=item.definition.replace(/<[^>]*>/g,'');
+                    const preview=defText.length>100?defText.substring(0,100)+'...':defText;
+                    return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${item.word.replace(/'/g, "\\'")}')"><div class="quick-add-result-word">${item.word}</div><div class="quick-add-result-definition">${preview}</div></div>`;
+                }).join('');
+                warning.textContent='⚠️ These words already exist in the dictionary';
+                warning.style.display='block';
+            }
+        }
+        
+        function selectQuickAddWord(word){
+            document.getElementById('quickAddSearch').value=word;
+            document.getElementById('quickAddSearchResults').innerHTML='';
         }
         
         async function loadDictionary(){if(isFirebaseConfigured){try{const snapshot=await database.ref('dictionary').once('value');const data=snapshot.val();dictionary=data?Object.values(data):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));}catch(error){dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}isLoading=false;if(isAdmin){displayWords();}else{displayRandomWord();}}
