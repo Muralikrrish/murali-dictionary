@@ -807,7 +807,7 @@
             // Clear previous timeout
             clearTimeout(searchTimeout);
             
-            // Debounce the search operations
+            // Debounce the search operations with longer delay
             searchTimeout = setTimeout(() => {
                 showAutocomplete(e.target.value);
                 
@@ -818,7 +818,7 @@
                 } else if (!isAdmin) {
                     document.getElementById('searchResultsColumn').style.display = 'none';
                 }
-            }, 150);
+            }, 300);
         });
         
         document.getElementById('searchInput').addEventListener('keydown', function(e) {
