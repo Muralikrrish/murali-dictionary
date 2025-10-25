@@ -352,8 +352,6 @@
             const definitionInput = document.getElementById('definitionInput');
             
             if (tag === '') {
-                // For "Normal", we need to properly convert heading back to paragraph
-                // Use 'div' first, then immediately convert to 'p'
                 document.execCommand('formatBlock', false, 'div');
                 document.execCommand('formatBlock', false, 'p');
             } else {
@@ -361,7 +359,6 @@
             }
             
             definitionInput.focus();
-            // Update dropdown to reflect current formatting after a short delay
             setTimeout(updateFormatDropdown, 50);
         }
         
@@ -372,7 +369,6 @@
             const currentNode = selection.anchorNode;
             const parentElement = currentNode.nodeType === 3 ? currentNode.parentNode : currentNode;
             
-            // Find the block-level element
             let blockElement = parentElement;
             while (blockElement && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'DIV'].includes(blockElement.tagName)) {
                 blockElement = blockElement.parentElement;
@@ -389,7 +385,6 @@
             }
         }
         
-        // Update dropdown when user selects text or moves cursor
         document.addEventListener('DOMContentLoaded', function() {
             const definitionInput = document.getElementById('definitionInput');
             definitionInput.addEventListener('mouseup', updateFormatDropdown);
@@ -436,7 +431,8 @@
                 return;
             }
             
-            quickAddList.push(word);
+            // Add to beginning of array instead of end
+            quickAddList.unshift(word);
             input.value = '';
             warning.style.display = 'none';
             document.getElementById('quickAddSearchResults').innerHTML = '';
@@ -452,6 +448,7 @@
                 return;
             }
             
+            // Display in order (most recent first since we use unshift)
             container.innerHTML = quickAddList.map((word, index) => `
                 <div class="quick-add-item">
                     <span class="quick-add-word">${word}</span>
@@ -593,13 +590,11 @@
             localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
             if (isFirebaseConfigured) {
                 try {
-                    // Temporarily turn off the listener to avoid recursive updates
                     database.ref('quickAddList').off('value');
                     
                     await database.ref('quickAddList').set(quickAddList);
                     console.log('Quick list saved to Firebase successfully');
                     
-                    // Re-enable the listener after a short delay
                     setTimeout(() => {
                         database.ref('quickAddList').on('value', (snapshot) => {
                             const data = snapshot.val();
@@ -619,8 +614,6 @@
                     }, 500);
                 } catch (error) {
                     console.error('Failed to save quick list to cloud:', error);
-                    // Don't show alert, just log the error
-                    // Re-enable listener even on error
                     database.ref('quickAddList').on('value', (snapshot) => {
                         const data = snapshot.val();
                         console.log('Real-time update received for quick list:', data);
