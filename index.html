@@ -983,8 +983,50 @@
                 resultsContainer.innerHTML = matches.map(item => {
                     const defText = item.definition.replace(/<[^>]*>/g, '');
                     const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
-                    return `<div class="definition-result-item" onclick="editWord(${item.id})"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
+                    return `<div class="definition-result-item" onclick="editWordAndHighlight(${item.id}, '${searchTerm.replace(/'/g, "\\'")}')"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
                 }).join('');
+            }
+        }
+        
+        async function editWordAndHighlight(id, searchTerm) {
+            const item = dictionary.find(w => w.id === id);
+            if (item) {
+                document.getElementById('wordInput').value = item.word;
+                const definitionInput = document.getElementById('definitionInput');
+                definitionInput.innerHTML = item.definition;
+                
+                dictionary = dictionary.filter(w => w.id !== id);
+                await saveDictionary();
+                displayWords();
+                document.getElementById('definitionSearchInput').value = '';
+                document.getElementById('definitionSearchResults').innerHTML = '';
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Highlight the search term after a short delay
+                setTimeout(() => {
+                    highlightTextInEditor(searchTerm);
+                }, 500);
+            }
+        }
+        
+        function highlightTextInEditor(searchTerm) {
+            const definitionInput = document.getElementById('definitionInput');
+            const content = definitionInput.innerHTML;
+            
+            // Create a case-insensitive regex to find the search term
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            
+            // Replace all occurrences with highlighted version
+            const highlightedContent = content.replace(regex, '<mark style="background-color: #c87941; color: #1a1a1a; padding: 2px 4px; border-radius: 3px;">$1</mark>');
+            
+            definitionInput.innerHTML = highlightedContent;
+            
+            // Find and scroll to the first highlighted term
+            const firstMark = definitionInput.querySelector('mark');
+            if (firstMark) {
+                firstMark.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
         
