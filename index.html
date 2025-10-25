@@ -96,6 +96,18 @@
         #editSearchResults::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
         #editSearchResults::-webkit-scrollbar-thumb:hover { background: #d89057; }
         .no-results { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+        #quickAddList { max-height: 300px; overflow-y: auto; margin-top: 15px; background: #1a1a1a; border: 1px solid #3d3d3d; border-radius: 6px; padding: 10px; }
+        #quickAddList::-webkit-scrollbar { width: 8px; }
+        #quickAddList::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
+        #quickAddList::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
+        #quickAddList::-webkit-scrollbar-thumb:hover { background: #d89057; }
+        .quick-add-item { background: #242424; padding: 12px 15px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #3d3d3d; display: flex; justify-content: space-between; align-items: center; }
+        .quick-add-item:last-child { margin-bottom: 0; }
+        .quick-add-word { color: #e8e8e8; font-weight: 600; font-size: 15px; }
+        .quick-add-remove { background: #d9534f; color: #1a1a1a; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.3s; }
+        .quick-add-remove:hover { background: #c9302c; }
+        .quick-add-warning { color: #f39c12; font-size: 13px; margin-top: 5px; display: none; }
+        .quick-add-empty { text-align: center; padding: 20px; color: #666; font-size: 14px; }
         @media (max-width: 968px) { 
             .hero-title { font-size: 36px; } 
             .hero-subtitle { font-size: 18px; } 
@@ -201,7 +213,11 @@
                 <h2 class="section-title" style="margin-top: 40px;">Quick Add</h2>
                 <div class="form-group">
                     <label for="quickAddSearch">Search Word</label>
-                    <input type="text" id="quickAddSearch" placeholder="Type a word to search...">
+                    <input type="text" id="quickAddSearch" placeholder="Type a word to search..." onkeypress="if(event.key==='Enter') addToQuickList()">
+                    <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
+                </div>
+                <div id="quickAddList">
+                    <div class="quick-add-empty">No words in quick list yet</div>
                 </div>
                 <h2 class="section-title" style="margin-top: 40px;">Edit Existing Word</h2>
                 <div class="form-group"><label for="editSearchInput">Search Word to Edit</label><input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()"></div>
@@ -233,12 +249,64 @@
         try{firebase.initializeApp(firebaseConfig);database=firebase.database();isFirebaseConfigured=true;}catch(error){console.error("Firebase error:", error);}
         let dictionary=[],isAdmin=sessionStorage.getItem('isAdmin')==='true',ADMIN_PASSWORD='7412',isLoading=true;
         let selectedAutocompleteIndex = -1;
+        let quickAddList = [];
         
         loadDictionary();checkAdminStatus();
         
         function formatText(command) { document.execCommand(command, false, null); document.getElementById('definitionInput').focus(); }
         
         function checkExistingWord(){const word=document.getElementById('wordInput').value.trim();const warning=document.getElementById('wordWarning');if(word){const exists=dictionary.find(w=>w.word.toLowerCase()===word.toLowerCase());if(exists){warning.style.display='block';}else{warning.style.display='none';}}else{warning.style.display='none';}}
+        
+        function addToQuickList(){
+            const input=document.getElementById('quickAddSearch');
+            const word=input.value.trim();
+            const warning=document.getElementById('quickAddWarning');
+            
+            if(!word){
+                return;
+            }
+            
+            const exists=dictionary.find(w=>w.word.toLowerCase()===word.toLowerCase());
+            const alreadyInQuickList=quickAddList.find(w=>w.toLowerCase()===word.toLowerCase());
+            
+            if(exists){
+                warning.textContent='⚠️ This word already exists in the dictionary';
+                warning.style.display='block';
+                return;
+            }
+            
+            if(alreadyInQuickList){
+                warning.textContent='⚠️ This word is already in the quick list';
+                warning.style.display='block';
+                return;
+            }
+            
+            quickAddList.push(word);
+            input.value='';
+            warning.style.display='none';
+            displayQuickAddList();
+        }
+        
+        function displayQuickAddList(){
+            const container=document.getElementById('quickAddList');
+            
+            if(quickAddList.length===0){
+                container.innerHTML='<div class="quick-add-empty">No words in quick list yet</div>';
+                return;
+            }
+            
+            container.innerHTML=quickAddList.map((word,index)=>`
+                <div class="quick-add-item">
+                    <span class="quick-add-word">${word}</span>
+                    <button class="quick-add-remove" onclick="removeFromQuickList(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+        
+        function removeFromQuickList(index){
+            quickAddList.splice(index,1);
+            displayQuickAddList();
+        }
         
         async function loadDictionary(){if(isFirebaseConfigured){try{const snapshot=await database.ref('dictionary').once('value');const data=snapshot.val();dictionary=data?Object.values(data):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));}catch(error){dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];}isLoading=false;if(isAdmin){displayWords();}else{displayRandomWord();}}
         
