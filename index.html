@@ -117,6 +117,15 @@
         #editSearchResults::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
         #editSearchResults::-webkit-scrollbar-thumb:hover { background: #d89057; }
         .no-results { text-align: center; padding: 20px; color: #666; font-size: 14px; }
+        #definitionSearchResults { max-height: 300px; overflow-y: auto; margin-top: 10px; }
+        #definitionSearchResults::-webkit-scrollbar { width: 8px; }
+        #definitionSearchResults::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
+        #definitionSearchResults::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
+        #definitionSearchResults::-webkit-scrollbar-thumb:hover { background: #d89057; }
+        .definition-result-item { background: #1f1f1f; padding: 15px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #3d3d3d; transition: all 0.3s; }
+        .definition-result-item:hover { background: #242424; border-color: #c87941; box-shadow: 0 2px 8px rgba(200, 121, 65, 0.2); }
+        .definition-result-word { font-weight: 700; color: #e8e8e8; margin-bottom: 5px; font-size: 16px; }
+        .definition-result-definition { font-size: 14px; color: #999; line-height: 1.5; }
         #quickAddList { max-height: 300px; overflow-y: auto; margin-top: 15px; background: #1a1a1a; border: 1px solid #3d3d3d; border-radius: 6px; padding: 10px; min-height: 60px; }
         #quickAddList::-webkit-scrollbar { width: 8px; }
         #quickAddList::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
@@ -277,6 +286,9 @@
                 <h2 class="section-title" style="margin-top: 40px;">Edit Existing Word <span id="dictionaryCount" style="font-size: 16px; opacity: 0.7; font-weight: 400;">(0)</span></h2>
                 <div class="form-group"><label for="editSearchInput">Search Word to Edit</label><input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()"></div>
                 <div id="editSearchResults"></div>
+                <h2 class="section-title" style="margin-top: 40px;">Existing Definition</h2>
+                <div class="form-group"><label for="definitionSearchInput">Search for Definition</label><input type="text" id="definitionSearchInput" placeholder="Type to search..." oninput="searchDefinitions()"></div>
+                <div id="definitionSearchResults"></div>
                 <div class="utility-buttons">
                     <button class="btn btn-secondary" onclick="exportData()">Export Dictionary</button>
                     <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Dictionary</button>
@@ -947,6 +959,31 @@
                     const defText = item.definition.replace(/<[^>]*>/g, '');
                     const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
                     return `<div class="edit-result-item" onclick="editWord(${item.id})"><div class="edit-result-word">${item.word}</div><div class="edit-result-definition">${preview}</div></div>`;
+                }).join('');
+            }
+        }
+        
+        function searchDefinitions() {
+            const searchTerm = document.getElementById('definitionSearchInput').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('definitionSearchResults');
+            
+            if (!searchTerm) {
+                resultsContainer.innerHTML = '';
+                return;
+            }
+            
+            const matches = dictionary.filter(item => {
+                const defText = item.definition.replace(/<[^>]*>/g, '').toLowerCase();
+                return defText.includes(searchTerm);
+            }).sort((a, b) => a.word.localeCompare(b.word));
+            
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No matching definitions found</div>';
+            } else {
+                resultsContainer.innerHTML = matches.map(item => {
+                    const defText = item.definition.replace(/<[^>]*>/g, '');
+                    const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
+                    return `<div class="definition-result-item"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
                 }).join('');
             }
         }
