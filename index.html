@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Murali's English Dictionary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Georgia, 'Times New Roman', Times, serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lora', serif; }
         body { background: #1a1a1a; color: #e8e8e8; line-height: 1.6; }
         .hero-section { background: linear-gradient(135deg, #242424 0%, #1f1f1f 100%); padding: 40px 30px; text-align: center; color: #e8e8e8; }
         .hero-title { font-size: 48px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
@@ -30,7 +33,7 @@
         .main-content.full-width { grid-template-columns: 1fr; }
         .words-column { background: #242424; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1px solid #3d3d3d; }
         .sidebar { background: #242424; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); height: fit-content; min-height: 600px; border: 1px solid #3d3d3d; }
-        .section-title { font-size: 22px; font-weight: 600; color: #e8e8e8; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #c87941; }
+        .section-title { font-size: 22px; font-weight: 600; color: #e8e8e8; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #c87941; opacity: 0.85; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #b8b8b8; font-size: 14px; }
         .form-group input { width: 100%; padding: 12px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 15px; transition: border-color 0.3s; background: #1a1a1a; color: #e8e8e8; }
@@ -74,8 +77,8 @@
         .success-box { background: #1f3a1f; padding: 20px; border-radius: 6px; margin-top: 20px; font-size: 14px; color: #7bc87f; border-left: 3px solid #28a745; }
         .success-box strong { display: block; margin-bottom: 10px; }
         .admin-mode { display: none; }
-        .admin-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #c87941; border-radius: 50%; border: none; color: #1a1a1a; font-size: 24px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.4); transition: all 0.3s; z-index: 1000; }
-        .admin-toggle:hover { background: #d89057; transform: scale(1.1); }
+        .admin-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #242424; border-radius: 50%; border: 1px solid #3d3d3d; color: #888; font-size: 24px; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.4); transition: all 0.3s; z-index: 1000; }
+        .admin-toggle:hover { background: #2d2d2d; transform: scale(1.05); color: #aaa; }
         .password-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; }
         .password-modal.show { display: flex; }
         .password-box { background: #242424; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); max-width: 400px; width: 90%; border: 1px solid #3d3d3d; }
