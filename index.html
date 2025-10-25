@@ -122,7 +122,7 @@
         #definitionSearchResults::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
         #definitionSearchResults::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
         #definitionSearchResults::-webkit-scrollbar-thumb:hover { background: #d89057; }
-        .definition-result-item { background: #1f1f1f; padding: 15px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #3d3d3d; transition: all 0.3s; }
+        .definition-result-item { background: #1f1f1f; padding: 15px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #3d3d3d; cursor: pointer; transition: all 0.3s; }
         .definition-result-item:hover { background: #242424; border-color: #c87941; box-shadow: 0 2px 8px rgba(200, 121, 65, 0.2); }
         .definition-result-word { font-weight: 700; color: #e8e8e8; margin-bottom: 5px; font-size: 16px; }
         .definition-result-definition { font-size: 14px; color: #999; line-height: 1.5; }
@@ -983,7 +983,7 @@
                 resultsContainer.innerHTML = matches.map(item => {
                     const defText = item.definition.replace(/<[^>]*>/g, '');
                     const preview = defText.length > 100 ? defText.substring(0, 100) + '...' : defText;
-                    return `<div class="definition-result-item"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
+                    return `<div class="definition-result-item" onclick="editWord(${item.id})"><div class="definition-result-word">${item.word}</div><div class="definition-result-definition">${preview}</div></div>`;
                 }).join('');
             }
         }
