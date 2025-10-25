@@ -96,15 +96,15 @@
         #editSearchResults::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
         #editSearchResults::-webkit-scrollbar-thumb:hover { background: #d89057; }
         .no-results { text-align: center; padding: 20px; color: #666; font-size: 14px; }
-        #quickAddList { max-height: 300px; overflow-y: auto; margin-top: 15px; background: #1a1a1a; border: 1px solid #3d3d3d; border-radius: 6px; padding: 10px; }
+        #quickAddList { max-height: 300px; overflow-y: auto; margin-top: 15px; background: #1a1a1a; border: 1px solid #3d3d3d; border-radius: 6px; padding: 10px; min-height: 60px; }
         #quickAddList::-webkit-scrollbar { width: 8px; }
         #quickAddList::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
         #quickAddList::-webkit-scrollbar-thumb { background: #c87941; border-radius: 4px; }
         #quickAddList::-webkit-scrollbar-thumb:hover { background: #d89057; }
-        .quick-add-item { background: #242424; padding: 12px 15px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #3d3d3d; display: flex; justify-content: space-between; align-items: center; }
+        .quick-add-item { background: #242424; padding: 12px 15px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #3d3d3d; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .quick-add-item:last-child { margin-bottom: 0; }
-        .quick-add-word { color: #e8e8e8; font-weight: 600; font-size: 15px; }
-        .quick-add-remove { background: #d9534f; color: #1a1a1a; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.3s; }
+        .quick-add-word { color: #e8e8e8; font-weight: 600; font-size: 15px; word-break: break-word; flex: 1; min-width: 120px; }
+        .quick-add-remove { background: #d9534f; color: #1a1a1a; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.3s; white-space: nowrap; flex-shrink: 0; }
         .quick-add-remove:hover { background: #c9302c; }
         .quick-add-warning { color: #f39c12; font-size: 13px; margin-top: 5px; display: none; }
         .quick-add-empty { text-align: center; padding: 20px; color: #666; font-size: 14px; }
@@ -146,6 +146,10 @@
             .autocomplete-word { font-size: 15px; }
             .admin-toggle { bottom: 15px; right: 15px; width: 45px; height: 45px; font-size: 20px; }
             .password-box { padding: 30px 20px; }
+            .quick-add-item { padding: 10px 12px; }
+            .quick-add-word { font-size: 14px; min-width: 100px; }
+            .quick-add-remove { padding: 5px 10px; font-size: 11px; }
+            #quickAddList { max-height: 250px; padding: 8px; }
         }
         @media (max-width: 480px) {
             .hero-title { font-size: 28px; }
@@ -170,6 +174,10 @@
             .autocomplete-item { padding: 10px 12px; }
             .autocomplete-word { font-size: 14px; }
             .admin-toggle { bottom: 12px; right: 12px; width: 40px; height: 40px; font-size: 18px; }
+            .quick-add-item { padding: 8px 10px; flex-direction: column; align-items: flex-start; }
+            .quick-add-word { font-size: 13px; width: 100%; margin-bottom: 8px; }
+            .quick-add-remove { padding: 5px 10px; font-size: 11px; width: 100%; }
+            #quickAddList { max-height: 200px; padding: 6px; }
         }
     </style>
 </head>
