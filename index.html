@@ -341,18 +341,40 @@
             const definitionInput = document.getElementById('definitionInput');
             
             if (tag === '') {
-                // For "Normal", wrap in a <p> tag with the correct styling
-                document.execCommand('formatBlock', false, 'p');
+                // For "Normal", we need to remove the heading format
+                // First try formatBlock with 'div', then convert div to p
+                const currentNode = selection.anchorNode;
+                const parentElement = currentNode.nodeType === 3 ? currentNode.parentNode : currentNode;
+                
+                // Check if we're in a heading
+                const headingParent = parentElement.closest('h1, h2, h3, h4, h5, h6');
+                
+                if (headingParent) {
+                    // Create a new paragraph with the heading's content
+                    const p = document.createElement('p');
+                    p.innerHTML = headingParent.innerHTML;
+                    headingParent.parentNode.replaceChild(p, headingParent);
+                    
+                    // Set cursor position in the new paragraph
+                    const range = document.createRange();
+                    const sel = window.getSelection();
+                    range.setStart(p, 0);
+                    range.collapse(true);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } else {
+                    // If not in a heading, just format as paragraph
+                    document.execCommand('formatBlock', false, 'p');
+                }
             } else {
                 document.execCommand('formatBlock', false, tag);
+                // Reset dropdown to "Normal" after applying heading
+                setTimeout(() => {
+                    document.querySelector('.font-size-dropdown').value = '';
+                }, 100);
             }
             
             definitionInput.focus();
-            
-            // Reset dropdown to default after applying
-            setTimeout(() => {
-                document.querySelector('.font-size-dropdown').value = '';
-            }, 100);
         }
         
         function checkExistingWord() {
