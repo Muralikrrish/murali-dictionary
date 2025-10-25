@@ -329,6 +329,15 @@
                 return;
             }
             
+            const alreadyInQuickList=quickAddList.find(w=>w.toLowerCase()===searchTerm);
+            
+            if(alreadyInQuickList){
+                resultsContainer.innerHTML='';
+                warning.textContent='⚠️ This word is already in the quick list';
+                warning.style.display='block';
+                return;
+            }
+            
             const matches=dictionary.filter(item=>{
                 const wordMatch=item.word.toLowerCase().includes(searchTerm);
                 const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();
