@@ -364,7 +364,41 @@
             document.getElementById('quickAddSearchResults').innerHTML='';
         }
         
-        async function loadDictionary(){if(isFirebaseConfigured){try{const snapshot=await database.ref('dictionary').once('value');const data=snapshot.val();dictionary=data?Object.values(data):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));const quickListSnapshot=await database.ref('quickAddList').once('value');const quickListData=quickListSnapshot.val();quickAddList=quickListData?quickListData:[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));}catch(error){dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[];}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[];}isLoading=false;if(isAdmin){displayWords();}else{displayRandomWord();}displayQuickAddList();}
+        async function loadDictionary(){
+            if(isFirebaseConfigured){
+                try{
+                    const snapshot=await database.ref('dictionary').once('value');
+                    const data=snapshot.val();
+                    dictionary=data?Object.values(data):[];
+                    localStorage.setItem('dictionary',JSON.stringify(dictionary));
+                    
+                    const quickListSnapshot=await database.ref('quickAddList').once('value');
+                    const quickListData=quickListSnapshot.val();
+                    if(quickListData && Array.isArray(quickListData)){
+                        quickAddList=quickListData;
+                    }else if(quickListData && typeof quickListData === 'object'){
+                        quickAddList=Object.values(quickListData);
+                    }else{
+                        quickAddList=[];
+                    }
+                    localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
+                }catch(error){
+                    console.error('Firebase load error:', error);
+                    dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];
+                    quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[];
+                }
+            }else{
+                dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];
+                quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[];
+            }
+            isLoading=false;
+            if(isAdmin){
+                displayWords();
+            }else{
+                displayRandomWord();
+            }
+            displayQuickAddList();
+        }
         
         async function saveDictionary(){localStorage.setItem('dictionary',JSON.stringify(dictionary));if(isFirebaseConfigured){try{const updates={};dictionary.forEach(word=>{updates[word.id]=word;});await database.ref('dictionary').set(updates);}catch(error){alert('Failed to save to cloud. Data saved locally.');}}}
         
