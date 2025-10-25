@@ -39,9 +39,12 @@
         .form-group input { width: 100%; padding: 12px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 15px; transition: border-color 0.3s; background: #1a1a1a; color: #e8e8e8; }
         .form-group input::placeholder { color: #666; }
         .form-group input:focus { outline: none; border-color: #c87941; }
-        .editor-toolbar { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; padding: 10px; background: #1a1a1a; border: 1px solid #3d3d3d; border-radius: 6px 6px 0 0; }
+        .editor-toolbar { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; padding: 10px; background: #1a1a1a; border: 1px solid #3d3d3d; border-radius: 6px 6px 0 0; align-items: center; }
         .editor-btn { background: #242424; border: 1px solid #3d3d3d; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; color: #e8e8e8; }
         .editor-btn:hover { background: #c87941; color: #1a1a1a; border-color: #c87941; }
+        .font-size-dropdown { background: #242424; border: 1px solid #3d3d3d; padding: 8px 12px; border-radius: 4px; font-size: 14px; font-weight: 600; color: #e8e8e8; cursor: pointer; transition: all 0.2s; }
+        .font-size-dropdown:hover { background: #2d2d2d; }
+        .font-size-dropdown:focus { outline: none; border-color: #c87941; }
         .editor-content { width: 100%; min-height: 600px; padding: 12px; border: 1px solid #3d3d3d; border-radius: 0 0 6px 6px; border-top: none; font-size: 15px; font-family: inherit; overflow-y: auto; background: #1a1a1a; color: #e8e8e8; -webkit-overflow-scrolling: touch; }
         .editor-content:focus { outline: none; }
         .editor-content[contenteditable="true"]:empty:before { content: attr(placeholder); color: #666; }
@@ -223,6 +226,15 @@
                     <div class="form-group">
                         <label for="definitionInput">Definition</label>
                         <div class="editor-toolbar">
+                            <select class="font-size-dropdown" onchange="formatHeading(this.value)" title="Font Size">
+                                <option value="">Normal</option>
+                                <option value="h1">Heading 1</option>
+                                <option value="h2">Heading 2</option>
+                                <option value="h3">Heading 3</option>
+                                <option value="h4">Heading 4</option>
+                                <option value="h5">Heading 5</option>
+                                <option value="h6">Heading 6</option>
+                            </select>
                             <button type="button" class="editor-btn" onclick="formatText('bold')" title="Bold"><b>B</b></button>
                             <button type="button" class="editor-btn" onclick="formatText('italic')" title="Italic"><i>I</i></button>
                             <button type="button" class="editor-btn" onclick="formatText('underline')" title="Underline"><u>U</u></button>
@@ -321,6 +333,17 @@
         function formatText(command) { 
             document.execCommand(command, false, null); 
             document.getElementById('definitionInput').focus(); 
+        }
+        
+        function formatHeading(tag) {
+            if (tag === '') {
+                document.execCommand('formatBlock', false, 'p');
+            } else {
+                document.execCommand('formatBlock', false, tag);
+            }
+            document.getElementById('definitionInput').focus();
+            // Reset dropdown to default
+            document.querySelector('.font-size-dropdown').value = '';
         }
         
         function checkExistingWord() {
