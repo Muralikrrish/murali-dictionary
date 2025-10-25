@@ -5,7 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Murali's English Dictionary</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Georgia, 'Times New Roman', Times, serif; }
+        async function saveDictionary(){localStorage.setItem('dictionary',JSON.stringify(dictionary));if(isFirebaseConfigured){try{const updates={};dictionary.forEach(word=>{updates[word.id]=word;});await database.ref('dictionary').set(updates);}catch(error){alert('Failed to save to cloud. Data saved locally.');}}}
+        
+        function checkAdminStatus(){const sidebar=document.getElementById('sidebar');const mainContent=document.getElementById('mainContent');const adminToggle=document.getElementById('adminToggle');const wordsColumns=document.querySelectorAll('.words-column');const adminModeElements=document.querySelectorAll('.admin-mode');const searchResultsColumn=document.getElementById('searchResultsColumn');if(isAdmin){sidebar.style.display='block';mainContent.classList.remove('full-width');adminToggle.textContent='🔓';wordsColumns.forEach(col=>{if(col.id!=='searchResultsColumn'){col.style.display='none';}});adminModeElements.forEach(el=>el.style.display='block');searchResultsColumn.style.display='none';}else{sidebar.style.display='none';mainContent.classList.add('full-width');adminToggle.textContent='🔒';wordsColumns.forEach(col=>{if(col.id!=='searchResultsColumn'){col.style.display='block';}});adminModeElements.forEach(el=>el.style.display='none');searchResultsColumn.style.display='none';displayRandomWord();}}
+        
+        function showPasswordModal(){if(isAdmin){isAdmin=false;sessionStorage.setItem('isAdmin','false');checkAdminStatus();displayRandomWord();}else{document.getElementById('passwordModal').classList.add('show');document.getElementById('passwordInput').focus();}}
+        
+        function hidePasswordModal(){document.getElementById('passwordModal').classList.remove('show');document.getElementById('passwordInput').value='';}
+        
+        function checkPassword(){const password=document.getElementById('passwordInput').value;if(password===ADMIN_PASSWORD){isAdmin=true;sessionStorage.setItem('isAdmin','true');hidePasswordModal();checkAdminStatus();displayWords();}else{alert('Incorrect password!');document.getElementById('passwordInput').value='';document.getElementById('passwordInput').focus();}}
+        
+        document.getElementById('addWordForm').addEventListener('submit',async function(e){e.preventDefault();const word=document.getElementById('wordInput').value.trim();const definitionEditor=document.getElementById('definitionInput');const definition=definitionEditor.innerHTML.trim();if(!definition||definition==='<br>'){alert('Please enter a definition');return;}const existingIndex=dictionary.findIndex(item=>item.word.toLowerCase()===word.toLowerCase());if(existingIndex!==-1){if(confirm(`"${word}" already exists. Update it?`)){dictionary[existingIndex].definition=definition;dictionary[existingIndex].dateModified=new Date().toISOString();await saveDictionary();displayWords();document.getElementById('wordInput').value='';definitionEditor.innerHTML='';}}else{dictionary.push({id:Date.now(),word:word,definition:definition,dateAdded:new Date().toISOString()});await saveDictionary();displayWords();document.getElementById('wordInput').value='';definitionEditor.innerHTML='';}});
+        
+        function showAutocomplete(searchTerm) {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            
+            if (!searchTerm) {
+                dropdown.classList.remove('show');
+                return;
+            }
+            
+            const matches = dictionary.filter(item => {
+                return item.word.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+                       item.word.toLowerCase().includes(searchTerm.toLowerCase());
+            }).sort((a, b) => {
+                const aStarts = a.word.toLowerCase().startsWith(searchTerm.toLowerCase());
+                const bStarts = b.word.toLowerCase().startsWith(searchTerm.toLowerCase());
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.word.localeCompare(b.word);
+            }).slice(0, 5);
+            
+            if (matches.length === 0) {
+                dropdown.classList.remove('show');
+                return;
+            }
+            
+            dropdown.innerHTML = matches.map((item, index) => {
+                return `<div class="autocomplete-item" data-index="${index}" onclick="selectAutocompleteItem('${item.word.replace(/'/g, "\\'")}')">
+                    <div class="autocomplete-word">${item.word}</div>
+                </div>`;
+            }).join('');
+            
+            dropdown.classList.add('show');
+            selectedAutocompleteIndex = -1;
+        }
+        
+        function selectAutocompleteItem(word) {
+            document.getElementById('searchInput').value = word;
+            document.getElementById('autocompleteDropdown').classList.remove('show');
+            const searchTerm = word.toLowerCase();
+            if (isAdmin) {
+                displayWords(searchTerm);
+            } else {
+                displaySearchResults(searchTerm);
+            }
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            showAutocomplete(e.target.value);
+            
+            if (searchTerm && isAdmin) {
+                displayWords(searchTerm);
+            } else if (searchTerm && !isAdmin) {
+                displaySearchResults(searchTerm);
+            } else if (!isAdmin) {
+                document.getElementById('searchResultsColumn').style.display = 'none';
+            }
+        });
+        
+        document.getElementById('searchInput').addEventListener('keydown', function(e) {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            const items = dropdown.querySelectorAll('.autocomplete-item');
+            
+            if (!dropdown.classList.contains('show') || items.length === 0) return;
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedAutocompleteIndex = Math.min(selectedAutocompleteIndex + 1, items.length - 1);
+                updateAutocompleteSelection(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedAutocompleteIndex = Math.max(selectedAutocompleteIndex - 1, -1);
+                updateAutocompleteSelection(items);
+            } else if (e.key === 'Enter' && selectedAutocompleteIndex >= 0) {
+                e.preventDefault();
+                items[selectedAutocompleteIndex].click();
+            } else if (e.key === 'Escape') {
+                dropdown.classList.remove('show');
+                selectedAutocompleteIndex = -1;
+            }
+        });
+        
+        function updateAutocompleteSelection(items) {
+            items.forEach((item, index) => {
+                if (index === selectedAutocompleteIndex) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+        
+        document.addEventListener('click', function(e) {
+            const searchContainer = document.querySelector('.search-container');
+            const dropdown = document.getElementById('autocompleteDropdown');
+            if (!searchContainer.contains(e.target)) {
+                dropdown.classList.remove('show');
+                selectedAutocompleteIndex = -1;
+            }
+        });
+        
+        function displaySearchResults(searchTerm){
+            const wordsList=document.getElementById('wordsList');
+            const searchResultsColumn=document.getElementById('searchResultsColumn');
+            const matches=dictionary.filter(item=>{
+                const wordMatch=item.word.toLowerCase().includes(searchTerm);
+                return wordMatch;
+            }).sort((a,b)=>a.word.localeCompare(b.word));
+            
+            if(matches.length===0){
+                wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${searchTerm}"</p></div>`;
+                searchResultsColumn.style.display='block';
+            }else{
+                wordsList.innerHTML=matches.map(item=>`<div class="word-entry"><div class="word-definition">${item.definition}</div></div>`).join('');
+                searchResultsColumn.style.display='block';
+            }
+        }
+        
+        function displayRandomWord(){const randomWordDisplay=document.getElementById('randomWordDisplay');if(isLoading){randomWordDisplay.innerHTML=`<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading...</p></div>`;return;}if(dictionary.length===0){randomWordDisplay.innerHTML=`<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>`;return;}const randomIndex=Math.floor(Math.random()*dictionary.length);const randomWord=dictionary[randomIndex];randomWordDisplay.innerHTML=`<div class="word-entry"><div class="word-definition">${randomWord.definition}</div></div>`;}
+        
+        function showNewRandomWord(){if(dictionary.length>0){displayRandomWord();document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});}}
+        
+        function displayWords(searchTerm=''){const wordsList=document.getElementById('wordsList');if(isLoading){wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading dictionary...</p></div>`;return;}let filteredDictionary=searchTerm?dictionary.filter(item=>{const wordMatch=item.word.toLowerCase().includes(searchTerm);const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();return wordMatch||defText.includes(searchTerm);}):dictionary;filteredDictionary.sort((a,b)=>a.word.localeCompare(b.word));if(filteredDictionary.length===0){wordsList.innerHTML=`<div class="no-words"><div class="no-words-icon">📚</div><p>${searchTerm?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`;}else{wordsList.innerHTML=filteredDictionary.map(item=>`<div class="word-entry"><div class="word-title">${item.word}</div><div class="word-definition">${item.definition}</div><div class="word-actions" style="display:${isAdmin?'flex':'none'};"><button class="btn-action btn-edit" onclick="editWord(${item.id})">Edit</button><button class="btn-action btn-delete" onclick="deleteWord(${item.id})">Delete</button></div></div>`).join('');}}
+        
+        async function editWord(id){const item=dictionary.find(w=>w.id===id);if(item){document.getElementById('wordInput').value=item.word;document.getElementById('definitionInput').innerHTML=item.definition;dictionary=dictionary.filter(w=>w.id!==id);await saveDictionary();displayWords();document.getElementById('editSearchInput').value='';document.getElementById('editSearchResults').innerHTML='';window.scrollTo({top:0,behavior:'smooth'});}}
+        
+        function searchWordsToEdit(){const searchTerm=document.getElementById('editSearchInput').value.toLowerCase().trim();const resultsContainer=document.getElementById('editSearchResults');if(!searchTerm){resultsContainer.innerHTML='';return;}const matches=dictionary.filter(item=>{const wordMatch=item.word.toLowerCase().includes(searchTerm);const defText=item.definition.replace(/<[^>]*>/g,'').toLowerCase();return wordMatch||defText.includes(searchTerm);}).sort((a,b)=>a.word.localeCompare(b.word));if(matches.length===0){resultsContainer.innerHTML='<div class="no-results">No matching words found</div>';}else{resultsContainer.innerHTML=matches.map(item=>{const defText=item.definition.replace(/<[^>]*>/g,'');const preview=defText.length>100?defText.substring(0,100)+'...':defText;return`<div class="edit-result-item" onclick="editWord(${item.id})"><div class="edit-result-word">${item.word}</div><div class="edit-result-definition">${preview}</div></div>`;}).join('');}}
+        
+        async function deleteWord(id){const item=dictionary.find(w=>w.id===id);if(item&&confirm(`Delete "${item.word}"?`)){dictionary=dictionary.filter(w=>w.id!==id);await saveDictionary();displayWords();}}
+        
+        function exportData(){const dataStr=JSON.stringify(dictionary,null,2);const dataBlob=new Blob([dataStr],{type:'application/json'});const url=URL.createObjectURL(dataBlob);const link=document.createElement('a');link.href=url;link.download=`dictionary_${new Date().toISOString().split('T')[0]}.json`;link.click();URL.revokeObjectURL(url);}
+        
+        async function importData(event){const file=event.target.files[0];if(file){const reader=new FileReader();reader.onload=async function(e){try{const imported=JSON.parse(e.target.result);if(Array.isArray(imported)){if(confirm(`Import ${imported.length} words? This will merge with existing entries.`)){imported.forEach(word=>{const exists=dictionary.find(w=>w.word.toLowerCase()===word.word.toLowerCase());if(!exists){dictionary.push(word);}});await saveDictionary();displayWords();alert('Import successful!');}}else{alert('Invalid file format');}}catch(error){alert('Error reading file');}};reader.readAsText(file);}event.target.value='';}
+    </script>
+</body>
+</html>
+        async function loadDictionary(){
+            if(isFirebaseConfigured){
+                try{
+                    const snapshot=await database.ref('dictionary').once('value');
+                    const data=snapshot.val();
+                    dictionary=data?Object.values(data):[];
+                    localStorage.setItem('dictionary',JSON.stringify(dictionary));
+                }catch(error){
+                    dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];
+                }
+            }else{
+                dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];
+            }
+            isLoading=false;
+            if(isAdmin){
+                displayWords();
+                loadQuickAddList();
+            }else{
+                displayRandomWord();
+            }
+        }* { margin: 0; padding: 0; box-sizing: border-box; font-family: Georgia, 'Times New Roman', Times, serif; }
         body { background: #1a1a1a; color: #e8e8e8; line-height: 1.6; }
         .hero-section { background: linear-gradient(135deg, #242424 0%, #1f1f1f 100%); padding: 40px 30px; text-align: center; color: #e8e8e8; }
         .hero-title { font-size: 48px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
@@ -194,17 +362,19 @@
                 <button class="btn" onclick="showNewRandomWord()" style="margin-top: 20px;">Show Another Word</button>
             </div>
             <div class="sidebar admin-mode" id="sidebar">
-                <h2 class="section-title">Quick Add Words</h2>
-                <div class="form-group">
-                    <label for="quickAddInput">Add Word to List</label>
-                    <div class="quick-add-input-container">
-                        <input type="text" id="quickAddInput" placeholder="Type a word and press Enter" oninput="checkQuickAddWord()">
-                        <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
-                        <div id="quickAddSuccess" class="quick-add-success">✓ Word added to quick list</div>
+                <div class="quick-add-section">
+                    <h2 class="section-title">Quick Add Words</h2>
+                    <div class="form-group">
+                        <label for="quickAddInput">Add Word to List</label>
+                        <div class="quick-add-input-container">
+                            <input type="text" id="quickAddInput" placeholder="Type a word and press Enter" oninput="checkQuickAddWord()">
+                            <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
+                            <div id="quickAddSuccess" class="quick-add-success">✓ Word added to quick list</div>
+                        </div>
                     </div>
-                </div>
-                <div class="quick-add-list" id="quickAddList">
-                    <div class="quick-add-empty">No words in quick add list yet. Start typing above!</div>
+                    <div class="quick-add-list" id="quickAddList">
+                        <div class="quick-add-empty">No words in quick add list yet. Start typing above!</div>
+                    </div>
                 </div>
                 
                 <h2 class="section-title" style="margin-top: 40px;">Add New Word</h2>
@@ -280,6 +450,37 @@
                 const exists = dictionary.find(w => w.word.toLowerCase() === word.toLowerCase());
                 if (exists) {
                     warning.style.display = 'block';
+                }
+            }
+        }
+        
+        async function loadQuickAddList() {
+            if (isFirebaseConfigured) {
+                try {
+                    const snapshot = await database.ref('quickAddList').once('value');
+                    const data = snapshot.val();
+                    quickAddList = data ? Object.values(data) : [];
+                    localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+                } catch (error) {
+                    quickAddList = JSON.parse(localStorage.getItem('quickAddList')) || [];
+                }
+            } else {
+                quickAddList = JSON.parse(localStorage.getItem('quickAddList')) || [];
+            }
+            displayQuickAddList();
+        }
+        
+        async function saveQuickAddList() {
+            localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+            if (isFirebaseConfigured) {
+                try {
+                    const updates = {};
+                    quickAddList.forEach((item, index) => {
+                        updates[index] = item;
+                    });
+                    await database.ref('quickAddList').set(updates);
+                } catch (error) {
+                    console.error('Failed to save quick add list to cloud:', error);
                 }
             }
         }
