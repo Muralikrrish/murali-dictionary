@@ -184,6 +184,7 @@
                             <button type="button" class="editor-btn" onclick="formatText('strikethrough')" title="Strikethrough"><s>S</s></button>
                             <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')" title="Numbered List">1. 2. 3.</button>
                             <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">• • •</button>
+                            <button type="button" class="editor-btn" onclick="convertExistingMarkdown()" title="Convert Markdown" style="background:#c87941;color:#1a1a1a;border-color:#c87941">MD→</button>
                             <button type="button" class="editor-btn" onclick="formatText('removeFormat')" title="Clear Formatting">✕</button>
                         </div>
                         <div id="definitionInput" class="editor-content" contenteditable="true" placeholder="Enter definition with formatting..."></div>
@@ -400,16 +401,66 @@ function replaceMarkdownWithFormat(node, startOffset, length, format) {
 
 // Handle paste events to convert markdown
 function handlePaste(e) {
-    e.preventDefault();
+    // For mobile compatibility, don't prevent default on some browsers
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
-    // Get pasted text
-    const text = (e.clipboardData || window.clipboardData).getData('text');
+    if (!isMobile) {
+        e.preventDefault();
+        
+        // Get pasted text
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        
+        // Convert markdown to HTML
+        const html = convertMarkdownToHTML(text);
+        
+        // Insert the HTML
+        document.execCommand('insertHTML', false, html);
+    }
+    // On mobile, let the paste happen normally, then convert after a short delay
+    else {
+        setTimeout(() => {
+            convertExistingMarkdown();
+        }, 100);
+    }
+}
+
+// Convert existing markdown in the editor
+function convertExistingMarkdown() {
+    const editor = document.getElementById('definitionInput');
+    const currentHTML = editor.innerHTML;
+    
+    // Get text content (strip existing HTML)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = currentHTML;
+    const text = tempDiv.textContent || tempDiv.innerText || '';
     
     // Convert markdown to HTML
     const html = convertMarkdownToHTML(text);
     
-    // Insert the HTML
-    document.execCommand('insertHTML', false, html);
+    // Set the new HTML
+    editor.innerHTML = html;
+    
+    // Place cursor at end
+    const range = document.createRange();
+    const sel = window.getSelection();
+    
+    // Find the last text node
+    const lastNode = getLastNode(editor);
+    if (lastNode) {
+        range.setStartAfter(lastNode);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+    
+    editor.focus();
+}
+
+function getLastNode(node) {
+    while (node.lastChild) {
+        node = node.lastChild;
+    }
+    return node;
 }
 
 function convertMarkdownToHTML(text) {
