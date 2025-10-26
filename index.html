@@ -184,7 +184,6 @@
                             <button type="button" class="editor-btn" onclick="formatText('strikethrough')" title="Strikethrough"><s>S</s></button>
                             <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')" title="Numbered List">1. 2. 3.</button>
                             <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">• • •</button>
-                            <button type="button" class="editor-btn" onclick="convertExistingMarkdown()" title="Convert Markdown" style="background:#c87941;color:#1a1a1a;border-color:#c87941">MD→</button>
                             <button type="button" class="editor-btn" onclick="formatText('removeFormat')" title="Clear Formatting">✕</button>
                         </div>
                         <div id="definitionInput" class="editor-content" contenteditable="true" placeholder="Enter definition with formatting..."></div>
@@ -401,66 +400,16 @@ function replaceMarkdownWithFormat(node, startOffset, length, format) {
 
 // Handle paste events to convert markdown
 function handlePaste(e) {
-    // For mobile compatibility, don't prevent default on some browsers
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    e.preventDefault();
     
-    if (!isMobile) {
-        e.preventDefault();
-        
-        // Get pasted text
-        const text = (e.clipboardData || window.clipboardData).getData('text');
-        
-        // Convert markdown to HTML
-        const html = convertMarkdownToHTML(text);
-        
-        // Insert the HTML
-        document.execCommand('insertHTML', false, html);
-    }
-    // On mobile, let the paste happen normally, then convert after a short delay
-    else {
-        setTimeout(() => {
-            convertExistingMarkdown();
-        }, 100);
-    }
-}
-
-// Convert existing markdown in the editor
-function convertExistingMarkdown() {
-    const editor = document.getElementById('definitionInput');
-    const currentHTML = editor.innerHTML;
-    
-    // Get text content (strip existing HTML)
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = currentHTML;
-    const text = tempDiv.textContent || tempDiv.innerText || '';
+    // Get pasted text
+    const text = (e.clipboardData || window.clipboardData).getData('text');
     
     // Convert markdown to HTML
     const html = convertMarkdownToHTML(text);
     
-    // Set the new HTML
-    editor.innerHTML = html;
-    
-    // Place cursor at end
-    const range = document.createRange();
-    const sel = window.getSelection();
-    
-    // Find the last text node
-    const lastNode = getLastNode(editor);
-    if (lastNode) {
-        range.setStartAfter(lastNode);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-    
-    editor.focus();
-}
-
-function getLastNode(node) {
-    while (node.lastChild) {
-        node = node.lastChild;
-    }
-    return node;
+    // Insert the HTML
+    document.execCommand('insertHTML', false, html);
 }
 
 function convertMarkdownToHTML(text) {
@@ -473,10 +422,9 @@ function convertMarkdownToHTML(text) {
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
         let processedLine = line;
-        let isHeading = false;
         
-        // Check for headings ONLY at start of line with space after #
-        if (/^####\s/.test(processedLine)) {
+        // Check for headings at start of line
+        if (processedLine.startsWith('#### ')) {
             // Close any open paragraph
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
@@ -485,8 +433,7 @@ function convertMarkdownToHTML(text) {
             }
             processedLine = '<h4>' + processedLine.substring(5) + '</h4>';
             html += processedLine;
-            isHeading = true;
-        } else if (/^###\s/.test(processedLine)) {
+        } else if (processedLine.startsWith('### ')) {
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
                 paragraphContent = '';
@@ -494,8 +441,7 @@ function convertMarkdownToHTML(text) {
             }
             processedLine = '<h3>' + processedLine.substring(4) + '</h3>';
             html += processedLine;
-            isHeading = true;
-        } else if (/^##\s/.test(processedLine)) {
+        } else if (processedLine.startsWith('## ')) {
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
                 paragraphContent = '';
@@ -503,8 +449,7 @@ function convertMarkdownToHTML(text) {
             }
             processedLine = '<h2>' + processedLine.substring(3) + '</h2>';
             html += processedLine;
-            isHeading = true;
-        } else if (/^#\s/.test(processedLine)) {
+        } else if (processedLine.startsWith('# ')) {
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
                 paragraphContent = '';
@@ -512,16 +457,13 @@ function convertMarkdownToHTML(text) {
             }
             processedLine = '<h1>' + processedLine.substring(2) + '</h1>';
             html += processedLine;
-            isHeading = true;
-        }
-        
-        if (!isHeading) {
+        } else {
             // Process inline markdown (bold, italic, etc.)
-            // Bold: **text** - use a more robust pattern that handles any characters inside
-            processedLine = processedLine.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            // Bold: **text**
+            processedLine = processedLine.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
             
-            // Italic: *text* (but not **) - match single asterisks not followed/preceded by another asterisk
-            processedLine = processedLine.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+            // Italic: *text* (but not **)
+            processedLine = processedLine.replace(/(?<!\*)\*(?!\*)([^\*]+)\*(?!\*)/g, '<em>$1</em>');
             
             // Handle paragraph content
             if (processedLine.trim()) {
