@@ -473,9 +473,10 @@ function convertMarkdownToHTML(text) {
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i];
         let processedLine = line;
+        let isHeading = false;
         
-        // Check for headings at start of line
-        if (processedLine.startsWith('#### ')) {
+        // Check for headings ONLY at start of line with space after #
+        if (/^####\s/.test(processedLine)) {
             // Close any open paragraph
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
@@ -484,7 +485,8 @@ function convertMarkdownToHTML(text) {
             }
             processedLine = '<h4>' + processedLine.substring(5) + '</h4>';
             html += processedLine;
-        } else if (processedLine.startsWith('### ')) {
+            isHeading = true;
+        } else if (/^###\s/.test(processedLine)) {
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
                 paragraphContent = '';
@@ -492,7 +494,8 @@ function convertMarkdownToHTML(text) {
             }
             processedLine = '<h3>' + processedLine.substring(4) + '</h3>';
             html += processedLine;
-        } else if (processedLine.startsWith('## ')) {
+            isHeading = true;
+        } else if (/^##\s/.test(processedLine)) {
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
                 paragraphContent = '';
@@ -500,7 +503,8 @@ function convertMarkdownToHTML(text) {
             }
             processedLine = '<h2>' + processedLine.substring(3) + '</h2>';
             html += processedLine;
-        } else if (processedLine.startsWith('# ')) {
+            isHeading = true;
+        } else if (/^#\s/.test(processedLine)) {
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
                 paragraphContent = '';
@@ -508,13 +512,16 @@ function convertMarkdownToHTML(text) {
             }
             processedLine = '<h1>' + processedLine.substring(2) + '</h1>';
             html += processedLine;
-        } else {
+            isHeading = true;
+        }
+        
+        if (!isHeading) {
             // Process inline markdown (bold, italic, etc.)
-            // Bold: **text**
-            processedLine = processedLine.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>');
+            // Bold: **text** - use a more robust pattern that handles any characters inside
+            processedLine = processedLine.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
             
-            // Italic: *text* (but not **)
-            processedLine = processedLine.replace(/(?<!\*)\*(?!\*)([^\*]+)\*(?!\*)/g, '<em>$1</em>');
+            // Italic: *text* (but not **) - match single asterisks not followed/preceded by another asterisk
+            processedLine = processedLine.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
             
             // Handle paragraph content
             if (processedLine.trim()) {
