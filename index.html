@@ -250,6 +250,43 @@ function handleMarkdownFormatting(e) {
             textBeforeCursor = node.textContent.substring(0, range.startOffset);
         }
         
+        // Check for inline bold: **text** followed by space
+        const inlineBoldMatch = textBeforeCursor.match(/\*\*([^\*]+)\*\*$/);
+        if (inlineBoldMatch) {
+            e.preventDefault();
+            const boldText = inlineBoldMatch[1];
+            const matchLength = inlineBoldMatch[0].length;
+            
+            // Remove the **text** and insert bold
+            const textNode = node;
+            const startPos = range.startOffset - matchLength;
+            
+            textNode.textContent = textNode.textContent.substring(0, startPos) + textNode.textContent.substring(range.startOffset);
+            
+            // Create bold element
+            const boldElement = document.createElement('strong');
+            boldElement.textContent = boldText;
+            
+            // Insert bold element
+            const tempRange = document.createRange();
+            tempRange.setStart(textNode, startPos);
+            tempRange.collapse(true);
+            tempRange.insertNode(boldElement);
+            
+            // Add space after bold
+            const spaceNode = document.createTextNode(' ');
+            boldElement.parentNode.insertBefore(spaceNode, boldElement.nextSibling);
+            
+            // Move cursor after space
+            const newRange = document.createRange();
+            newRange.setStartAfter(spaceNode);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            
+            return;
+        }
+        
         // Check for markdown patterns at the start of the line
         const lineStart = getLineStart(node, range.startOffset);
         const lineText = lineStart.text;
@@ -282,7 +319,7 @@ function handleMarkdownFormatting(e) {
             return;
         }
         
-        // Bold: **
+        // Bold at start: **
         if (lineText === '**') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'bold');
