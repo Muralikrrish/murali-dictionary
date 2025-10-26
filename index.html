@@ -160,7 +160,7 @@
                 <div id="randomWordDisplay"></div>
                 <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
             </div>
-            <div class="sidebar admin-mode" id="sidebar">
+            <div class="sidebar admin-mode" id="addWordSection">
                 <h2 class="section-title">Add New Word</h2>
                 <form id="addWordForm">
                     <div class="form-group">
@@ -190,7 +190,9 @@
                     </div>
                     <button type="submit" class="btn">Add to Dictionary</button>
                 </form>
-                <h2 class="section-title" style="margin-top:40px">Quick Add <span id="quickAddCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
+            </div>
+            <div class="sidebar admin-mode" id="quickAddSection">
+                <h2 class="section-title">Quick Add <span id="quickAddCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
                 <div class="form-group">
                     <label for="quickAddSearch">Search Word</label>
                     <input type="text" id="quickAddSearch" placeholder="Type a word to search..." oninput="searchWordsForQuickAdd()" onkeypress="if(event.key==='Enter'){event.preventDefault();addToQuickList()}">
@@ -202,12 +204,19 @@
                 </div>
                 <div id="quickAddSearchResults"></div>
                 <div id="quickAddList"><div class="quick-add-empty">No words in quick list yet</div></div>
-                <h2 class="section-title" style="margin-top:40px">Edit Existing Word <span id="dictionaryCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
+            </div>
+            <div class="sidebar admin-mode" id="editWordSection">
+                <h2 class="section-title">Edit Existing Word <span id="dictionaryCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
                 <div class="form-group"><label for="editSearchInput">Search Word to Edit</label><input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()"></div>
                 <div id="editSearchResults"></div>
-                <h2 class="section-title" style="margin-top:40px">Existing Definition</h2>
+            </div>
+            <div class="sidebar admin-mode" id="definitionSearchSection">
+                <h2 class="section-title">Existing Definition</h2>
                 <div class="form-group"><label for="definitionSearchInput">Search for Definition</label><input type="text" id="definitionSearchInput" placeholder="Type to search..." oninput="searchDefinitions()"></div>
                 <div id="definitionSearchResults"></div>
+            </div>
+            <div class="sidebar admin-mode" id="utilitySection">
+                <h2 class="section-title">Utilities</h2>
                 <div class="utility-buttons">
                     <button class="btn btn-secondary" onclick="exportData()">Export Dictionary</button>
                     <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Dictionary</button>
