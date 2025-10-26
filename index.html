@@ -560,7 +560,26 @@ document.addEventListener('DOMContentLoaded', function() {
     editor.addEventListener('mouseup', updateFormatDropdown);
     editor.addEventListener('keyup', updateFormatDropdown);
     editor.addEventListener('focus', updateFormatDropdown);
+    
+    // Scroll to "Add New Word" section when user starts typing or pasting
+    editor.addEventListener('input', function(e) {
+        // Only scroll if user is typing (not on initial load)
+        if (e.inputType) {
+            scrollToAddSection();
+        }
+    });
+    
+    editor.addEventListener('paste', function() {
+        setTimeout(scrollToAddSection, 50);
+    });
 });
+
+function scrollToAddSection() {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar && sidebar.style.display !== 'none') {
+        sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
 
 function formatText(c){document.execCommand(c,false,null);document.getElementById('definitionInput').focus()}
 function formatHeading(tag){const d=document.getElementById('definitionInput');if(tag===''){document.execCommand('formatBlock',false,'div');document.execCommand('formatBlock',false,'p')}else document.execCommand('formatBlock',false,tag);d.focus();setTimeout(updateFormatDropdown,50)}
