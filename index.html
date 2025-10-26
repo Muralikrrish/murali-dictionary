@@ -379,19 +379,47 @@ function convertMarkdownToHTML(text) {
     // Split into lines
     const lines = text.split('\n');
     let html = '';
+    let inParagraph = false;
+    let paragraphContent = '';
     
-    for (let line of lines) {
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
         let processedLine = line;
         
         // Check for headings at start of line
         if (processedLine.startsWith('#### ')) {
+            // Close any open paragraph
+            if (inParagraph && paragraphContent.trim()) {
+                html += '<p>' + paragraphContent + '</p>';
+                paragraphContent = '';
+                inParagraph = false;
+            }
             processedLine = '<h4>' + processedLine.substring(5) + '</h4>';
+            html += processedLine;
         } else if (processedLine.startsWith('### ')) {
+            if (inParagraph && paragraphContent.trim()) {
+                html += '<p>' + paragraphContent + '</p>';
+                paragraphContent = '';
+                inParagraph = false;
+            }
             processedLine = '<h3>' + processedLine.substring(4) + '</h3>';
+            html += processedLine;
         } else if (processedLine.startsWith('## ')) {
+            if (inParagraph && paragraphContent.trim()) {
+                html += '<p>' + paragraphContent + '</p>';
+                paragraphContent = '';
+                inParagraph = false;
+            }
             processedLine = '<h2>' + processedLine.substring(3) + '</h2>';
+            html += processedLine;
         } else if (processedLine.startsWith('# ')) {
+            if (inParagraph && paragraphContent.trim()) {
+                html += '<p>' + paragraphContent + '</p>';
+                paragraphContent = '';
+                inParagraph = false;
+            }
             processedLine = '<h1>' + processedLine.substring(2) + '</h1>';
+            html += processedLine;
         } else {
             // Process inline markdown (bold, italic, etc.)
             // Bold: **text**
@@ -400,15 +428,30 @@ function convertMarkdownToHTML(text) {
             // Italic: *text* (but not **)
             processedLine = processedLine.replace(/(?<!\*)\*(?!\*)([^\*]+)\*(?!\*)/g, '<em>$1</em>');
             
-            // Wrap in paragraph if not empty
+            // Handle paragraph content
             if (processedLine.trim()) {
-                processedLine = '<p>' + processedLine + '</p>';
+                if (inParagraph) {
+                    // Add line break within paragraph
+                    paragraphContent += '<br>' + processedLine;
+                } else {
+                    // Start new paragraph
+                    inParagraph = true;
+                    paragraphContent = processedLine;
+                }
             } else {
-                processedLine = '<br>';
+                // Empty line closes paragraph
+                if (inParagraph && paragraphContent.trim()) {
+                    html += '<p>' + paragraphContent + '</p>';
+                    paragraphContent = '';
+                    inParagraph = false;
+                }
             }
         }
-        
-        html += processedLine;
+    }
+    
+    // Close any remaining paragraph
+    if (inParagraph && paragraphContent.trim()) {
+        html += '<p>' + paragraphContent + '</p>';
     }
     
     return html;
