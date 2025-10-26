@@ -601,10 +601,24 @@ function checkPassword(){const p=document.getElementById('passwordInput').value;
 document.getElementById('addWordForm').addEventListener('submit',async function(e){e.preventDefault();const w=document.getElementById('wordInput').value.trim(),de=document.getElementById('definitionInput'),d=de.innerHTML.trim();if(!d||d==='<br>'){alert('Please enter a definition');return}const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());if(ei!==-1){if(confirm(`"${w}" already exists. Update it?`)){dictionary[ei].definition=d;dictionary[ei].dateModified=new Date().toISOString();
 // Instant UI update
 document.getElementById('wordInput').value='';de.innerHTML='';displayWords();
+// Scroll to Quick Add section
+setTimeout(() => {
+const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+if (quickAddSection) {
+quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+}, 100);
 // Then save in background
 saveDictionary()}}else{const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};dictionary.push(newWord);
 // Instant UI update
 document.getElementById('wordInput').value='';de.innerHTML='';displayWords();
+// Scroll to Quick Add section
+setTimeout(() => {
+const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+if (quickAddSection) {
+quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+}, 100);
 // Then save in background
 saveDictionary()}});
 function showAutocomplete(s){const d=document.getElementById('autocompleteDropdown');if(!s){d.classList.remove('show');return}const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());if(as&&!bs)return-1;if(!as&&bs)return 1;return a.word.localeCompare(b.word)}).slice(0,5);if(m.length===0){d.classList.remove('show');return}d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');d.classList.add('show');selectedAutocompleteIndex=-1}
