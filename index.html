@@ -308,14 +308,30 @@ async function loadDictionary() {
     console.log('Loading dictionary...');
     isLoading = true;
     
-    if (isFirebaseConfigured) {
+    // Display loading state immediately
+    const display = document.getElementById('randomWordDisplay');
+    if (display) {
+        display.innerHTML = '<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading...</p></div>';
+    }
+    
+    if (isFirebaseConfigured || typeof firebase !== 'undefined') {
         try {
+            if (!isFirebaseConfigured) {
+                console.log('Firebase not configured yet, initializing...');
+                initializeFirebase();
+                // Wait a bit for Firebase to fully initialize
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
             console.log('Loading from Firebase...');
             const snapshot = await database.ref('dictionary').once('value');
             const data = snapshot.val();
             dictionary = data ? Object.values(data) : [];
             console.log('Loaded from Firebase:', dictionary.length, 'words');
-            localStorage.setItem('dictionary', JSON.stringify(dictionary));
+            
+            if (dictionary.length > 0) {
+                localStorage.setItem('dictionary', JSON.stringify(dictionary));
+            }
             
             const quickSnapshot = await database.ref('quickAddList').once('value');
             const quickData = quickSnapshot.val();
@@ -329,11 +345,12 @@ async function loadDictionary() {
             localStorage.setItem('quickAddList', JSON.stringify(quickAddList));
         } catch (error) {
             console.error('Firebase load error:', error);
+            console.log('Falling back to localStorage...');
             dictionary = JSON.parse(localStorage.getItem('dictionary') || '[]');
             quickAddList = JSON.parse(localStorage.getItem('quickAddList') || '[]');
         }
     } else {
-        console.log('Loading from localStorage...');
+        console.log('Firebase not available, loading from localStorage...');
         dictionary = JSON.parse(localStorage.getItem('dictionary') || '[]');
         quickAddList = JSON.parse(localStorage.getItem('quickAddList') || '[]');
     }
@@ -419,6 +436,58 @@ function showNewRandomWord() {
     if (dictionary.length > 0) {
         displayRandomWord();
         document.getElementById('wordOfTheDaySection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+        console.log('No words available, attempting to reload...');
+        forceReload();
+    }
+}
+
+// Force reload function for Safari
+async function forceReload() {
+    console.log('Force reload triggered');
+    const display = document.getElementById('randomWordDisplay');
+    display.innerHTML = '<div class="no-words"><div class="no-words-icon">⏳</div><p>Reloading...</p></div>';
+    
+    isLoading = true;
+    
+    // Try Firebase first
+    if (isFirebaseConfigured || typeof firebase !== 'undefined') {
+        try {
+            if (!isFirebaseConfigured) {
+                initializeFirebase();
+            }
+            
+            console.log('Attempting Firebase load...');
+            const snapshot = await database.ref('dictionary').once('value');
+            const data = snapshot.val();
+            dictionary = data ? Object.values(data) : [];
+            console.log('Loaded from Firebase:', dictionary.length, 'words');
+            
+            if (dictionary.length > 0) {
+                localStorage.setItem('dictionary', JSON.stringify(dictionary));
+            }
+        } catch (error) {
+            console.error('Firebase load failed:', error);
+        }
+    }
+    
+    // Fallback to localStorage
+    if (dictionary.length === 0) {
+        console.log('Trying localStorage...');
+        const stored = localStorage.getItem('dictionary');
+        console.log('localStorage data:', stored ? stored.substring(0, 100) : 'empty');
+        dictionary = JSON.parse(stored || '[]');
+        console.log('Loaded from localStorage:', dictionary.length, 'words');
+    }
+    
+    isLoading = false;
+    
+    if (dictionary.length > 0) {
+        displayRandomWord();
+        alert('Successfully loaded ' + dictionary.length + ' words!');
+    } else {
+        display.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>No words found in database or local storage. Please contact the admin or check your internet connection.</p></div>';
+        alert('Unable to load words. Please check:\n1. Internet connection\n2. Firebase configuration\n3. Or contact the administrator');
     }
 }
 
@@ -1012,19 +1081,41 @@ function updateAutocompleteSelection(items) {
 // Initialize everything when page loads
 window.addEventListener('load', function() {
     console.log('Page loaded, initializing...');
+    console.log('Firebase available:', typeof firebase !== 'undefined');
     
-    // Initialize Firebase first
-    const firebaseInitialized = initializeFirebase();
-    console.log('Firebase initialized:', firebaseInitialized);
-    
-    // Setup event listeners
-    setupEventListeners();
-    
-    // Load dictionary and display
-    loadDictionary().then(() => {
-        console.log('Dictionary loaded, checking admin status...');
-        checkAdminStatus();
-    });
+    // Wait a bit for Firebase to be fully available in Safari
+    setTimeout(() => {
+        // Initialize Firebase first
+        const firebaseInitialized = initializeFirebase();
+        console.log('Firebase initialized:', firebaseInitialized);
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Load dictionary and display
+        loadDictionary().then(() => {
+            console.log('Dictionary loaded after Firebase init, length:', dictionary.length);
+            checkAdminStatus();
+            
+            // Force display update
+            if (!isAdmin) {
+                setTimeout(() => {
+                    console.log('Forcing random word display, dictionary length:', dictionary.length);
+                    displayRandomWord();
+                }, 500);
+            }
+        }).catch(err => {
+            console.error('Error loading dictionary:', err);
+            // Try loading from localStorage as fallback
+            dictionary = JSON.parse(localStorage.getItem('dictionary') || '[]');
+            console.log('Loaded from localStorage fallback:', dictionary.length, 'words');
+            isLoading = false;
+            checkAdminStatus();
+            if (!isAdmin) {
+                displayRandomWord();
+            }
+        });
+    }, 500); // Give Firebase scripts time to load in Safari
 });
 
 // Also try initializing when DOM is ready (fallback for Safari)
@@ -1032,28 +1123,57 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM ready, initializing...');
         
-        if (!isFirebaseConfigured) {
-            initializeFirebase();
+        // If Firebase hasn't initialized yet, wait a bit more
+        if (typeof firebase === 'undefined') {
+            console.log('Firebase not ready yet, waiting...');
+            setTimeout(() => {
+                if (!isFirebaseConfigured) {
+                    initializeFirebase();
+                }
+                
+                if (dictionary.length === 0) {
+                    loadDictionary().then(() => {
+                        checkAdminStatus();
+                        if (!isAdmin) displayRandomWord();
+                    });
+                }
+                
+                setupEventListeners();
+            }, 1000);
+        } else {
+            if (!isFirebaseConfigured) {
+                initializeFirebase();
+            }
+            
+            if (dictionary.length === 0) {
+                loadDictionary().then(() => {
+                    checkAdminStatus();
+                    if (!isAdmin) displayRandomWord();
+                });
+            }
+            
+            setupEventListeners();
         }
-        
-        if (dictionary.length === 0) {
-            loadDictionary().then(() => {
-                checkAdminStatus();
-            });
-        }
-        
-        setupEventListeners();
     });
 } else {
     // DOM already loaded
     console.log('DOM already ready on script load');
-    if (typeof firebase !== 'undefined' && !isFirebaseConfigured) {
-        initializeFirebase();
-        loadDictionary().then(() => {
-            checkAdminStatus();
-        });
-        setupEventListeners();
-    }
+    setTimeout(() => {
+        if (typeof firebase !== 'undefined' && !isFirebaseConfigured) {
+            initializeFirebase();
+            loadDictionary().then(() => {
+                checkAdminStatus();
+                if (!isAdmin) displayRandomWord();
+            }).catch(err => {
+                console.error('Error:', err);
+                dictionary = JSON.parse(localStorage.getItem('dictionary') || '[]');
+                isLoading = false;
+                checkAdminStatus();
+                if (!isAdmin) displayRandomWord();
+            });
+            setupEventListeners();
+        }
+    }, 500);
 }
     </script>
 </body>
