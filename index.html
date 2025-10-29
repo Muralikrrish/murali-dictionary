@@ -253,33 +253,50 @@ function formatDateForDisplay(dateString) {
 
 // Initialize Word of the Day
 async function initializeWordOfTheDay() {
+    console.log('Initializing Word of the Day, dictionary length:', dictionary.length);
     currentDateString = getTodayDateString();
     
     if (dictionary.length === 0) {
+        console.log('No words in dictionary');
         displayWordOfTheDay();
         return;
     }
     
     if (isFirebaseConfigured) {
         try {
-            // Listen for word of the day updates
+            // Get word of the day once first
+            const snapshot = await database.ref('wordOfTheDay').once('value');
+            const data = snapshot.val();
+            console.log('Word of the Day data from Firebase:', data);
+            
+            if (data && data.date === currentDateString && data.wordId) {
+                // Use the existing word of the day
+                const word = dictionary.find(w => w.id === data.wordId);
+                if (word) {
+                    console.log('Using existing word of the day:', word.word);
+                    wordOfTheDay = word;
+                    displayWordOfTheDay();
+                } else {
+                    // Word not found, generate new one
+                    console.log('Word ID not found in dictionary, generating new word');
+                    await generateAndSaveWordOfTheDay();
+                }
+            } else {
+                // Generate new word for today
+                console.log('No word for today or date mismatch, generating new word');
+                await generateAndSaveWordOfTheDay();
+            }
+            
+            // Now listen for future updates
             database.ref('wordOfTheDay').on('value', snapshot => {
                 const data = snapshot.val();
-                console.log('Word of the Day data from Firebase:', data);
-                
                 if (data && data.date === currentDateString && data.wordId) {
-                    // Use the existing word of the day
                     const word = dictionary.find(w => w.id === data.wordId);
-                    if (word) {
+                    if (word && (!wordOfTheDay || wordOfTheDay.id !== word.id)) {
+                        console.log('Word of the Day updated:', word.word);
                         wordOfTheDay = word;
                         displayWordOfTheDay();
-                    } else {
-                        // Word not found, generate new one
-                        generateAndSaveWordOfTheDay();
                     }
-                } else {
-                    // Generate new word for today
-                    generateAndSaveWordOfTheDay();
                 }
             });
         } catch (error) {
@@ -682,7 +699,7 @@ async function removeFromQuickList(i){quickAddList.splice(i,1);await saveQuickAd
 function searchWordsForQuickAdd(){const s=document.getElementById('quickAddSearch').value.toLowerCase().trim(),r=document.getElementById('quickAddSearchResults'),w=document.getElementById('quickAddWarning');if(!s){r.innerHTML='';w.style.display='none';return}const a=quickAddList.find(x=>x.toLowerCase()===s);if(a){r.innerHTML='';w.textContent='⚠️ This word is already in the quick list';w.style.display='block';return}const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));if(m.length===0){r.innerHTML='<div class="no-results">No matching words found in dictionary</div>';w.style.display='none'}else{r.innerHTML=m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${i.word.replace(/'/g,"\\'")}')"><div class="quick-add-result-word">${i.word}</div><div class="quick-add-result-definition">${p}</div></div>`}).join('');w.textContent='⚠️ These words already exist in the dictionary';w.style.display='block'}}
 function selectQuickAddWord(w){document.getElementById('quickAddSearch').value=w;document.getElementById('quickAddSearchResults').innerHTML=''}
 async function refreshQuickList(){if(isFirebaseConfigured){try{const q=await database.ref('quickAddList').once('value'),d=q.val();console.log('Manual refresh - Quick list from Firebase:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));displayQuickAddList();alert('Quick list refreshed! Found '+quickAddList.length+' word(s)')}catch(e){console.error('Refresh error:',e);alert('Failed to refresh. Error: '+e.message)}}else alert('Firebase not connected')}
-async function loadDictionary(){if(isFirebaseConfigured){try{const s=await database.ref('dictionary').once('value'),d=s.val();dictionary=d?Object.values(d):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));const q=await database.ref('quickAddList').once('value'),qd=q.val();console.log('Quick list loaded from Firebase:',qd);if(qd&&Array.isArray(qd))quickAddList=qd;else if(qd&&typeof qd==='object')quickAddList=Object.values(qd);else quickAddList=[];console.log('Quick list after processing:',quickAddList);localStorage.setItem('quickAddList',JSON.stringify(quickAddList))}catch(e){console.error('Firebase load error:',e);dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}isLoading=false;isAdmin?displayWords():initializeWordOfTheDay();displayQuickAddList()}
+async function loadDictionary(){if(isFirebaseConfigured){try{const s=await database.ref('dictionary').once('value'),d=s.val();dictionary=d?Object.values(d):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));const q=await database.ref('quickAddList').once('value'),qd=q.val();console.log('Quick list loaded from Firebase:',qd);if(qd&&Array.isArray(qd))quickAddList=qd;else if(qd&&typeof qd==='object')quickAddList=Object.values(qd);else quickAddList=[];console.log('Quick list after processing:',quickAddList);localStorage.setItem('quickAddList',JSON.stringify(quickAddList))}catch(e){console.error('Firebase load error:',e);dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}isLoading=false;console.log('Dictionary loaded, count:', dictionary.length);if(isAdmin){displayWords()}else{setTimeout(()=>initializeWordOfTheDay(),100)}displayQuickAddList()}
 async function saveDictionary(){localStorage.setItem('dictionary',JSON.stringify(dictionary));if(isFirebaseConfigured){try{const u={};dictionary.forEach(w=>u[w.id]=w);await database.ref('dictionary').set(u)}catch(e){alert('Failed to save to cloud. Data saved locally.')}}}
 async function saveQuickAddList(){console.log('Saving quick list:',quickAddList);localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isFirebaseConfigured){try{database.ref('quickAddList').off('value');await database.ref('quickAddList').set(quickAddList);console.log('Quick list saved to Firebase successfully');setTimeout(()=>{database.ref('quickAddList').on('value',s=>{const d=s.val();console.log('Real-time update received for quick list:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isAdmin)displayQuickAddList()})},500)}catch(e){console.error('Failed to save quick list to cloud:',e);database.ref('quickAddList').on('value',s=>{const d=s.val();console.log('Real-time update received for quick list:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isAdmin)displayQuickAddList()})}}}
 function checkAdminStatus(){const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle');if(isAdmin){sb.style.display='block';mc.classList.remove('full-width');at.textContent='🔓';wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});am.forEach(e=>e.style.display='block');sr.style.display='none';ht.textContent="Murali's Dictionary"}else{sb.style.display='none';mc.classList.add('full-width');at.textContent='🔒';wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});am.forEach(e=>e.style.display='none');sr.style.display='none';initializeWordOfTheDay();ht.innerHTML="The Only Dictionary<br>You Ever Need"}}
