@@ -160,7 +160,7 @@
                 <div id="randomWordDisplay"></div>
                 <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
             </div>
-            <div class="sidebar admin-mode" id="addWordSection">
+            <div class="sidebar admin-mode" id="sidebar">
                 <h2 class="section-title">Add New Word</h2>
                 <form id="addWordForm">
                     <div class="form-group">
@@ -190,9 +190,7 @@
                     </div>
                     <button type="submit" class="btn">Add to Dictionary</button>
                 </form>
-            </div>
-            <div class="sidebar admin-mode" id="quickAddSection">
-                <h2 class="section-title">Quick Add <span id="quickAddCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
+                <h2 class="section-title" style="margin-top:40px">Quick Add <span id="quickAddCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
                 <div class="form-group">
                     <label for="quickAddSearch">Search Word</label>
                     <input type="text" id="quickAddSearch" placeholder="Type a word to search..." oninput="searchWordsForQuickAdd()" onkeypress="if(event.key==='Enter'){event.preventDefault();addToQuickList()}">
@@ -204,19 +202,12 @@
                 </div>
                 <div id="quickAddSearchResults"></div>
                 <div id="quickAddList"><div class="quick-add-empty">No words in quick list yet</div></div>
-            </div>
-            <div class="sidebar admin-mode" id="editWordSection">
-                <h2 class="section-title">Edit Existing Word <span id="dictionaryCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
+                <h2 class="section-title" style="margin-top:40px">Edit Existing Word <span id="dictionaryCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
                 <div class="form-group"><label for="editSearchInput">Search Word to Edit</label><input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()"></div>
                 <div id="editSearchResults"></div>
-            </div>
-            <div class="sidebar admin-mode" id="definitionSearchSection">
-                <h2 class="section-title">Existing Definition</h2>
+                <h2 class="section-title" style="margin-top:40px">Existing Definition</h2>
                 <div class="form-group"><label for="definitionSearchInput">Search for Definition</label><input type="text" id="definitionSearchInput" placeholder="Type to search..." oninput="searchDefinitions()"></div>
                 <div id="definitionSearchResults"></div>
-            </div>
-            <div class="sidebar admin-mode" id="utilitySection">
-                <h2 class="section-title">Utilities</h2>
                 <div class="utility-buttons">
                     <button class="btn btn-secondary" onclick="exportData()">Export Dictionary</button>
                     <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Dictionary</button>
@@ -241,8 +232,92 @@
     <script>
 const firebaseConfig={apiKey:"AIzaSyCOoetJxVn8IJIZayXp-guze0RcZbGbPQs",authDomain:"murali-dictionary.firebaseapp.com",databaseURL:"https://murali-dictionary-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"murali-dictionary",storageBucket:"murali-dictionary.firebasestorage.app",messagingSenderId:"486882382297",appId:"1:486882382297:web:ec61829f79d32597f449c8"};
 let database,isFirebaseConfigured=false,dictionary=[],isAdmin=sessionStorage.getItem('isAdmin')==='true',ADMIN_PASSWORD='7412',isLoading=true,selectedAutocompleteIndex=-1,quickAddList=[],searchTimeout;
+
+// Word of the Day functionality
+let wordOfTheDay = null;
+let currentDayString = '';
+
+// Get today's date string (YYYY-MM-DD)
+function getTodayString() {
+    const now = new Date();
+    return now.getFullYear() + '-' + 
+           String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+           String(now.getDate()).padStart(2, '0');
+}
+
+// Initialize Word of the Day
+async function initializeWordOfTheDay() {
+    currentDayString = getTodayString();
+    
+    try {
+        // Try to get from shared storage first
+        const result = await window.storage.get('word-of-the-day', true);
+        
+        if (result && result.value) {
+            const stored = JSON.parse(result.value);
+            
+            // Check if it's today's word
+            if (stored.date === currentDayString && stored.wordId) {
+                // Find the word in dictionary
+                const word = dictionary.find(w => w.id === stored.wordId);
+                if (word) {
+                    wordOfTheDay = word;
+                    displayWordOfTheDay();
+                    return;
+                }
+            }
+        }
+        
+        // If no valid word found, set a new one
+        await setNewWordOfTheDay();
+        
+    } catch (error) {
+        console.log('Storage not available, using random word:', error);
+        // Fallback to local random word
+        displayRandomWord();
+    }
+}
+
+// Set a new Word of the Day
+async function setNewWordOfTheDay() {
+    if (dictionary.length === 0) {
+        displayRandomWord();
+        return;
+    }
+    
+    // Generate a consistent random word based on the date
+    const dateNum = new Date(currentDayString).getTime();
+    const randomIndex = Math.abs(dateNum) % dictionary.length;
+    wordOfTheDay = dictionary[randomIndex];
+    
+    try {
+        // Save to shared storage
+        const data = {
+            date: currentDayString,
+            wordId: wordOfTheDay.id
+        };
+        await window.storage.set('word-of-the-day', JSON.stringify(data), true);
+    } catch (error) {
+        console.log('Could not save word of the day:', error);
+    }
+    
+    displayWordOfTheDay();
+}
+
+// Display the Word of the Day
+function displayWordOfTheDay() {
+    const rd = document.getElementById('randomWordDisplay');
+    
+    if (wordOfTheDay) {
+        rd.innerHTML = `<div class="word-entry"><div class="word-definition">${wordOfTheDay.definition}</div></div>`;
+    } else {
+        displayRandomWord();
+    }
+}
+
 try{firebase.initializeApp(firebaseConfig);database=firebase.database();isFirebaseConfigured=true;database.ref('quickAddList').on('value',snapshot=>{const data=snapshot.val();console.log('Real-time update received for quick list:',data);if(data&&Array.isArray(data))quickAddList=data;else if(data&&typeof data==='object')quickAddList=Object.values(data);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isAdmin)displayQuickAddList()})}catch(error){console.error("Firebase error:",error)}
-loadDictionary();checkAdminStatus();
+loadDictionary();
+checkAdminStatus();
 
 // Markdown-style formatting handler
 function handleMarkdownFormatting(e) {
@@ -600,35 +675,29 @@ async function removeFromQuickList(i){quickAddList.splice(i,1);await saveQuickAd
 function searchWordsForQuickAdd(){const s=document.getElementById('quickAddSearch').value.toLowerCase().trim(),r=document.getElementById('quickAddSearchResults'),w=document.getElementById('quickAddWarning');if(!s){r.innerHTML='';w.style.display='none';return}const a=quickAddList.find(x=>x.toLowerCase()===s);if(a){r.innerHTML='';w.textContent='⚠️ This word is already in the quick list';w.style.display='block';return}const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));if(m.length===0){r.innerHTML='<div class="no-results">No matching words found in dictionary</div>';w.style.display='none'}else{r.innerHTML=m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${i.word.replace(/'/g,"\\'")}')"><div class="quick-add-result-word">${i.word}</div><div class="quick-add-result-definition">${p}</div></div>`}).join('');w.textContent='⚠️ These words already exist in the dictionary';w.style.display='block'}}
 function selectQuickAddWord(w){document.getElementById('quickAddSearch').value=w;document.getElementById('quickAddSearchResults').innerHTML=''}
 async function refreshQuickList(){if(isFirebaseConfigured){try{const q=await database.ref('quickAddList').once('value'),d=q.val();console.log('Manual refresh - Quick list from Firebase:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));displayQuickAddList();alert('Quick list refreshed! Found '+quickAddList.length+' word(s)')}catch(e){console.error('Refresh error:',e);alert('Failed to refresh. Error: '+e.message)}}else alert('Firebase not connected')}
-async function loadDictionary(){if(isFirebaseConfigured){try{const s=await database.ref('dictionary').once('value'),d=s.val();dictionary=d?Object.values(d):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));const q=await database.ref('quickAddList').once('value'),qd=q.val();console.log('Quick list loaded from Firebase:',qd);if(qd&&Array.isArray(qd))quickAddList=qd;else if(qd&&typeof qd==='object')quickAddList=Object.values(qd);else quickAddList=[];console.log('Quick list after processing:',quickAddList);localStorage.setItem('quickAddList',JSON.stringify(quickAddList))}catch(e){console.error('Firebase load error:',e);dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}isLoading=false;isAdmin?displayWords():displayRandomWord();displayQuickAddList()}
+async function loadDictionary(){if(isFirebaseConfigured){try{const s=await database.ref('dictionary').once('value'),d=s.val();dictionary=d?Object.values(d):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));const q=await database.ref('quickAddList').once('value'),qd=q.val();console.log('Quick list loaded from Firebase:',qd);if(qd&&Array.isArray(qd))quickAddList=qd;else if(qd&&typeof qd==='object')quickAddList=Object.values(qd);else quickAddList=[];console.log('Quick list after processing:',quickAddList);localStorage.setItem('quickAddList',JSON.stringify(quickAddList))}catch(e){console.error('Firebase load error:',e);dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}isLoading=false;isAdmin?displayWords():await initializeWordOfTheDay();displayQuickAddList()}
 async function saveDictionary(){localStorage.setItem('dictionary',JSON.stringify(dictionary));if(isFirebaseConfigured){try{const u={};dictionary.forEach(w=>u[w.id]=w);await database.ref('dictionary').set(u)}catch(e){alert('Failed to save to cloud. Data saved locally.')}}}
 async function saveQuickAddList(){console.log('Saving quick list:',quickAddList);localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isFirebaseConfigured){try{database.ref('quickAddList').off('value');await database.ref('quickAddList').set(quickAddList);console.log('Quick list saved to Firebase successfully');setTimeout(()=>{database.ref('quickAddList').on('value',s=>{const d=s.val();console.log('Real-time update received for quick list:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isAdmin)displayQuickAddList()})},500)}catch(e){console.error('Failed to save quick list to cloud:',e);database.ref('quickAddList').on('value',s=>{const d=s.val();console.log('Real-time update received for quick list:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isAdmin)displayQuickAddList()})}}}
-function checkAdminStatus(){const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle');if(isAdmin){sb.style.display='block';mc.classList.remove('full-width');at.textContent='🔓';wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});am.forEach(e=>e.style.display='block');sr.style.display='none';ht.textContent="Murali's Dictionary"}else{sb.style.display='none';mc.classList.add('full-width');at.textContent='🔒';wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});am.forEach(e=>e.style.display='none');sr.style.display='none';displayRandomWord();ht.innerHTML="The Only Dictionary<br>You Ever Need"}}
-function showPasswordModal(){if(isAdmin){isAdmin=false;sessionStorage.setItem('isAdmin','false');checkAdminStatus();displayRandomWord()}else{document.getElementById('passwordModal').classList.add('show');document.getElementById('passwordInput').focus()}}
+function checkAdminStatus(){const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle');if(isAdmin){sb.style.display='block';mc.classList.remove('full-width');at.textContent='🔓';wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});am.forEach(e=>e.style.display='block');sr.style.display='none';ht.textContent="Murali's Dictionary"}else{sb.style.display='none';mc.classList.add('full-width');at.textContent='🔒';wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});am.forEach(e=>e.style.display='none');sr.style.display='none';initializeWordOfTheDay();ht.innerHTML="The Only Dictionary<br>You Ever Need"}}
+function showPasswordModal(){if(isAdmin){isAdmin=false;sessionStorage.setItem('isAdmin','false');checkAdminStatus();initializeWordOfTheDay()}else{document.getElementById('passwordModal').classList.add('show');document.getElementById('passwordInput').focus()}}
 function hidePasswordModal(){document.getElementById('passwordModal').classList.remove('show');document.getElementById('passwordInput').value=''}
 function checkPassword(){const p=document.getElementById('passwordInput').value;if(p===ADMIN_PASSWORD){isAdmin=true;sessionStorage.setItem('isAdmin','true');hidePasswordModal();checkAdminStatus();displayWords();displayQuickAddList()}else{alert('Incorrect password!');document.getElementById('passwordInput').value='';document.getElementById('passwordInput').focus()}}
 document.getElementById('addWordForm').addEventListener('submit',async function(e){e.preventDefault();const w=document.getElementById('wordInput').value.trim(),de=document.getElementById('definitionInput'),d=de.innerHTML.trim();if(!d||d==='<br>'){alert('Please enter a definition');return}const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());if(ei!==-1){if(confirm(`"${w}" already exists. Update it?`)){dictionary[ei].definition=d;dictionary[ei].dateModified=new Date().toISOString();
-// Instant UI update
 document.getElementById('wordInput').value='';de.innerHTML='';displayWords();
-// Scroll to Quick Add section
 setTimeout(() => {
 const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
 if (quickAddSection) {
 quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 }, 100);
-// Then save in background
 saveDictionary()}}else{const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};dictionary.push(newWord);
-// Instant UI update
 document.getElementById('wordInput').value='';de.innerHTML='';displayWords();
-// Scroll to Quick Add section
 setTimeout(() => {
 const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
 if (quickAddSection) {
 quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 }, 100);
-// Then save in background
 saveDictionary()}});
 function showAutocomplete(s){const d=document.getElementById('autocompleteDropdown');if(!s){d.classList.remove('show');return}const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());if(as&&!bs)return-1;if(!as&&bs)return 1;return a.word.localeCompare(b.word)}).slice(0,5);if(m.length===0){d.classList.remove('show');return}d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');d.classList.add('show');selectedAutocompleteIndex=-1}
 function selectAutocompleteItem(w){document.getElementById('searchInput').value=w;document.getElementById('autocompleteDropdown').classList.remove('show');const s=w.toLowerCase();isAdmin?displayWords(s):displaySearchResults(s)}
