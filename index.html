@@ -407,27 +407,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Show loading immediately for non-admin users
-    if (!isAdmin) {
-        const rd = document.getElementById('randomWordDisplay');
-        rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
-    }
-    
     // Load from localStorage immediately
     const hasLocalData = loadFromLocalStorage();
     
     // Update UI immediately
     checkAdminStatus();
     
-    // If we have data, display it right away
-    if (hasLocalData && !isAdmin) {
-        displayRandomWord();
-    } else if (isAdmin) {
+    // Display content based on what we have
+    if (isAdmin) {
         displayWords();
         displayQuickAddList();
+    } else {
+        // Only show loading if we truly have no data
+        if (hasLocalData) {
+            displayRandomWord();
+        } else {
+            const rd = document.getElementById('randomWordDisplay');
+            rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
+        }
     }
     
-    // Initialize Firebase in background - with shorter delay for first-time loads
+    // Initialize Firebase in background
     setTimeout(initializeFirebase, hasLocalData ? 100 : 10);
 });
 
