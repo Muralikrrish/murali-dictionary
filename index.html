@@ -245,40 +245,45 @@ function getTodayString() {
            String(now.getDate()).padStart(2, '0');
 }
 
-// Initialize Word of the Day
+// Initialize Word of the Day from Firebase
 async function initializeWordOfTheDay() {
     currentDayString = getTodayString();
     
+    if (!isFirebaseConfigured) {
+        console.log('Firebase not configured, using random word');
+        displayRandomWord();
+        return;
+    }
+    
     try {
-        // Try to get from shared storage first
-        const result = await window.storage.get('word-of-the-day', true);
+        // Get word of the day from Firebase
+        const snapshot = await database.ref('wordOfTheDay').once('value');
+        const stored = snapshot.val();
         
-        if (result && result.value) {
-            const stored = JSON.parse(result.value);
-            
-            // Check if it's today's word
-            if (stored.date === currentDayString && stored.wordId) {
-                // Find the word in dictionary
-                const word = dictionary.find(w => w.id === stored.wordId);
-                if (word) {
-                    wordOfTheDay = word;
-                    displayWordOfTheDay();
-                    return;
-                }
+        console.log('Word of the day from Firebase:', stored);
+        
+        // Check if it's today's word and it exists in dictionary
+        if (stored && stored.date === currentDayString && stored.wordId) {
+            const word = dictionary.find(w => w.id === stored.wordId);
+            if (word) {
+                wordOfTheDay = word;
+                console.log('Using existing word of the day:', word.word);
+                displayWordOfTheDay();
+                return;
             }
         }
         
-        // If no valid word found, set a new one
+        // If no valid word found or date changed, set a new one
+        console.log('Setting new word of the day');
         await setNewWordOfTheDay();
         
     } catch (error) {
-        console.log('Storage not available, using random word:', error);
-        // Fallback to local random word
+        console.error('Error loading word of the day:', error);
         displayRandomWord();
     }
 }
 
-// Set a new Word of the Day
+// Set a new Word of the Day and save to Firebase
 async function setNewWordOfTheDay() {
     if (dictionary.length === 0) {
         displayRandomWord();
@@ -290,15 +295,21 @@ async function setNewWordOfTheDay() {
     const randomIndex = Math.abs(dateNum) % dictionary.length;
     wordOfTheDay = dictionary[randomIndex];
     
-    try {
-        // Save to shared storage
-        const data = {
-            date: currentDayString,
-            wordId: wordOfTheDay.id
-        };
-        await window.storage.set('word-of-the-day', JSON.stringify(data), true);
-    } catch (error) {
-        console.log('Could not save word of the day:', error);
+    console.log('Selected word of the day:', wordOfTheDay.word);
+    
+    if (isFirebaseConfigured) {
+        try {
+            // Save to Firebase
+            const data = {
+                date: currentDayString,
+                wordId: wordOfTheDay.id,
+                word: wordOfTheDay.word
+            };
+            await database.ref('wordOfTheDay').set(data);
+            console.log('Word of the day saved to Firebase');
+        } catch (error) {
+            console.error('Could not save word of the day:', error);
+        }
     }
     
     displayWordOfTheDay();
@@ -315,7 +326,26 @@ function displayWordOfTheDay() {
     }
 }
 
-try{firebase.initializeApp(firebaseConfig);database=firebase.database();isFirebaseConfigured=true;database.ref('quickAddList').on('value',snapshot=>{const data=snapshot.val();console.log('Real-time update received for quick list:',data);if(data&&Array.isArray(data))quickAddList=data;else if(data&&typeof data==='object')quickAddList=Object.values(data);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isAdmin)displayQuickAddList()})}catch(error){console.error("Firebase error:",error)}
+try{
+    firebase.initializeApp(firebaseConfig);
+    database=firebase.database();
+    isFirebaseConfigured=true;
+    console.log('Firebase initialized successfully');
+    
+    database.ref('quickAddList').on('value',snapshot=>{
+        const data=snapshot.val();
+        console.log('Real-time update received for quick list:',data);
+        if(data&&Array.isArray(data))quickAddList=data;
+        else if(data&&typeof data==='object')quickAddList=Object.values(data);
+        else quickAddList=[];
+        localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
+        if(isAdmin)displayQuickAddList()
+    });
+}catch(error){
+    console.error("Firebase error:",error);
+    isFirebaseConfigured=false;
+}
+
 loadDictionary();
 checkAdminStatus();
 
@@ -328,40 +358,33 @@ function handleMarkdownFormatting(e) {
         const range = selection.getRangeAt(0);
         const node = range.startContainer;
         
-        // Get the text content before cursor
         let textBeforeCursor = '';
         if (node.nodeType === Node.TEXT_NODE) {
             textBeforeCursor = node.textContent.substring(0, range.startOffset);
         }
         
-        // Check for inline bold: **text** followed by space
         const inlineBoldMatch = textBeforeCursor.match(/\*\*([^\*]+)\*\*$/);
         if (inlineBoldMatch) {
             e.preventDefault();
             const boldText = inlineBoldMatch[1];
             const matchLength = inlineBoldMatch[0].length;
             
-            // Remove the **text** and insert bold
             const textNode = node;
             const startPos = range.startOffset - matchLength;
             
             textNode.textContent = textNode.textContent.substring(0, startPos) + textNode.textContent.substring(range.startOffset);
             
-            // Create bold element
             const boldElement = document.createElement('strong');
             boldElement.textContent = boldText;
             
-            // Insert bold element
             const tempRange = document.createRange();
             tempRange.setStart(textNode, startPos);
             tempRange.collapse(true);
             tempRange.insertNode(boldElement);
             
-            // Add space after bold
             const spaceNode = document.createTextNode(' ');
             boldElement.parentNode.insertBefore(spaceNode, boldElement.nextSibling);
             
-            // Move cursor after space
             const newRange = document.createRange();
             newRange.setStartAfter(spaceNode);
             newRange.collapse(true);
@@ -371,39 +394,33 @@ function handleMarkdownFormatting(e) {
             return;
         }
         
-        // Check for markdown patterns at the start of the line
         const lineStart = getLineStart(node, range.startOffset);
         const lineText = lineStart.text;
         
-        // Heading 1: # 
         if (lineText === '#') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h1');
             return;
         }
         
-        // Heading 2: ##
         if (lineText === '##') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h2');
             return;
         }
         
-        // Heading 3: ###
         if (lineText === '###') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h3');
             return;
         }
         
-        // Heading 4: ####
         if (lineText === '####') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h4');
             return;
         }
         
-        // Bold at start: **
         if (lineText === '**') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'bold');
@@ -413,15 +430,11 @@ function handleMarkdownFormatting(e) {
 }
 
 function getLineStart(node, offset) {
-    let currentNode = node;
-    let currentOffset = offset;
-    
     if (node.nodeType === Node.TEXT_NODE) {
         const textBefore = node.textContent.substring(0, offset);
         const lastNewline = textBefore.lastIndexOf('\n');
         
         if (lastNewline === -1) {
-            // Check if we're at the start of the editor
             let parent = node.parentNode;
             while (parent && parent.id !== 'definitionInput') {
                 const prevSibling = getPreviousTextContent(parent);
@@ -458,48 +471,38 @@ function replaceMarkdownWithFormat(node, startOffset, length, format) {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
     
-    // Remove the markdown syntax
     if (node.nodeType === Node.TEXT_NODE) {
         const beforeText = node.textContent.substring(0, startOffset);
         const afterText = node.textContent.substring(range.startOffset);
         node.textContent = beforeText + afterText;
         
-        // Set cursor position after deletion
         range.setStart(node, startOffset);
         range.collapse(true);
     }
     
-    // Apply the formatting
     if (format === 'bold') {
         document.execCommand('bold', false, null);
     } else {
         document.execCommand('formatBlock', false, format);
     }
     
-    // Update dropdown
     updateFormatDropdown();
     
     editor.focus();
 }
 
-// Handle paste events to convert markdown
 function handlePaste(e) {
-    // For mobile compatibility, don't prevent default on some browsers
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (!isMobile) {
         e.preventDefault();
         
-        // Get pasted text
         const text = (e.clipboardData || window.clipboardData).getData('text');
         
-        // Convert markdown to HTML
         const html = convertMarkdownToHTML(text);
         
-        // Insert the HTML
         document.execCommand('insertHTML', false, html);
     }
-    // On mobile, let the paste happen normally, then convert after a short delay
     else {
         setTimeout(() => {
             convertExistingMarkdown();
@@ -507,27 +510,21 @@ function handlePaste(e) {
     }
 }
 
-// Convert existing markdown in the editor
 function convertExistingMarkdown() {
     const editor = document.getElementById('definitionInput');
     const currentHTML = editor.innerHTML;
     
-    // Get text content (strip existing HTML)
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = currentHTML;
     const text = tempDiv.textContent || tempDiv.innerText || '';
     
-    // Convert markdown to HTML
     const html = convertMarkdownToHTML(text);
     
-    // Set the new HTML
     editor.innerHTML = html;
     
-    // Place cursor at end
     const range = document.createRange();
     const sel = window.getSelection();
     
-    // Find the last text node
     const lastNode = getLastNode(editor);
     if (lastNode) {
         range.setStartAfter(lastNode);
@@ -547,7 +544,6 @@ function getLastNode(node) {
 }
 
 function convertMarkdownToHTML(text) {
-    // Split into lines
     const lines = text.split('\n');
     let html = '';
     let inParagraph = false;
@@ -558,9 +554,7 @@ function convertMarkdownToHTML(text) {
         let processedLine = line;
         let isHeading = false;
         
-        // Check for headings ONLY at start of line with space after #
         if (/^####\s/.test(processedLine)) {
-            // Close any open paragraph
             if (inParagraph && paragraphContent.trim()) {
                 html += '<p>' + paragraphContent + '</p>';
                 paragraphContent = '';
@@ -599,25 +593,18 @@ function convertMarkdownToHTML(text) {
         }
         
         if (!isHeading) {
-            // Process inline markdown (bold, italic, etc.)
-            // Bold: **text** - use a more robust pattern that handles any characters inside
             processedLine = processedLine.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
             
-            // Italic: *text* (but not **) - match single asterisks not followed/preceded by another asterisk
             processedLine = processedLine.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
             
-            // Handle paragraph content
             if (processedLine.trim()) {
                 if (inParagraph) {
-                    // Add line break within paragraph
                     paragraphContent += '<br>' + processedLine;
                 } else {
-                    // Start new paragraph
                     inParagraph = true;
                     paragraphContent = processedLine;
                 }
             } else {
-                // Empty line closes paragraph
                 if (inParagraph && paragraphContent.trim()) {
                     html += '<p>' + paragraphContent + '</p>';
                     paragraphContent = '';
@@ -627,7 +614,6 @@ function convertMarkdownToHTML(text) {
         }
     }
     
-    // Close any remaining paragraph
     if (inParagraph && paragraphContent.trim()) {
         html += '<p>' + paragraphContent + '</p>';
     }
@@ -635,7 +621,6 @@ function convertMarkdownToHTML(text) {
     return html;
 }
 
-// Add event listener for markdown formatting
 document.addEventListener('DOMContentLoaded', function() {
     const editor = document.getElementById('definitionInput');
     editor.addEventListener('keydown', handleMarkdownFormatting);
@@ -644,9 +629,7 @@ document.addEventListener('DOMContentLoaded', function() {
     editor.addEventListener('keyup', updateFormatDropdown);
     editor.addEventListener('focus', updateFormatDropdown);
     
-    // Scroll to "Add New Word" section when user starts typing or pasting
     editor.addEventListener('input', function(e) {
-        // Only scroll if user is typing (not on initial load)
         if (e.inputType) {
             scrollToAddSection();
         }
@@ -669,52 +652,403 @@ function formatHeading(tag){const d=document.getElementById('definitionInput');i
 function updateFormatDropdown(){const s=window.getSelection();if(s.rangeCount===0)return;const n=s.anchorNode,p=n.nodeType===3?n.parentNode:n;let b=p;while(b&&!['H1','H2','H3','H4','H5','H6','P','DIV'].includes(b.tagName))b=b.parentElement;const d=document.getElementById('formatDropdown');if(b){const t=b.tagName.toLowerCase();d.value=['h1','h2','h3','h4','h5','h6'].includes(t)?t:''}}
 
 function checkExistingWord(){const w=document.getElementById('wordInput').value.trim(),warn=document.getElementById('wordWarning');warn.style.display=w&&dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase())?'block':'none'}
+
 async function addToQuickList(){const i=document.getElementById('quickAddSearch'),w=i.value.trim(),warn=document.getElementById('quickAddWarning');if(!w)return;const e=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase()),a=quickAddList.find(x=>x.toLowerCase()===w.toLowerCase());if(e){warn.textContent='⚠️ This word already exists in the dictionary';warn.style.display='block';return}if(a){warn.textContent='⚠️ This word is already in the quick list';warn.style.display='block';return}quickAddList.unshift(w);i.value='';warn.style.display='none';document.getElementById('quickAddSearchResults').innerHTML='';await saveQuickAddList();displayQuickAddList()}
+
 function displayQuickAddList(){const c=document.getElementById('quickAddList'),cnt=document.getElementById('quickAddCount');cnt.textContent=`(${quickAddList.length})`;c.innerHTML=quickAddList.length===0?'<div class="quick-add-empty">No words in quick list yet</div>':quickAddList.map((w,i)=>`<div class="quick-add-item"><span class="quick-add-word">${w}</span><button class="quick-add-remove" onclick="removeFromQuickList(${i})">Remove</button></div>`).join('')}
+
 async function removeFromQuickList(i){quickAddList.splice(i,1);await saveQuickAddList();displayQuickAddList()}
+
 function searchWordsForQuickAdd(){const s=document.getElementById('quickAddSearch').value.toLowerCase().trim(),r=document.getElementById('quickAddSearchResults'),w=document.getElementById('quickAddWarning');if(!s){r.innerHTML='';w.style.display='none';return}const a=quickAddList.find(x=>x.toLowerCase()===s);if(a){r.innerHTML='';w.textContent='⚠️ This word is already in the quick list';w.style.display='block';return}const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));if(m.length===0){r.innerHTML='<div class="no-results">No matching words found in dictionary</div>';w.style.display='none'}else{r.innerHTML=m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${i.word.replace(/'/g,"\\'")}')"><div class="quick-add-result-word">${i.word}</div><div class="quick-add-result-definition">${p}</div></div>`}).join('');w.textContent='⚠️ These words already exist in the dictionary';w.style.display='block'}}
+
 function selectQuickAddWord(w){document.getElementById('quickAddSearch').value=w;document.getElementById('quickAddSearchResults').innerHTML=''}
+
 async function refreshQuickList(){if(isFirebaseConfigured){try{const q=await database.ref('quickAddList').once('value'),d=q.val();console.log('Manual refresh - Quick list from Firebase:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));displayQuickAddList();alert('Quick list refreshed! Found '+quickAddList.length+' word(s)')}catch(e){console.error('Refresh error:',e);alert('Failed to refresh. Error: '+e.message)}}else alert('Firebase not connected')}
-async function loadDictionary(){if(isFirebaseConfigured){try{const s=await database.ref('dictionary').once('value'),d=s.val();dictionary=d?Object.values(d):[];localStorage.setItem('dictionary',JSON.stringify(dictionary));const q=await database.ref('quickAddList').once('value'),qd=q.val();console.log('Quick list loaded from Firebase:',qd);if(qd&&Array.isArray(qd))quickAddList=qd;else if(qd&&typeof qd==='object')quickAddList=Object.values(qd);else quickAddList=[];console.log('Quick list after processing:',quickAddList);localStorage.setItem('quickAddList',JSON.stringify(quickAddList))}catch(e){console.error('Firebase load error:',e);dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}}else{dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[]}isLoading=false;isAdmin?displayWords():await initializeWordOfTheDay();displayQuickAddList()}
-async function saveDictionary(){localStorage.setItem('dictionary',JSON.stringify(dictionary));if(isFirebaseConfigured){try{const u={};dictionary.forEach(w=>u[w.id]=w);await database.ref('dictionary').set(u)}catch(e){alert('Failed to save to cloud. Data saved locally.')}}}
-async function saveQuickAddList(){console.log('Saving quick list:',quickAddList);localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isFirebaseConfigured){try{database.ref('quickAddList').off('value');await database.ref('quickAddList').set(quickAddList);console.log('Quick list saved to Firebase successfully');setTimeout(()=>{database.ref('quickAddList').on('value',s=>{const d=s.val();console.log('Real-time update received for quick list:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isAdmin)displayQuickAddList()})},500)}catch(e){console.error('Failed to save quick list to cloud:',e);database.ref('quickAddList').on('value',s=>{const d=s.val();console.log('Real-time update received for quick list:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];localStorage.setItem('quickAddList',JSON.stringify(quickAddList));if(isAdmin)displayQuickAddList()})}}}
-function checkAdminStatus(){const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle');if(isAdmin){sb.style.display='block';mc.classList.remove('full-width');at.textContent='🔓';wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});am.forEach(e=>e.style.display='block');sr.style.display='none';ht.textContent="Murali's Dictionary"}else{sb.style.display='none';mc.classList.add('full-width');at.textContent='🔒';wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});am.forEach(e=>e.style.display='none');sr.style.display='none';initializeWordOfTheDay();ht.innerHTML="The Only Dictionary<br>You Ever Need"}}
-function showPasswordModal(){if(isAdmin){isAdmin=false;sessionStorage.setItem('isAdmin','false');checkAdminStatus();initializeWordOfTheDay()}else{document.getElementById('passwordModal').classList.add('show');document.getElementById('passwordInput').focus()}}
-function hidePasswordModal(){document.getElementById('passwordModal').classList.remove('show');document.getElementById('passwordInput').value=''}
-function checkPassword(){const p=document.getElementById('passwordInput').value;if(p===ADMIN_PASSWORD){isAdmin=true;sessionStorage.setItem('isAdmin','true');hidePasswordModal();checkAdminStatus();displayWords();displayQuickAddList()}else{alert('Incorrect password!');document.getElementById('passwordInput').value='';document.getElementById('passwordInput').focus()}}
-document.getElementById('addWordForm').addEventListener('submit',async function(e){e.preventDefault();const w=document.getElementById('wordInput').value.trim(),de=document.getElementById('definitionInput'),d=de.innerHTML.trim();if(!d||d==='<br>'){alert('Please enter a definition');return}const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());if(ei!==-1){if(confirm(`"${w}" already exists. Update it?`)){dictionary[ei].definition=d;dictionary[ei].dateModified=new Date().toISOString();
-document.getElementById('wordInput').value='';de.innerHTML='';displayWords();
-setTimeout(() => {
-const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-if (quickAddSection) {
-quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+async function loadDictionary(){
+    if(isFirebaseConfigured){
+        try{
+            const s=await database.ref('dictionary').once('value'),d=s.val();
+            dictionary=d?Object.values(d):[];
+            localStorage.setItem('dictionary',JSON.stringify(dictionary));
+            
+            const q=await database.ref('quickAddList').once('value'),qd=q.val();
+            console.log('Quick list loaded from Firebase:',qd);
+            if(qd&&Array.isArray(qd))quickAddList=qd;
+            else if(qd&&typeof qd==='object')quickAddList=Object.values(qd);
+            else quickAddList=[];
+            console.log('Quick list after processing:',quickAddList);
+            localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
+        }catch(e){
+            console.error('Firebase load error:',e);
+            dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];
+            quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[];
+        }
+    }else{
+        dictionary=JSON.parse(localStorage.getItem('dictionary'))||[];
+        quickAddList=JSON.parse(localStorage.getItem('quickAddList'))||[];
+    }
+    
+    isLoading=false;
+    
+    if(isAdmin){
+        displayWords();
+    }else{
+        await initializeWordOfTheDay();
+    }
+    
+    displayQuickAddList();
 }
-}, 100);
-saveDictionary()}}else{const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};dictionary.push(newWord);
-document.getElementById('wordInput').value='';de.innerHTML='';displayWords();
-setTimeout(() => {
-const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-if (quickAddSection) {
-quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+async function saveDictionary(){
+    localStorage.setItem('dictionary',JSON.stringify(dictionary));
+    if(isFirebaseConfigured){
+        try{
+            const u={};
+            dictionary.forEach(w=>u[w.id]=w);
+            await database.ref('dictionary').set(u);
+        }catch(e){
+            alert('Failed to save to cloud. Data saved locally.');
+        }
+    }
 }
-}, 100);
-saveDictionary()}});
-function showAutocomplete(s){const d=document.getElementById('autocompleteDropdown');if(!s){d.classList.remove('show');return}const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());if(as&&!bs)return-1;if(!as&&bs)return 1;return a.word.localeCompare(b.word)}).slice(0,5);if(m.length===0){d.classList.remove('show');return}d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');d.classList.add('show');selectedAutocompleteIndex=-1}
-function selectAutocompleteItem(w){document.getElementById('searchInput').value=w;document.getElementById('autocompleteDropdown').classList.remove('show');const s=w.toLowerCase();isAdmin?displayWords(s):displaySearchResults(s)}
-document.getElementById('searchInput').addEventListener('input',function(e){const s=e.target.value.toLowerCase();clearTimeout(searchTimeout);searchTimeout=setTimeout(()=>{showAutocomplete(e.target.value);if(s&&isAdmin)displayWords(s);else if(s&&!isAdmin)displaySearchResults(s);else if(!isAdmin)document.getElementById('searchResultsColumn').style.display='none'},300)});
-document.getElementById('searchInput').addEventListener('keydown',function(e){const d=document.getElementById('autocompleteDropdown'),it=d.querySelectorAll('.autocomplete-item');if(!d.classList.contains('show')||it.length===0)return;if(e.key==='ArrowDown'){e.preventDefault();selectedAutocompleteIndex=Math.min(selectedAutocompleteIndex+1,it.length-1);updateAutocompleteSelection(it)}else if(e.key==='ArrowUp'){e.preventDefault();selectedAutocompleteIndex=Math.max(selectedAutocompleteIndex-1,-1);updateAutocompleteSelection(it)}else if(e.key==='Enter'&&selectedAutocompleteIndex>=0){e.preventDefault();it[selectedAutocompleteIndex].click()}else if(e.key==='Escape'){d.classList.remove('show');selectedAutocompleteIndex=-1}});
-function updateAutocompleteSelection(it){it.forEach((i,idx)=>{if(idx===selectedAutocompleteIndex){i.classList.add('selected');i.scrollIntoView({block:'nearest'})}else i.classList.remove('selected')})}
-document.addEventListener('click',function(e){const sc=document.querySelector('.search-container'),d=document.getElementById('autocompleteDropdown');if(!sc.contains(e.target)){d.classList.remove('show');selectedAutocompleteIndex=-1}});
-function displaySearchResults(s){const wl=document.getElementById('wordsList'),sr=document.getElementById('searchResultsColumn'),m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));if(m.length===0)wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;else wl.innerHTML=m.map(i=>`<div class="word-entry"><div class="word-definition">${i.definition}</div></div>`).join('');sr.style.display='block'}
-function displayRandomWord(){const rd=document.getElementById('randomWordDisplay');if(isLoading){rd.innerHTML='<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading...</p></div>';return}if(dictionary.length===0){rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';return}const ri=Math.floor(Math.random()*dictionary.length),rw=dictionary[ri];rd.innerHTML=`<div class="word-entry"><div class="word-definition">${rw.definition}</div></div>`}
-function showNewRandomWord(){if(dictionary.length>0){displayRandomWord();document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'})}}
-function displayWords(s=''){const wl=document.getElementById('wordsList'),ce=document.getElementById('dictionaryCount');if(ce)ce.textContent=`(${dictionary.length})`;if(isLoading){wl.innerHTML='<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading dictionary...</p></div>';return}let fd=s?dictionary.filter(i=>{const wm=i.word.toLowerCase().includes(s),dt=i.definition.replace(/<[^>]*>/g,'').toLowerCase();return wm||dt.includes(s)}):dictionary;fd.sort((a,b)=>a.word.localeCompare(b.word));wl.innerHTML=fd.length===0?`<div class="no-words"><div class="no-words-icon">📚</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`:fd.map(i=>`<div class="word-entry"><div class="word-title">${i.word}</div><div class="word-definition">${i.definition}</div><div class="word-actions" style="display:${isAdmin?'flex':'none'}"><button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button><button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button></div></div>`).join('')}
-async function editWord(id){const i=dictionary.find(w=>w.id===id);if(i){document.getElementById('wordInput').value=i.word;document.getElementById('definitionInput').innerHTML=i.definition;dictionary=dictionary.filter(w=>w.id!==id);await saveDictionary();displayWords();document.getElementById('editSearchInput').value='';document.getElementById('editSearchResults').innerHTML='';document.getElementById('definitionSearchInput').value='';document.getElementById('definitionSearchResults').innerHTML='';const sb=document.getElementById('sidebar');sb.scrollIntoView({behavior:'smooth',block:'start'})}}
-function searchWordsToEdit(){const s=document.getElementById('editSearchInput').value.toLowerCase().trim(),r=document.getElementById('editSearchResults');if(!s){r.innerHTML='';return}const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));r.innerHTML=m.length===0?'<div class="no-results">No matching words found</div>':m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="edit-result-item" onclick="editWord(${i.id})"><div class="edit-result-word">${i.word}</div><div class="edit-result-definition">${p}</div></div>`}).join('')}
-function searchDefinitions(){const s=document.getElementById('definitionSearchInput').value.toLowerCase(),r=document.getElementById('definitionSearchResults');if(!s.trim()){r.innerHTML='';return}const m=dictionary.filter(i=>{const d=i.definition.replace(/<[^>]*>/g,'').toLowerCase();return d.includes(s)}).sort((a,b)=>a.word.localeCompare(b.word));r.innerHTML=m.length===0?'<div class="no-results">No matching definitions found</div>':m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="definition-result-item" onclick="editWord(${i.id})"><div class="definition-result-word">${i.word}</div><div class="definition-result-definition">${p}</div></div>`}).join('')}
-async function deleteWord(id){const i=dictionary.find(w=>w.id===id);if(i&&confirm(`Delete "${i.word}"?`)){dictionary=dictionary.filter(w=>w.id!==id);await saveDictionary();displayWords()}}
-function exportData(){const ds=JSON.stringify(dictionary,null,2),db=new Blob([ds],{type:'application/json'}),u=URL.createObjectURL(db),l=document.createElement('a');l.href=u;l.download=`dictionary_${new Date().toISOString().split('T')[0]}.json`;l.click();URL.revokeObjectURL(u)}
-async function importData(e){const f=e.target.files[0];if(f){const r=new FileReader();r.onload=async function(ev){try{const imp=JSON.parse(ev.target.result);if(Array.isArray(imp)){if(confirm(`Import ${imp.length} words? This will merge with existing entries.`)){imp.forEach(w=>{const ex=dictionary.find(x=>x.word.toLowerCase()===w.word.toLowerCase());if(!ex)dictionary.push(w)});await saveDictionary();displayWords();alert('Import successful!')}}else alert('Invalid file format')}catch(er){alert('Error reading file')}};r.readAsText(f)}e.target.value=''}
+
+async function saveQuickAddList(){
+    console.log('Saving quick list:',quickAddList);
+    localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
+    if(isFirebaseConfigured){
+        try{
+            database.ref('quickAddList').off('value');
+            await database.ref('quickAddList').set(quickAddList);
+            console.log('Quick list saved to Firebase successfully');
+            setTimeout(()=>{
+                database.ref('quickAddList').on('value',s=>{
+                    const d=s.val();
+                    console.log('Real-time update received for quick list:',d);
+                    if(d&&Array.isArray(d))quickAddList=d;
+                    else if(d&&typeof d==='object')quickAddList=Object.values(d);
+                    else quickAddList=[];
+                    localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
+                    if(isAdmin)displayQuickAddList();
+                });
+            },500);
+        }catch(e){
+            console.error('Failed to save quick list to cloud:',e);
+            database.ref('quickAddList').on('value',s=>{
+                const d=s.val();
+                console.log('Real-time update received for quick list:',d);
+                if(d&&Array.isArray(d))quickAddList=d;
+                else if(d&&typeof d==='object')quickAddList=Object.values(d);
+                else quickAddList=[];
+                localStorage.setItem('quickAddList',JSON.stringify(quickAddList));
+                if(isAdmin)displayQuickAddList();
+            });
+        }
+    }
+}
+
+function checkAdminStatus(){
+    const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle');
+    if(isAdmin){
+        sb.style.display='block';
+        mc.classList.remove('full-width');
+        at.textContent='🔓';
+        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});
+        am.forEach(e=>e.style.display='block');
+        sr.style.display='none';
+        ht.textContent="Murali's Dictionary";
+    }else{
+        sb.style.display='none';
+        mc.classList.add('full-width');
+        at.textContent='🔒';
+        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});
+        am.forEach(e=>e.style.display='none');
+        sr.style.display='none';
+        if(!isLoading) initializeWordOfTheDay();
+        ht.innerHTML="The Only Dictionary<br>You Ever Need";
+    }
+}
+
+function showPasswordModal(){
+    if(isAdmin){
+        isAdmin=false;
+        sessionStorage.setItem('isAdmin','false');
+        checkAdminStatus();
+        initializeWordOfTheDay();
+    }else{
+        document.getElementById('passwordModal').classList.add('show');
+        document.getElementById('passwordInput').focus();
+    }
+}
+
+function hidePasswordModal(){
+    document.getElementById('passwordModal').classList.remove('show');
+    document.getElementById('passwordInput').value='';
+}
+
+function checkPassword(){
+    const p=document.getElementById('passwordInput').value;
+    if(p===ADMIN_PASSWORD){
+        isAdmin=true;
+        sessionStorage.setItem('isAdmin','true');
+        hidePasswordModal();
+        checkAdminStatus();
+        displayWords();
+        displayQuickAddList();
+    }else{
+        alert('Incorrect password!');
+        document.getElementById('passwordInput').value='';
+        document.getElementById('passwordInput').focus();
+    }
+}
+
+document.getElementById('addWordForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    const w=document.getElementById('wordInput').value.trim(),de=document.getElementById('definitionInput'),d=de.innerHTML.trim();
+    if(!d||d==='<br>'){
+        alert('Please enter a definition');
+        return;
+    }
+    const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());
+    if(ei!==-1){
+        if(confirm(`"${w}" already exists. Update it?`)){
+            dictionary[ei].definition=d;
+            dictionary[ei].dateModified=new Date().toISOString();
+            document.getElementById('wordInput').value='';
+            de.innerHTML='';
+            displayWords();
+            setTimeout(() => {
+                const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+                if (quickAddSection) {
+                    quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+            saveDictionary();
+        }
+    }else{
+        const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};
+        dictionary.push(newWord);
+        document.getElementById('wordInput').value='';
+        de.innerHTML='';
+        displayWords();
+        setTimeout(() => {
+            const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+            if (quickAddSection) {
+                quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+        saveDictionary();
+    }
+});
+
+function showAutocomplete(s){
+    const d=document.getElementById('autocompleteDropdown');
+    if(!s){
+        d.classList.remove('show');
+        return;
+    }
+    const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{
+        const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());
+        if(as&&!bs)return-1;
+        if(!as&&bs)return 1;
+        return a.word.localeCompare(b.word);
+    }).slice(0,5);
+    if(m.length===0){
+        d.classList.remove('show');
+        return;
+    }
+    d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');
+    d.classList.add('show');
+    selectedAutocompleteIndex=-1;
+}
+
+function selectAutocompleteItem(w){
+    document.getElementById('searchInput').value=w;
+    document.getElementById('autocompleteDropdown').classList.remove('show');
+    const s=w.toLowerCase();
+    isAdmin?displayWords(s):displaySearchResults(s);
+}
+
+document.getElementById('searchInput').addEventListener('input',function(e){
+    const s=e.target.value.toLowerCase();
+    clearTimeout(searchTimeout);
+    searchTimeout=setTimeout(()=>{
+        showAutocomplete(e.target.value);
+        if(s&&isAdmin)displayWords(s);
+        else if(s&&!isAdmin)displaySearchResults(s);
+        else if(!isAdmin)document.getElementById('searchResultsColumn').style.display='none';
+    },300);
+});
+
+document.getElementById('searchInput').addEventListener('keydown',function(e){
+    const d=document.getElementById('autocompleteDropdown'),it=d.querySelectorAll('.autocomplete-item');
+    if(!d.classList.contains('show')||it.length===0)return;
+    if(e.key==='ArrowDown'){
+        e.preventDefault();
+        selectedAutocompleteIndex=Math.min(selectedAutocompleteIndex+1,it.length-1);
+        updateAutocompleteSelection(it);
+    }else if(e.key==='ArrowUp'){
+        e.preventDefault();
+        selectedAutocompleteIndex=Math.max(selectedAutocompleteIndex-1,-1);
+        updateAutocompleteSelection(it);
+    }else if(e.key==='Enter'&&selectedAutocompleteIndex>=0){
+        e.preventDefault();
+        it[selectedAutocompleteIndex].click();
+    }else if(e.key==='Escape'){
+        d.classList.remove('show');
+        selectedAutocompleteIndex=-1;
+    }
+});
+
+function updateAutocompleteSelection(it){
+    it.forEach((i,idx)=>{
+        if(idx===selectedAutocompleteIndex){
+            i.classList.add('selected');
+            i.scrollIntoView({block:'nearest'});
+        }else i.classList.remove('selected');
+    });
+}
+
+document.addEventListener('click',function(e){
+    const sc=document.querySelector('.search-container'),d=document.getElementById('autocompleteDropdown');
+    if(!sc.contains(e.target)){
+        d.classList.remove('show');
+        selectedAutocompleteIndex=-1;
+    }
+});
+
+function displaySearchResults(s){
+    const wl=document.getElementById('wordsList'),sr=document.getElementById('searchResultsColumn'),m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));
+    if(m.length===0)wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
+    else wl.innerHTML=m.map(i=>`<div class="word-entry"><div class="word-definition">${i.definition}</div></div>`).join('');
+    sr.style.display='block';
+}
+
+function displayRandomWord(){
+    const rd=document.getElementById('randomWordDisplay');
+    if(isLoading){
+        rd.innerHTML='<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading...</p></div>';
+        return;
+    }
+    if(dictionary.length===0){
+        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+        return;
+    }
+    const ri=Math.floor(Math.random()*dictionary.length),rw=dictionary[ri];
+    rd.innerHTML=`<div class="word-entry"><div class="word-definition">${rw.definition}</div></div>`;
+}
+
+function showNewRandomWord(){
+    if(dictionary.length>0){
+        displayRandomWord();
+        document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+}
+
+function displayWords(s=''){
+    const wl=document.getElementById('wordsList'),ce=document.getElementById('dictionaryCount');
+    if(ce)ce.textContent=`(${dictionary.length})`;
+    if(isLoading){
+        wl.innerHTML='<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading dictionary...</p></div>';
+        return;
+    }
+    let fd=s?dictionary.filter(i=>{
+        const wm=i.word.toLowerCase().includes(s),dt=i.definition.replace(/<[^>]*>/g,'').toLowerCase();
+        return wm||dt.includes(s);
+    }):dictionary;
+    fd.sort((a,b)=>a.word.localeCompare(b.word));
+    wl.innerHTML=fd.length===0?`<div class="no-words"><div class="no-words-icon">📚</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`:fd.map(i=>`<div class="word-entry"><div class="word-title">${i.word}</div><div class="word-definition">${i.definition}</div><div class="word-actions" style="display:${isAdmin?'flex':'none'}"><button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button><button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button></div></div>`).join('');
+}
+
+async function editWord(id){
+    const i=dictionary.find(w=>w.id===id);
+    if(i){
+        document.getElementById('wordInput').value=i.word;
+        document.getElementById('definitionInput').innerHTML=i.definition;
+        dictionary=dictionary.filter(w=>w.id!==id);
+        await saveDictionary();
+        displayWords();
+        document.getElementById('editSearchInput').value='';
+        document.getElementById('editSearchResults').innerHTML='';
+        document.getElementById('definitionSearchInput').value='';
+        document.getElementById('definitionSearchResults').innerHTML='';
+        const sb=document.getElementById('sidebar');
+        sb.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+}
+
+function searchWordsToEdit(){
+    const s=document.getElementById('editSearchInput').value.toLowerCase().trim(),r=document.getElementById('editSearchResults');
+    if(!s){
+        r.innerHTML='';
+        return;
+    }
+    const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));
+    r.innerHTML=m.length===0?'<div class="no-results">No matching words found</div>':m.map(i=>{
+        const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;
+        return`<div class="edit-result-item" onclick="editWord(${i.id})"><div class="edit-result-word">${i.word}</div><div class="edit-result-definition">${p}</div></div>`;
+    }).join('');
+}
+
+function searchDefinitions(){
+    const s=document.getElementById('definitionSearchInput').value.toLowerCase(),r=document.getElementById('definitionSearchResults');
+    if(!s.trim()){
+        r.innerHTML='';
+        return;
+    }
+    const m=dictionary.filter(i=>{
+        const d=i.definition.replace(/<[^>]*>/g,'').toLowerCase();
+        return d.includes(s);
+    }).sort((a,b)=>a.word.localeCompare(b.word));
+    r.innerHTML=m.length===0?'<div class="no-results">No matching definitions found</div>':m.map(i=>{
+        const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;
+        return`<div class="definition-result-item" onclick="editWord(${i.id})"><div class="definition-result-word">${i.word}</div><div class="definition-result-definition">${p}</div></div>`;
+    }).join('');
+}
+
+async function deleteWord(id){
+    const i=dictionary.find(w=>w.id===id);
+    if(i&&confirm(`Delete "${i.word}"?`)){
+        dictionary=dictionary.filter(w=>w.id!==id);
+        await saveDictionary();
+        displayWords();
+    }
+}
+
+function exportData(){
+    const ds=JSON.stringify(dictionary,null,2),db=new Blob([ds],{type:'application/json'}),u=URL.createObjectURL(db),l=document.createElement('a');
+    l.href=u;
+    l.download=`dictionary_${new Date().toISOString().split('T')[0]}.json`;
+    l.click();
+    URL.revokeObjectURL(u);
+}
+
+async function importData(e){
+    const f=e.target.files[0];
+    if(f){
+        const r=new FileReader();
+        r.onload=async function(ev){
+            try{
+                const imp=JSON.parse(ev.target.result);
+                if(Array.isArray(imp)){
+                    if(confirm(`Import ${imp.length} words? This will merge with existing entries.`)){
+                        imp.forEach(w=>{
+                            const ex=dictionary.find(x=>x.word.toLowerCase()===w.word.toLowerCase());
+                            if(!ex)dictionary.push(w);
+                        });
+                        await saveDictionary();
+                        displayWords();
+                        alert('Import successful!');
+                    }
+                }else alert('Invalid file format');
+            }catch(er){
+                alert('Error reading file');
+            }
+        };
+        r.readAsText(f);
+    }
+    e.target.value='';
+}
     </script>
 </body>
 </html>
