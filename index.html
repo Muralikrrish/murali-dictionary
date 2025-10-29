@@ -393,6 +393,17 @@ async function initializeApp() {
         console.log('Loaded word list cache:', wordListCache.length, 'words');
     }
     
+    // Load cached random word if available
+    const cachedRandomWord = SafeStorage.getItem('cachedRandomWord');
+    if (cachedRandomWord) {
+        try {
+            lastRandomWord = JSON.parse(cachedRandomWord);
+            displayCachedRandomWord();
+        } catch(e) {
+            console.error('Error loading cached word:', e);
+        }
+    }
+    
     // Load quick list from cache
     const cachedQuick = SafeStorage.getItem('quickAddList');
     if (cachedQuick) {
@@ -411,12 +422,34 @@ async function initializeApp() {
             await fetchWordListForAdmin();
         } else {
             await fetchWordListForAutocomplete();
+            // Fetch and cache a random word in background
+            fetchAndCacheRandomWord();
         }
-        
-        // Show random word
-        await showNewRandomWord();
     } catch(error) {
         console.warn('Firebase init failed:', error);
+    }
+}
+
+function displayCachedRandomWord() {
+    const rd = document.getElementById('randomWordDisplay');
+    if (lastRandomWord) {
+        rd.innerHTML = `<div class="word-entry">
+            <div class="word-title">${lastRandomWord.word}</div>
+            <div class="word-definition">${lastRandomWord.definition}</div>
+        </div>`;
+    }
+}
+
+async function fetchAndCacheRandomWord() {
+    try {
+        const randomWord = await fetchRandomWord();
+        if (randomWord) {
+            lastRandomWord = randomWord;
+            SafeStorage.setItem('cachedRandomWord', JSON.stringify(randomWord));
+            displayCachedRandomWord();
+        }
+    } catch(error) {
+        console.error('Error fetching random word:', error);
     }
 }
 
@@ -499,18 +532,20 @@ async function fetchWordsBySearch(query) {
     return [];
 }
 
-// Get random word
+// Get random word - optimized with indexing
 async function fetchRandomWord() {
     if (!isFirebaseConfigured) return null;
     
     try {
+        // First, get count of words
         const snapshot = await database.ref('dictionary').once('value');
         const data = snapshot.val();
         if (data) {
-            const words = Object.values(data);
-            if (words.length > 0) {
-                const randomIndex = Math.floor(Math.random() * words.length);
-                return words[randomIndex];
+            const wordIds = Object.keys(data);
+            if (wordIds.length > 0) {
+                // Pick a random ID
+                const randomId = wordIds[Math.floor(Math.random() * wordIds.length)];
+                return data[randomId];
             }
         }
     } catch(error) {
@@ -1208,16 +1243,27 @@ async function displaySearchResults(s) {
 
 async function displayRandomWord() {
     const rd = document.getElementById('randomWordDisplay');
-    rd.innerHTML = '<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading...</p></div>';
+    
+    // Show cached word immediately if available
+    if (lastRandomWord) {
+        rd.innerHTML = `<div class="word-entry">
+            <div class="word-title">${lastRandomWord.word}</div>
+            <div class="word-definition">${lastRandomWord.definition}</div>
+        </div>`;
+        return;
+    }
+    
+    rd.innerHTML = '<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading word...</p></div>';
     
     const randomWord = await fetchRandomWord();
     
     if (!randomWord) {
-        rd.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+        rd.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>Search for a word to get started!</p></div>';
         return;
     }
     
     lastRandomWord = randomWord;
+    SafeStorage.setItem('cachedRandomWord', JSON.stringify(randomWord));
     rd.innerHTML = `<div class="word-entry">
         <div class="word-title">${randomWord.word}</div>
         <div class="word-definition">${randomWord.definition}</div>
@@ -1225,7 +1271,25 @@ async function displayRandomWord() {
 }
 
 async function showNewRandomWord() {
-    await displayRandomWord();
+    const rd = document.getElementById('randomWordDisplay');
+    rd.innerHTML = '<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading new word...</p></div>';
+    
+    // Clear cached word to force fetch
+    lastRandomWord = null;
+    
+    const randomWord = await fetchRandomWord();
+    
+    if (randomWord) {
+        lastRandomWord = randomWord;
+        SafeStorage.setItem('cachedRandomWord', JSON.stringify(randomWord));
+        rd.innerHTML = `<div class="word-entry">
+            <div class="word-title">${randomWord.word}</div>
+            <div class="word-definition">${randomWord.definition}</div>
+        </div>`;
+    } else {
+        rd.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>Unable to load word. Please try again.</p></div>';
+    }
+    
     document.getElementById('wordOfTheDaySection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
