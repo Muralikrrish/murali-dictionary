@@ -66,7 +66,7 @@
         .btn-show-word:hover{box-shadow:0 8px 24px rgba(200,121,65,0.5);transform:translateY(-2px)}
         .btn-secondary{background:#242424;color:#c87941;border:2px solid #c87941;margin-top:10px}
         .btn-secondary:hover{background:#3d3d3d}
-        .word-entry{padding:15px 0;border-bottom:1px solid #3d3d3d}
+        .word-entry{padding:15px 0;border-bottom:1px solid #3d3d3d;animation:fadeIn 0.4s ease}
         .word-entry:first-child{padding-top:0}
         .word-entry:last-child{border-bottom:none;padding-bottom:0}
         .word-title{font-size:26px;font-weight:700;color:#e8e8e8;margin-bottom:12px}
@@ -133,13 +133,15 @@
         .quick-add-btn:hover{background:#d89057}
         .quick-add-refresh{background:#242424;color:#c87941;border:2px solid #c87941}
         .quick-add-refresh:hover{background:#3d3d3d}
-        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.main-content{grid-template-columns:1fr}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;font-size:20px}.autocomplete-item{padding:12px 15px}.autocomplete-word{font-size:15px}.admin-toggle{bottom:15px;right:15px;width:45px;height:45px;font-size:20px}.password-box{padding:30px 20px}.quick-add-item{padding:10px 12px}.quick-add-word{font-size:14px;min-width:100px}.quick-add-remove{padding:5px 10px;font-size:11px}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:250px;padding:8px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:12px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:15px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:13px}.form-group label{font-size:13px}.form-group input{padding:10px;font-size:14px}.utility-buttons{display:flex;flex-direction:column;gap:10px}.btn-secondary{margin-top:0}.info-box,.success-box{padding:15px;font-size:13px}}
-        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;font-size:18px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.btn{padding:12px 20px;font-size:15px}.form-group input{padding:10px;font-size:14px}.form-group label{font-size:12px}.editor-toolbar{padding:6px;gap:2px;flex-wrap:wrap}.editor-btn,.font-size-dropdown{padding:5px 8px;font-size:12px}.editor-content{min-height:300px;font-size:15px;padding:10px}.autocomplete-item{padding:10px 12px}.autocomplete-word{font-size:14px}.admin-toggle{bottom:12px;right:12px;width:40px;height:40px;font-size:18px}.quick-add-item{padding:8px 10px;flex-direction:column;align-items:flex-start}.quick-add-word{font-size:13px;width:100%;margin-bottom:8px}.quick-add-remove{padding:5px 10px;font-size:11px;width:100%}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:200px;padding:6px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:10px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:14px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:12px}.utility-buttons{display:flex;flex-direction:column;gap:8px}.btn-secondary{margin-top:0;padding:12px 20px;font-size:14px}.info-box,.success-box{padding:12px;font-size:12px}.password-box{padding:25px 15px;max-width:95%}.password-box h3{font-size:18px}.password-box input,.password-box button{padding:10px;font-size:14px}}
+        .loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid #3d3d3d;border-top-color:#c87941;border-radius:50%;animation:spin 0.6s linear infinite;margin-left:8px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.main-content{grid-template-columns:1fr}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.section-title{font-size:20px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;font-size:20px}.autocomplete-item{padding:12px 15px}.autocomplete-word{font-size:15px}.admin-toggle{bottom:15px;right:15px;width:45px;height:45px;font-size:20px}.password-box{padding:30px 20px}}
+        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;font-size:18px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.section-title{font-size:18px}.btn{padding:12px 20px;font-size:15px}.autocomplete-item{padding:10px 12px}.autocomplete-word{font-size:14px}.admin-toggle{bottom:12px;right:12px;width:40px;height:40px;font-size:18px}}
     </style>
 </head>
 <body>
     <div class="hero-section">
-        <h1 class="hero-title" id="heroTitle">Murali's Dictionary</h1>
+        <h1 class="hero-title" id="heroTitle">The Only Dictionary<br>You Ever Need</h1>
         <p class="hero-subtitle">Look up a word, learn it forever.</p>
         <div class="search-container">
             <div class="search-box">
@@ -150,14 +152,16 @@
         </div>
     </div>
     <div class="container">
-        <div class="main-content" id="mainContent">
+        <div class="main-content full-width" id="mainContent">
             <div class="words-column" id="searchResultsColumn" style="display:none">
                 <h2 class="section-title">Search Results</h2>
                 <div id="wordsList"></div>
             </div>
             <div class="words-column" id="wordOfTheDaySection">
                 <h2 class="section-title">Word of the Day</h2>
-                <div id="randomWordDisplay"></div>
+                <div id="randomWordDisplay">
+                    <div class="no-words"><div class="no-words-icon">📚</div><p>Search for a word to get started!</p></div>
+                </div>
                 <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
             </div>
             <div class="sidebar admin-mode" id="sidebar">
@@ -230,7 +234,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-// Safari-compatible localStorage wrapper with error handling
+// Lightweight storage for cache - only stores word list for autocomplete and recent words
 const SafeStorage = {
     isAvailable: false,
     memoryStorage: {},
@@ -241,9 +245,8 @@ const SafeStorage = {
             localStorage.setItem(test, test);
             localStorage.removeItem(test);
             this.isAvailable = true;
-            console.log('localStorage is available');
         } catch(e) {
-            console.warn('localStorage not available, using memory storage:', e);
+            console.warn('localStorage not available, using memory storage');
             this.isAvailable = false;
         }
     },
@@ -256,7 +259,6 @@ const SafeStorage = {
                 this.memoryStorage[key] = value;
             }
         } catch(e) {
-            console.warn('Storage setItem failed:', e);
             this.memoryStorage[key] = value;
         }
     },
@@ -269,7 +271,6 @@ const SafeStorage = {
                 return this.memoryStorage[key] || null;
             }
         } catch(e) {
-            console.warn('Storage getItem failed:', e);
             return this.memoryStorage[key] || null;
         }
     },
@@ -282,24 +283,42 @@ const SafeStorage = {
                 delete this.memoryStorage[key];
             }
         } catch(e) {
-            console.warn('Storage removeItem failed:', e);
             delete this.memoryStorage[key];
         }
     }
 };
 
-// Initialize safe storage
 SafeStorage.init();
 
-const firebaseConfig={apiKey:"AIzaSyCOoetJxVn8IJIZayXp-guze0RcZbGbPQs",authDomain:"murali-dictionary.firebaseapp.com",databaseURL:"https://murali-dictionary-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"murali-dictionary",storageBucket:"murali-dictionary.firebasestorage.app",messagingSenderId:"486882382297",appId:"1:486882382297:web:ec61829f79d32597f449c8"};
-let database,isFirebaseConfigured=false,dictionary=[],isAdmin=SafeStorage.getItem('isAdmin')==='true',ADMIN_PASSWORD='7412',isLoading=true,selectedAutocompleteIndex=-1,quickAddList=[],searchTimeout,firebaseInitialized=false;
+const firebaseConfig = {
+    apiKey: "AIzaSyCOoetJxVn8IJIZayXp-guze0RcZbGbPQs",
+    authDomain: "murali-dictionary.firebaseapp.com",
+    databaseURL: "https://murali-dictionary-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "murali-dictionary",
+    storageBucket: "murali-dictionary.firebasestorage.app",
+    messagingSenderId: "486882382297",
+    appId: "1:486882382297:web:ec61829f79d32597f449c8"
+};
 
-// Initialize Firebase with better error handling for Safari
+let database;
+let isFirebaseConfigured = false;
+let isAdmin = SafeStorage.getItem('isAdmin') === 'true';
+const ADMIN_PASSWORD = '7412';
+let selectedAutocompleteIndex = -1;
+let quickAddList = [];
+let searchTimeout;
+let firebaseInitialized = false;
+
+// Lightweight cache - only word list for autocomplete (just word names, no definitions)
+let wordListCache = [];
+let lastRandomWord = null;
+let recentWordsCache = {}; // Store only last 10 viewed words
+
+// Initialize Firebase
 function initializeFirebase() {
     return new Promise((resolve, reject) => {
         try {
             if (typeof firebase === 'undefined') {
-                console.warn('Firebase SDK not loaded');
                 reject(new Error('Firebase SDK not loaded'));
                 return;
             }
@@ -310,7 +329,6 @@ function initializeFirebase() {
             firebaseInitialized = true;
             console.log('Firebase initialized successfully');
             
-            // Set up real-time listeners
             setupFirebaseListeners();
             resolve();
         } catch(error) {
@@ -327,7 +345,6 @@ function setupFirebaseListeners() {
     try {
         database.ref('quickAddList').on('value', snapshot => {
             const data = snapshot.val();
-            console.log('Real-time update received for quick list:', data);
             if (data && Array.isArray(data)) {
                 quickAddList = data;
             } else if (data && typeof data === 'object') {
@@ -345,14 +362,7 @@ function setupFirebaseListeners() {
     }
 }
 
-// Wait for DOM and Firebase to be ready
-let domReady = false;
-let dataLoaded = false;
-
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded');
-    domReady = true;
-    
     const editor = document.getElementById('definitionInput');
     if (editor) {
         editor.addEventListener('keydown', handleMarkdownFormatting);
@@ -362,9 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
         editor.addEventListener('focus', updateFormatDropdown);
         
         editor.addEventListener('input', function(e) {
-            if (e.inputType) {
-                scrollToAddSection();
-            }
+            if (e.inputType) scrollToAddSection();
         });
         
         editor.addEventListener('paste', function() {
@@ -372,32 +380,165 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Initialize Firebase and load data
     initializeApp();
 });
 
 async function initializeApp() {
     console.log('Initializing app...');
     
-    // Try to initialize Firebase
-    try {
-        await initializeFirebase();
-        console.log('Firebase ready, loading data...');
-    } catch(error) {
-        console.warn('Firebase init failed, will use local storage:', error);
+    // Load lightweight word list cache (just names for autocomplete)
+    const cachedList = SafeStorage.getItem('wordListCache');
+    if (cachedList) {
+        wordListCache = JSON.parse(cachedList);
+        console.log('Loaded word list cache:', wordListCache.length, 'words');
     }
     
-    // Load dictionary data
-    await loadDictionary();
+    // Load quick list from cache
+    const cachedQuick = SafeStorage.getItem('quickAddList');
+    if (cachedQuick) {
+        quickAddList = JSON.parse(cachedQuick);
+    }
     
-    // Update UI
-    dataLoaded = true;
     checkAdminStatus();
     
-    console.log('App initialized. Dictionary length:', dictionary.length);
+    // Initialize Firebase in background
+    try {
+        await initializeFirebase();
+        console.log('Firebase ready');
+        
+        // Fetch word list (just names) for autocomplete
+        if (isAdmin) {
+            await fetchWordListForAdmin();
+        } else {
+            await fetchWordListForAutocomplete();
+        }
+        
+        // Show random word
+        await showNewRandomWord();
+    } catch(error) {
+        console.warn('Firebase init failed:', error);
+    }
 }
 
-// Markdown-style formatting handler
+// Fetch only word names for autocomplete (super lightweight)
+async function fetchWordListForAutocomplete() {
+    if (!isFirebaseConfigured) return;
+    
+    try {
+        const snapshot = await database.ref('dictionary').once('value');
+        const data = snapshot.val();
+        if (data) {
+            wordListCache = Object.values(data).map(w => w.word);
+            SafeStorage.setItem('wordListCache', JSON.stringify(wordListCache));
+            console.log('Fetched word list:', wordListCache.length, 'words');
+        }
+    } catch(error) {
+        console.error('Error fetching word list:', error);
+    }
+}
+
+// Fetch word by ID on-demand
+async function fetchWordById(wordId) {
+    if (!isFirebaseConfigured) return null;
+    
+    try {
+        const snapshot = await database.ref(`dictionary/${wordId}`).once('value');
+        return snapshot.val();
+    } catch(error) {
+        console.error('Error fetching word:', error);
+        return null;
+    }
+}
+
+// Search and fetch word by name
+async function fetchWordByName(wordName) {
+    if (!isFirebaseConfigured) return null;
+    
+    // Check cache first
+    if (recentWordsCache[wordName.toLowerCase()]) {
+        console.log('Returning from cache:', wordName);
+        return recentWordsCache[wordName.toLowerCase()];
+    }
+    
+    try {
+        const snapshot = await database.ref('dictionary').orderByChild('word').equalTo(wordName).once('value');
+        const data = snapshot.val();
+        if (data) {
+            const word = Object.values(data)[0];
+            // Cache it
+            recentWordsCache[wordName.toLowerCase()] = word;
+            // Keep only last 10 words in cache
+            const keys = Object.keys(recentWordsCache);
+            if (keys.length > 10) {
+                delete recentWordsCache[keys[0]];
+            }
+            return word;
+        }
+    } catch(error) {
+        console.error('Error fetching word:', error);
+    }
+    return null;
+}
+
+// Fetch multiple words by search query
+async function fetchWordsBySearch(query) {
+    if (!isFirebaseConfigured) return [];
+    
+    try {
+        const snapshot = await database.ref('dictionary').once('value');
+        const data = snapshot.val();
+        if (data) {
+            const allWords = Object.values(data);
+            return allWords.filter(w => 
+                w.word.toLowerCase().includes(query.toLowerCase())
+            ).sort((a, b) => a.word.localeCompare(b.word));
+        }
+    } catch(error) {
+        console.error('Error searching words:', error);
+    }
+    return [];
+}
+
+// Get random word
+async function fetchRandomWord() {
+    if (!isFirebaseConfigured) return null;
+    
+    try {
+        const snapshot = await database.ref('dictionary').once('value');
+        const data = snapshot.val();
+        if (data) {
+            const words = Object.values(data);
+            if (words.length > 0) {
+                const randomIndex = Math.floor(Math.random() * words.length);
+                return words[randomIndex];
+            }
+        }
+    } catch(error) {
+        console.error('Error fetching random word:', error);
+    }
+    return null;
+}
+
+// For admin: fetch all words
+async function fetchWordListForAdmin() {
+    if (!isFirebaseConfigured) return [];
+    
+    try {
+        const snapshot = await database.ref('dictionary').once('value');
+        const data = snapshot.val();
+        if (data) {
+            const words = Object.values(data);
+            wordListCache = words.map(w => w.word);
+            SafeStorage.setItem('wordListCache', JSON.stringify(wordListCache));
+            return words;
+        }
+    } catch(error) {
+        console.error('Error fetching all words:', error);
+    }
+    return [];
+}
+
+// Markdown formatting handlers
 function handleMarkdownFormatting(e) {
     const editor = document.getElementById('definitionInput');
     const selection = window.getSelection();
@@ -416,29 +557,23 @@ function handleMarkdownFormatting(e) {
             e.preventDefault();
             const boldText = inlineBoldMatch[1];
             const matchLength = inlineBoldMatch[0].length;
-            
             const textNode = node;
             const startPos = range.startOffset - matchLength;
             
             textNode.textContent = textNode.textContent.substring(0, startPos) + textNode.textContent.substring(range.startOffset);
-            
             const boldElement = document.createElement('strong');
             boldElement.textContent = boldText;
-            
             const tempRange = document.createRange();
             tempRange.setStart(textNode, startPos);
             tempRange.collapse(true);
             tempRange.insertNode(boldElement);
-            
             const spaceNode = document.createTextNode(' ');
             boldElement.parentNode.insertBefore(spaceNode, boldElement.nextSibling);
-            
             const newRange = document.createRange();
             newRange.setStartAfter(spaceNode);
             newRange.collapse(true);
             selection.removeAllRanges();
             selection.addRange(newRange);
-            
             return;
         }
         
@@ -450,25 +585,21 @@ function handleMarkdownFormatting(e) {
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h1');
             return;
         }
-        
         if (lineText === '##') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h2');
             return;
         }
-        
         if (lineText === '###') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h3');
             return;
         }
-        
         if (lineText === '####') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h4');
             return;
         }
-        
         if (lineText === '**') {
             e.preventDefault();
             replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'bold');
@@ -478,9 +609,6 @@ function handleMarkdownFormatting(e) {
 }
 
 function getLineStart(node, offset) {
-    let currentNode = node;
-    let currentOffset = offset;
-    
     if (node.nodeType === Node.TEXT_NODE) {
         const textBefore = node.textContent.substring(0, offset);
         const lastNewline = textBefore.lastIndexOf('\n');
@@ -499,7 +627,6 @@ function getLineStart(node, offset) {
             return { node: node, offset: lastNewline + 1, text: textBefore.substring(lastNewline + 1) };
         }
     }
-    
     return { node: node, offset: 0, text: '' };
 }
 
@@ -526,7 +653,6 @@ function replaceMarkdownWithFormat(node, startOffset, length, format) {
         const beforeText = node.textContent.substring(0, startOffset);
         const afterText = node.textContent.substring(range.startOffset);
         node.textContent = beforeText + afterText;
-        
         range.setStart(node, startOffset);
         range.collapse(true);
     }
@@ -559,17 +685,13 @@ function handlePaste(e) {
 function convertExistingMarkdown() {
     const editor = document.getElementById('definitionInput');
     const currentHTML = editor.innerHTML;
-    
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = currentHTML;
     const text = tempDiv.textContent || tempDiv.innerText || '';
-    
     const html = convertMarkdownToHTML(text);
     editor.innerHTML = html;
-    
     const range = document.createRange();
     const sel = window.getSelection();
-    
     const lastNode = getLastNode(editor);
     if (lastNode) {
         range.setStartAfter(lastNode);
@@ -577,7 +699,6 @@ function convertExistingMarkdown() {
         sel.removeAllRanges();
         sel.addRange(range);
     }
-    
     editor.focus();
 }
 
@@ -672,398 +793,597 @@ function scrollToAddSection() {
     }
 }
 
-function formatText(c){document.execCommand(c,false,null);document.getElementById('definitionInput').focus()}
-function formatHeading(tag){const d=document.getElementById('definitionInput');if(tag===''){document.execCommand('formatBlock',false,'div');document.execCommand('formatBlock',false,'p')}else document.execCommand('formatBlock',false,tag);d.focus();setTimeout(updateFormatDropdown,50)}
-function updateFormatDropdown(){const s=window.getSelection();if(s.rangeCount===0)return;const n=s.anchorNode,p=n.nodeType===3?n.parentNode:n;let b=p;while(b&&!['H1','H2','H3','H4','H5','H6','P','DIV'].includes(b.tagName))b=b.parentElement;const d=document.getElementById('formatDropdown');if(b){const t=b.tagName.toLowerCase();d.value=['h1','h2','h3','h4','h5','h6'].includes(t)?t:''}}
+function formatText(c) {
+    document.execCommand(c, false, null);
+    document.getElementById('definitionInput').focus();
+}
 
-function checkExistingWord(){const w=document.getElementById('wordInput').value.trim(),warn=document.getElementById('wordWarning');warn.style.display=w&&dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase())?'block':'none'}
-async function addToQuickList(){const i=document.getElementById('quickAddSearch'),w=i.value.trim(),warn=document.getElementById('quickAddWarning');if(!w)return;const e=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase()),a=quickAddList.find(x=>x.toLowerCase()===w.toLowerCase());if(e){warn.textContent='⚠️ This word already exists in the dictionary';warn.style.display='block';return}if(a){warn.textContent='⚠️ This word is already in the quick list';warn.style.display='block';return}quickAddList.unshift(w);i.value='';warn.style.display='none';document.getElementById('quickAddSearchResults').innerHTML='';await saveQuickAddList();displayQuickAddList()}
-function displayQuickAddList(){const c=document.getElementById('quickAddList'),cnt=document.getElementById('quickAddCount');cnt.textContent=`(${quickAddList.length})`;c.innerHTML=quickAddList.length===0?'<div class="quick-add-empty">No words in quick list yet</div>':quickAddList.map((w,i)=>`<div class="quick-add-item"><span class="quick-add-word">${w}</span><button class="quick-add-remove" onclick="removeFromQuickList(${i})">Remove</button></div>`).join('')}
-async function removeFromQuickList(i){quickAddList.splice(i,1);await saveQuickAddList();displayQuickAddList()}
-function searchWordsForQuickAdd(){const s=document.getElementById('quickAddSearch').value.toLowerCase().trim(),r=document.getElementById('quickAddSearchResults'),w=document.getElementById('quickAddWarning');if(!s){r.innerHTML='';w.style.display='none';return}const a=quickAddList.find(x=>x.toLowerCase()===s);if(a){r.innerHTML='';w.textContent='⚠️ This word is already in the quick list';w.style.display='block';return}const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));if(m.length===0){r.innerHTML='<div class="no-results">No matching words found in dictionary</div>';w.style.display='none'}else{r.innerHTML=m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${i.word.replace(/'/g,"\\'")}')"><div class="quick-add-result-word">${i.word}</div><div class="quick-add-result-definition">${p}</div></div>`}).join('');w.textContent='⚠️ These words already exist in the dictionary';w.style.display='block'}}
-function selectQuickAddWord(w){document.getElementById('quickAddSearch').value=w;document.getElementById('quickAddSearchResults').innerHTML=''}
-async function refreshQuickList(){if(isFirebaseConfigured){try{const q=await database.ref('quickAddList').once('value'),d=q.val();console.log('Manual refresh - Quick list from Firebase:',d);if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];SafeStorage.setItem('quickAddList',JSON.stringify(quickAddList));displayQuickAddList();alert('Quick list refreshed! Found '+quickAddList.length+' word(s)')}catch(e){console.error('Refresh error:',e);alert('Failed to refresh. Error: '+e.message)}}else alert('Firebase not connected')}
+function formatHeading(tag) {
+    const d = document.getElementById('definitionInput');
+    if (tag === '') {
+        document.execCommand('formatBlock', false, 'div');
+        document.execCommand('formatBlock', false, 'p');
+    } else {
+        document.execCommand('formatBlock', false, tag);
+    }
+    d.focus();
+    setTimeout(updateFormatDropdown, 50);
+}
 
-async function loadDictionary() {
-    console.log('Loading dictionary...');
-    isLoading = true;
+function updateFormatDropdown() {
+    const s = window.getSelection();
+    if (s.rangeCount === 0) return;
+    const n = s.anchorNode;
+    const p = n.nodeType === 3 ? n.parentNode : n;
+    let b = p;
+    while (b && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'DIV'].includes(b.tagName)) {
+        b = b.parentElement;
+    }
+    const d = document.getElementById('formatDropdown');
+    if (b) {
+        const t = b.tagName.toLowerCase();
+        d.value = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(t) ? t : '';
+    }
+}
+
+async function checkExistingWord() {
+    const w = document.getElementById('wordInput').value.trim();
+    const warn = document.getElementById('wordWarning');
     
-    if (isFirebaseConfigured && firebaseInitialized) {
+    if (!w) {
+        warn.style.display = 'none';
+        return;
+    }
+    
+    const existing = await fetchWordByName(w);
+    warn.style.display = existing ? 'block' : 'none';
+}
+
+async function addToQuickList() {
+    const i = document.getElementById('quickAddSearch');
+    const w = i.value.trim();
+    const warn = document.getElementById('quickAddWarning');
+    
+    if (!w) return;
+    
+    const existing = await fetchWordByName(w);
+    const inList = quickAddList.find(x => x.toLowerCase() === w.toLowerCase());
+    
+    if (existing) {
+        warn.textContent = '⚠️ This word already exists in the dictionary';
+        warn.style.display = 'block';
+        return;
+    }
+    
+    if (inList) {
+        warn.textContent = '⚠️ This word is already in the quick list';
+        warn.style.display = 'block';
+        return;
+    }
+    
+    quickAddList.unshift(w);
+    i.value = '';
+    warn.style.display = 'none';
+    document.getElementById('quickAddSearchResults').innerHTML = '';
+    await saveQuickAddList();
+    displayQuickAddList();
+}
+
+function displayQuickAddList() {
+    const c = document.getElementById('quickAddList');
+    const cnt = document.getElementById('quickAddCount');
+    cnt.textContent = `(${quickAddList.length})`;
+    c.innerHTML = quickAddList.length === 0 ?
+        '<div class="quick-add-empty">No words in quick list yet</div>' :
+        quickAddList.map((w, i) => `<div class="quick-add-item"><span class="quick-add-word">${w}</span><button class="quick-add-remove" onclick="removeFromQuickList(${i})">Remove</button></div>`).join('');
+}
+
+async function removeFromQuickList(i) {
+    quickAddList.splice(i, 1);
+    await saveQuickAddList();
+    displayQuickAddList();
+}
+
+async function searchWordsForQuickAdd() {
+    const s = document.getElementById('quickAddSearch').value.toLowerCase().trim();
+    const r = document.getElementById('quickAddSearchResults');
+    const w = document.getElementById('quickAddWarning');
+    
+    if (!s) {
+        r.innerHTML = '';
+        w.style.display = 'none';
+        return;
+    }
+    
+    const inList = quickAddList.find(x => x.toLowerCase() === s);
+    if (inList) {
+        r.innerHTML = '';
+        w.textContent = '⚠️ This word is already in the quick list';
+        w.style.display = 'block';
+        return;
+    }
+    
+    const matches = await fetchWordsBySearch(s);
+    
+    if (matches.length === 0) {
+        r.innerHTML = '<div class="no-results">No matching words found in dictionary</div>';
+        w.style.display = 'none';
+    } else {
+        r.innerHTML = matches.map(word => {
+            const def = word.definition.replace(/<[^>]*>/g, '');
+            const preview = def.length > 100 ? def.substring(0, 100) + '...' : def;
+            return `<div class="quick-add-result-item" onclick="selectQuickAddWord('${word.word.replace(/'/g, "\\'")}')"><div class="quick-add-result-word">${word.word}</div><div class="quick-add-result-definition">${preview}</div></div>`;
+        }).join('');
+        w.textContent = '⚠️ These words already exist in the dictionary';
+        w.style.display = 'block';
+    }
+}
+
+function selectQuickAddWord(w) {
+    document.getElementById('quickAddSearch').value = w;
+    document.getElementById('quickAddSearchResults').innerHTML = '';
+}
+
+async function refreshQuickList() {
+    if (isFirebaseConfigured) {
         try {
-            console.log('Loading from Firebase...');
-            const snapshot = await database.ref('dictionary').once('value');
+            const snapshot = await database.ref('quickAddList').once('value');
             const data = snapshot.val();
-            dictionary = data ? Object.values(data) : [];
-            console.log('Loaded from Firebase:', dictionary.length, 'words');
-            SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
-            
-            const quickSnapshot = await database.ref('quickAddList').once('value');
-            const quickData = quickSnapshot.val();
-            console.log('Quick list loaded from Firebase:', quickData);
-            if (quickData && Array.isArray(quickData)) {
-                quickAddList = quickData;
-            } else if (quickData && typeof quickData === 'object') {
-                quickAddList = Object.values(quickData);
+            if (data && Array.isArray(data)) {
+                quickAddList = data;
+            } else if (data && typeof data === 'object') {
+                quickAddList = Object.values(data);
             } else {
                 quickAddList = [];
             }
-            console.log('Quick list after processing:', quickAddList);
             SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
-        } catch(error) {
-            console.error('Firebase load error:', error);
-            // Fallback to local storage
-            const localDict = SafeStorage.getItem('dictionary');
-            dictionary = localDict ? JSON.parse(localDict) : [];
-            const localQuick = SafeStorage.getItem('quickAddList');
-            quickAddList = localQuick ? JSON.parse(localQuick) : [];
-            console.log('Loaded from localStorage:', dictionary.length, 'words');
+            displayQuickAddList();
+            alert('Quick list refreshed! Found ' + quickAddList.length + ' word(s)');
+        } catch(e) {
+            alert('Failed to refresh. Error: ' + e.message);
         }
     } else {
-        // Use local storage
-        const localDict = SafeStorage.getItem('dictionary');
-        dictionary = localDict ? JSON.parse(localDict) : [];
-        const localQuick = SafeStorage.getItem('quickAddList');
-        quickAddList = localQuick ? JSON.parse(localQuick) : [];
-        console.log('Loaded from localStorage (Firebase not ready):', dictionary.length, 'words');
-    }
-    
-    isLoading = false;
-    
-    // Update UI based on admin status
-    if (isAdmin) {
-        displayWords();
-    } else {
-        displayRandomWord();
-    }
-    displayQuickAddList();
-    
-    console.log('Dictionary loaded successfully');
-}
-
-async function saveDictionary(){
-    SafeStorage.setItem('dictionary',JSON.stringify(dictionary));
-    if(isFirebaseConfigured && firebaseInitialized){
-        try{
-            const u={};
-            dictionary.forEach(w=>u[w.id]=w);
-            await database.ref('dictionary').set(u);
-            console.log('Dictionary saved to Firebase');
-        }catch(e){
-            console.error('Failed to save to Firebase:', e);
-            alert('Failed to save to cloud. Data saved locally.');
-        }
+        alert('Firebase not connected');
     }
 }
 
-async function saveQuickAddList(){
-    console.log('Saving quick list:',quickAddList);
-    SafeStorage.setItem('quickAddList',JSON.stringify(quickAddList));
-    if(isFirebaseConfigured && firebaseInitialized){
-        try{
+async function saveQuickAddList() {
+    SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+    if (isFirebaseConfigured && firebaseInitialized) {
+        try {
             database.ref('quickAddList').off('value');
             await database.ref('quickAddList').set(quickAddList);
-            console.log('Quick list saved to Firebase successfully');
-            setTimeout(()=>{
+            setTimeout(() => {
                 setupFirebaseListeners();
-            },500);
-        }catch(e){
-            console.error('Failed to save quick list to Firebase:',e);
+            }, 500);
+        } catch(e) {
+            console.error('Failed to save quick list:', e);
             setupFirebaseListeners();
         }
     }
 }
 
-function checkAdminStatus(){
-    const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle');
-    if(isAdmin){
-        sb.style.display='block';
+function checkAdminStatus() {
+    const sb = document.getElementById('sidebar');
+    const mc = document.getElementById('mainContent');
+    const at = document.getElementById('adminToggle');
+    const wc = document.querySelectorAll('.words-column');
+    const am = document.querySelectorAll('.admin-mode');
+    const sr = document.getElementById('searchResultsColumn');
+    const ht = document.getElementById('heroTitle');
+    
+    if (isAdmin) {
+        sb.style.display = 'block';
         mc.classList.remove('full-width');
-        at.textContent='🔓';
-        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});
-        am.forEach(e=>e.style.display='block');
-        sr.style.display='none';
-        ht.textContent="Murali's Dictionary";
-    }else{
-        sb.style.display='none';
+        at.textContent = '🔓';
+        wc.forEach(c => {
+            if (c.id !== 'searchResultsColumn') c.style.display = 'none';
+        });
+        am.forEach(e => e.style.display = 'block');
+        sr.style.display = 'none';
+        ht.textContent = "Murali's Dictionary";
+    } else {
+        sb.style.display = 'none';
         mc.classList.add('full-width');
-        at.textContent='🔒';
-        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});
-        am.forEach(e=>e.style.display='none');
-        sr.style.display='none';
-        displayRandomWord();
-        ht.innerHTML="The Only Dictionary<br>You Ever Need";
+        at.textContent = '🔒';
+        wc.forEach(c => {
+            if (c.id !== 'searchResultsColumn') c.style.display = 'block';
+        });
+        am.forEach(e => e.style.display = 'none');
+        sr.style.display = 'none';
+        ht.innerHTML = "The Only Dictionary<br>You Ever Need";
     }
 }
 
-function showPasswordModal(){
-    if(isAdmin){
-        isAdmin=false;
-        SafeStorage.setItem('isAdmin','false');
+function showPasswordModal() {
+    if (isAdmin) {
+        isAdmin = false;
+        SafeStorage.setItem('isAdmin', 'false');
         checkAdminStatus();
-        displayRandomWord();
-    }else{
+    } else {
         document.getElementById('passwordModal').classList.add('show');
         document.getElementById('passwordInput').focus();
     }
 }
 
-function hidePasswordModal(){
+function hidePasswordModal() {
     document.getElementById('passwordModal').classList.remove('show');
-    document.getElementById('passwordInput').value='';
+    document.getElementById('passwordInput').value = '';
 }
 
-function checkPassword(){
-    const p=document.getElementById('passwordInput').value;
-    if(p===ADMIN_PASSWORD){
-        isAdmin=true;
-        SafeStorage.setItem('isAdmin','true');
+async function checkPassword() {
+    const p = document.getElementById('passwordInput').value;
+    if (p === ADMIN_PASSWORD) {
+        isAdmin = true;
+        SafeStorage.setItem('isAdmin', 'true');
         hidePasswordModal();
         checkAdminStatus();
-        displayWords();
+        await fetchWordListForAdmin();
         displayQuickAddList();
-    }else{
+    } else {
         alert('Incorrect password!');
-        document.getElementById('passwordInput').value='';
+        document.getElementById('passwordInput').value = '';
         document.getElementById('passwordInput').focus();
     }
 }
 
-document.getElementById('addWordForm').addEventListener('submit',async function(e){
+document.getElementById('addWordForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const w=document.getElementById('wordInput').value.trim(),de=document.getElementById('definitionInput'),d=de.innerHTML.trim();
-    if(!d||d==='<br>'){alert('Please enter a definition');return}
-    const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());
-    if(ei!==-1){
-        if(confirm(`"${w}" already exists. Update it?`)){
-            dictionary[ei].definition=d;
-            dictionary[ei].dateModified=new Date().toISOString();
-            document.getElementById('wordInput').value='';
-            de.innerHTML='';
-            displayWords();
+    const w = document.getElementById('wordInput').value.trim();
+    const de = document.getElementById('definitionInput');
+    const d = de.innerHTML.trim();
+    
+    if (!d || d === '<br>') {
+        alert('Please enter a definition');
+        return;
+    }
+    
+    const existing = await fetchWordByName(w);
+    
+    if (existing) {
+        if (confirm(`"${w}" already exists. Update it?`)) {
+            await database.ref(`dictionary/${existing.id}`).update({
+                definition: d,
+                dateModified: new Date().toISOString()
+            });
+            
+            document.getElementById('wordInput').value = '';
+            de.innerHTML = '';
+            
+            // Update cache
+            delete recentWordsCache[w.toLowerCase()];
+            await fetchWordListForAdmin();
+            
             setTimeout(() => {
                 const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
                 if (quickAddSection) {
                     quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             }, 100);
-            saveDictionary();
         }
-    }else{
-        const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};
-        dictionary.push(newWord);
-        document.getElementById('wordInput').value='';
-        de.innerHTML='';
-        displayWords();
+    } else {
+        const newWord = {
+            id: Date.now(),
+            word: w,
+            definition: d,
+            dateAdded: new Date().toISOString()
+        };
+        
+        await database.ref(`dictionary/${newWord.id}`).set(newWord);
+        
+        document.getElementById('wordInput').value = '';
+        de.innerHTML = '';
+        
+        // Update cache
+        wordListCache.push(w);
+        SafeStorage.setItem('wordListCache', JSON.stringify(wordListCache));
+        
         setTimeout(() => {
             const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
             if (quickAddSection) {
                 quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }, 100);
-        saveDictionary();
     }
 });
 
-function showAutocomplete(s){
-    const d=document.getElementById('autocompleteDropdown');
-    if(!s){d.classList.remove('show');return}
-    const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{
-        const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());
-        if(as&&!bs)return-1;
-        if(!as&&bs)return 1;
-        return a.word.localeCompare(b.word)
-    }).slice(0,5);
-    if(m.length===0){d.classList.remove('show');return}
-    d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');
+function showAutocomplete(s) {
+    const d = document.getElementById('autocompleteDropdown');
+    if (!s) {
+        d.classList.remove('show');
+        return;
+    }
+    
+    const m = wordListCache.filter(word => 
+        word.toLowerCase().startsWith(s.toLowerCase()) || 
+        word.toLowerCase().includes(s.toLowerCase())
+    ).sort((a, b) => {
+        const as = a.toLowerCase().startsWith(s.toLowerCase());
+        const bs = b.toLowerCase().startsWith(s.toLowerCase());
+        if (as && !bs) return -1;
+        if (!as && bs) return 1;
+        return a.localeCompare(b);
+    }).slice(0, 5);
+    
+    if (m.length === 0) {
+        d.classList.remove('show');
+        return;
+    }
+    
+    d.innerHTML = m.map((word, idx) => 
+        `<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${word.replace(/'/g, "\\'")}')">
+            <div class="autocomplete-word">${word}</div>
+        </div>`
+    ).join('');
     d.classList.add('show');
-    selectedAutocompleteIndex=-1;
+    selectedAutocompleteIndex = -1;
 }
 
-function selectAutocompleteItem(w){
-    document.getElementById('searchInput').value=w;
+async function selectAutocompleteItem(w) {
+    document.getElementById('searchInput').value = w;
     document.getElementById('autocompleteDropdown').classList.remove('show');
-    const s=w.toLowerCase();
-    isAdmin?displayWords(s):displaySearchResults(s);
+    
+    if (isAdmin) {
+        await searchWordsToEdit();
+    } else {
+        await displaySearchResults(w);
+    }
 }
 
-document.getElementById('searchInput').addEventListener('input',function(e){
-    const s=e.target.value.toLowerCase();
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const s = e.target.value.toLowerCase();
     clearTimeout(searchTimeout);
-    searchTimeout=setTimeout(()=>{
+    searchTimeout = setTimeout(async () => {
         showAutocomplete(e.target.value);
-        if(s&&isAdmin)displayWords(s);
-        else if(s&&!isAdmin)displaySearchResults(s);
-        else if(!isAdmin)document.getElementById('searchResultsColumn').style.display='none';
-    },300);
+        if (s && !isAdmin) {
+            await displaySearchResults(s);
+        } else if (!isAdmin) {
+            document.getElementById('searchResultsColumn').style.display = 'none';
+        }
+    }, 300);
 });
 
-document.getElementById('searchInput').addEventListener('keydown',function(e){
-    const d=document.getElementById('autocompleteDropdown'),it=d.querySelectorAll('.autocomplete-item');
-    if(!d.classList.contains('show')||it.length===0)return;
-    if(e.key==='ArrowDown'){
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    const d = document.getElementById('autocompleteDropdown');
+    const it = d.querySelectorAll('.autocomplete-item');
+    if (!d.classList.contains('show') || it.length === 0) return;
+    
+    if (e.key === 'ArrowDown') {
         e.preventDefault();
-        selectedAutocompleteIndex=Math.min(selectedAutocompleteIndex+1,it.length-1);
+        selectedAutocompleteIndex = Math.min(selectedAutocompleteIndex + 1, it.length - 1);
         updateAutocompleteSelection(it);
-    }else if(e.key==='ArrowUp'){
+    } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        selectedAutocompleteIndex=Math.max(selectedAutocompleteIndex-1,-1);
+        selectedAutocompleteIndex = Math.max(selectedAutocompleteIndex - 1, -1);
         updateAutocompleteSelection(it);
-    }else if(e.key==='Enter'&&selectedAutocompleteIndex>=0){
+    } else if (e.key === 'Enter' && selectedAutocompleteIndex >= 0) {
         e.preventDefault();
         it[selectedAutocompleteIndex].click();
-    }else if(e.key==='Escape'){
+    } else if (e.key === 'Escape') {
         d.classList.remove('show');
-        selectedAutocompleteIndex=-1;
+        selectedAutocompleteIndex = -1;
     }
 });
 
-function updateAutocompleteSelection(it){
-    it.forEach((i,idx)=>{
-        if(idx===selectedAutocompleteIndex){
+function updateAutocompleteSelection(it) {
+    it.forEach((i, idx) => {
+        if (idx === selectedAutocompleteIndex) {
             i.classList.add('selected');
-            i.scrollIntoView({block:'nearest'});
-        }else i.classList.remove('selected');
+            i.scrollIntoView({ block: 'nearest' });
+        } else {
+            i.classList.remove('selected');
+        }
     });
 }
 
-document.addEventListener('click',function(e){
-    const sc=document.querySelector('.search-container'),d=document.getElementById('autocompleteDropdown');
-    if(!sc.contains(e.target)){
+document.addEventListener('click', function(e) {
+    const sc = document.querySelector('.search-container');
+    const d = document.getElementById('autocompleteDropdown');
+    if (!sc.contains(e.target)) {
         d.classList.remove('show');
-        selectedAutocompleteIndex=-1;
+        selectedAutocompleteIndex = -1;
     }
 });
 
-function displaySearchResults(s){
-    const wl=document.getElementById('wordsList'),sr=document.getElementById('searchResultsColumn'),m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));
-    if(m.length===0)wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
-    else wl.innerHTML=m.map(i=>`<div class="word-entry"><div class="word-definition">${i.definition}</div></div>`).join('');
-    sr.style.display='block';
+async function displaySearchResults(s) {
+    const wl = document.getElementById('wordsList');
+    const sr = document.getElementById('searchResultsColumn');
+    
+    wl.innerHTML = '<div class="no-words"><div class="no-words-icon">⏳</div><p>Searching...</p></div>';
+    sr.style.display = 'block';
+    
+    const matches = await fetchWordsBySearch(s);
+    
+    if (matches.length === 0) {
+        wl.innerHTML = `<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
+    } else {
+        wl.innerHTML = matches.map(word => 
+            `<div class="word-entry">
+                <div class="word-title">${word.word}</div>
+                <div class="word-definition">${word.definition}</div>
+            </div>`
+        ).join('');
+    }
 }
 
-function displayRandomWord(){
-    const rd=document.getElementById('randomWordDisplay');
-    console.log('displayRandomWord called. Loading:', isLoading, 'Dictionary length:', dictionary.length);
+async function displayRandomWord() {
+    const rd = document.getElementById('randomWordDisplay');
+    rd.innerHTML = '<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading...</p></div>';
     
-    if(isLoading){
-        rd.innerHTML='<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading...</p></div>';
+    const randomWord = await fetchRandomWord();
+    
+    if (!randomWord) {
+        rd.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
         return;
     }
     
-    if(!dictionary || dictionary.length===0){
-        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+    lastRandomWord = randomWord;
+    rd.innerHTML = `<div class="word-entry">
+        <div class="word-title">${randomWord.word}</div>
+        <div class="word-definition">${randomWord.definition}</div>
+    </div>`;
+}
+
+async function showNewRandomWord() {
+    await displayRandomWord();
+    document.getElementById('wordOfTheDaySection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function searchWordsToEdit() {
+    const s = document.getElementById('editSearchInput').value.toLowerCase().trim();
+    const r = document.getElementById('editSearchResults');
+    
+    if (!s) {
+        r.innerHTML = '';
         return;
     }
     
-    const ri=Math.floor(Math.random()*dictionary.length),rw=dictionary[ri];
-    rd.innerHTML=`<div class="word-entry"><div class="word-definition">${rw.definition}</div></div>`;
-    console.log('Displayed random word:', rw.word);
-}
-
-function showNewRandomWord(){
-    if(dictionary.length>0){
-        displayRandomWord();
-        document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
+    r.innerHTML = '<div class="no-words"><div class="loading-spinner"></div> Searching...</div>';
+    
+    const matches = await fetchWordsBySearch(s);
+    
+    if (matches.length === 0) {
+        r.innerHTML = '<div class="no-results">No matching words found</div>';
+    } else {
+        r.innerHTML = matches.map(word => {
+            const def = word.definition.replace(/<[^>]*>/g, '');
+            const preview = def.length > 100 ? def.substring(0, 100) + '...' : def;
+            return `<div class="edit-result-item" onclick="editWord(${word.id})">
+                <div class="edit-result-word">${word.word}</div>
+                <div class="edit-result-definition">${preview}</div>
+            </div>`;
+        }).join('');
     }
+    
+    // Update count
+    const ce = document.getElementById('dictionaryCount');
+    if (ce) ce.textContent = `(${wordListCache.length})`;
 }
 
-function displayWords(s=''){
-    const wl=document.getElementById('wordsList'),ce=document.getElementById('dictionaryCount');
-    if(ce)ce.textContent=`(${dictionary.length})`;
-    if(isLoading){
-        wl.innerHTML='<div class="no-words"><div class="no-words-icon">⏳</div><p>Loading dictionary...</p></div>';
+async function searchDefinitions() {
+    const s = document.getElementById('definitionSearchInput').value.toLowerCase();
+    const r = document.getElementById('definitionSearchResults');
+    
+    if (!s.trim()) {
+        r.innerHTML = '';
         return;
     }
-    let fd=s?dictionary.filter(i=>{
-        const wm=i.word.toLowerCase().includes(s),dt=i.definition.replace(/<[^>]*>/g,'').toLowerCase();
-        return wm||dt.includes(s);
-    }):dictionary;
-    fd.sort((a,b)=>a.word.localeCompare(b.word));
-    wl.innerHTML=fd.length===0?`<div class="no-words"><div class="no-words-icon">📚</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`:fd.map(i=>`<div class="word-entry"><div class="word-title">${i.word}</div><div class="word-definition">${i.definition}</div><div class="word-actions" style="display:${isAdmin?'flex':'none'}"><button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button><button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button></div></div>`).join('');
-}
-
-async function editWord(id){
-    const i=dictionary.find(w=>w.id===id);
-    if(i){
-        document.getElementById('wordInput').value=i.word;
-        document.getElementById('definitionInput').innerHTML=i.definition;
-        dictionary=dictionary.filter(w=>w.id!==id);
-        await saveDictionary();
-        displayWords();
-        document.getElementById('editSearchInput').value='';
-        document.getElementById('editSearchResults').innerHTML='';
-        document.getElementById('definitionSearchInput').value='';
-        document.getElementById('definitionSearchResults').innerHTML='';
-        const sb=document.getElementById('sidebar');
-        sb.scrollIntoView({behavior:'smooth',block:'start'});
+    
+    r.innerHTML = '<div class="no-words"><div class="loading-spinner"></div> Searching...</div>';
+    
+    const snapshot = await database.ref('dictionary').once('value');
+    const data = snapshot.val();
+    
+    if (!data) {
+        r.innerHTML = '<div class="no-results">No matching definitions found</div>';
+        return;
+    }
+    
+    const matches = Object.values(data).filter(word => {
+        const def = word.definition.replace(/<[^>]*>/g, '').toLowerCase();
+        return def.includes(s);
+    }).sort((a, b) => a.word.localeCompare(b.word));
+    
+    if (matches.length === 0) {
+        r.innerHTML = '<div class="no-results">No matching definitions found</div>';
+    } else {
+        r.innerHTML = matches.map(word => {
+            const def = word.definition.replace(/<[^>]*>/g, '');
+            const preview = def.length > 100 ? def.substring(0, 100) + '...' : def;
+            return `<div class="definition-result-item" onclick="editWord(${word.id})">
+                <div class="definition-result-word">${word.word}</div>
+                <div class="definition-result-definition">${preview}</div>
+            </div>`;
+        }).join('');
     }
 }
 
-function searchWordsToEdit(){
-    const s=document.getElementById('editSearchInput').value.toLowerCase().trim(),r=document.getElementById('editSearchResults');
-    if(!s){r.innerHTML='';return}
-    const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));
-    r.innerHTML=m.length===0?'<div class="no-results">No matching words found</div>':m.map(i=>{
-        const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;
-        return`<div class="edit-result-item" onclick="editWord(${i.id})"><div class="edit-result-word">${i.word}</div><div class="edit-result-definition">${p}</div></div>`
-    }).join('');
-}
-
-function searchDefinitions(){
-    const s=document.getElementById('definitionSearchInput').value.toLowerCase(),r=document.getElementById('definitionSearchResults');
-    if(!s.trim()){r.innerHTML='';return}
-    const m=dictionary.filter(i=>{
-        const d=i.definition.replace(/<[^>]*>/g,'').toLowerCase();
-        return d.includes(s);
-    }).sort((a,b)=>a.word.localeCompare(b.word));
-    r.innerHTML=m.length===0?'<div class="no-results">No matching definitions found</div>':m.map(i=>{
-        const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;
-        return`<div class="definition-result-item" onclick="editWord(${i.id})"><div class="definition-result-word">${i.word}</div><div class="definition-result-definition">${p}</div></div>`
-    }).join('');
-}
-
-async function deleteWord(id){
-    const i=dictionary.find(w=>w.id===id);
-    if(i&&confirm(`Delete "${i.word}"?`)){
-        dictionary=dictionary.filter(w=>w.id!==id);
-        await saveDictionary();
-        displayWords();
+async function editWord(id) {
+    const word = await fetchWordById(id);
+    if (word) {
+        document.getElementById('wordInput').value = word.word;
+        document.getElementById('definitionInput').innerHTML = word.definition;
+        
+        // Delete the word so it can be re-added with updates
+        await database.ref(`dictionary/${id}`).remove();
+        
+        // Update cache
+        wordListCache = wordListCache.filter(w => w !== word.word);
+        delete recentWordsCache[word.word.toLowerCase()];
+        
+        document.getElementById('editSearchInput').value = '';
+        document.getElementById('editSearchResults').innerHTML = '';
+        document.getElementById('definitionSearchInput').value = '';
+        document.getElementById('definitionSearchResults').innerHTML = '';
+        
+        const sb = document.getElementById('sidebar');
+        sb.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
-function exportData(){
-    const ds=JSON.stringify(dictionary,null,2),db=new Blob([ds],{type:'application/json'}),u=URL.createObjectURL(db),l=document.createElement('a');
-    l.href=u;
-    l.download=`dictionary_${new Date().toISOString().split('T')[0]}.json`;
-    l.click();
-    URL.revokeObjectURL(u);
+async function deleteWord(id) {
+    const word = await fetchWordById(id);
+    if (word && confirm(`Delete "${word.word}"?`)) {
+        await database.ref(`dictionary/${id}`).remove();
+        
+        // Update cache
+        wordListCache = wordListCache.filter(w => w !== word.word);
+        delete recentWordsCache[word.word.toLowerCase()];
+        SafeStorage.setItem('wordListCache', JSON.stringify(wordListCache));
+        
+        await searchWordsToEdit();
+    }
 }
 
-async function importData(e){
-    const f=e.target.files[0];
-    if(f){
-        const r=new FileReader();
-        r.onload=async function(ev){
-            try{
-                const imp=JSON.parse(ev.target.result);
-                if(Array.isArray(imp)){
-                    if(confirm(`Import ${imp.length} words? This will merge with existing entries.`)){
-                        imp.forEach(w=>{
-                            const ex=dictionary.find(x=>x.word.toLowerCase()===w.word.toLowerCase());
-                            if(!ex)dictionary.push(w);
-                        });
-                        await saveDictionary();
-                        displayWords();
+async function exportData() {
+    const snapshot = await database.ref('dictionary').once('value');
+    const data = snapshot.val();
+    const dictionary = data ? Object.values(data) : [];
+    
+    const dataStr = JSON.stringify(dictionary, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dictionary_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+async function importData(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = async function(ev) {
+            try {
+                const imported = JSON.parse(ev.target.result);
+                if (Array.isArray(imported)) {
+                    if (confirm(`Import ${imported.length} words? This will merge with existing entries.`)) {
+                        for (const word of imported) {
+                            const existing = await fetchWordByName(word.word);
+                            if (!existing) {
+                                const newId = word.id || Date.now() + Math.random();
+                                await database.ref(`dictionary/${newId}`).set({
+                                    ...word,
+                                    id: newId
+                                });
+                            }
+                        }
+                        
+                        // Refresh cache
+                        await fetchWordListForAdmin();
                         alert('Import successful!');
                     }
-                }else alert('Invalid file format');
-            }catch(er){
+                } else {
+                    alert('Invalid file format');
+                }
+            } catch(er) {
                 alert('Error reading file');
             }
         };
-        r.readAsText(f);
+        reader.readAsText(file);
     }
-    e.target.value='';
+    e.target.value = '';
 }
     </script>
 </body>
