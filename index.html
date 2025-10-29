@@ -14,25 +14,10 @@
         @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
         @keyframes shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
-        @keyframes skeleton-shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
-        .loading-container{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:0;gap:0}
-        .skeleton-line{
-            height:20px;
-            background:linear-gradient(90deg,#2a2a2a 0%,#333 50%,#2a2a2a 100%);
-            background-size:1000px 100%;
-            animation:skeleton-shimmer 1.5s infinite linear;
-            border-radius:4px;
-            margin-bottom:12px;
-        }
-        .skeleton-line:nth-child(1){width:60%;height:24px;margin-bottom:20px}
-        .skeleton-line:nth-child(2){width:100%}
-        .skeleton-line:nth-child(3){width:95%}
-        .skeleton-line:nth-child(4){width:88%}
-        .skeleton-line:nth-child(5){width:92%}
-        .skeleton-line:nth-child(6){width:78%;margin-bottom:20px}
-        .skeleton-line:nth-child(7){width:100%}
-        .skeleton-line:nth-child(8){width:90%}
-        .skeleton-line:nth-child(9){width:85%}
+        .loading-container{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:24px}
+        .loading-spinner{width:48px;height:48px;border:4px solid #3d3d3d;border-top:4px solid #c87941;border-radius:50%;animation:spin 1s linear infinite}
+        .loading-text{font-size:18px;color:#b8b8b8;font-weight:500;animation:pulse 2s ease-in-out infinite}
+        .loading-subtext{font-size:14px;color:#666;margin-top:-12px}
         .hero-section{background:linear-gradient(135deg,#242424 0%,#1f1f1f 100%);padding:40px 30px;text-align:center;color:#e8e8e8}
         .hero-title{font-size:48px;font-weight:700;margin-bottom:20px;text-shadow:0 2px 8px rgba(200,121,65,0.3)}
         .hero-subtitle{font-size:20px;margin-bottom:40px;opacity:0.85}
@@ -60,28 +45,7 @@
         .main-content.full-width{grid-template-columns:1fr}
         .words-column{background:#242424;padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid #3d3d3d}
         .sidebar{background:#242424;padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);height:fit-content;min-height:600px;border:1px solid #3d3d3d;animation:fadeIn 0.4s ease}
-        .section-title{font-size:22px;font-weight:600;color:#e8e8e8;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #c87941;opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
-        @keyframes shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
-        .elegant-section-title{
-            display:inline-block;
-            background:#2d2520;
-            color:#d4a574;
-            padding:10px 26px;
-            border-radius:50px;
-            font-size:16px;
-            font-weight:600;
-            border:2px solid #4a3a2d;
-            box-shadow:0 4px 12px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);
-            margin-bottom:12px;
-            text-shadow:0 1px 2px rgba(0,0,0,0.5);
-            letter-spacing:0px;
-            word-spacing:-1px;
-            font-family:'Lora',serif;
-        }
-        .word-day-container{margin-bottom:12px}
-        @media (max-width:480px){
-            .word-day-container{margin-bottom:4px}
-        }
+        .section-title{font-size:22px;font-weight:600;color:#e8e8e8;margin-bottom:1px;padding-bottom:10px;border-bottom:2px solid #c87941;opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
         .form-group{margin-bottom:20px}
         .form-group label{display:block;margin-bottom:8px;font-weight:600;color:#b8b8b8;font-size:14px}
         .form-group input{width:100%;padding:12px;border:1px solid #3d3d3d;border-radius:6px;font-size:15px;transition:border-color 0.3s;background:#1a1a1a;color:#e8e8e8}
@@ -108,15 +72,15 @@
         .editor-content strong,.editor-content b{color:#efefef}
         .btn{background:linear-gradient(135deg,#c87941 0%,#d89057 100%);color:#1a1a1a;border:none;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;width:100%;box-shadow:0 4px 12px rgba(200,121,65,0.3)}
         .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(200,121,65,0.4)}
-        .btn-show-word{background:#2d2520;color:#d4a574;border:2px solid #4a3a2d;border-radius:50px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);text-shadow:0 1px 2px rgba(0,0,0,0.5);letter-spacing:0px;word-spacing:-1px;font-family:'Lora',serif}
-        .btn-show-word:hover{box-shadow:0 6px 16px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.15);transform:translateY(-2px);border-color:#5a4a3d}
+        .btn-show-word{background:#242424;color:#e8e8e8;border:1px solid #3d3d3d;border-radius:50px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.3s ease;box-shadow:0 6px 20px rgba(200,121,65,0.4);border-color:#c87941}
+        .btn-show-word:hover{box-shadow:0 8px 24px rgba(200,121,65,0.5);transform:translateY(-2px)}
         .btn-secondary{background:#242424;color:#c87941;border:2px solid #c87941;margin-top:10px}
         .btn-secondary:hover{background:#3d3d3d}
         .word-entry{padding:15px 0;border-bottom:1px solid #3d3d3d}
         .word-entry:first-child{padding-top:0}
         .word-entry:last-child{border-bottom:none;padding-bottom:0}
-        .word-title{font-size:26px;font-weight:700;color:#e8e8e8;margin-bottom:12px}
-        .word-definition{font-size:16px;color:#d8d8d8;line-height:1.6;margin-bottom:15px;white-space:normal;word-wrap:break-word;font-weight:500;word-spacing:-0.05em}
+        .word-title{font-size:26px;font-weight:700;color:#e8e8e8;margin-bottom:1px}
+        .word-definition{font-size:16px;color:#d8d8d8;line-height:1.6;margin-bottom:1px;white-space:normal;word-wrap:break-word;font-weight:500;word-spacing:-0.05em}
         .word-definition p{margin:0.75em 0}
         .word-definition ul,.word-definition ol{margin:0.5em 0;padding-left:1.2em}
         .word-definition li{margin:0.25em 0;line-height:1.45}
@@ -179,8 +143,8 @@
         .quick-add-btn:hover{background:#d89057}
         .quick-add-refresh{background:#242424;color:#c87941;border:2px solid #c87941}
         .quick-add-refresh:hover{background:#3d3d3d}
-        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.main-content{grid-template-columns:1fr}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.elegant-section-title{font-size:15px;padding:9px 22px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;width:20px;height:20px}.autocomplete-dropdown{left:20px;max-width:calc(100% - 70px)}.autocomplete-item{padding:14px 18px}.autocomplete-item:hover{padding-left:22px}.autocomplete-item.selected{padding-left:19px}.autocomplete-word{font-size:15px}.admin-toggle{bottom:15px;right:15px;width:45px;height:45px;font-size:20px}.password-box{padding:30px 20px}.quick-add-item{padding:10px 12px}.quick-add-word{font-size:14px;min-width:100px}.quick-add-remove{padding:5px 10px;font-size:11px}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:250px;padding:8px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:12px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:15px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:13px}.form-group label{font-size:13px}.form-group input{padding:10px;font-size:14px}.utility-buttons{display:flex;flex-direction:column;gap:10px}.btn-secondary{margin-top:0}.info-box,.success-box{padding:15px;font-size:13px}}
-        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;width:18px;height:18px}.autocomplete-dropdown{left:18px;max-width:calc(100% - 63px)}.autocomplete-item{padding:12px 16px}.autocomplete-word{font-size:14px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.elegant-section-title{font-size:14px;padding:8px 20px;margin-bottom:4px}.word-day-container{margin-bottom:4px}.btn{padding:12px 20px;font-size:15px}.form-group input{padding:10px;font-size:14px}.form-group label{font-size:12px}.editor-toolbar{padding:6px;gap:2px;flex-wrap:wrap}.editor-btn,.font-size-dropdown{padding:5px 8px;font-size:12px}.editor-content{min-height:300px;font-size:15px;padding:10px}.admin-toggle{bottom:12px;right:12px;width:40px;height:40px;font-size:18px}.quick-add-item{padding:8px 10px;flex-direction:column;align-items:flex-start}.quick-add-word{font-size:13px;width:100%;margin-bottom:8px}.quick-add-remove{padding:5px 10px;font-size:11px;width:100%}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:200px;padding:6px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:10px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:14px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:12px}.utility-buttons{display:flex;flex-direction:column;gap:8px}.btn-secondary{margin-top:0;padding:12px 20px;font-size:14px}.info-box,.success-box{padding:12px;font-size:12px}.password-box{padding:25px 15px;max-width:95%}.password-box h3{font-size:18px}.password-box input,.password-box button{padding:10px;font-size:14px}}
+        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.main-content{grid-template-columns:1fr}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;width:20px;height:20px}.autocomplete-dropdown{left:20px;max-width:calc(100% - 70px)}.autocomplete-item{padding:14px 18px}.autocomplete-item:hover{padding-left:22px}.autocomplete-item.selected{padding-left:19px}.autocomplete-word{font-size:15px}.admin-toggle{bottom:15px;right:15px;width:45px;height:45px;font-size:20px}.password-box{padding:30px 20px}.quick-add-item{padding:10px 12px}.quick-add-word{font-size:14px;min-width:100px}.quick-add-remove{padding:5px 10px;font-size:11px}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:250px;padding:8px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:12px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:15px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:13px}.form-group label{font-size:13px}.form-group input{padding:10px;font-size:14px}.utility-buttons{display:flex;flex-direction:column;gap:10px}.btn-secondary{margin-top:0}.info-box,.success-box{padding:15px;font-size:13px}}
+        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;width:18px;height:18px}.autocomplete-dropdown{left:18px;max-width:calc(100% - 63px)}.autocomplete-item{padding:12px 16px}.autocomplete-word{font-size:14px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.btn{padding:12px 20px;font-size:15px}.form-group input{padding:10px;font-size:14px}.form-group label{font-size:12px}.editor-toolbar{padding:6px;gap:2px;flex-wrap:wrap}.editor-btn,.font-size-dropdown{padding:5px 8px;font-size:12px}.editor-content{min-height:300px;font-size:15px;padding:10px}.admin-toggle{bottom:12px;right:12px;width:40px;height:40px;font-size:18px}.quick-add-item{padding:8px 10px;flex-direction:column;align-items:flex-start}.quick-add-word{font-size:13px;width:100%;margin-bottom:8px}.quick-add-remove{padding:5px 10px;font-size:11px;width:100%}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:200px;padding:6px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:10px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:14px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:12px}.utility-buttons{display:flex;flex-direction:column;gap:8px}.btn-secondary{margin-top:0;padding:12px 20px;font-size:14px}.info-box,.success-box{padding:12px;font-size:12px}.password-box{padding:25px 15px;max-width:95%}.password-box h3{font-size:18px}.password-box input,.password-box button{padding:10px;font-size:14px}}
     </style>
 </head>
 <body>
@@ -207,11 +171,9 @@
                 <div id="wordsList"></div>
             </div>
             <div class="words-column" id="wordOfTheDaySection">
-                <div style="margin-bottom:8px" class="word-day-container">
-                    <span class="elegant-section-title">Word of the Day</span>
-                </div>
+                <h2 class="section-title">Word of the Day</h2>
                 <div id="randomWordDisplay"></div>
-                <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Discover another</button>
+                <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
             </div>
             <div class="sidebar admin-mode" id="sidebar">
                 <h2 class="section-title">Add New Word</h2>
@@ -453,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
             displayRandomWord();
         } else {
             const rd = document.getElementById('randomWordDisplay');
-            rd.innerHTML = '<div class="loading-container"><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div>';
+            rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
         }
     }
     
