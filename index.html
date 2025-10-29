@@ -248,7 +248,9 @@ const SafeStorage = {
             localStorage.setItem(test, test);
             localStorage.removeItem(test);
             this.isAvailable = true;
+            console.log('localStorage is available');
         } catch(e) {
+            console.warn('localStorage not available, using memory storage:', e);
             this.isAvailable = false;
         }
     },
@@ -257,10 +259,11 @@ const SafeStorage = {
         try {
             if (this.isAvailable) {
                 localStorage.setItem(key, value);
-            } else {
-                this.memoryStorage[key] = value;
             }
+            // Always store in memory as backup
+            this.memoryStorage[key] = value;
         } catch(e) {
+            console.warn('Storage setItem failed:', e);
             this.memoryStorage[key] = value;
         }
     },
@@ -268,11 +271,13 @@ const SafeStorage = {
     getItem: function(key) {
         try {
             if (this.isAvailable) {
-                return localStorage.getItem(key);
-            } else {
-                return this.memoryStorage[key] || null;
+                const value = localStorage.getItem(key);
+                if (value !== null) return value;
             }
+            // Fallback to memory storage
+            return this.memoryStorage[key] || null;
         } catch(e) {
+            console.warn('Storage getItem failed:', e);
             return this.memoryStorage[key] || null;
         }
     },
@@ -281,10 +286,10 @@ const SafeStorage = {
         try {
             if (this.isAvailable) {
                 localStorage.removeItem(key);
-            } else {
-                delete this.memoryStorage[key];
             }
+            delete this.memoryStorage[key];
         } catch(e) {
+            console.warn('Storage removeItem failed:', e);
             delete this.memoryStorage[key];
         }
     }
@@ -402,25 +407,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Show loading immediately for non-admin users
+    if (!isAdmin) {
+        const rd = document.getElementById('randomWordDisplay');
+        rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
+    }
+    
     // Load from localStorage immediately
     const hasLocalData = loadFromLocalStorage();
     
     // Update UI immediately
     checkAdminStatus();
     
-    // Show loading state only if no local data
-    if (!hasLocalData && !isAdmin) {
-        const rd = document.getElementById('randomWordDisplay');
-        rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
-    } else if (!isAdmin) {
+    // If we have data, display it right away
+    if (hasLocalData && !isAdmin) {
         displayRandomWord();
-    } else {
+    } else if (isAdmin) {
         displayWords();
         displayQuickAddList();
     }
     
-    // Initialize Firebase in background
-    setTimeout(initializeFirebase, 100);
+    // Initialize Firebase in background - with shorter delay for first-time loads
+    setTimeout(initializeFirebase, hasLocalData ? 100 : 10);
 });
 
 // Markdown-style formatting handler
