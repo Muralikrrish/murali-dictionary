@@ -268,22 +268,36 @@ async function initializeWordOfTheDay() {
             const snapshot = await database.ref('wordOfTheDay').once('value');
             const data = snapshot.val();
             console.log('Word of the Day data from Firebase:', data);
+            console.log('Current date string:', currentDateString);
             
             if (data && data.date === currentDateString && data.wordId) {
                 // Use the existing word of the day
-                const word = dictionary.find(w => w.id === data.wordId);
+                const word = dictionary.find(w => w.id.toString() === data.wordId.toString());
                 if (word) {
                     console.log('Using existing word of the day:', word.word);
                     wordOfTheDay = word;
                     displayWordOfTheDay();
                 } else {
-                    // Word not found, generate new one
-                    console.log('Word ID not found in dictionary, generating new word');
-                    await generateAndSaveWordOfTheDay();
+                    // Word not found in dictionary, try to find by word text
+                    const wordByName = dictionary.find(w => w.word === data.word);
+                    if (wordByName) {
+                        console.log('Found word by name:', wordByName.word);
+                        wordOfTheDay = wordByName;
+                        // Update Firebase with correct ID
+                        await database.ref('wordOfTheDay').update({
+                            wordId: wordByName.id
+                        });
+                        displayWordOfTheDay();
+                    } else {
+                        // Word not found at all, generate new one
+                        console.log('Word not found in dictionary, generating new word');
+                        await generateAndSaveWordOfTheDay();
+                    }
                 }
             } else {
                 // Generate new word for today
                 console.log('No word for today or date mismatch, generating new word');
+                console.log('Data date:', data?.date, 'Current date:', currentDateString);
                 await generateAndSaveWordOfTheDay();
             }
             
@@ -291,9 +305,9 @@ async function initializeWordOfTheDay() {
             database.ref('wordOfTheDay').on('value', snapshot => {
                 const data = snapshot.val();
                 if (data && data.date === currentDateString && data.wordId) {
-                    const word = dictionary.find(w => w.id === data.wordId);
+                    const word = dictionary.find(w => w.id.toString() === data.wordId.toString());
                     if (word && (!wordOfTheDay || wordOfTheDay.id !== word.id)) {
-                        console.log('Word of the Day updated:', word.word);
+                        console.log('Word of the Day updated from Firebase:', word.word);
                         wordOfTheDay = word;
                         displayWordOfTheDay();
                     }
@@ -320,12 +334,14 @@ async function generateAndSaveWordOfTheDay() {
     
     if (isFirebaseConfigured) {
         try {
+            // Use set to ensure it overwrites and persists
             await database.ref('wordOfTheDay').set({
                 date: currentDateString,
                 wordId: wordOfTheDay.id,
-                word: wordOfTheDay.word
+                word: wordOfTheDay.word,
+                timestamp: Date.now()
             });
-            console.log('New Word of the Day saved:', wordOfTheDay.word);
+            console.log('New Word of the Day saved to Firebase:', wordOfTheDay.word);
         } catch (error) {
             console.error('Error saving Word of the Day:', error);
         }
