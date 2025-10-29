@@ -913,6 +913,30 @@ function displaySearchResults(s){
     sr.style.display='block';
 }
 
+// Get consistent word of the day based on current date
+function getWordOfTheDay() {
+    if (!dictionary || dictionary.length === 0) {
+        return null;
+    }
+    
+    // Get current date in YYYY-MM-DD format
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(today.getDate()).padStart(2, '0');
+    
+    // Create a simple hash from the date string
+    let hash = 0;
+    for (let i = 0; i < dateString.length; i++) {
+        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
+        hash = hash & hash; // Convert to 32-bit integer
+    }
+    
+    // Use absolute value and modulo to get consistent index
+    const index = Math.abs(hash) % dictionary.length;
+    return dictionary[index];
+}
+
 function displayRandomWord(){
     const rd=document.getElementById('randomWordDisplay');
     
@@ -921,13 +945,18 @@ function displayRandomWord(){
         return;
     }
     
-    const ri=Math.floor(Math.random()*dictionary.length),rw=dictionary[ri];
-    rd.innerHTML=`<div class="word-entry"><div class="word-definition">${rw.definition}</div></div>`;
+    const wordOfDay = getWordOfTheDay();
+    if (wordOfDay) {
+        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
+    }
 }
 
 function showNewRandomWord(){
     if(dictionary.length>0){
-        displayRandomWord();
+        const rd=document.getElementById('randomWordDisplay');
+        const ri=Math.floor(Math.random()*dictionary.length);
+        const rw=dictionary[ri];
+        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${rw.definition}</div></div>`;
         document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
     }
 }
