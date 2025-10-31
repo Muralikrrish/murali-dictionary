@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -181,7 +182,7 @@
                     <div class="form-group">
                         <label for="wordInput">Word</label>
                         <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()">
-                        <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">âš ï¸ This word already exists in the dictionary</div>
+                        <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists in the dictionary</div>
                     </div>
                     <div class="form-group">
                         <label for="definitionInput">Definition</label>
@@ -198,8 +199,8 @@
                             <button type="button" class="editor-btn" onclick="formatText('underline')" title="Underline"><u>U</u></button>
                             <button type="button" class="editor-btn" onclick="formatText('strikethrough')" title="Strikethrough"><s>S</s></button>
                             <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')" title="Numbered List">1. 2. 3.</button>
-                            <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">â€¢ â€¢ â€¢</button>
-                            <button type="button" class="editor-btn" onclick="formatText('removeFormat')" title="Clear Formatting">âœ•</button>
+                            <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">• • •</button>
+                            <button type="button" class="editor-btn" onclick="formatText('removeFormat')" title="Clear Formatting">✕</button>
                         </div>
                         <div id="definitionInput" class="editor-content" contenteditable="true" placeholder="Enter definition with formatting..."></div>
                     </div>
@@ -209,7 +210,7 @@
                 <div class="form-group">
                     <label for="quickAddSearch">Search Word</label>
                     <input type="text" id="quickAddSearch" placeholder="Type a word to search..." oninput="searchWordsForQuickAdd()" onkeypress="if(event.key==='Enter'){event.preventDefault();addToQuickList()}">
-                    <div id="quickAddWarning" class="quick-add-warning">âš ï¸ This word already exists in the dictionary</div>
+                    <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
                 </div>
                 <div class="quick-add-controls">
                     <button class="quick-add-btn" onclick="addToQuickList()">Add to List</button>
@@ -228,12 +229,12 @@
                     <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Dictionary</button>
                     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
                 </div>
-                <div class="success-box"><strong>âœ… Firebase Connected!</strong>Your dictionary is now syncing across all devices. Add words here and they'll appear everywhere!</div>
-                <div class="info-box"><strong>ðŸ’¡ Tip:</strong> Your dictionary automatically saves to the cloud. Access it from any device using this URL!</div>
+                <div class="success-box"><strong>✅ Firebase Connected!</strong>Your dictionary is now syncing across all devices. Add words here and they'll appear everywhere!</div>
+                <div class="info-box"><strong>💡 Tip:</strong> Your dictionary automatically saves to the cloud. Access it from any device using this URL!</div>
             </div>
         </div>
     </div>
-    <button class="admin-toggle" id="adminToggle" onclick="showPasswordModal()">ðŸ”’</button>
+    <button class="admin-toggle" id="adminToggle" onclick="showPasswordModal()">🔒</button>
     <div class="password-modal" id="passwordModal">
         <div class="password-box">
             <h3>Enter Admin Password</h3>
@@ -701,10 +702,10 @@ function formatHeading(tag){const d=document.getElementById('definitionInput');i
 function updateFormatDropdown(){const s=window.getSelection();if(s.rangeCount===0)return;const n=s.anchorNode,p=n.nodeType===3?n.parentNode:n;let b=p;while(b&&!['H1','H2','H3','H4','H5','H6','P','DIV'].includes(b.tagName))b=b.parentElement;const d=document.getElementById('formatDropdown');if(b){const t=b.tagName.toLowerCase();d.value=['h1','h2','h3','h4','h5','h6'].includes(t)?t:''}}
 
 function checkExistingWord(){const w=document.getElementById('wordInput').value.trim(),warn=document.getElementById('wordWarning');warn.style.display=w&&dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase())?'block':'none'}
-async function addToQuickList(){const i=document.getElementById('quickAddSearch'),w=i.value.trim(),warn=document.getElementById('quickAddWarning');if(!w)return;const e=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase()),a=quickAddList.find(x=>x.toLowerCase()===w.toLowerCase());if(e){warn.textContent='âš ï¸ This word already exists in the dictionary';warn.style.display='block';return}if(a){warn.textContent='âš ï¸ This word is already in the quick list';warn.style.display='block';return}quickAddList.unshift(w);i.value='';warn.style.display='none';document.getElementById('quickAddSearchResults').innerHTML='';await saveQuickAddList();displayQuickAddList()}
+async function addToQuickList(){const i=document.getElementById('quickAddSearch'),w=i.value.trim(),warn=document.getElementById('quickAddWarning');if(!w)return;const e=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase()),a=quickAddList.find(x=>x.toLowerCase()===w.toLowerCase());if(e){warn.textContent='⚠️ This word already exists in the dictionary';warn.style.display='block';return}if(a){warn.textContent='⚠️ This word is already in the quick list';warn.style.display='block';return}quickAddList.unshift(w);i.value='';warn.style.display='none';document.getElementById('quickAddSearchResults').innerHTML='';await saveQuickAddList();displayQuickAddList()}
 function displayQuickAddList(){const c=document.getElementById('quickAddList'),cnt=document.getElementById('quickAddCount');cnt.textContent=`(${quickAddList.length})`;c.innerHTML=quickAddList.length===0?'<div class="quick-add-empty">No words in quick list yet</div>':quickAddList.map((w,i)=>`<div class="quick-add-item"><span class="quick-add-word">${w}</span><button class="quick-add-remove" onclick="removeFromQuickList(${i})">Remove</button></div>`).join('')}
 async function removeFromQuickList(i){quickAddList.splice(i,1);await saveQuickAddList();displayQuickAddList()}
-function searchWordsForQuickAdd(){const s=document.getElementById('quickAddSearch').value.toLowerCase().trim(),r=document.getElementById('quickAddSearchResults'),w=document.getElementById('quickAddWarning');if(!s){r.innerHTML='';w.style.display='none';return}const a=quickAddList.find(x=>x.toLowerCase()===s);if(a){r.innerHTML='';w.textContent='âš ï¸ This word is already in the quick list';w.style.display='block';return}const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));if(m.length===0){r.innerHTML='<div class="no-results">No matching words found in dictionary</div>';w.style.display='none'}else{r.innerHTML=m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${i.word.replace(/'/g,"\\'")}')"><div class="quick-add-result-word">${i.word}</div><div class="quick-add-result-definition">${p}</div></div>`}).join('');w.textContent='âš ï¸ These words already exist in the dictionary';w.style.display='block'}}
+function searchWordsForQuickAdd(){const s=document.getElementById('quickAddSearch').value.toLowerCase().trim(),r=document.getElementById('quickAddSearchResults'),w=document.getElementById('quickAddWarning');if(!s){r.innerHTML='';w.style.display='none';return}const a=quickAddList.find(x=>x.toLowerCase()===s);if(a){r.innerHTML='';w.textContent='⚠️ This word is already in the quick list';w.style.display='block';return}const m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));if(m.length===0){r.innerHTML='<div class="no-results">No matching words found in dictionary</div>';w.style.display='none'}else{r.innerHTML=m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${i.word.replace(/'/g,"\\'")}')"><div class="quick-add-result-word">${i.word}</div><div class="quick-add-result-definition">${p}</div></div>`}).join('');w.textContent='⚠️ These words already exist in the dictionary';w.style.display='block'}}
 function selectQuickAddWord(w){document.getElementById('quickAddSearch').value=w;document.getElementById('quickAddSearchResults').innerHTML=''}
 async function refreshQuickList(){if(isFirebaseConfigured){try{const q=await database.ref('quickAddList').once('value'),d=q.val();if(d&&Array.isArray(d))quickAddList=d;else if(d&&typeof d==='object')quickAddList=Object.values(d);else quickAddList=[];SafeStorage.setItem('quickAddList',JSON.stringify(quickAddList));displayQuickAddList();alert('Quick list refreshed! Found '+quickAddList.length+' word(s)')}catch(e){alert('Failed to refresh. Error: '+e.message)}}else alert('Firebase not connected')}
 
@@ -740,7 +741,7 @@ function checkAdminStatus(){
     if(isAdmin){
         sb.style.display='block';
         mc.classList.remove('full-width');
-        at.textContent='ðŸ”“';
+        at.textContent='🔓';
         wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});
         am.forEach(e=>e.style.display='block');
         sr.style.display='none';
@@ -748,7 +749,7 @@ function checkAdminStatus(){
     }else{
         sb.style.display='none';
         mc.classList.add('full-width');
-        at.textContent='ðŸ”’';
+        at.textContent='🔒';
         wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});
         am.forEach(e=>e.style.display='none');
         sr.style.display='none';
@@ -801,12 +802,6 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
             document.getElementById('wordInput').value='';
             de.innerHTML='';
             displayWords();
-            setTimeout(() => {
-                const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-                if (quickAddSection) {
-                    quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
             saveDictionary();
         }
     }else{
@@ -815,12 +810,6 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
         document.getElementById('wordInput').value='';
         de.innerHTML='';
         displayWords();
-        setTimeout(() => {
-            const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-            if (quickAddSection) {
-                quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
         saveDictionary();
     }
 });
@@ -897,7 +886,7 @@ document.addEventListener('click',function(e){
 
 function displaySearchResults(s){
     const wl=document.getElementById('wordsList'),sr=document.getElementById('searchResultsColumn'),m=dictionary.filter(i=>i.word.toLowerCase().includes(s)).sort((a,b)=>a.word.localeCompare(b.word));
-    if(m.length===0)wl.innerHTML=`<div class="no-words"><div class="no-words-icon">ðŸ“–</div><p>No words found matching "${s}"</p></div>`;
+    if(m.length===0)wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
     else wl.innerHTML=m.map(i=>`<div class="word-entry"><div class="word-definition">${i.definition}</div></div>`).join('');
     sr.style.display='block';
 }
@@ -926,7 +915,7 @@ function displayRandomWord(){
     const rd=document.getElementById('randomWordDisplay');
     
     if(!dictionary || dictionary.length===0){
-        rd.innerHTML='<div class="no-words"><div class="no-words-icon">ðŸ“š</div><p>No words yet!</p></div>';
+        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
         return;
     }
     
@@ -954,7 +943,7 @@ function displayWords(s=''){
         return wm||dt.includes(s);
     }):dictionary;
     fd.sort((a,b)=>a.word.localeCompare(b.word));
-    wl.innerHTML=fd.length===0?`<div class="no-words"><div class="no-words-icon">ðŸ“š</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`:fd.map(i=>`<div class="word-entry"><div class="word-title">${i.word}</div><div class="word-definition">${i.definition}</div><div class="word-actions" style="display:${isAdmin?'flex':'none'}"><button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button><button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button></div></div>`).join('');
+    wl.innerHTML=fd.length===0?`<div class="no-words"><div class="no-words-icon">📚</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`:fd.map(i=>`<div class="word-entry"><div class="word-title">${i.word}</div><div class="word-definition">${i.definition}</div><div class="word-actions" style="display:${isAdmin?'flex':'none'}"><button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button><button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button></div></div>`).join('');
 }
 
 async function editWord(id){
@@ -1043,3 +1032,4 @@ async function importData(e){
     </script>
 </body>
 </html>
+```
