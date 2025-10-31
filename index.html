@@ -36,6 +36,9 @@
         .autocomplete-item:hover{background:linear-gradient(135deg,#333 0%,#2d2d2d 100%);border-color:#c87941;transform:translateY(-2px);box-shadow:0 6px 16px rgba(200,121,65,0.3)}
         .autocomplete-item.selected{background:linear-gradient(135deg,#3a3a3a 0%,#323232 100%);border-color:#c87941;box-shadow:0 6px 16px rgba(200,121,65,0.4)}
         .autocomplete-word{font-weight:600;color:#e8e8e8;font-size:16px;letter-spacing:-0.01em;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Arial,sans-serif}
+        .skeleton-item{padding:16px 20px;border-bottom:1px solid #3a3a3a}
+        .skeleton-word{background:linear-gradient(90deg,#3d3d3d 25%,#4a4a4a 50%,#3d3d3d 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px;height:16px;margin-bottom:8px}
+        .skeleton-definition{background:linear-gradient(90deg,#3d3d3d 25%,#4a4a4a 50%,#3d3d3d 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px;height:12px;width:80%}
         .autocomplete-dropdown::-webkit-scrollbar{width:6px}
         .autocomplete-dropdown::-webkit-scrollbar-track{background:transparent;border-radius:4px}
         .autocomplete-dropdown::-webkit-scrollbar-thumb{background:#c87941;border-radius:4px;transition:background 0.3s}
@@ -816,16 +819,33 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
 function showAutocomplete(s){
     const d=document.getElementById('autocompleteDropdown');
     if(!s){d.classList.remove('show');return}
-    const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{
-        const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());
-        if(as&&!bs)return-1;
-        if(!as&&bs)return 1;
-        return a.word.localeCompare(b.word)
-    }).slice(0,5);
-    if(m.length===0){d.classList.remove('show');return}
-    d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');
+    
+    // Show skeleton loading animation
+    d.innerHTML = '';
+    for(let i=0; i<5; i++){
+        const skeletonItem = document.createElement('div');
+        skeletonItem.className = 'skeleton-item';
+        skeletonItem.innerHTML = `
+            <div class="skeleton-word"></div>
+            <div class="skeleton-definition"></div>
+        `;
+        d.appendChild(skeletonItem);
+    }
     d.classList.add('show');
-    selectedAutocompleteIndex=-1;
+    
+    // Use setTimeout to allow the skeleton to render before processing
+    setTimeout(() => {
+        const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{
+            const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());
+            if(as&&!bs)return-1;
+            if(!as&&bs)return 1;
+            return a.word.localeCompare(b.word)
+        }).slice(0,5);
+        if(m.length===0){d.classList.remove('show');return}
+        d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');
+        d.classList.add('show');
+        selectedAutocompleteIndex=-1;
+    }, 50);
 }
 
 function selectAutocompleteItem(w){
@@ -837,13 +857,19 @@ function selectAutocompleteItem(w){
 
 document.getElementById('searchInput').addEventListener('input',function(e){
     const s=e.target.value.toLowerCase();
+    
+    // Remove any existing timeout to prevent delayed execution
     clearTimeout(searchTimeout);
+    
+    // Show autocomplete immediately
+    showAutocomplete(e.target.value);
+    
+    // Use a shorter timeout for search results (50ms instead of 300ms)
     searchTimeout=setTimeout(()=>{
-        showAutocomplete(e.target.value);
         if(s&&isAdmin)displayWords(s);
         else if(s&&!isAdmin)displaySearchResults(s);
         else if(!isAdmin)document.getElementById('searchResultsColumn').style.display='none';
-    },300);
+    },50);
 });
 
 document.getElementById('searchInput').addEventListener('keydown',function(e){
