@@ -890,8 +890,7 @@ function displaySearchResults(s){
     sr.style.display='block';
 }
 
-// FIXED: Word of the Day function - now uses Firebase to store and sync the daily word
-async function getWordOfTheDay() {
+function getWordOfTheDay() {
     if (!dictionary || dictionary.length === 0) {
         return null;
     }
@@ -901,29 +900,6 @@ async function getWordOfTheDay() {
                       String(today.getMonth() + 1).padStart(2, '0') + '-' + 
                       String(today.getDate()).padStart(2, '0');
     
-    // Check if we already have a word of the day stored for today
-    const storedWordOfDay = SafeStorage.getItem('wordOfTheDay');
-    let storedDate = '', storedWordId = '';
-    
-    if (storedWordOfDay) {
-        try {
-            const parsed = JSON.parse(storedWordOfDay);
-            storedDate = parsed.date;
-            storedWordId = parsed.wordId;
-        } catch(e) {
-            // If parsing fails, we'll generate a new word
-        }
-    }
-    
-    // If we have a stored word for today, use it
-    if (storedDate === dateString && storedWordId) {
-        const word = dictionary.find(w => w.id == storedWordId);
-        if (word) {
-            return word;
-        }
-    }
-    
-    // Generate a consistent hash for the date
     let hash = 0;
     for (let i = 0; i < dateString.length; i++) {
         hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
@@ -931,33 +907,10 @@ async function getWordOfTheDay() {
     }
     
     const index = Math.abs(hash) % dictionary.length;
-    const wordOfDay = dictionary[index];
-    
-    // Store the word of the day for today
-    if (wordOfDay) {
-        SafeStorage.setItem('wordOfTheDay', JSON.stringify({
-            date: dateString,
-            wordId: wordOfDay.id
-        }));
-        
-        // Also store in Firebase for cross-device consistency
-        if (isFirebaseConfigured) {
-            try {
-                await database.ref('wordOfTheDay').set({
-                    date: dateString,
-                    wordId: wordOfDay.id
-                });
-            } catch(error) {
-                // If Firebase fails, we'll just use local storage
-            }
-        }
-    }
-    
-    return wordOfDay;
+    return dictionary[index];
 }
 
-// FIXED: Display random word - now properly separates Word of the Day from random words
-async function displayRandomWord(){
+function displayRandomWord(){
     const rd=document.getElementById('randomWordDisplay');
     
     if(!dictionary || dictionary.length===0){
@@ -965,43 +918,12 @@ async function displayRandomWord(){
         return;
     }
     
-    // Try to get word of the day from Firebase first for cross-device consistency
-    if (isFirebaseConfigured) {
-        try {
-            const snapshot = await database.ref('wordOfTheDay').once('value');
-            const firebaseWordOfDay = snapshot.val();
-            
-            if (firebaseWordOfDay) {
-                const today = new Date();
-                const dateString = today.getFullYear() + '-' + 
-                                  String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-                                  String(today.getDate()).padStart(2, '0');
-                
-                // If Firebase has today's word, use it
-                if (firebaseWordOfDay.date === dateString) {
-                    const word = dictionary.find(w => w.id == firebaseWordOfDay.wordId);
-                    if (word) {
-                        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${word.definition}</div></div>`;
-                        
-                        // Also update local storage
-                        SafeStorage.setItem('wordOfTheDay', JSON.stringify(firebaseWordOfDay));
-                        return;
-                    }
-                }
-            }
-        } catch(error) {
-            // If Firebase fails, fall back to local calculation
-        }
-    }
-    
-    // Fall back to local calculation
-    const wordOfDay = await getWordOfTheDay();
+    const wordOfDay = getWordOfTheDay();
     if (wordOfDay) {
         rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
     }
 }
 
-// FIXED: Show new random word - now only shows truly random words, doesn't affect Word of the Day
 function showNewRandomWord(){
     if(dictionary.length>0){
         const rd=document.getElementById('randomWordDisplay');
