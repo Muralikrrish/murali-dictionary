@@ -36,9 +36,6 @@
         .autocomplete-item:hover{background:linear-gradient(135deg,#333 0%,#2d2d2d 100%);border-color:#c87941;transform:translateY(-2px);box-shadow:0 6px 16px rgba(200,121,65,0.3)}
         .autocomplete-item.selected{background:linear-gradient(135deg,#3a3a3a 0%,#323232 100%);border-color:#c87941;box-shadow:0 6px 16px rgba(200,121,65,0.4)}
         .autocomplete-word{font-weight:600;color:#e8e8e8;font-size:16px;letter-spacing:-0.01em;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,Arial,sans-serif}
-        .skeleton-item{padding:16px 20px;border-bottom:1px solid #3a3a3a}
-        .skeleton-word{background:linear-gradient(90deg,#3d3d3d 25%,#4a4a4a 50%,#3d3d3d 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px;height:16px;margin-bottom:8px}
-        .skeleton-definition{background:linear-gradient(90deg,#3d3d3d 25%,#4a4a4a 50%,#3d3d3d 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px;height:12px;width:80%}
         .autocomplete-dropdown::-webkit-scrollbar{width:6px}
         .autocomplete-dropdown::-webkit-scrollbar-track{background:transparent;border-radius:4px}
         .autocomplete-dropdown::-webkit-scrollbar-thumb{background:#c87941;border-radius:4px;transition:background 0.3s}
@@ -175,7 +172,13 @@
             </div>
             <div class="words-column" id="wordOfTheDaySection">
                 <h2 class="section-title">Word of the Day</h2>
-                <div id="randomWordDisplay"></div>
+                <div id="randomWordDisplay">
+                    <div class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <div class="loading-text">Loading dictionary</div>
+                        <div class="loading-subtext">Just a moment...</div>
+                    </div>
+                </div>
                 <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
             </div>
             <div class="sidebar admin-mode" id="sidebar">
@@ -258,9 +261,7 @@ const SafeStorage = {
             localStorage.setItem(test, test);
             localStorage.removeItem(test);
             this.isAvailable = true;
-            console.log('localStorage is available');
         } catch(e) {
-            console.warn('localStorage not available, using memory storage:', e);
             this.isAvailable = false;
         }
     },
@@ -272,7 +273,6 @@ const SafeStorage = {
             }
             this.memoryStorage[key] = value;
         } catch(e) {
-            console.warn('Storage setItem failed:', e);
             this.memoryStorage[key] = value;
         }
     },
@@ -285,7 +285,6 @@ const SafeStorage = {
             }
             return this.memoryStorage[key] || null;
         } catch(e) {
-            console.warn('Storage getItem failed:', e);
             return this.memoryStorage[key] || null;
         }
     },
@@ -297,7 +296,6 @@ const SafeStorage = {
             }
             delete this.memoryStorage[key];
         } catch(e) {
-            console.warn('Storage removeItem failed:', e);
             delete this.memoryStorage[key];
         }
     }
@@ -319,6 +317,7 @@ function loadFromLocalStorage() {
 async function initializeFirebase() {
     try {
         if (typeof firebase === 'undefined') {
+            displayWordOfTheDayFast();
             return;
         }
         firebase.initializeApp(firebaseConfig);
@@ -329,9 +328,7 @@ async function initializeFirebase() {
         await syncWithFirebase();
     } catch(error) {
         isFirebaseConfigured = false;
-        if (dictionary.length === 0 && !isAdmin) {
-            displayRandomWord();
-        }
+        displayWordOfTheDayFast();
     }
 }
 
@@ -363,14 +360,16 @@ async function syncWithFirebase() {
         const data = snapshot.val();
         const firebaseDict = data ? Object.values(data) : [];
         
-        if (firebaseDict.length > 0 && (firebaseDict.length > dictionary.length || dictionary.length === 0)) {
+        if (firebaseDict.length > 0) {
             dictionary = firebaseDict;
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
             if (isAdmin) {
                 displayWords();
             } else {
-                displayRandomWord();
+                displayWordOfTheDayFast();
             }
+        } else {
+            displayWordOfTheDayFast();
         }
         
         const quickSnapshot = await database.ref('quickAddList').once('value');
@@ -385,6 +384,117 @@ async function syncWithFirebase() {
         SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
         if (isAdmin) displayQuickAddList();
     } catch(error) {
+        displayWordOfTheDayFast();
+    }
+}
+
+// Fast Word of the Day loading - displays immediately from local storage
+function displayWordOfTheDayFast() {
+    const rd = document.getElementById('randomWordDisplay');
+    
+    if (!dictionary || dictionary.length === 0) {
+        rd.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet! Add words in admin mode.</p></div>';
+        return;
+    }
+    
+    // Get today's date string
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(today.getDate()).padStart(2, '0');
+    
+    // Try to get word of the day from local storage first (INSTANT)
+    const storedWordOfDay = SafeStorage.getItem('wordOfTheDay');
+    let storedDate = '', storedWordId = '';
+    
+    if (storedWordOfDay) {
+        try {
+            const parsed = JSON.parse(storedWordOfDay);
+            storedDate = parsed.date;
+            storedWordId = parsed.wordId;
+            
+            // If we have a stored word for today, use it immediately
+            if (storedDate === dateString && storedWordId) {
+                const word = dictionary.find(w => w.id == storedWordId);
+                if (word) {
+                    rd.innerHTML = `<div class="word-entry"><div class="word-definition">${word.definition}</div></div>`;
+                    return;
+                }
+            }
+        } catch(e) {
+            // If parsing fails, continue to generate new word
+        }
+    }
+    
+    // If no valid stored word, generate one immediately
+    const wordOfDay = generateWordOfTheDay();
+    if (wordOfDay) {
+        rd.innerHTML = `<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
+        
+        // Store it for future fast loading
+        SafeStorage.setItem('wordOfTheDay', JSON.stringify({
+            date: dateString,
+            wordId: wordOfDay.id
+        }));
+        
+        // Also store in Firebase for cross-device consistency
+        if (isFirebaseConfigured) {
+            try {
+                database.ref('wordOfTheDay').set({
+                    date: dateString,
+                    wordId: wordOfDay.id
+                });
+            } catch(error) {
+                // If Firebase fails, we'll just use local storage
+            }
+        }
+    }
+}
+
+// Generate Word of the Day without Firebase dependency
+function generateWordOfTheDay() {
+    if (!dictionary || dictionary.length === 0) return null;
+    
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(today.getDate()).padStart(2, '0');
+    
+    // Generate consistent hash for the date
+    let hash = 0;
+    for (let i = 0; i < dateString.length; i++) {
+        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
+        hash = hash & hash;
+    }
+    
+    const index = Math.abs(hash) % dictionary.length;
+    return dictionary[index];
+}
+
+// Background sync for Word of the Day (non-blocking)
+async function updateWordOfTheDayInBackground() {
+    if (!isFirebaseConfigured || !firebaseInitialized) return;
+    
+    try {
+        const snapshot = await database.ref('wordOfTheDay').once('value');
+        const firebaseWordOfDay = snapshot.val();
+        
+        if (firebaseWordOfDay) {
+            const today = new Date();
+            const dateString = today.getFullYear() + '-' + 
+                              String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(today.getDate()).padStart(2, '0');
+            
+            // If Firebase has today's word, update local storage
+            if (firebaseWordOfDay.date === dateString) {
+                const word = dictionary.find(w => w.id == firebaseWordOfDay.wordId);
+                if (word) {
+                    SafeStorage.setItem('wordOfTheDay', JSON.stringify(firebaseWordOfDay));
+                }
+            }
+        }
+    } catch(error) {
+        // Silent fail - we already have the word from local storage
     }
 }
 
@@ -410,19 +520,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     checkAdminStatus();
     
-    if (isAdmin) {
+    // Initialize Firebase immediately
+    initializeFirebase();
+    
+    // If no words in local storage and not admin, show loading
+    if (!isAdmin && (!dictionary || dictionary.length === 0)) {
+        // Loading is already shown by default
+    } else if (isAdmin) {
         displayWords();
         displayQuickAddList();
-    } else {
-        if (hasLocalData) {
-            displayRandomWord();
-        } else {
-            const rd = document.getElementById('randomWordDisplay');
-            rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
-        }
     }
-    
-    setTimeout(initializeFirebase, hasLocalData ? 100 : 10);
 });
 
 function handleMarkdownFormatting(e) {
@@ -764,7 +871,7 @@ function showPasswordModal(){
         isAdmin=false;
         SafeStorage.setItem('isAdmin','false');
         checkAdminStatus();
-        displayRandomWord();
+        displayWordOfTheDayFast();
     }else{
         document.getElementById('passwordModal').classList.add('show');
         document.getElementById('passwordInput').focus();
@@ -819,33 +926,16 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
 function showAutocomplete(s){
     const d=document.getElementById('autocompleteDropdown');
     if(!s){d.classList.remove('show');return}
-    
-    // Show skeleton loading animation
-    d.innerHTML = '';
-    for(let i=0; i<5; i++){
-        const skeletonItem = document.createElement('div');
-        skeletonItem.className = 'skeleton-item';
-        skeletonItem.innerHTML = `
-            <div class="skeleton-word"></div>
-            <div class="skeleton-definition"></div>
-        `;
-        d.appendChild(skeletonItem);
-    }
+    const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{
+        const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());
+        if(as&&!bs)return-1;
+        if(!as&&bs)return 1;
+        return a.word.localeCompare(b.word)
+    }).slice(0,5);
+    if(m.length===0){d.classList.remove('show');return}
+    d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');
     d.classList.add('show');
-    
-    // Use setTimeout to allow the skeleton to render before processing
-    setTimeout(() => {
-        const m=dictionary.filter(i=>i.word.toLowerCase().startsWith(s.toLowerCase())||i.word.toLowerCase().includes(s.toLowerCase())).sort((a,b)=>{
-            const as=a.word.toLowerCase().startsWith(s.toLowerCase()),bs=b.word.toLowerCase().startsWith(s.toLowerCase());
-            if(as&&!bs)return-1;
-            if(!as&&bs)return 1;
-            return a.word.localeCompare(b.word)
-        }).slice(0,5);
-        if(m.length===0){d.classList.remove('show');return}
-        d.innerHTML=m.map((i,idx)=>`<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${i.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${i.word}</div></div>`).join('');
-        d.classList.add('show');
-        selectedAutocompleteIndex=-1;
-    }, 50);
+    selectedAutocompleteIndex=-1;
 }
 
 function selectAutocompleteItem(w){
@@ -857,19 +947,13 @@ function selectAutocompleteItem(w){
 
 document.getElementById('searchInput').addEventListener('input',function(e){
     const s=e.target.value.toLowerCase();
-    
-    // Remove any existing timeout to prevent delayed execution
     clearTimeout(searchTimeout);
-    
-    // Show autocomplete immediately
-    showAutocomplete(e.target.value);
-    
-    // Use a shorter timeout for search results (50ms instead of 300ms)
     searchTimeout=setTimeout(()=>{
+        showAutocomplete(e.target.value);
         if(s&&isAdmin)displayWords(s);
         else if(s&&!isAdmin)displaySearchResults(s);
         else if(!isAdmin)document.getElementById('searchResultsColumn').style.display='none';
-    },50);
+    },300);
 });
 
 document.getElementById('searchInput').addEventListener('keydown',function(e){
@@ -914,40 +998,6 @@ function displaySearchResults(s){
     if(m.length===0)wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
     else wl.innerHTML=m.map(i=>`<div class="word-entry"><div class="word-definition">${i.definition}</div></div>`).join('');
     sr.style.display='block';
-}
-
-function getWordOfTheDay() {
-    if (!dictionary || dictionary.length === 0) {
-        return null;
-    }
-    
-    const today = new Date();
-    const dateString = today.getFullYear() + '-' + 
-                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-                      String(today.getDate()).padStart(2, '0');
-    
-    let hash = 0;
-    for (let i = 0; i < dateString.length; i++) {
-        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
-        hash = hash & hash;
-    }
-    
-    const index = Math.abs(hash) % dictionary.length;
-    return dictionary[index];
-}
-
-function displayRandomWord(){
-    const rd=document.getElementById('randomWordDisplay');
-    
-    if(!dictionary || dictionary.length===0){
-        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
-        return;
-    }
-    
-    const wordOfDay = getWordOfTheDay();
-    if (wordOfDay) {
-        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
-    }
 }
 
 function showNewRandomWord(){
