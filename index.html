@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +46,7 @@
         .main-content.full-width{grid-template-columns:1fr}
         .words-column{background:#242424;padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid #3d3d3d}
         .sidebar{background:#242424;padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);height:fit-content;min-height:600px;border:1px solid #3d3d3d;animation:fadeIn 0.4s ease}
-        .section-title{font-size:22px;font-weight:600;color:#e8e8e8;margin-bottom:1px;padding-bottom:10px;border-bottom:2px solid #c87941;opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
+        .section-title{font-size:22px;font-weight:600;color:#e8e8e8;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #c87941;opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
         .form-group{margin-bottom:20px}
         .form-group label{display:block;margin-bottom:8px;font-weight:600;color:#b8b8b8;font-size:14px}
         .form-group input{width:100%;padding:12px;border:1px solid #3d3d3d;border-radius:6px;font-size:15px;transition:border-color 0.3s;background:#1a1a1a;color:#e8e8e8}
@@ -79,8 +80,8 @@
         .word-entry{padding:15px 0;border-bottom:1px solid #3d3d3d}
         .word-entry:first-child{padding-top:0}
         .word-entry:last-child{border-bottom:none;padding-bottom:0}
-        .word-title{font-size:26px;font-weight:700;color:#e8e8e8;margin-bottom:1px}
-        .word-definition{font-size:16px;color:#d8d8d8;line-height:1.6;margin-bottom:1px;white-space:normal;word-wrap:break-word;font-weight:500;word-spacing:-0.05em}
+        .word-title{font-size:26px;font-weight:700;color:#e8e8e8;margin-bottom:12px}
+        .word-definition{font-size:16px;color:#d8d8d8;line-height:1.6;margin-bottom:15px;white-space:normal;word-wrap:break-word;font-weight:500;word-spacing:-0.05em}
         .word-definition p{margin:0.75em 0}
         .word-definition ul,.word-definition ol{margin:0.5em 0;padding-left:1.2em}
         .word-definition li{margin:0.25em 0;line-height:1.45}
@@ -801,12 +802,6 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
             document.getElementById('wordInput').value='';
             de.innerHTML='';
             displayWords();
-            setTimeout(() => {
-                const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-                if (quickAddSection) {
-                    quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
             saveDictionary();
         }
     }else{
@@ -815,12 +810,6 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
         document.getElementById('wordInput').value='';
         de.innerHTML='';
         displayWords();
-        setTimeout(() => {
-            const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-            if (quickAddSection) {
-                quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
         saveDictionary();
     }
 });
@@ -1043,3 +1032,4 @@ async function importData(e){
     </script>
 </body>
 </html>
+```
