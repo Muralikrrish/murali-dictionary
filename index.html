@@ -326,9 +326,6 @@ async function initializeFirebase() {
         await syncWithFirebase();
     } catch(error) {
         isFirebaseConfigured = false;
-        if (dictionary.length === 0 && !isAdmin) {
-            displayRandomWord();
-        }
     }
 }
 
@@ -366,7 +363,8 @@ async function syncWithFirebase() {
             if (isAdmin) {
                 displayWords();
             } else {
-                displayRandomWord();
+                // Update Word of the Day in background if needed
+                updateWordOfTheDayInBackground();
             }
         }
         
@@ -382,6 +380,104 @@ async function syncWithFirebase() {
         SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
         if (isAdmin) displayQuickAddList();
     } catch(error) {
+    }
+}
+
+// NEW: Fast Word of the Day loading - displays immediately from local storage
+function displayWordOfTheDayFast() {
+    const rd = document.getElementById('randomWordDisplay');
+    
+    if (!dictionary || dictionary.length === 0) {
+        rd.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+        return;
+    }
+    
+    // Get today's date string
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(today.getDate()).padStart(2, '0');
+    
+    // Try to get word of the day from local storage first (INSTANT)
+    const storedWordOfDay = SafeStorage.getItem('wordOfTheDay');
+    let storedDate = '', storedWordId = '';
+    
+    if (storedWordOfDay) {
+        try {
+            const parsed = JSON.parse(storedWordOfDay);
+            storedDate = parsed.date;
+            storedWordId = parsed.wordId;
+            
+            // If we have a stored word for today, use it immediately
+            if (storedDate === dateString && storedWordId) {
+                const word = dictionary.find(w => w.id == storedWordId);
+                if (word) {
+                    rd.innerHTML = `<div class="word-entry"><div class="word-definition">${word.definition}</div></div>`;
+                    return;
+                }
+            }
+        } catch(e) {
+            // If parsing fails, continue to generate new word
+        }
+    }
+    
+    // If no valid stored word, generate one immediately
+    const wordOfDay = generateWordOfTheDay();
+    if (wordOfDay) {
+        rd.innerHTML = `<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
+        
+        // Store it for future fast loading
+        SafeStorage.setItem('wordOfTheDay', JSON.stringify({
+            date: dateString,
+            wordId: wordOfDay.id
+        }));
+    }
+}
+
+// NEW: Generate Word of the Day without Firebase dependency
+function generateWordOfTheDay() {
+    if (!dictionary || dictionary.length === 0) return null;
+    
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(today.getDate()).padStart(2, '0');
+    
+    // Generate consistent hash for the date
+    let hash = 0;
+    for (let i = 0; i < dateString.length; i++) {
+        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
+        hash = hash & hash;
+    }
+    
+    const index = Math.abs(hash) % dictionary.length;
+    return dictionary[index];
+}
+
+// NEW: Background sync for Word of the Day (non-blocking)
+async function updateWordOfTheDayInBackground() {
+    if (!isFirebaseConfigured || !firebaseInitialized) return;
+    
+    try {
+        const snapshot = await database.ref('wordOfTheDay').once('value');
+        const firebaseWordOfDay = snapshot.val();
+        
+        if (firebaseWordOfDay) {
+            const today = new Date();
+            const dateString = today.getFullYear() + '-' + 
+                              String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(today.getDate()).padStart(2, '0');
+            
+            // If Firebase has today's word, update local storage
+            if (firebaseWordOfDay.date === dateString) {
+                const word = dictionary.find(w => w.id == firebaseWordOfDay.wordId);
+                if (word) {
+                    SafeStorage.setItem('wordOfTheDay', JSON.stringify(firebaseWordOfDay));
+                }
+            }
+        }
+    } catch(error) {
+        // Silent fail - we already have the word from local storage
     }
 }
 
@@ -407,19 +503,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     checkAdminStatus();
     
-    if (isAdmin) {
+    // FAST: Display Word of the Day immediately from local storage
+    if (!isAdmin) {
+        displayWordOfTheDayFast();
+    } else {
         displayWords();
         displayQuickAddList();
-    } else {
-        if (hasLocalData) {
-            displayRandomWord();
-        } else {
-            const rd = document.getElementById('randomWordDisplay');
-            rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
-        }
     }
     
-    setTimeout(initializeFirebase, hasLocalData ? 100 : 10);
+    // Initialize Firebase in background (non-blocking)
+    setTimeout(initializeFirebase, 10);
 });
 
 function handleMarkdownFormatting(e) {
@@ -761,7 +854,7 @@ function showPasswordModal(){
         isAdmin=false;
         SafeStorage.setItem('isAdmin','false');
         checkAdminStatus();
-        displayRandomWord();
+        displayWordOfTheDayFast();
     }else{
         document.getElementById('passwordModal').classList.add('show');
         document.getElementById('passwordInput').focus();
@@ -888,40 +981,6 @@ function displaySearchResults(s){
     if(m.length===0)wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
     else wl.innerHTML=m.map(i=>`<div class="word-entry"><div class="word-definition">${i.definition}</div></div>`).join('');
     sr.style.display='block';
-}
-
-function getWordOfTheDay() {
-    if (!dictionary || dictionary.length === 0) {
-        return null;
-    }
-    
-    const today = new Date();
-    const dateString = today.getFullYear() + '-' + 
-                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-                      String(today.getDate()).padStart(2, '0');
-    
-    let hash = 0;
-    for (let i = 0; i < dateString.length; i++) {
-        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
-        hash = hash & hash;
-    }
-    
-    const index = Math.abs(hash) % dictionary.length;
-    return dictionary[index];
-}
-
-function displayRandomWord(){
-    const rd=document.getElementById('randomWordDisplay');
-    
-    if(!dictionary || dictionary.length===0){
-        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
-        return;
-    }
-    
-    const wordOfDay = getWordOfTheDay();
-    if (wordOfDay) {
-        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
-    }
 }
 
 function showNewRandomWord(){
