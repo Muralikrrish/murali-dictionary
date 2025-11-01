@@ -179,6 +179,11 @@
                 <h2 class="section-title">Add New Word</h2>
                 <form id="addWordForm">
                     <div class="form-group">
+                        <label for="wordInput">Word</label>
+                        <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()">
+                        <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists in the dictionary</div>
+                    </div>
+                    <div class="form-group">
                         <label for="definitionInput">Definition</label>
                         <div class="editor-toolbar">
                             <select class="font-size-dropdown" id="formatDropdown" onchange="formatHeading(this.value)" title="Font Size">
@@ -299,7 +304,7 @@ SafeStorage.init();
 
 // Supabase Configuration
 const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAzNzAxNDMsImV4cCI6MjA0NTk0NjE0M30.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
 
 let supabaseClient;
 let isSupabaseConfigured = false;
@@ -1089,9 +1094,4 @@ async function importData(e){
 }
     </script>
 </body>
-</html>="form-group">
-                        <label for="wordInput">Word</label>
-                        <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()">
-                        <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists in the dictionary</div>
-                    </div>
-                    <div class
+</html>
