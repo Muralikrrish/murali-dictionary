@@ -315,6 +315,7 @@ let selectedAutocompleteIndex = -1;
 let quickAddList = [];
 let searchTimeout;
 let supabaseInitialized = false;
+let editingWordId = null;
 
 function loadFromLocalStorage() {
     const localDict = SafeStorage.getItem('dictionary');
@@ -764,7 +765,7 @@ function formatText(c){document.execCommand(c,false,null);document.getElementByI
 function formatHeading(tag){const d=document.getElementById('definitionInput');if(tag===''){document.execCommand('formatBlock',false,'div');document.execCommand('formatBlock',false,'p')}else document.execCommand('formatBlock',false,tag);d.focus();setTimeout(updateFormatDropdown,50)}
 function updateFormatDropdown(){const s=window.getSelection();if(s.rangeCount===0)return;const n=s.anchorNode,p=n.nodeType===3?n.parentNode:n;let b=p;while(b&&!['H1','H2','H3','H4','H5','H6','P','DIV'].includes(b.tagName))b=b.parentElement;const d=document.getElementById('formatDropdown');if(b){const t=b.tagName.toLowerCase();d.value=['h1','h2','h3','h4','h5','h6'].includes(t)?t:''}}
 
-function checkExistingWord(){const w=document.getElementById('wordInput').value.trim(),warn=document.getElementById('wordWarning');warn.style.display=w&&dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase())?'block':'none'}
+function checkExistingWord(){const w=document.getElementById('wordInput').value.trim(),warn=document.getElementById('wordWarning');if(!w){warn.style.display='none';return}const existing=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase());if(existing&&existing.id!==editingWordId){warn.style.display='block'}else{warn.style.display='none'}}
 
 async function addToQuickList(){const i=document.getElementById('quickAddSearch'),w=i.value.trim(),warn=document.getElementById('quickAddWarning');if(!w)return;const e=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase()),a=quickAddList.find(x=>x.toLowerCase()===w.toLowerCase());if(e){warn.textContent='⚠️ This word already exists in the dictionary';warn.style.display='block';return}if(a){warn.textContent='⚠️ This word is already in the quick list';warn.style.display='block';return}quickAddList.unshift(w);i.value='';warn.style.display='none';document.getElementById('quickAddSearchResults').innerHTML='';await saveQuickAddList();displayQuickAddList()}
 
@@ -836,11 +837,45 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
     e.preventDefault();
     const w=document.getElementById('wordInput').value.trim(),de=document.getElementById('definitionInput'),d=de.innerHTML.trim();
     if(!d||d==='<br>'){alert('Please enter a definition');return}
-    const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());
-    if(ei!==-1){
-        if(confirm(`"${w}" already exists. Update it?`)){
+    
+    if(editingWordId !== null){
+        const ei=dictionary.findIndex(i=>i.id===editingWordId);
+        if(ei!==-1){
+            dictionary[ei].word=w;
             dictionary[ei].definition=d;
             dictionary[ei].dateModified=new Date().toISOString();
+            document.getElementById('wordInput').value='';
+            de.innerHTML='';
+            editingWordId=null;
+            displayWords();
+            setTimeout(() => {
+                const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+                if (quickAddSection) {
+                    quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+            await saveDictionary();
+        }
+    }else{
+        const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());
+        if(ei!==-1){
+            if(confirm(`"${w}" already exists. Update it?`)){
+                dictionary[ei].definition=d;
+                dictionary[ei].dateModified=new Date().toISOString();
+                document.getElementById('wordInput').value='';
+                de.innerHTML='';
+                displayWords();
+                setTimeout(() => {
+                    const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+                    if (quickAddSection) {
+                        quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+                await saveDictionary();
+            }
+        }else{
+            const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};
+            dictionary.push(newWord);
             document.getElementById('wordInput').value='';
             de.innerHTML='';
             displayWords();
@@ -852,19 +887,6 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
             }, 100);
             await saveDictionary();
         }
-    }else{
-        const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};
-        dictionary.push(newWord);
-        document.getElementById('wordInput').value='';
-        de.innerHTML='';
-        displayWords();
-        setTimeout(() => {
-            const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-            if (quickAddSection) {
-                quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
-        await saveDictionary();
     }
 });
 
@@ -1005,9 +1027,7 @@ async function editWord(id){
     if(i){
         document.getElementById('wordInput').value=i.word;
         document.getElementById('definitionInput').innerHTML=i.definition;
-        dictionary=dictionary.filter(w=>w.id!==id);
-        await saveDictionary();
-        displayWords();
+        editingWordId=id;
         document.getElementById('editSearchInput').value='';
         document.getElementById('editSearchResults').innerHTML='';
         document.getElementById('definitionSearchInput').value='';
