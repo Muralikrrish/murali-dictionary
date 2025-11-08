@@ -458,14 +458,6 @@ document.addEventListener('DOMContentLoaded', function() {
         editor.addEventListener('mouseup', updateFormatDropdown);
         editor.addEventListener('keyup', updateFormatDropdown);
         editor.addEventListener('focus', updateFormatDropdown);
-        editor.addEventListener('input', function(e) {
-            if (e.inputType) {
-                scrollToAddSection();
-            }
-        });
-        editor.addEventListener('paste', function() {
-            setTimeout(scrollToAddSection, 50);
-        });
     }
     
     const hasLocalData = loadFromLocalStorage();
