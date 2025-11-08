@@ -747,10 +747,7 @@ function convertMarkdownToHTML(text) {
 }
 
 function scrollToAddSection() {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar && sidebar.style.display !== 'none') {
-        sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    // Scroll function disabled to prevent auto-scroll during editing
 }
 
 function formatText(c){document.execCommand(c,false,null);document.getElementById('definitionInput').focus()}
