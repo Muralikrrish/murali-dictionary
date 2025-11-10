@@ -407,7 +407,7 @@ let isAdmin = SafeStorage.getItem('isAdmin') === 'true';
 let ADMIN_PASSWORD = '7412';
 let selectedAutocompleteIndex = -1;
 let quickAddList = [];
-let searchDebounceTimer;
+let typingTimer;
 let supabaseInitialized = false;
 let editingWordId = null;
 let hasShownWordOfTheDay = false;
@@ -1011,7 +1011,7 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
     }
 });
 
-// OPTIMIZED SEARCH FUNCTIONS
+// OPTIMIZED SEARCH WITH TYPING DETECTION
 function showAutocomplete(s){
     const d=document.getElementById('autocompleteDropdown');
     if(!s){d.classList.remove('show');return}
@@ -1058,20 +1058,26 @@ function selectAutocompleteItem(w){
     isAdmin?displayWords(s):displaySearchResults(s);
 }
 
-// Optimized search input handler - FIXED INPUT DELAY
+// OPTIMIZED TYPING DETECTION - Wait for user to stop typing
 document.getElementById('searchInput').addEventListener('input',function(e){
     const s=e.target.value;
     
-    // Update the input immediately without blocking
-    clearTimeout(searchDebounceTimer);
+    // Clear previous timer
+    clearTimeout(typingTimer);
     
-    // Schedule the search operations after a very short delay
-    searchDebounceTimer=setTimeout(()=>{
+    // Hide dropdown if empty
+    if(!s) {
+        document.getElementById('autocompleteDropdown').classList.remove('show');
+        if(!isAdmin) document.getElementById('searchResultsColumn').style.display='none';
+        return;
+    }
+    
+    // Wait 300ms after user stops typing before searching
+    typingTimer = setTimeout(() => {
         showAutocomplete(s);
         if(s&&isAdmin)displayWords(s);
         else if(s&&!isAdmin)displaySearchResults(s);
-        else if(!isAdmin)document.getElementById('searchResultsColumn').style.display='none';
-    },10); // Reduced to 10ms for near-instant response
+    }, 300);
 });
 
 document.getElementById('searchInput').addEventListener('keydown',function(e){
