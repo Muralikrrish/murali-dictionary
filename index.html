@@ -122,11 +122,11 @@
         .search-container{max-width:550px;margin:0 auto;position:relative}
         .search-box{position:relative;background:var(--bg-secondary);border-radius:50px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);border:1px solid var(--border-color);transition:all 0.3s ease}
         .search-box:focus-within{box-shadow:0 8px 32px rgba(200,121,65,0.4);border-color:var(--accent-primary)}
-        .search-box input{width:100%;padding:20px 60px 20px 30px;font-size:18px;border:none;outline:none;background:transparent;color:var(--text-primary);transform:translateZ(0);will-change:transform}
+        .search-box input{width:100%;padding:20px 60px 20px 30px;font-size:18px;border:none;outline:none;background:transparent;color:var(--text-primary)}
         .search-box input::placeholder{color:var(--text-muted)}
         .search-icon{position:absolute;right:25px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;width:24px;height:24px}
         .search-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-        .autocomplete-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg-tertiary);border:1px solid var(--accent-primary);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.5),0 4px 16px rgba(200,121,65,0.2);max-height:320px;overflow-y:auto;display:none;z-index:1000;-webkit-overflow-scrolling:touch;animation:slideDown 0.25s cubic-bezier(0.16,1,0.3,1);backdrop-filter:blur(10px);transform:translateZ(0);will-change:transform,opacity;contain:layout style paint}
+        .autocomplete-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg-tertiary);border:1px solid var(--accent-primary);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.5),0 4px 16px rgba(200,121,65,0.2);max-height:320px;overflow-y:auto;display:none;z-index:1000;-webkit-overflow-scrolling:touch;animation:slideDown 0.25s cubic-bezier(0.16,1,0.3,1);backdrop-filter:blur(10px)}
         .autocomplete-dropdown.show{display:block}
         .autocomplete-item{padding:16px 20px;cursor:pointer;border-bottom:1px solid #3a3a3a;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);position:relative}
         .autocomplete-item:first-child{border-radius:15px 15px 0 0}
@@ -138,7 +138,7 @@
         .autocomplete-dropdown::-webkit-scrollbar-track{background:transparent;border-radius:4px}
         .autocomplete-dropdown::-webkit-scrollbar-thumb{background:var(--accent-primary);border-radius:4px;transition:background 0.3s}
         .autocomplete-dropdown::-webkit-scrollbar-thumb:hover{background:var(--accent-secondary)}
-        .words-column{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid var(--border-color);contain:layout style paint}
+        .words-column{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid var(--border-color)}
         .sidebar{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);height:fit-content;min-height:600px;border:1px solid var(--border-color);animation:fadeIn 0.4s ease}
         .section-title{font-size:22px;font-weight:600;color:var(--text-primary);margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid var(--accent-primary);opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
         .form-group{margin-bottom:20px}
@@ -1058,18 +1058,20 @@ function selectAutocompleteItem(w){
     isAdmin?displayWords(s):displaySearchResults(s);
 }
 
-// Optimized search input handler
+// Optimized search input handler - FIXED INPUT DELAY
 document.getElementById('searchInput').addEventListener('input',function(e){
     const s=e.target.value;
     
+    // Update the input immediately without blocking
     clearTimeout(searchDebounceTimer);
     
+    // Schedule the search operations after a very short delay
     searchDebounceTimer=setTimeout(()=>{
         showAutocomplete(s);
         if(s&&isAdmin)displayWords(s);
         else if(s&&!isAdmin)displaySearchResults(s);
         else if(!isAdmin)document.getElementById('searchResultsColumn').style.display='none';
-    },50);
+    },10); // Reduced to 10ms for near-instant response
 });
 
 document.getElementById('searchInput').addEventListener('keydown',function(e){
