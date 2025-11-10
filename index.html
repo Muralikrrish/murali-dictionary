@@ -122,11 +122,11 @@
         .search-container{max-width:550px;margin:0 auto;position:relative}
         .search-box{position:relative;background:var(--bg-secondary);border-radius:50px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);border:1px solid var(--border-color);transition:all 0.3s ease}
         .search-box:focus-within{box-shadow:0 8px 32px rgba(200,121,65,0.4);border-color:var(--accent-primary)}
-        .search-box input{width:100%;padding:20px 60px 20px 30px;font-size:18px;border:none;outline:none;background:transparent;color:var(--text-primary)}
+        .search-box input{width:100%;padding:20px 60px 20px 30px;font-size:18px;border:none;outline:none;background:transparent;color:var(--text-primary);transform:translateZ(0);will-change:transform}
         .search-box input::placeholder{color:var(--text-muted)}
         .search-icon{position:absolute;right:25px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;width:24px;height:24px}
         .search-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-        .autocomplete-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg-tertiary);border:1px solid var(--accent-primary);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.5),0 4px 16px rgba(200,121,65,0.2);max-height:320px;overflow-y:auto;display:none;z-index:1000;-webkit-overflow-scrolling:touch;animation:slideDown 0.25s cubic-bezier(0.16,1,0.3,1);backdrop-filter:blur(10px)}
+        .autocomplete-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg-tertiary);border:1px solid var(--accent-primary);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.5),0 4px 16px rgba(200,121,65,0.2);max-height:320px;overflow-y:auto;display:none;z-index:1000;-webkit-overflow-scrolling:touch;animation:slideDown 0.25s cubic-bezier(0.16,1,0.3,1);backdrop-filter:blur(10px);transform:translateZ(0);will-change:transform,opacity;contain:layout style paint}
         .autocomplete-dropdown.show{display:block}
         .autocomplete-item{padding:16px 20px;cursor:pointer;border-bottom:1px solid #3a3a3a;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);position:relative}
         .autocomplete-item:first-child{border-radius:15px 15px 0 0}
@@ -138,7 +138,7 @@
         .autocomplete-dropdown::-webkit-scrollbar-track{background:transparent;border-radius:4px}
         .autocomplete-dropdown::-webkit-scrollbar-thumb{background:var(--accent-primary);border-radius:4px;transition:background 0.3s}
         .autocomplete-dropdown::-webkit-scrollbar-thumb:hover{background:var(--accent-secondary)}
-        .words-column{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid var(--border-color)}
+        .words-column{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid var(--border-color);contain:layout style paint}
         .sidebar{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);height:fit-content;min-height:600px;border:1px solid var(--border-color);animation:fadeIn 0.4s ease}
         .section-title{font-size:22px;font-weight:600;color:var(--text-primary);margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid var(--accent-primary);opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
         .form-group{margin-bottom:20px}
@@ -407,7 +407,7 @@ let isAdmin = SafeStorage.getItem('isAdmin') === 'true';
 let ADMIN_PASSWORD = '7412';
 let selectedAutocompleteIndex = -1;
 let quickAddList = [];
-let searchTimeout;
+let searchDebounceTimer;
 let supabaseInitialized = false;
 let editingWordId = null;
 let hasShownWordOfTheDay = false;
@@ -1011,6 +1011,7 @@ document.getElementById('addWordForm').addEventListener('submit',async function(
     }
 });
 
+// OPTIMIZED SEARCH FUNCTIONS
 function showAutocomplete(s){
     const d=document.getElementById('autocompleteDropdown');
     if(!s){d.classList.remove('show');return}
@@ -1019,29 +1020,33 @@ function showAutocomplete(s){
     
     const sLower = s.toLowerCase();
     const matches = [];
-    const startsWith = [];
-    const contains = [];
+    const maxResults = 8;
     
-    for(let i = 0; i < searchIndex.length && matches.length < 5; i++){
+    for(let i = 0; i < searchIndex.length && matches.length < maxResults; i++){
         const item = searchIndex[i];
         if(item.wordLower.startsWith(sLower)){
-            startsWith.push(item);
-        } else if(item.wordLower.includes(sLower)){
-            contains.push(item);
+            matches.push(item);
         }
     }
     
-    matches.push(...startsWith.slice(0, 5));
-    if(matches.length < 5){
-        matches.push(...contains.slice(0, 5 - matches.length));
+    if(matches.length < maxResults){
+        for(let i = 0; i < searchIndex.length && matches.length < maxResults; i++){
+            const item = searchIndex[i];
+            if(!matches.some(m => m.id === item.id) && item.wordLower.includes(sLower)){
+                matches.push(item);
+            }
+        }
     }
     
     if(matches.length===0){d.classList.remove('show');return}
     
-    d.innerHTML=matches.map((item,idx)=>{
+    let html = '';
+    matches.forEach((item,idx)=>{
         const word = dictionary.find(w=>w.id===item.id);
-        return `<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${word.word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${word.word}</div></div>`;
-    }).join('');
+        const escapedWord = word.word.replace(/'/g,"\\'");
+        html += `<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${escapedWord}')"><div class="autocomplete-word">${word.word}</div></div>`;
+    });
+    d.innerHTML=html;
     d.classList.add('show');
     selectedAutocompleteIndex=-1;
 }
@@ -1053,15 +1058,18 @@ function selectAutocompleteItem(w){
     isAdmin?displayWords(s):displaySearchResults(s);
 }
 
+// Optimized search input handler
 document.getElementById('searchInput').addEventListener('input',function(e){
-    const s=e.target.value.toLowerCase();
-    clearTimeout(searchTimeout);
-    searchTimeout=setTimeout(()=>{
-        showAutocomplete(e.target.value);
+    const s=e.target.value;
+    
+    clearTimeout(searchDebounceTimer);
+    
+    searchDebounceTimer=setTimeout(()=>{
+        showAutocomplete(s);
         if(s&&isAdmin)displayWords(s);
         else if(s&&!isAdmin)displaySearchResults(s);
         else if(!isAdmin)document.getElementById('searchResultsColumn').style.display='none';
-    },150);
+    },50);
 });
 
 document.getElementById('searchInput').addEventListener('keydown',function(e){
@@ -1116,10 +1124,12 @@ function displaySearchResults(s){
         wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
     }else{
         const sortedMatches = matches.sort((a,b)=>a.word.localeCompare(b.word));
-        wl.innerHTML=sortedMatches.map(item=>{
+        let html = '';
+        sortedMatches.forEach(item => {
             const word = dictionary.find(w=>w.id===item.id);
-            return `<div class="word-entry"><div class="word-definition">${word.definition}</div></div>`;
-        }).join('');
+            html += `<div class="word-entry"><div class="word-definition">${word.definition}</div></div>`;
+        });
+        wl.innerHTML = html;
     }
     sr.style.display='block';
 }
@@ -1168,6 +1178,7 @@ function showNewRandomWord(){
     }
 }
 
+// Optimized displayWords function
 function displayWords(s=''){
     const wl=document.getElementById('wordsList'),ce=document.getElementById('dictionaryCount');
     if(ce)ce.textContent=`(${dictionary.length})`;
@@ -1182,7 +1193,23 @@ function displayWords(s=''){
     }
     
     fd.sort((a,b)=>a.word.localeCompare(b.word));
-    wl.innerHTML=fd.length===0?`<div class="no-words"><div class="no-words-icon">📚</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`:fd.map(i=>`<div class="word-entry"><div class="word-title">${i.word}</div><div class="word-definition">${i.definition}</div><div class="word-actions" style="display:${isAdmin?'flex':'none'}"><button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button><button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button></div></div>`).join('');
+    
+    if(fd.length===0){
+        wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📚</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`;
+    }else{
+        let html = '';
+        fd.forEach(i=>{
+            html += `<div class="word-entry">
+                <div class="word-title">${i.word}</div>
+                <div class="word-definition">${i.definition}</div>
+                <div class="word-actions" style="display:${isAdmin?'flex':'none'}">
+                    <button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button>
+                    <button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button>
+                </div>
+            </div>`;
+        });
+        wl.innerHTML = html;
+    }
 }
 
 async function editWord(id){
