@@ -315,6 +315,7 @@ let quickAddList = [];
 let searchTimeout;
 let supabaseInitialized = false;
 let editingWordId = null;
+let hasShownWordOfTheDay = false;
 
 // Search index for faster lookups
 let searchIndex = null;
@@ -351,7 +352,7 @@ async function initializeSupabase() {
         console.error('Supabase init error:', error);
         isSupabaseConfigured = false;
         if (dictionary.length === 0 && !isAdmin) {
-            displayRandomWord();
+            displayWordOfTheDay();
         }
     }
 }
@@ -382,7 +383,11 @@ async function syncWithSupabase() {
             if (isAdmin) {
                 displayWords();
             } else {
-                displayRandomWord();
+                // Only show word of the day if we haven't already shown it
+                if (!hasShownWordOfTheDay) {
+                    displayWordOfTheDay();
+                    hasShownWordOfTheDay = true;
+                }
             }
         }
         
@@ -480,7 +485,9 @@ document.addEventListener('DOMContentLoaded', function() {
         displayQuickAddList();
     } else {
         if (hasLocalData) {
-            displayRandomWord();
+            // Show loading initially, wait for Supabase to sync
+            const rd = document.getElementById('randomWordDisplay');
+            rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
         } else {
             const rd = document.getElementById('randomWordDisplay');
             rd.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div><div class="loading-text">Loading your dictionary</div><div class="loading-subtext">Just a moment...</div></div>';
@@ -804,7 +811,7 @@ function showPasswordModal(){
         isAdmin=false;
         SafeStorage.setItem('isAdmin','false');
         checkAdminStatus();
-        displayRandomWord();
+        displayWordOfTheDay();
     }else{
         document.getElementById('passwordModal').classList.add('show');
         document.getElementById('passwordInput').focus();
@@ -1022,7 +1029,7 @@ function getWordOfTheDay() {
     return dictionary[index];
 }
 
-function displayRandomWord(){
+function displayWordOfTheDay(){
     const rd=document.getElementById('randomWordDisplay');
     
     if(!dictionary || dictionary.length===0){
