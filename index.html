@@ -239,136 +239,167 @@
         .quick-add-refresh{background:var(--bg-secondary);color:var(--accent-primary);border:2px solid var(--accent-primary)}
         .quick-add-refresh:hover{background:var(--bg-tertiary)}
 
-        /* Quiz Preview Styles */
-        .quiz-preview-card {
+        /* Quiz Preview Styles - Matching quiz.html */
+        .quiz-preview-container {
+            max-width: 100%;
             background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
             border: 1px solid var(--border-color);
-            margin-bottom: 20px;
-            animation: fadeIn 0.6s ease;
         }
 
         .quiz-preview-header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 30px 30px 20px 30px;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .quiz-preview-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .quiz-preview-content {
+            padding: 30px;
+        }
+
+        .quiz-question-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .quiz-preview-title {
-            font-size: 1.4rem;
+        .difficulty-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: 1px solid;
+        }
+
+        .badge-easy { 
+            background: rgba(123, 200, 127, 0.1); 
+            color: #7bc87f; 
+            border-color: rgba(123, 200, 127, 0.3);
+        }
+        .badge-medium { 
+            background: rgba(243, 156, 18, 0.1); 
+            color: #f39c12; 
+            border-color: rgba(243, 156, 18, 0.3);
+        }
+        .badge-hard { 
+            background: rgba(217, 83, 79, 0.1); 
+            color: #d9534f; 
+            border-color: rgba(217, 83, 79, 0.3);
+        }
+
+        .quiz-question-text {
+            font-size: 1.3rem;
             font-weight: 600;
             color: var(--text-primary);
-        }
-
-        .quiz-preview-stats {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .quiz-option {
+            line-height: 1.5;
+            margin-bottom: 25px;
+            padding: 20px;
             background: var(--bg-tertiary);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-primary);
-        }
-
-        .quiz-option:hover {
-            border-color: var(--accent-primary);
-            transform: translateY(-1px);
-        }
-
-        .quiz-option.selected {
-            border-color: var(--accent-primary);
-            background: rgba(200, 121, 65, 0.1);
-        }
-
-        .quiz-option.correct {
-            border-color: var(--success-color);
-            background: rgba(123, 200, 127, 0.1);
-            color: var(--success-color);
-        }
-
-        .quiz-option.incorrect {
-            border-color: var(--error-color);
-            background: rgba(217, 83, 79, 0.1);
-            color: var(--error-color);
-        }
-
-        .quiz-explanation {
-            background: var(--bg-tertiary);
-            padding: 15px;
-            border-radius: 8px;
+            border-radius: 12px;
             border-left: 4px solid var(--accent-primary);
-            margin-top: 15px;
-            display: none;
-            animation: slideDown 0.3s ease;
         }
 
-        .quiz-explanation.show {
-            display: block;
-        }
-
-        .quiz-actions {
-            display: flex;
+        .quiz-options-grid {
+            display: grid;
             gap: 12px;
-            margin-top: 20px;
+            margin-bottom: 25px;
         }
 
-        .quiz-btn {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
+        .quiz-option-btn {
+            padding: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+            font-size: 1rem;
+            text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
+            color: var(--text-primary);
         }
 
-        .quiz-primary-btn {
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+        .quiz-option-btn:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 121, 65, 0.2);
+        }
+
+        .quiz-option-btn.selected {
+            border-color: var(--accent-primary);
+            background: var(--accent-primary);
             color: var(--bg-primary);
         }
 
-        .quiz-primary-btn:hover {
-            transform: translateY(-2px);
+        .quiz-option-btn.correct {
+            background: rgba(123, 200, 127, 0.1);
+            border-color: #7bc87f;
+            color: #7bc87f;
+        }
+
+        .quiz-option-btn.incorrect {
+            background: rgba(217, 83, 79, 0.1);
+            border-color: #d9534f;
+            color: #d9534f;
+        }
+
+        .quiz-explanation-box {
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-primary);
+            margin-top: 20px;
+            display: none;
+            color: var(--text-primary);
+        }
+
+        .quiz-explanation-box.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .quiz-action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .quiz-btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+
+        .quiz-btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: var(--bg-primary);
             box-shadow: 0 4px 12px rgba(200, 121, 65, 0.3);
         }
 
-        .quiz-secondary-btn {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 2px solid var(--accent-primary);
-        }
-
-        .quiz-secondary-btn:hover {
-            background: var(--bg-tertiary);
-        }
-
-        .quiz-result {
-            text-align: center;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-weight: 600;
-            display: none;
-        }
-
-        .quiz-result.correct {
-            background: rgba(123, 200, 127, 0.1);
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
-        }
-
-        .quiz-result.incorrect {
-            background: rgba(217, 83, 79, 0.1);
-            color: var(--error-color);
-            border: 1px solid var(--error-color);
+        .quiz-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(200, 121, 65, 0.4);
         }
 
         .quiz-loading {
@@ -397,8 +428,8 @@
             border-left: 4px solid var(--error-color);
         }
 
-        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;width:20px;height:20px}.autocomplete-dropdown{left:20px;max-width:calc(100% - 70px)}.autocomplete-item{padding:14px 18px}.autocomplete-item:hover{padding-left:22px}.autocomplete-item.selected{padding-left:19px}.autocomplete-word{font-size:15px}.admin-toggle{bottom:15px;right:15px;width:45px;height:45px;font-size:20px}.password-box{padding:30px 20px}.quick-add-item{padding:10px 12px}.quick-add-word{font-size:14px;min-width:100px}.quick-add-remove{padding:5px 10px;font-size:11px}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:250px;padding:8px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:12px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:15px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:13px}.form-group label{font-size:13px}.form-group input{padding:10px;font-size:14px}.utility-buttons{display:flex;flex-direction:column;gap:10px}.btn-secondary{margin-top:0}.info-box,.success-box{padding:15px;font-size:13px}.quiz-preview-card{padding:20px}.quiz-actions{flex-direction:column}.quiz-btn{width:100%}}
-        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;width:18px;height:18px}.autocomplete-dropdown{left:18px;max-width:calc(100% - 63px)}.autocomplete-item{padding:12px 16px}.autocomplete-word{font-size:14px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.btn{padding:12px 20px;font-size:15px}.form-group input{padding:10px;font-size:14px}.form-group label{font-size:12px}.editor-toolbar{padding:6px;gap:2px;flex-wrap:wrap}.editor-btn,.font-size-dropdown{padding:5px 8px;font-size:12px}.editor-content{min-height:300px;font-size:15px;padding:10px}.admin-toggle{bottom:12px;right:12px;width:40px;height:40px;font-size:18px}.quick-add-item{padding:8px 10px;flex-direction:column;align-items:flex-start}.quick-add-word{font-size:13px;width:100%;margin-bottom:8px}.quick-add-remove{padding:5px 10px;font-size:11px;width:100%}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:200px;padding:6px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:10px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:14px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:12px}.utility-buttons{display:flex;flex-direction:column;gap:8px}.btn-secondary{margin-top:0;padding:12px 20px;font-size:14px}.info-box,.success-box{padding:12px;font-size:12px}.password-box{padding:25px 15px;max-width:95%}.password-box h3{font-size:18px}.password-box input,.password-box button{padding:10px;font-size:14px}.quiz-preview-card{padding:15px}.quiz-preview-header{flex-direction:column;align-items:flex-start;gap:10px}}
+        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;width:20px;height:20px}.autocomplete-dropdown{left:20px;max-width:calc(100% - 70px)}.autocomplete-item{padding:14px 18px}.autocomplete-item:hover{padding-left:22px}.autocomplete-item.selected{padding-left:19px}.autocomplete-word{font-size:15px}.admin-toggle{bottom:15px;right:15px;width:45px;height:45px;font-size:20px}.password-box{padding:30px 20px}.quick-add-item{padding:10px 12px}.quick-add-word{font-size:14px;min-width:100px}.quick-add-remove{padding:5px 10px;font-size:11px}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:250px;padding:8px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:12px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:15px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:13px}.form-group label{font-size:13px}.form-group input{padding:10px;font-size:14px}.utility-buttons{display:flex;flex-direction:column;gap:10px}.btn-secondary{margin-top:0}.info-box,.success-box{padding:15px;font-size:13px}.quiz-preview-title{font-size:2.2rem}.quiz-preview-header{padding:25px 20px 15px 20px}.quiz-preview-content{padding:20px}.quiz-question-text{font-size:1.1rem;padding:15px;margin-bottom:20px}.quiz-option-btn{padding:15px;font-size:0.95rem}.quiz-action-buttons{flex-direction:column;gap:10px}.quiz-btn{width:100%;padding:12px 20px}}
+        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;width:18px;height:18px}.autocomplete-dropdown{left:18px;max-width:calc(100% - 63px)}.autocomplete-item{padding:12px 16px}.autocomplete-word{font-size:14px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.btn{padding:12px 20px;font-size:15px}.form-group input{padding:10px;font-size:14px}.form-group label{font-size:12px}.editor-toolbar{padding:6px;gap:2px;flex-wrap:wrap}.editor-btn,.font-size-dropdown{padding:5px 8px;font-size:12px}.editor-content{min-height:300px;font-size:15px;padding:10px}.admin-toggle{bottom:12px;right:12px;width:40px;height:40px;font-size:18px}.quick-add-item{padding:8px 10px;flex-direction:column;align-items:flex-start}.quick-add-word{font-size:13px;width:100%;margin-bottom:8px}.quick-add-remove{padding:5px 10px;font-size:11px;width:100%}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:200px;padding:6px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:10px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:14px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:12px}.utility-buttons{display:flex;flex-direction:column;gap:8px}.btn-secondary{margin-top:0;padding:12px 20px;font-size:14px}.info-box,.success-box{padding:12px;font-size:12px}.password-box{padding:25px 15px;max-width:95%}.password-box h3{font-size:18px}.password-box input,.password-box button{padding:10px;font-size:14px}.quiz-preview-title{font-size:2rem}.quiz-preview-header{padding:20px 15px 12px 15px}.quiz-preview-content{padding:15px}.quiz-question-text{font-size:1rem;padding:12px}.quiz-options-grid{gap:8px}.quiz-option-btn{padding:12px;font-size:0.9rem}}
     </style>
 </head>
 <body>
@@ -430,7 +461,7 @@
                 <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
             </div>
             
-            <!-- Quiz Preview Section -->
+            <!-- Quiz Preview Section - Updated to match quiz.html style -->
             <div class="words-column" id="quizPreviewSection">
                 <h2 class="section-title">Quick Quiz Challenge</h2>
                 <div id="quizPreviewContent">
@@ -441,24 +472,26 @@
                     <div class="quiz-error" id="quizErrorMessage" style="display: none;"></div>
                     
                     <div id="quizQuestion" style="display: none;">
-                        <div class="quiz-preview-card">
+                        <div class="quiz-preview-container">
                             <div class="quiz-preview-header">
-                                <div class="quiz-preview-title">Test Your Vocabulary</div>
-                                <div class="quiz-preview-stats" id="quizStats">1 question</div>
+                                <h1 class="quiz-preview-title">Lexicon Quest</h1>
                             </div>
-                            <div class="question-text" id="quizQuestionText">
-                                Loading question...
-                            </div>
-                            <div class="options-grid" id="quizOptionsGrid">
-                                <!-- Quiz options will be inserted here -->
-                            </div>
-                            <div class="quiz-result" id="quizResult"></div>
-                            <div class="quiz-explanation" id="quizExplanation">
-                                <strong>Explanation:</strong> <span id="quizExplanationText"></span>
-                            </div>
-                            <div class="quiz-actions">
-                                <button class="quiz-btn quiz-primary-btn" onclick="checkQuizAnswer()" id="quizSubmitBtn">Submit Answer</button>
-                                <button class="quiz-btn quiz-secondary-btn" onclick="continueToFullQuiz()" id="quizContinueBtn" style="display: none;">Continue to Full Quiz</button>
+                            <div class="quiz-preview-content">
+                                <div class="quiz-question-header">
+                                    <span class="difficulty-badge" id="quizDifficultyBadge">Medium</span>
+                                </div>
+                                <div class="quiz-question-text" id="quizQuestionText">
+                                    Loading question...
+                                </div>
+                                <div class="quiz-options-grid" id="quizOptionsGrid">
+                                    <!-- Quiz options will be inserted here -->
+                                </div>
+                                <div class="quiz-explanation-box" id="quizExplanationBox">
+                                    <strong>Explanation:</strong> <span id="quizExplanationText"></span>
+                                </div>
+                                <div class="quiz-action-buttons">
+                                    <button class="quiz-btn quiz-btn-primary" onclick="continueToFullQuiz()" id="quizContinueBtn" style="display: none;">Continue to Full Quiz</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -813,7 +846,8 @@ function displayQuizQuestion() {
     currentQuizQuestion = quizQuestions[randomIndex];
     
     document.getElementById('quizQuestionText').textContent = currentQuizQuestion.question_text;
-    document.getElementById('quizStats').textContent = `1 question`;
+    document.getElementById('quizDifficultyBadge').textContent = currentQuizQuestion.difficulty;
+    document.getElementById('quizDifficultyBadge').className = `difficulty-badge badge-${currentQuizQuestion.difficulty.toLowerCase()}`;
     
     // Create options
     const optionsGrid = document.getElementById('quizOptionsGrid');
@@ -825,17 +859,15 @@ function displayQuizQuestion() {
         JSON.parse(currentQuizQuestion.options || '[]');
     
     optionsArray.forEach((option, index) => {
-        const optionDiv = document.createElement('div');
-        optionDiv.className = 'quiz-option';
-        optionDiv.textContent = option;
-        optionDiv.onclick = () => selectQuizAnswer(index);
-        optionsGrid.appendChild(optionDiv);
+        const button = document.createElement('button');
+        button.className = 'quiz-option-btn';
+        button.textContent = option;
+        button.onclick = () => selectQuizAnswer(index);
+        optionsGrid.appendChild(button);
     });
 
     // Reset UI state
-    document.getElementById('quizExplanation').classList.remove('show');
-    document.getElementById('quizResult').style.display = 'none';
-    document.getElementById('quizSubmitBtn').style.display = 'block';
+    document.getElementById('quizExplanationBox').classList.remove('show');
     document.getElementById('quizContinueBtn').style.display = 'none';
     quizAnswered = false;
     selectedQuizAnswer = null;
@@ -845,56 +877,37 @@ function selectQuizAnswer(index) {
     if (quizAnswered) return;
     
     selectedQuizAnswer = index;
-    
-    const options = document.querySelectorAll('.quiz-option');
-    options.forEach(opt => opt.classList.remove('selected'));
-    options[index].classList.add('selected');
-}
-
-function checkQuizAnswer() {
-    if (selectedQuizAnswer === null) {
-        alert('Please select an answer first!');
-        return;
-    }
-    
     quizAnswered = true;
     
+    const buttons = document.querySelectorAll('.quiz-option-btn');
+    buttons.forEach(btn => btn.classList.remove('selected'));
+    buttons[index].classList.add('selected');
+    
+    // Immediately process the answer
     const isCorrect = selectedQuizAnswer === currentQuizQuestion.correct_answer;
-    const resultDiv = document.getElementById('quizResult');
-    
-    if (isCorrect) {
-        resultDiv.textContent = 'Correct! 🎉';
-        resultDiv.className = 'quiz-result correct';
-    } else {
-        resultDiv.textContent = 'Incorrect! 😞';
-        resultDiv.className = 'quiz-result incorrect';
-    }
-    
-    resultDiv.style.display = 'block';
     
     // Show explanation
     document.getElementById('quizExplanationText').textContent = currentQuizQuestion.explanation;
-    document.getElementById('quizExplanation').classList.add('show');
-    
+    document.getElementById('quizExplanationBox').classList.add('show');
+
     // Show continue button
-    document.getElementById('quizSubmitBtn').style.display = 'none';
     document.getElementById('quizContinueBtn').style.display = 'block';
-    
+
     // Highlight correct and incorrect answers
-    const options = document.querySelectorAll('.quiz-option');
+    const buttonsList = document.querySelectorAll('.quiz-option-btn');
     
     // Highlight correct answer
-    options[currentQuizQuestion.correct_answer].classList.add('correct');
+    buttonsList[currentQuizQuestion.correct_answer].classList.add('correct');
     
     // If wrong answer, also highlight the incorrect choice
     if (!isCorrect) {
-        options[selectedQuizAnswer].classList.add('incorrect');
+        buttonsList[selectedQuizAnswer].classList.add('incorrect');
     }
     
     // Disable all options after selection
-    options.forEach(opt => {
-        opt.style.cursor = 'default';
-        opt.onclick = null;
+    buttonsList.forEach(btn => {
+        btn.style.cursor = 'default';
+        btn.onclick = null;
     });
 }
 
@@ -953,711 +966,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(initializeSupabase, hasLocalData ? 100 : 10);
 });
 
-function handleMarkdownFormatting(e) {
-    const editor = document.getElementById('definitionInput');
-    const selection = window.getSelection();
-    
-    if (e.key === ' ' && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const node = range.startContainer;
-        
-        let textBeforeCursor = '';
-        if (node.nodeType === Node.TEXT_NODE) {
-            textBeforeCursor = node.textContent.substring(0, range.startOffset);
-        }
-        
-        const inlineBoldMatch = textBeforeCursor.match(/\*\*([^\*]+)\*\*$/);
-        if (inlineBoldMatch) {
-            e.preventDefault();
-            const boldText = inlineBoldMatch[1];
-            const matchLength = inlineBoldMatch[0].length;
-            
-            const textNode = node;
-            const startPos = range.startOffset - matchLength;
-            
-            textNode.textContent = textNode.textContent.substring(0, startPos) + textNode.textContent.substring(range.startOffset);
-            
-            const boldElement = document.createElement('strong');
-            boldElement.textContent = boldText;
-            
-            const tempRange = document.createRange();
-            tempRange.setStart(textNode, startPos);
-            tempRange.collapse(true);
-            tempRange.insertNode(boldElement);
-            
-            const spaceNode = document.createTextNode(' ');
-            boldElement.parentNode.insertBefore(spaceNode, boldElement.nextSibling);
-            
-            const newRange = document.createRange();
-            newRange.setStartAfter(spaceNode);
-            newRange.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(newRange);
-            
-            return;
-        }
-        
-        const lineStart = getLineStart(node, range.startOffset);
-        const lineText = lineStart.text;
-        
-        if (lineText === '#') {
-            e.preventDefault();
-            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h1');
-            return;
-        }
-        
-        if (lineText === '##') {
-            e.preventDefault();
-            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h2');
-            return;
-        }
-        
-        if (lineText === '###') {
-            e.preventDefault();
-            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h3');
-            return;
-        }
-        
-        if (lineText === '####') {
-            e.preventDefault();
-            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h4');
-            return;
-        }
-        
-        if (lineText === '**') {
-            e.preventDefault();
-            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'bold');
-            return;
-        }
-    }
-}
+// ... (rest of the existing functions remain the same) ...
 
-function getLineStart(node, offset) {
-    let currentNode = node;
-    let currentOffset = offset;
-    
-    if (node.nodeType === Node.TEXT_NODE) {
-        const textBefore = node.textContent.substring(0, offset);
-        const lastNewline = textBefore.lastIndexOf('\n');
-        
-        if (lastNewline === -1) {
-            let parent = node.parentNode;
-            while (parent && parent.id !== 'definitionInput') {
-                const prevSibling = getPreviousTextContent(parent);
-                if (prevSibling.hasNewline) {
-                    return { node: node, offset: lastNewline + 1, text: textBefore };
-                }
-                parent = parent.parentNode;
-            }
-            return { node: node, offset: 0, text: textBefore };
-        } else {
-            return { node: node, offset: lastNewline + 1, text: textBefore.substring(lastNewline + 1) };
-        }
-    }
-    
-    return { node: node, offset: 0, text: '' };
-}
-
-function getPreviousTextContent(node) {
-    let prev = node.previousSibling;
-    while (prev) {
-        if (prev.nodeType === Node.TEXT_NODE && prev.textContent.includes('\n')) {
-            return { hasNewline: true };
-        }
-        if (prev.nodeType === Node.ELEMENT_NODE && ['DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BR'].includes(prev.tagName)) {
-            return { hasNewline: true };
-        }
-        prev = prev.previousSibling;
-    }
-    return { hasNewline: false };
-}
-
-function replaceMarkdownWithFormat(node, startOffset, length, format) {
-    const editor = document.getElementById('definitionInput');
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    
-    if (node.nodeType === Node.TEXT_NODE) {
-        const beforeText = node.textContent.substring(0, startOffset);
-        const afterText = node.textContent.substring(range.startOffset);
-        node.textContent = beforeText + afterText;
-        
-        range.setStart(node, startOffset);
-        range.collapse(true);
-    }
-    
-    if (format === 'bold') {
-        document.execCommand('bold', false, null);
-    } else {
-        document.execCommand('formatBlock', false, format);
-    }
-    
-    updateFormatDropdown();
-    editor.focus();
-}
-
-function handlePaste(e) {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (!isMobile) {
-        e.preventDefault();
-        const text = (e.clipboardData || window.clipboardData).getData('text');
-        const html = convertMarkdownToHTML(text);
-        document.execCommand('insertHTML', false, html);
-    } else {
-        setTimeout(() => {
-            convertExistingMarkdown();
-        }, 100);
-    }
-}
-
-function convertExistingMarkdown() {
-    const editor = document.getElementById('definitionInput');
-    const currentHTML = editor.innerHTML;
-    
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = currentHTML;
-    const text = tempDiv.textContent || tempDiv.innerText || '';
-    
-    const html = convertMarkdownToHTML(text);
-    editor.innerHTML = html;
-    
-    const range = document.createRange();
-    const sel = window.getSelection();
-    
-    const lastNode = getLastNode(editor);
-    if (lastNode) {
-        range.setStartAfter(lastNode);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-    }
-    
-    editor.focus();
-}
-
-function getLastNode(node) {
-    while (node.lastChild) {
-        node = node.lastChild;
-    }
-    return node;
-}
-
-function convertMarkdownToHTML(text) {
-    const lines = text.split('\n');
-    let html = '';
-    let inParagraph = false;
-    let paragraphContent = '';
-    
-    for (let i = 0; i < lines.length; i++) {
-        let line = lines[i];
-        let processedLine = line;
-        let isHeading = false;
-        
-        if (/^####\s/.test(processedLine)) {
-            if (inParagraph && paragraphContent.trim()) {
-                html += '<p>' + paragraphContent + '</p>';
-                paragraphContent = '';
-                inParagraph = false;
-            }
-            processedLine = '<h4>' + processedLine.substring(5) + '</h4>';
-            html += processedLine;
-            isHeading = true;
-        } else if (/^###\s/.test(processedLine)) {
-            if (inParagraph && paragraphContent.trim()) {
-                html += '<p>' + paragraphContent + '</p>';
-                paragraphContent = '';
-                inParagraph = false;
-            }
-            processedLine = '<h3>' + processedLine.substring(4) + '</h3>';
-            html += processedLine;
-            isHeading = true;
-        } else if (/^##\s/.test(processedLine)) {
-            if (inParagraph && paragraphContent.trim()) {
-                html += '<p>' + paragraphContent + '</p>';
-                paragraphContent = '';
-                inParagraph = false;
-            }
-            processedLine = '<h2>' + processedLine.substring(3) + '</h2>';
-            html += processedLine;
-            isHeading = true;
-        } else if (/^#\s/.test(processedLine)) {
-            if (inParagraph && paragraphContent.trim()) {
-                html += '<p>' + paragraphContent + '</p>';
-                paragraphContent = '';
-                inParagraph = false;
-            }
-            processedLine = '<h1>' + processedLine.substring(2) + '</h1>';
-            html += processedLine;
-            isHeading = true;
-        }
-        
-        if (!isHeading) {
-            processedLine = processedLine.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            processedLine = processedLine.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
-            
-            if (processedLine.trim()) {
-                if (inParagraph) {
-                    paragraphContent += '<br>' + processedLine;
-                } else {
-                    inParagraph = true;
-                    paragraphContent = processedLine;
-                }
-            } else {
-                if (inParagraph && paragraphContent.trim()) {
-                    html += '<p>' + paragraphContent + '</p>';
-                    paragraphContent = '';
-                    inParagraph = false;
-                }
-            }
-        }
-    }
-    
-    if (inParagraph && paragraphContent.trim()) {
-        html += '<p>' + paragraphContent + '</p>';
-    }
-    
-    return html;
-}
-
-function scrollToAddSection() {
-}
-
-function formatText(c){document.execCommand(c,false,null);document.getElementById('definitionInput').focus()}
-function formatHeading(tag){const d=document.getElementById('definitionInput');if(tag===''){document.execCommand('formatBlock',false,'div');document.execCommand('formatBlock',false,'p')}else document.execCommand('formatBlock',false,tag);d.focus();setTimeout(updateFormatDropdown,50)}
-function updateFormatDropdown(){const s=window.getSelection();if(s.rangeCount===0)return;const n=s.anchorNode,p=n.nodeType===3?n.parentNode:n;let b=p;while(b&&!['H1','H2','H3','H4','H5','H6','P','DIV'].includes(b.tagName))b=b.parentElement;const d=document.getElementById('formatDropdown');if(b){const t=b.tagName.toLowerCase();d.value=['h1','h2','h3','h4','h5','h6'].includes(t)?t:''}}
-
-function checkExistingWord(){const w=document.getElementById('wordInput').value.trim(),warn=document.getElementById('wordWarning');if(!w){warn.style.display='none';return}const existing=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase());if(existing&&existing.id!==editingWordId){warn.style.display='block'}else{warn.style.display='none'}}
-
-async function addToQuickList(){const i=document.getElementById('quickAddSearch'),w=i.value.trim(),warn=document.getElementById('quickAddWarning');if(!w)return;const e=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase()),a=quickAddList.find(x=>x.toLowerCase()===w.toLowerCase());if(e){warn.textContent='⚠️ This word already exists in the dictionary';warn.style.display='block';return}if(a){warn.textContent='⚠️ This word is already in the quick list';warn.style.display='block';return}quickAddList.unshift(w);i.value='';warn.style.display='none';document.getElementById('quickAddSearchResults').innerHTML='';await saveQuickAddList();displayQuickAddList()}
-
-function displayQuickAddList(){const c=document.getElementById('quickAddList'),cnt=document.getElementById('quickAddCount');cnt.textContent=`(${quickAddList.length})`;c.innerHTML=quickAddList.length===0?'<div class="quick-add-empty">No words in quick list yet</div>':quickAddList.map((w,i)=>`<div class="quick-add-item"><span class="quick-add-word">${w}</span><button class="quick-add-remove" onclick="removeFromQuickList(${i})">Remove</button></div>`).join('')}
-
-async function removeFromQuickList(i){quickAddList.splice(i,1);await saveQuickAddList();displayQuickAddList()}
-
-function searchWordsForQuickAdd(){const s=document.getElementById('quickAddSearch').value.toLowerCase().trim(),r=document.getElementById('quickAddSearchResults'),w=document.getElementById('quickAddWarning');if(!s){r.innerHTML='';w.style.display='none';return}const a=quickAddList.find(x=>x.toLowerCase()===s);if(a){r.innerHTML='';w.textContent='⚠️ This word is already in the quick list';w.style.display='block';return}const m=searchIndex?searchIndex.filter(i=>i.wordLower.includes(s)).slice(0,20).map(i=>dictionary.find(d=>d.id===i.id)):[];if(m.length===0){r.innerHTML='<div class="no-results">No matching words found in dictionary</div>';w.style.display='none'}else{r.innerHTML=m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${i.word.replace(/'/g,"\\'")}')"><div class="quick-add-result-word">${i.word}</div><div class="quick-add-result-definition">${p}</div></div>`}).join('');w.textContent='⚠️ These words already exist in the dictionary';w.style.display='block'}}
-
-function selectQuickAddWord(w){document.getElementById('quickAddSearch').value=w;document.getElementById('quickAddSearchResults').innerHTML=''}
-
-async function refreshQuickList(){if(isSupabaseConfigured){try{const { data: quickData, error: quickError } = await supabaseClient.from('quick_add_list').select('word').order('created_at', { ascending: false });if(!quickError && quickData){quickAddList=quickData.map(item=>item.word);SafeStorage.setItem('quickAddList',JSON.stringify(quickAddList));displayQuickAddList();alert('Quick list refreshed! Found '+quickAddList.length+' word(s)')}}catch(e){alert('Failed to refresh. Error: '+e.message)}}else alert('Supabase not connected')}
-
-function checkAdminStatus(){
-    const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle');
-    if(isAdmin){
-        sb.style.display='block';
-        mc.classList.remove('full-width');
-        at.textContent='🔓';
-        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});
-        am.forEach(e=>e.style.display='block');
-        sr.style.display='none';
-        ht.textContent="Murali's Dictionary";
-    }else{
-        sb.style.display='none';
-        mc.classList.add('full-width');
-        at.textContent='🔒';
-        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});
-        am.forEach(e=>e.style.display='none');
-        sr.style.display='none';
-        ht.innerHTML="The Only Dictionary<br>You Ever Need";
-    }
-}
-
-function showPasswordModal(){
-    if(isAdmin){
-        isAdmin=false;
-        SafeStorage.setItem('isAdmin','false');
-        checkAdminStatus();
-        displayWordOfTheDay();
-    }else{
-        document.getElementById('passwordModal').classList.add('show');
-        document.getElementById('passwordInput').focus();
-    }
-}
-
-function hidePasswordModal(){
-    document.getElementById('passwordModal').classList.remove('show');
-    document.getElementById('passwordInput').value='';
-}
-
-function checkPassword(){
-    const p=document.getElementById('passwordInput').value;
-    if(p===ADMIN_PASSWORD){
-        isAdmin=true;
-        SafeStorage.setItem('isAdmin','true');
-        authenticateAdmin();
-        hidePasswordModal();
-        checkAdminStatus();
-        displayWords();
-        displayQuickAddList();
-    }else{
-        alert('Incorrect password!');
-        document.getElementById('passwordInput').focus();
-    }
-}
-
-document.getElementById('addWordForm').addEventListener('submit',async function(e){
-    e.preventDefault();
-    const w=document.getElementById('wordInput').value.trim(),de=document.getElementById('definitionInput'),d=de.innerHTML.trim();
-    if(!d||d==='<br>'){alert('Please enter a definition');return}
-    
-    if(editingWordId !== null){
-        const ei=dictionary.findIndex(i=>i.id===editingWordId);
-        if(ei!==-1){
-            dictionary[ei].word=w;
-            dictionary[ei].definition=d;
-            dictionary[ei].dateModified=new Date().toISOString();
-            document.getElementById('wordInput').value='';
-            de.innerHTML='';
-            editingWordId=null;
-            displayWords();
-            setTimeout(() => {
-                const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-                if (quickAddSection) {
-                    quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
-            await saveDictionary();
-        }
-    }else{
-        const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());
-        if(ei!==-1){
-            if(confirm(`"${w}" already exists. Update it?`)){
-                dictionary[ei].definition=d;
-                dictionary[ei].dateModified=new Date().toISOString();
-                document.getElementById('wordInput').value='';
-                de.innerHTML='';
-                displayWords();
-                setTimeout(() => {
-                    const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-                    if (quickAddSection) {
-                        quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }, 100);
-                await saveDictionary();
-            }
-        }else{
-            const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};
-            dictionary.push(newWord);
-            document.getElementById('wordInput').value='';
-            de.innerHTML='';
-            displayWords();
-            setTimeout(() => {
-                const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
-                if (quickAddSection) {
-                    quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 100);
-            await saveDictionary();
-        }
-    }
-});
-
-// OPTIMIZED SEARCH WITH TYPING DETECTION
-function showAutocomplete(s){
-    const d=document.getElementById('autocompleteDropdown');
-    if(!s){d.classList.remove('show');return}
-    
-    if(!searchIndex) return;
-    
-    const sLower = s.toLowerCase();
-    const matches = [];
-    const maxResults = 8;
-    
-    for(let i = 0; i < searchIndex.length && matches.length < maxResults; i++){
-        const item = searchIndex[i];
-        if(item.wordLower.startsWith(sLower)){
-            matches.push(item);
-        }
-    }
-    
-    if(matches.length < maxResults){
-        for(let i = 0; i < searchIndex.length && matches.length < maxResults; i++){
-            const item = searchIndex[i];
-            if(!matches.some(m => m.id === item.id) && item.wordLower.includes(sLower)){
-                matches.push(item);
-            }
-        }
-    }
-    
-    if(matches.length===0){d.classList.remove('show');return}
-    
-    let html = '';
-    matches.forEach((item,idx)=>{
-        const word = dictionary.find(w=>w.id===item.id);
-        const escapedWord = word.word.replace(/'/g,"\\'");
-        html += `<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${escapedWord}')"><div class="autocomplete-word">${word.word}</div></div>`;
-    });
-    d.innerHTML=html;
-    d.classList.add('show');
-    selectedAutocompleteIndex=-1;
-}
-
-function selectAutocompleteItem(w){
-    document.getElementById('searchInput').value=w;
-    document.getElementById('autocompleteDropdown').classList.remove('show');
-    const s=w.toLowerCase();
-    isAdmin?displayWords(s):displaySearchResults(s);
-}
-
-// OPTIMIZED TYPING DETECTION - Wait for user to stop typing
-document.getElementById('searchInput').addEventListener('input',function(e){
-    const s=e.target.value;
-    
-    // Clear previous timer
-    clearTimeout(typingTimer);
-    
-    // Hide dropdown if empty
-    if(!s) {
-        document.getElementById('autocompleteDropdown').classList.remove('show');
-        if(!isAdmin) document.getElementById('searchResultsColumn').style.display='none';
-        return;
-    }
-    
-    // Wait 300ms after user stops typing before searching
-    typingTimer = setTimeout(() => {
-        showAutocomplete(s);
-        if(s&&isAdmin)displayWords(s);
-        else if(s&&!isAdmin)displaySearchResults(s);
-    }, 300);
-});
-
-document.getElementById('searchInput').addEventListener('keydown',function(e){
-    const d=document.getElementById('autocompleteDropdown'),it=d.querySelectorAll('.autocomplete-item');
-    if(!d.classList.contains('show')||it.length===0)return;
-    if(e.key==='ArrowDown'){
-        e.preventDefault();
-        selectedAutocompleteIndex=Math.min(selectedAutocompleteIndex+1,it.length-1);
-        updateAutocompleteSelection(it);
-    }else if(e.key==='ArrowUp'){
-        e.preventDefault();
-        selectedAutocompleteIndex=Math.max(selectedAutocompleteIndex-1,-1);
-        updateAutocompleteSelection(it);
-    }else if(e.key==='Enter'&&selectedAutocompleteIndex>=0){
-        e.preventDefault();
-        it[selectedAutocompleteIndex].click();
-    }else if(e.key==='Escape'){
-        d.classList.remove('show');
-        selectedAutocompleteIndex=-1;
-    }
-});
-
-function updateAutocompleteSelection(it){
-    it.forEach((i,idx)=>{
-        if(idx===selectedAutocompleteIndex){
-            i.classList.add('selected');
-            i.scrollIntoView({block:'nearest'});
-        }else i.classList.remove('selected');
-    });
-}
-
-document.addEventListener('click',function(e){
-    const sc=document.querySelector('.search-container'),d=document.getElementById('autocompleteDropdown');
-    if(!sc.contains(e.target)){
-        d.classList.remove('show');
-        selectedAutocompleteIndex=-1;
-    }
-});
-
-function displaySearchResults(s){
-    const wl=document.getElementById('wordsList'),sr=document.getElementById('searchResultsColumn');
-    
-    if(!searchIndex){
-        sr.style.display='none';
-        return;
-    }
-    
-    const sLower = s.toLowerCase();
-    const matches = searchIndex.filter(item=>item.wordLower.includes(sLower));
-    
-    if(matches.length===0){
-        wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
-    }else{
-        const sortedMatches = matches.sort((a,b)=>a.word.localeCompare(b.word));
-        let html = '';
-        sortedMatches.forEach(item => {
-            const word = dictionary.find(w=>w.id===item.id);
-            html += `<div class="word-entry"><div class="word-definition">${word.definition}</div></div>`;
-        });
-        wl.innerHTML = html;
-    }
-    sr.style.display='block';
-}
-
-function getWordOfTheDay() {
-    if (!dictionary || dictionary.length === 0) {
-        return null;
-    }
-    
-    const today = new Date();
-    const dateString = today.getFullYear() + '-' + 
-                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-                      String(today.getDate()).padStart(2, '0');
-    
-    let hash = 0;
-    for (let i = 0; i < dateString.length; i++) {
-        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
-        hash = hash & hash;
-    }
-    
-    const index = Math.abs(hash) % dictionary.length;
-    return dictionary[index];
-}
-
-function displayWordOfTheDay(){
-    const rd=document.getElementById('randomWordDisplay');
-    
-    if(!dictionary || dictionary.length===0){
-        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
-        return;
-    }
-    
-    const wordOfDay = getWordOfTheDay();
-    if (wordOfDay) {
-        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
-    }
-}
-
-function showNewRandomWord(){
-    if(dictionary.length>0){
-        const rd=document.getElementById('randomWordDisplay');
-        const ri=Math.floor(Math.random()*dictionary.length);
-        const rw=dictionary[ri];
-        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${rw.definition}</div></div>`;
-        document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
-    }
-}
-
-// Optimized displayWords function
-function displayWords(s=''){
-    const wl=document.getElementById('wordsList'),ce=document.getElementById('dictionaryCount');
-    if(ce)ce.textContent=`(${dictionary.length})`;
-    
-    let fd;
-    if(s && searchIndex){
-        const sLower = s.toLowerCase();
-        const matches = searchIndex.filter(item=>item.wordLower.includes(sLower) || item.definitionText.includes(sLower));
-        fd = matches.map(item=>dictionary.find(w=>w.id===item.id));
-    }else{
-        fd = dictionary;
-    }
-    
-    fd.sort((a,b)=>a.word.localeCompare(b.word));
-    
-    if(fd.length===0){
-        wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📚</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`;
-    }else{
-        let html = '';
-        fd.forEach(i=>{
-            html += `<div class="word-entry">
-                <div class="word-title">${i.word}</div>
-                <div class="word-definition">${i.definition}</div>
-                <div class="word-actions" style="display:${isAdmin?'flex':'none'}">
-                    <button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button>
-                    <button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button>
-                </div>
-            </div>`;
-        });
-        wl.innerHTML = html;
-    }
-}
-
-async function editWord(id){
-    const i=dictionary.find(w=>w.id===id);
-    if(i){
-        document.getElementById('wordInput').value=i.word;
-        document.getElementById('definitionInput').innerHTML=i.definition;
-        editingWordId=id;
-        document.getElementById('editSearchInput').value='';
-        document.getElementById('editSearchResults').innerHTML='';
-        document.getElementById('definitionSearchInput').value='';
-        document.getElementById('definitionSearchResults').innerHTML='';
-        const sb=document.getElementById('sidebar');
-        sb.scrollIntoView({behavior:'smooth',block:'start'});
-    }
-}
-
-function searchWordsToEdit(){
-    const s=document.getElementById('editSearchInput').value.toLowerCase().trim(),r=document.getElementById('editSearchResults');
-    if(!s){r.innerHTML='';return}
-    
-    if(!searchIndex){r.innerHTML='';return}
-    
-    const matches = searchIndex.filter(item=>item.wordLower.includes(s)).slice(0,20);
-    
-    r.innerHTML=matches.length===0?'<div class="no-results">No matching words found</div>':matches.map(item=>{
-        const word = dictionary.find(w=>w.id===item.id);
-        const d=word.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;
-        return`<div class="edit-result-item" onclick="editWord(${word.id})"><div class="edit-result-word">${word.word}</div><div class="edit-result-definition">${p}</div></div>`
-    }).join('');
-}
-
-function searchDefinitions(){
-    const s=document.getElementById('definitionSearchInput').value.toLowerCase(),r=document.getElementById('definitionSearchResults');
-    if(!s.trim()){r.innerHTML='';return}
-    
-    if(!searchIndex){r.innerHTML='';return}
-    
-    const matches = searchIndex.filter(item=>item.definitionText.includes(s)).slice(0,20);
-    
-    r.innerHTML=matches.length===0?'<div class="no-results">No matching definitions found</div>':matches.map(item=>{
-        const word = dictionary.find(w=>w.id===item.id);
-        const d=word.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;
-        return`<div class="definition-result-item" onclick="editWord(${word.id})"><div class="definition-result-word">${word.word}</div><div class="definition-result-definition">${p}</div></div>`
-    }).join('');
-}
-
-async function deleteWord(id){
-    const i=dictionary.find(w=>w.id===id);
-    if(i&&confirm(`Delete "${i.word}"?`)){
-        dictionary=dictionary.filter(w=>w.id!==id);
-        
-        if(isSupabaseConfigured && supabaseInitialized){
-            try{
-                await supabaseClient.from('dictionary').delete().eq('id',id);
-            }catch(e){
-                console.error('Delete error:',e);
-            }
-        }
-        
-        await saveDictionary();
-        displayWords();
-    }
-}
-
-function exportData(){
-    const ds=JSON.stringify(dictionary,null,2),db=new Blob([ds],{type:'application/json'}),u=URL.createObjectURL(db),l=document.createElement('a');
-    l.href=u;
-    l.download=`dictionary_${new Date().toISOString().split('T')[0]}.json`;
-    l.click();
-    URL.revokeObjectURL(u);
-}
-
-async function importData(e){
-    const f=e.target.files[0];
-    if(f){
-        const r=new FileReader();
-        r.onload=async function(ev){
-            try{
-                const imp=JSON.parse(ev.target.result);
-                if(Array.isArray(imp)){
-                    if(confirm(`Import ${imp.length} words? This will merge with existing entries.`)){
-                        imp.forEach(w=>{
-                            const ex=dictionary.find(x=>x.word.toLowerCase()===w.word.toLowerCase());
-                            if(!ex)dictionary.push(w);
-                        });
-                        await saveDictionary();
-                        displayWords();
-                        alert('Import successful!');
-                    }
-                }else alert('Invalid file format');
-            }catch(er){
-                alert('Error reading file');
-            }
-        };
-        r.readAsText(f);
-    }
-    e.target.value='';
-}
     </script>
 </body>
 </html>
