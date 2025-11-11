@@ -47,41 +47,20 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Modern Header Redesign */
+        /* Simplified Modern Header */
         .quiz-header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            background: var(--bg-secondary);
             color: var(--text-primary);
-            padding: 40px 30px;
+            padding: 25px 30px 15px 30px;
             text-align: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        .quiz-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-        }
-
-        .quiz-header::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -10%;
-            right: -10%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 0%, rgba(200, 121, 65, 0.1) 0%, transparent 70%);
-            pointer-events: none;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .quiz-title {
-            font-size: 3rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -90,40 +69,14 @@
         }
 
         .quiz-subtitle {
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: var(--text-secondary);
-            margin-bottom: 20px;
             font-weight: 400;
-        }
-
-        .quiz-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 25px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         .progress-container {
             background: var(--bg-tertiary);
-            padding: 15px 30px;
+            padding: 12px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -132,7 +85,7 @@
 
         .progress-bar {
             flex-grow: 1;
-            height: 8px;
+            height: 6px;
             background: var(--border-color);
             border-radius: 10px;
             margin: 0 20px;
@@ -147,18 +100,18 @@
         }
 
         .question-card {
-            padding: 40px;
+            padding: 30px;
         }
 
         .question-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .difficulty-badge {
-            padding: 8px 16px;
+            padding: 6px 16px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
@@ -183,11 +136,11 @@
         }
 
         .question-text {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 600;
             color: var(--text-primary);
             line-height: 1.5;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             padding: 20px;
             background: var(--bg-tertiary);
             border-radius: 12px;
@@ -196,16 +149,16 @@
 
         .options-grid {
             display: grid;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
         .option-btn {
-            padding: 20px;
+            padding: 18px;
             border: 2px solid var(--border-color);
             border-radius: 12px;
             background: var(--bg-tertiary);
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -226,7 +179,7 @@
 
         .explanation-box {
             background: var(--bg-tertiary);
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
             border-left: 4px solid var(--accent-primary);
             margin-top: 20px;
@@ -246,19 +199,20 @@
 
         .action-buttons {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .btn {
-            padding: 15px 30px;
+            padding: 14px 25px;
             border: none;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
+            flex: 1;
         }
 
         .btn-primary {
@@ -284,13 +238,13 @@
         }
 
         .results-screen {
-            padding: 50px;
+            padding: 40px 30px;
             text-align: center;
             display: none;
         }
 
         .score-display {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 700;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             -webkit-background-clip: text;
@@ -299,9 +253,9 @@
         }
 
         .encouragement {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: var(--text-primary);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .error-message {
@@ -335,22 +289,42 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Responsive Design */
+        /* Mobile-first Responsive Design */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .quiz-container {
+                border-radius: 16px;
+            }
+            
+            .quiz-header {
+                padding: 20px 20px 12px 20px;
+            }
+            
             .quiz-title {
-                font-size: 2.2rem;
+                font-size: 1.8rem;
             }
             
             .quiz-subtitle {
-                font-size: 1rem;
+                font-size: 0.9rem;
             }
             
-            .quiz-stats {
-                gap: 20px;
+            .progress-container {
+                padding: 10px 20px;
+                flex-direction: column;
+                gap: 8px;
             }
             
-            .stat-value {
-                font-size: 1.3rem;
+            .progress-bar {
+                width: 100%;
+                margin: 5px 0;
+                order: 2;
+            }
+            
+            #question-count, #score {
+                font-size: 0.9rem;
             }
             
             .question-card {
@@ -358,21 +332,24 @@
             }
             
             .question-text {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 padding: 15px;
+                margin-bottom: 20px;
             }
             
             .option-btn {
                 padding: 15px;
-                font-size: 1rem;
+                font-size: 0.95rem;
             }
             
             .action-buttons {
                 flex-direction: column;
+                gap: 10px;
             }
             
             .btn {
                 width: 100%;
+                padding: 12px 20px;
             }
             
             .results-screen {
@@ -380,45 +357,43 @@
             }
             
             .score-display {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
             
             .encouragement {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
             .quiz-header {
-                padding: 30px 20px;
+                padding: 15px 15px 10px 15px;
             }
             
             .quiz-title {
-                font-size: 1.8rem;
+                font-size: 1.5rem;
             }
             
-            .quiz-stats {
-                flex-direction: column;
-                gap: 15px;
+            .quiz-subtitle {
+                font-size: 0.85rem;
             }
             
-            .progress-container {
-                padding: 12px 20px;
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .progress-bar {
-                width: 100%;
-                margin: 5px 0;
+            .question-card {
+                padding: 15px;
             }
             
             .question-text {
-                font-size: 1.1rem;
+                font-size: 1rem;
+                padding: 12px;
+            }
+            
+            .options-grid {
+                gap: 8px;
+            }
+            
+            .option-btn {
+                padding: 12px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -427,21 +402,7 @@
     <div class="quiz-container">
         <div class="quiz-header">
             <h1 class="quiz-title">Lexicon Quest</h1>
-            <p class="quiz-subtitle">Embark on a journey through words and wisdom</p>
-            <div class="quiz-stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="total-questions">0</div>
-                    <div class="stat-label">Questions</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="total-time">∞</div>
-                    <div class="stat-label">Time</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="total-xp">0</div>
-                    <div class="stat-label">XP</div>
-                </div>
-            </div>
+            <p class="quiz-subtitle">Test your vocabulary mastery</p>
         </div>
 
         <div class="progress-container">
@@ -481,10 +442,10 @@
         </div>
 
         <div class="results-screen" id="results-screen">
-            <h2>Quest Complete! 🎉</h2>
+            <h2>Quiz Complete! 🎉</h2>
             <div class="score-display" id="final-score">0/3</div>
             <div class="encouragement" id="encouragement-message">Keep practicing!</div>
-            <button class="btn btn-primary" onclick="restartQuiz()">Embark Again</button>
+            <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
         </div>
     </div>
 
@@ -497,8 +458,6 @@
         let score = 0;
         let questions = [];
         let selectedAnswer = null;
-        let startTime = null;
-        let totalXP = 0;
 
         // Initialize quiz
         async function initQuiz() {
@@ -526,11 +485,6 @@
                     return;
                 }
 
-                // Update header stats
-                document.getElementById('total-questions').textContent = questions.length;
-                document.getElementById('total-xp').textContent = questions.length * 10;
-                startTime = new Date();
-
                 // Hide loading, show quiz content
                 document.getElementById('loading-message').style.display = 'none';
                 document.getElementById('quiz-content').style.display = 'block';
@@ -539,16 +493,6 @@
             } catch (error) {
                 console.error('Error fetching questions:', error);
                 showError(`Failed to load questions: ${error.message}. Please check your Supabase configuration and RLS policies.`);
-            }
-        }
-
-        function updateTimer() {
-            if (startTime) {
-                const now = new Date();
-                const diff = Math.floor((now - startTime) / 1000);
-                const minutes = Math.floor(diff / 60);
-                const seconds = diff % 60;
-                document.getElementById('total-time').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }
         }
 
@@ -614,8 +558,6 @@
             
             if (isCorrect) {
                 score++;
-                totalXP += 10;
-                document.getElementById('total-xp').textContent = totalXP;
             }
 
             // Show explanation
@@ -659,9 +601,9 @@
             // Encouragement message
             const percentage = (score / questions.length) * 100;
             let message = '';
-            if (percentage >= 80) message = 'Legendary! Your vocabulary knowledge is extraordinary! 🏆';
-            else if (percentage >= 60) message = 'Excellent work! You\'re mastering the lexicon! ⭐';
-            else message = 'The journey continues! Every word learned is a victory! 📚';
+            if (percentage >= 80) message = 'Outstanding! You\'re a vocabulary master! 🎯';
+            else if (percentage >= 60) message = 'Great job! You\'re getting there! 💪';
+            else message = 'Keep practicing! You\'ll improve! 📚';
             
             document.getElementById('encouragement-message').textContent = message;
         }
@@ -669,22 +611,16 @@
         function restartQuiz() {
             currentQuestion = 0;
             score = 0;
-            totalXP = 0;
-            startTime = new Date();
             document.getElementById('results-screen').style.display = 'none';
             document.getElementById('question-card').style.display = 'block';
             document.getElementById('loading-message').style.display = 'block';
             document.getElementById('quiz-content').style.display = 'none';
             document.getElementById('error-message').style.display = 'none';
-            document.getElementById('total-xp').textContent = '0';
             initQuiz();
         }
 
         // Start the quiz when page loads
-        window.onload = function() {
-            initQuiz();
-            setInterval(updateTimer, 1000);
-        };
+        window.onload = initQuiz;
     </script>
 </body>
 </html>
