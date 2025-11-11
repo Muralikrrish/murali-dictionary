@@ -462,9 +462,9 @@
                     return;
                 }
 
-                // Select 10 random questions
-                questions = getRandomQuestions(allQuestions, TOTAL_QUESTIONS);
-                console.log('Selected 10 random questions:', questions);
+                // Select 10 random questions with unique words
+                questions = getRandomQuestionsWithUniqueWords(allQuestions, TOTAL_QUESTIONS);
+                console.log('Selected 10 random questions with unique words:', questions);
 
                 // Hide loading, show quiz content
                 document.getElementById('loading-message').style.display = 'none';
@@ -477,11 +477,38 @@
             }
         }
 
-        // Function to get random questions
-        function getRandomQuestions(allQuestions, count) {
-            // Create a copy of the array to avoid modifying the original
-            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, count);
+        // Function to get random questions with unique words
+        function getRandomQuestionsWithUniqueWords(allQuestions, count) {
+            // Group questions by word
+            const questionsByWord = {};
+            
+            allQuestions.forEach(question => {
+                if (!questionsByWord[question.word]) {
+                    questionsByWord[question.word] = [];
+                }
+                questionsByWord[question.word].push(question);
+            });
+            
+            // Get unique words
+            const uniqueWords = Object.keys(questionsByWord);
+            
+            // If we don't have enough unique words, we can't create the quiz
+            if (uniqueWords.length < count) {
+                throw new Error(`Not enough unique words in the database. Need ${count} but only found ${uniqueWords.length}.`);
+            }
+            
+            // Shuffle unique words and select the required count
+            const shuffledWords = [...uniqueWords].sort(() => 0.5 - Math.random());
+            const selectedWords = shuffledWords.slice(0, count);
+            
+            // For each selected word, pick a random question from its available questions
+            const selectedQuestions = selectedWords.map(word => {
+                const wordQuestions = questionsByWord[word];
+                const randomIndex = Math.floor(Math.random() * wordQuestions.length);
+                return wordQuestions[randomIndex];
+            });
+            
+            return selectedQuestions;
         }
 
         function showError(message) {
