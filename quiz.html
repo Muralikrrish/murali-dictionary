@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Word Mastery Quiz - Murali Dictionary</title>
+    <title>Lexicon Quest - Murali Dictionary</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         /* CSS Variables for consistent theming */
@@ -47,24 +47,78 @@
             border: 1px solid var(--border-color);
         }
 
+        /* Modern Header Redesign */
         .quiz-header {
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            color: var(--bg-primary);
-            padding: 30px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: var(--text-primary);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .quiz-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -10%;
+            right: -10%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(200, 121, 65, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .quiz-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .quiz-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .quiz-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 25px;
+        }
+
+        .stat-item {
             text-align: center;
         }
 
-        .quiz-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .stat-value {
+            font-size: 1.5rem;
             font-weight: 700;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            color: var(--accent-primary);
+            margin-bottom: 4px;
         }
 
-        .quiz-header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-            color: var(--bg-primary);
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .progress-container {
@@ -104,16 +158,29 @@
         }
 
         .difficulty-badge {
-            padding: 6px 16px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
+            border: 1px solid;
         }
 
-        .badge-easy { background: #1f3a1f; color: #7bc87f; }
-        .badge-medium { background: #3a2a1f; color: #f39c12; }
-        .badge-hard { background: #3a1f1f; color: #d9534f; }
+        .badge-easy { 
+            background: rgba(123, 200, 127, 0.1); 
+            color: #7bc87f; 
+            border-color: rgba(123, 200, 127, 0.3);
+        }
+        .badge-medium { 
+            background: rgba(243, 156, 18, 0.1); 
+            color: #f39c12; 
+            border-color: rgba(243, 156, 18, 0.3);
+        }
+        .badge-hard { 
+            background: rgba(217, 83, 79, 0.1); 
+            color: #d9534f; 
+            border-color: rgba(217, 83, 79, 0.3);
+        }
 
         .question-text {
             font-size: 1.4rem;
@@ -121,6 +188,10 @@
             color: var(--text-primary);
             line-height: 1.5;
             margin-bottom: 30px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-primary);
         }
 
         .options-grid {
@@ -266,12 +337,20 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .quiz-header h1 {
-                font-size: 2rem;
+            .quiz-title {
+                font-size: 2.2rem;
             }
             
-            .quiz-header p {
+            .quiz-subtitle {
                 font-size: 1rem;
+            }
+            
+            .quiz-stats {
+                gap: 20px;
+            }
+            
+            .stat-value {
+                font-size: 1.3rem;
             }
             
             .question-card {
@@ -280,6 +359,7 @@
             
             .question-text {
                 font-size: 1.2rem;
+                padding: 15px;
             }
             
             .option-btn {
@@ -314,11 +394,16 @@
             }
             
             .quiz-header {
-                padding: 20px;
+                padding: 30px 20px;
             }
             
-            .quiz-header h1 {
+            .quiz-title {
                 font-size: 1.8rem;
+            }
+            
+            .quiz-stats {
+                flex-direction: column;
+                gap: 15px;
             }
             
             .progress-container {
@@ -341,8 +426,22 @@
 <body>
     <div class="quiz-container">
         <div class="quiz-header">
-            <h1>Word Mastery Quiz</h1>
-            <p>Test your vocabulary knowledge with challenging questions</p>
+            <h1 class="quiz-title">Lexicon Quest</h1>
+            <p class="quiz-subtitle">Embark on a journey through words and wisdom</p>
+            <div class="quiz-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-questions">0</div>
+                    <div class="stat-label">Questions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-time">∞</div>
+                    <div class="stat-label">Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="total-xp">0</div>
+                    <div class="stat-label">XP</div>
+                </div>
+            </div>
         </div>
 
         <div class="progress-container">
@@ -382,10 +481,10 @@
         </div>
 
         <div class="results-screen" id="results-screen">
-            <h2>Quiz Complete! 🎉</h2>
+            <h2>Quest Complete! 🎉</h2>
             <div class="score-display" id="final-score">0/3</div>
             <div class="encouragement" id="encouragement-message">Keep practicing!</div>
-            <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
+            <button class="btn btn-primary" onclick="restartQuiz()">Embark Again</button>
         </div>
     </div>
 
@@ -398,6 +497,8 @@
         let score = 0;
         let questions = [];
         let selectedAnswer = null;
+        let startTime = null;
+        let totalXP = 0;
 
         // Initialize quiz
         async function initQuiz() {
@@ -425,6 +526,11 @@
                     return;
                 }
 
+                // Update header stats
+                document.getElementById('total-questions').textContent = questions.length;
+                document.getElementById('total-xp').textContent = questions.length * 10;
+                startTime = new Date();
+
                 // Hide loading, show quiz content
                 document.getElementById('loading-message').style.display = 'none';
                 document.getElementById('quiz-content').style.display = 'block';
@@ -433,6 +539,16 @@
             } catch (error) {
                 console.error('Error fetching questions:', error);
                 showError(`Failed to load questions: ${error.message}. Please check your Supabase configuration and RLS policies.`);
+            }
+        }
+
+        function updateTimer() {
+            if (startTime) {
+                const now = new Date();
+                const diff = Math.floor((now - startTime) / 1000);
+                const minutes = Math.floor(diff / 60);
+                const seconds = diff % 60;
+                document.getElementById('total-time').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }
         }
 
@@ -498,6 +614,8 @@
             
             if (isCorrect) {
                 score++;
+                totalXP += 10;
+                document.getElementById('total-xp').textContent = totalXP;
             }
 
             // Show explanation
@@ -512,12 +630,12 @@
 
             // Highlight correct answer
             const buttons = document.querySelectorAll('.option-btn');
-            buttons[question.correct_answer].style.background = '#1f3a1f';
+            buttons[question.correct_answer].style.background = 'rgba(123, 200, 127, 0.1)';
             buttons[question.correct_answer].style.borderColor = '#7bc87f';
             buttons[question.correct_answer].style.color = '#7bc87f';
             
             if (!isCorrect) {
-                buttons[selectedAnswer].style.background = '#3a1f1f';
+                buttons[selectedAnswer].style.background = 'rgba(217, 83, 79, 0.1)';
                 buttons[selectedAnswer].style.borderColor = '#d9534f';
                 buttons[selectedAnswer].style.color = '#d9534f';
             }
@@ -541,9 +659,9 @@
             // Encouragement message
             const percentage = (score / questions.length) * 100;
             let message = '';
-            if (percentage >= 80) message = 'Outstanding! You\'re a vocabulary master! 🎯';
-            else if (percentage >= 60) message = 'Great job! You\'re getting there! 💪';
-            else message = 'Keep practicing! You\'ll improve! 📚';
+            if (percentage >= 80) message = 'Legendary! Your vocabulary knowledge is extraordinary! 🏆';
+            else if (percentage >= 60) message = 'Excellent work! You\'re mastering the lexicon! ⭐';
+            else message = 'The journey continues! Every word learned is a victory! 📚';
             
             document.getElementById('encouragement-message').textContent = message;
         }
@@ -551,16 +669,22 @@
         function restartQuiz() {
             currentQuestion = 0;
             score = 0;
+            totalXP = 0;
+            startTime = new Date();
             document.getElementById('results-screen').style.display = 'none';
             document.getElementById('question-card').style.display = 'block';
             document.getElementById('loading-message').style.display = 'block';
             document.getElementById('quiz-content').style.display = 'none';
             document.getElementById('error-message').style.display = 'none';
+            document.getElementById('total-xp').textContent = '0';
             initQuiz();
         }
 
         // Start the quiz when page loads
-        window.onload = initQuiz;
+        window.onload = function() {
+            initQuiz();
+            setInterval(updateTimer, 1000);
+        };
     </script>
 </body>
 </html>
