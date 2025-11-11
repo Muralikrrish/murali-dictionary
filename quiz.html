@@ -488,9 +488,9 @@
             document.getElementById('difficulty-badge').textContent = question.difficulty;
             document.getElementById('difficulty-badge').className = `difficulty-badge badge-${question.difficulty.toLowerCase()}`;
             
-            // Update progress
+            // Update progress - FIXED: Use currentQuestion + 1 to include current question
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${questions.length}`;
-            document.getElementById('progress-fill').style.width = `${((currentQuestion) / questions.length) * 100}%`;
+            document.getElementById('progress-fill').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
 
             // Create options
             const optionsGrid = document.getElementById('options-grid');
@@ -569,6 +569,8 @@
         }
 
         function showResults() {
+            // Set progress bar to 100% when showing results
+            document.getElementById('progress-fill').style.width = '100%';
             document.getElementById('question-card').style.display = 'none';
             document.getElementById('results-screen').style.display = 'block';
             document.getElementById('final-score').textContent = `${score}/${questions.length}`;
