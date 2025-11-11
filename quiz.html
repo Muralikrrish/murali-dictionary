@@ -436,6 +436,16 @@
         let questionsAnswered = 0;
         const TOTAL_QUESTIONS = 10;
 
+        // Fisher-Yates shuffle algorithm for randomizing arrays
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
         // Initialize quiz
         async function initQuiz() {
             try {
@@ -462,9 +472,9 @@
                     return;
                 }
 
-                // Select 10 random questions with unique words
-                questions = getRandomQuestionsWithUniqueWords(allQuestions, TOTAL_QUESTIONS);
-                console.log('Selected 10 random questions with unique words:', questions);
+                // Select 10 random questions
+                questions = getRandomQuestions(allQuestions, TOTAL_QUESTIONS);
+                console.log('Selected 10 random questions:', questions);
 
                 // Hide loading, show quiz content
                 document.getElementById('loading-message').style.display = 'none';
@@ -477,38 +487,11 @@
             }
         }
 
-        // Function to get random questions with unique words
-        function getRandomQuestionsWithUniqueWords(allQuestions, count) {
-            // Group questions by word
-            const questionsByWord = {};
-            
-            allQuestions.forEach(question => {
-                if (!questionsByWord[question.word]) {
-                    questionsByWord[question.word] = [];
-                }
-                questionsByWord[question.word].push(question);
-            });
-            
-            // Get unique words
-            const uniqueWords = Object.keys(questionsByWord);
-            
-            // If we don't have enough unique words, we can't create the quiz
-            if (uniqueWords.length < count) {
-                throw new Error(`Not enough unique words in the database. Need ${count} but only found ${uniqueWords.length}.`);
-            }
-            
-            // Shuffle unique words and select the required count
-            const shuffledWords = [...uniqueWords].sort(() => 0.5 - Math.random());
-            const selectedWords = shuffledWords.slice(0, count);
-            
-            // For each selected word, pick a random question from its available questions
-            const selectedQuestions = selectedWords.map(word => {
-                const wordQuestions = questionsByWord[word];
-                const randomIndex = Math.floor(Math.random() * wordQuestions.length);
-                return wordQuestions[randomIndex];
-            });
-            
-            return selectedQuestions;
+        // Function to get random questions
+        function getRandomQuestions(allQuestions, count) {
+            // Create a copy of the array to avoid modifying the original
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
         }
 
         function showError(message) {
@@ -532,14 +515,28 @@
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
             document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
-            // Create options
+            // Create options with randomization
             const optionsGrid = document.getElementById('options-grid');
             optionsGrid.innerHTML = '';
             
             // Make sure options is an array
             const optionsArray = Array.isArray(question.options) ? question.options : JSON.parse(question.options || '[]');
             
-            optionsArray.forEach((option, index) => {
+            // Store the original correct answer before shuffling
+            const originalCorrectAnswer = optionsArray[question.correct_answer];
+            
+            // Shuffle the options array
+            const shuffledOptions = shuffleArray(optionsArray);
+            
+            // Find the new position of the correct answer after shuffling
+            const newCorrectAnswerIndex = shuffledOptions.indexOf(originalCorrectAnswer);
+            
+            // Update the question object with shuffled options and new correct answer index
+            question.shuffledOptions = shuffledOptions;
+            question.currentCorrectAnswer = newCorrectAnswerIndex;
+            
+            // Create the option buttons
+            shuffledOptions.forEach((option, index) => {
                 const button = document.createElement('button');
                 button.className = 'option-btn';
                 button.textContent = option;
@@ -572,7 +569,8 @@
             if (selectedAnswer === null) return;
 
             const question = questions[currentQuestion];
-            const isCorrect = selectedAnswer === question.correct_answer;
+            // Use the current correct answer index (after shuffling)
+            const isCorrect = selectedAnswer === question.currentCorrectAnswer;
             
             if (isCorrect) {
                 score++;
@@ -592,8 +590,8 @@
             // Highlight correct and incorrect answers
             const buttons = document.querySelectorAll('.option-btn');
             
-            // Highlight correct answer
-            buttons[question.correct_answer].classList.add('correct');
+            // Highlight correct answer (using current correct answer index)
+            buttons[question.currentCorrectAnswer].classList.add('correct');
             
             // If wrong answer, also highlight the incorrect choice
             if (!isCorrect) {
