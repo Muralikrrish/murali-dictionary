@@ -64,203 +64,7 @@
             }
         }
         
-        /* Quiz Preview Styles */
-        .quiz-preview-card {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #2a2a2a 100%);
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 24px;
-            animation: fadeIn 0.6s ease;
-        }
-
-        .quiz-preview-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-        }
-
-        .quiz-preview-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .quiz-icon {
-            font-size: 32px;
-            margin-right: 15px;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .quiz-preview-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .quiz-preview-description {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .quiz-preview-stats {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .quiz-stat {
-            text-align: center;
-            flex: 1;
-        }
-
-        .quiz-stat-number {
-            display: block;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent-primary);
-        }
-
-        .quiz-stat-label {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .quiz-preview-content {
-            background: var(--bg-tertiary);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--accent-primary);
-        }
-
-        .quiz-preview-question {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--text-primary);
-        }
-
-        .quiz-preview-options {
-            display: grid;
-            gap: 10px;
-        }
-
-        .quiz-option {
-            padding: 12px 15px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-secondary);
-            font-size: 15px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-primary);
-        }
-
-        .quiz-option:hover {
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(200, 121, 65, 0.2);
-        }
-
-        .quiz-option.selected {
-            border-color: var(--accent-primary);
-            background: var(--accent-primary);
-            color: var(--bg-primary);
-        }
-
-        .quiz-option.correct {
-            background: rgba(123, 200, 127, 0.1);
-            border-color: var(--success-color);
-            color: var(--success-color);
-        }
-
-        .quiz-option.incorrect {
-            background: rgba(217, 83, 79, 0.1);
-            border-color: var(--error-color);
-            color: var(--error-color);
-        }
-
-        .quiz-feedback {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .quiz-feedback.correct {
-            background: rgba(123, 200, 127, 0.1);
-            border: 1px solid rgba(123, 200, 127, 0.3);
-            color: var(--success-color);
-        }
-
-        .quiz-feedback.incorrect {
-            background: rgba(217, 83, 79, 0.1);
-            border: 1px solid rgba(217, 83, 79, 0.3);
-            color: var(--error-color);
-        }
-
-        .quiz-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .btn-quiz {
-            padding: 14px 25px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-quiz-primary {
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            color: var(--bg-primary);
-            box-shadow: 0 4px 12px rgba(200, 121, 65, 0.3);
-        }
-
-        .btn-quiz-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(200, 121, 65, 0.4);
-        }
-
-        .btn-quiz-secondary {
-            background: var(--bg-secondary);
-            color: var(--accent-primary);
-            border: 2px solid var(--accent-primary);
-        }
-
-        .btn-quiz-secondary:hover {
-            background: var(--bg-tertiary);
-        }
-
-        .quiz-preview-footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        /* Rest of your existing CSS remains the same */
+        /* Skeleton Loading Styles */
         .skeleton-loading {
             background: var(--bg-secondary);
             border-radius: 8px;
@@ -434,8 +238,167 @@
         .quick-add-btn:hover{background:var(--accent-secondary)}
         .quick-add-refresh{background:var(--bg-secondary);color:var(--accent-primary);border:2px solid var(--accent-primary)}
         .quick-add-refresh:hover{background:var(--bg-tertiary)}
-        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;width:20px;height:20px}.autocomplete-dropdown{left:20px;max-width:calc(100% - 70px)}.autocomplete-item{padding:14px 18px}.autocomplete-item:hover{padding-left:22px}.autocomplete-item.selected{padding-left:19px}.autocomplete-word{font-size:15px}.admin-toggle{bottom:15px;right:15px;width:45px;height:45px;font-size:20px}.password-box{padding:30px 20px}.quick-add-item{padding:10px 12px}.quick-add-word{font-size:14px;min-width:100px}.quick-add-remove{padding:5px 10px;font-size:11px}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:250px;padding:8px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:12px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:15px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:13px}.form-group label{font-size:13px}.form-group input{padding:10px;font-size:14px}.utility-buttons{display:flex;flex-direction:column;gap:10px}.btn-secondary{margin-top:0}.info-box,.success-box{padding:15px;font-size:13px}}
-        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;width:18px;height:18px}.autocomplete-dropdown{left:18px;max-width:calc(100% - 63px)}.autocomplete-item{padding:12px 16px}.autocomplete-word{font-size:14px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.btn{padding:12px 20px;font-size:15px}.form-group input{padding:10px;font-size:14px}.form-group label{font-size:12px}.editor-toolbar{padding:6px;gap:2px;flex-wrap:wrap}.editor-btn,.font-size-dropdown{padding:5px 8px;font-size:12px}.editor-content{min-height:300px;font-size:15px;padding:10px}.admin-toggle{bottom:12px;right:12px;width:40px;height:40px;font-size:18px}.quick-add-item{padding:8px 10px;flex-direction:column;align-items:flex-start}.quick-add-word{font-size:13px;width:100%;margin-bottom:8px}.quick-add-remove{padding:5px 10px;font-size:11px;width:100%}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:200px;padding:6px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:10px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:14px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:12px}.utility-buttons{display:flex;flex-direction:column;gap:8px}.btn-secondary{margin-top:0;padding:12px 20px;font-size:14px}.info-box,.success-box{padding:12px;font-size:12px}.password-box{padding:25px 15px;max-width:95%}.password-box h3{font-size:18px}.password-box input,.password-box button{padding:10px;font-size:14px}}
+
+        /* Quiz Preview Styles */
+        .quiz-preview-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .quiz-preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-preview-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .quiz-preview-stats {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .quiz-option {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--accent-primary);
+            background: rgba(200, 121, 65, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success-color);
+            background: rgba(123, 200, 127, 0.1);
+            color: var(--success-color);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error-color);
+            background: rgba(217, 83, 79, 0.1);
+            color: var(--error-color);
+        }
+
+        .quiz-explanation {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-primary);
+            margin-top: 15px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .quiz-explanation.show {
+            display: block;
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .quiz-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-primary-btn {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: var(--bg-primary);
+        }
+
+        .quiz-primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(200, 121, 65, 0.3);
+        }
+
+        .quiz-secondary-btn {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--accent-primary);
+        }
+
+        .quiz-secondary-btn:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .quiz-result {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .quiz-result.correct {
+            background: rgba(123, 200, 127, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .quiz-result.incorrect {
+            background: rgba(217, 83, 79, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        .quiz-loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .quiz-loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        .quiz-error {
+            background: #3a1f1f;
+            color: var(--error-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            border-left: 4px solid var(--error-color);
+        }
+
+        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;width:20px;height:20px}.autocomplete-dropdown{left:20px;max-width:calc(100% - 70px)}.autocomplete-item{padding:14px 18px}.autocomplete-item:hover{padding-left:22px}.autocomplete-item.selected{padding-left:19px}.autocomplete-word{font-size:15px}.admin-toggle{bottom:15px;right:15px;width:45px;height:45px;font-size:20px}.password-box{padding:30px 20px}.quick-add-item{padding:10px 12px}.quick-add-word{font-size:14px;min-width:100px}.quick-add-remove{padding:5px 10px;font-size:11px}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:250px;padding:8px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:12px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:15px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:13px}.form-group label{font-size:13px}.form-group input{padding:10px;font-size:14px}.utility-buttons{display:flex;flex-direction:column;gap:10px}.btn-secondary{margin-top:0}.info-box,.success-box{padding:15px;font-size:13px}.quiz-preview-card{padding:20px}.quiz-actions{flex-direction:column}.quiz-btn{width:100%}}
+        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;width:18px;height:18px}.autocomplete-dropdown{left:18px;max-width:calc(100% - 63px)}.autocomplete-item{padding:12px 16px}.autocomplete-word{font-size:14px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.btn{padding:12px 20px;font-size:15px}.form-group input{padding:10px;font-size:14px}.form-group label{font-size:12px}.editor-toolbar{padding:6px;gap:2px;flex-wrap:wrap}.editor-btn,.font-size-dropdown{padding:5px 8px;font-size:12px}.editor-content{min-height:300px;font-size:15px;padding:10px}.admin-toggle{bottom:12px;right:12px;width:40px;height:40px;font-size:18px}.quick-add-item{padding:8px 10px;flex-direction:column;align-items:flex-start}.quick-add-word{font-size:13px;width:100%;margin-bottom:8px}.quick-add-remove{padding:5px 10px;font-size:11px;width:100%}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:200px;padding:6px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:10px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:14px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:12px}.utility-buttons{display:flex;flex-direction:column;gap:8px}.btn-secondary{margin-top:0;padding:12px 20px;font-size:14px}.info-box,.success-box{padding:12px;font-size:12px}.password-box{padding:25px 15px;max-width:95%}.password-box h3{font-size:18px}.password-box input,.password-box button{padding:10px;font-size:14px}.quiz-preview-card{padding:15px}.quiz-preview-header{flex-direction:column;align-items:flex-start;gap:10px}}
     </style>
 </head>
 <body>
@@ -457,64 +420,51 @@
     </div>
     <div class="container">
         <div class="main-content" id="mainContent">
-            <!-- Interactive Quiz Preview Section -->
-            <div class="quiz-preview-card" id="quizPreviewCard">
-                <div class="quiz-preview-header">
-                    <div class="quiz-icon">🧠</div>
-                    <h2 class="quiz-preview-title">Vocabulary Challenge</h2>
-                </div>
-                <p class="quiz-preview-description">Test your knowledge with our interactive quiz. Answer this sample question to get started!</p>
-                
-                <div class="quiz-preview-stats">
-                    <div class="quiz-stat">
-                        <span class="quiz-stat-number" id="quizQuestionsCount">900+</span>
-                        <span class="quiz-stat-label">Questions</span>
-                    </div>
-                    <div class="quiz-stat">
-                        <span class="quiz-stat-number" id="quizDifficultyLevel">3</span>
-                        <span class="quiz-stat-label">Levels</span>
-                    </div>
-                </div>
-                
-                <div class="quiz-preview-content" id="quizPreviewContent">
-                    <div class="quiz-preview-question" id="quizPreviewQuestion">What is the meaning of 'ephemeral'?</div>
-                    <div class="quiz-preview-options" id="quizPreviewOptions">
-                        <button class="quiz-option" onclick="selectQuizOption(0, 0)">Lasting for a very short time</button>
-                        <button class="quiz-option" onclick="selectQuizOption(1, 0)">Extremely large in size</button>
-                        <button class="quiz-option" onclick="selectQuizOption(2, 0)">Difficult to understand</button>
-                        <button class="quiz-option" onclick="selectQuizOption(3, 0)">Full of energy and enthusiasm</button>
-                    </div>
-                    <div class="quiz-feedback" id="quizFeedback"></div>
-                </div>
-                
-                <div class="quiz-actions" id="quizActions">
-                    <button class="btn-quiz btn-quiz-primary" id="continueToQuizBtn" onclick="continueToFullQuiz()" style="display: none;">Continue to Full Quiz</button>
-                    <button class="btn-quiz btn-quiz-secondary" id="tryAnotherBtn" onclick="tryAnotherQuestion()" style="display: none;">Try Another Question</button>
-                </div>
-                
-                <div class="quiz-preview-footer">
-                    Challenge yourself with adaptive questions that adjust to your skill level
-                </div>
-            </div>
-            
             <div class="words-column" id="searchResultsColumn" style="display:none">
                 <h2 class="section-title">Search Results</h2>
                 <div id="wordsList"></div>
             </div>
             <div class="words-column" id="wordOfTheDaySection">
                 <h2 class="section-title">Word of the Day</h2>
-                <div id="randomWordDisplay">
-                    <div class="word-entry">
-                        <div class="word-title" id="wordOfTheDayTitle">Ephemeral</div>
-                        <div class="word-definition" id="wordOfTheDayDefinition">
-                            <p>Lasting for a very short time; transient.</p>
-                            <p><strong>Example:</strong> "The ephemeral beauty of cherry blossoms makes them particularly special."</p>
-                            <p><strong>Synonyms:</strong> transient, fleeting, momentary, short-lived</p>
+                <div id="randomWordDisplay"></div>
+                <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
+            </div>
+            
+            <!-- Quiz Preview Section -->
+            <div class="words-column" id="quizPreviewSection">
+                <h2 class="section-title">Quick Quiz Challenge</h2>
+                <div id="quizPreviewContent">
+                    <div class="quiz-loading" id="quizLoadingMessage">
+                        <div class="quiz-loading-spinner"></div>
+                        Loading quiz question...
+                    </div>
+                    <div class="quiz-error" id="quizErrorMessage" style="display: none;"></div>
+                    
+                    <div id="quizQuestion" style="display: none;">
+                        <div class="quiz-preview-card">
+                            <div class="quiz-preview-header">
+                                <div class="quiz-preview-title">Test Your Vocabulary</div>
+                                <div class="quiz-preview-stats" id="quizStats">1 question</div>
+                            </div>
+                            <div class="question-text" id="quizQuestionText">
+                                Loading question...
+                            </div>
+                            <div class="options-grid" id="quizOptionsGrid">
+                                <!-- Quiz options will be inserted here -->
+                            </div>
+                            <div class="quiz-result" id="quizResult"></div>
+                            <div class="quiz-explanation" id="quizExplanation">
+                                <strong>Explanation:</strong> <span id="quizExplanationText"></span>
+                            </div>
+                            <div class="quiz-actions">
+                                <button class="quiz-btn quiz-primary-btn" onclick="checkQuizAnswer()" id="quizSubmitBtn">Submit Answer</button>
+                                <button class="quiz-btn quiz-secondary-btn" onclick="continueToFullQuiz()" id="quizContinueBtn" style="display: none;">Continue to Full Quiz</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
             </div>
+            
             <div class="sidebar admin-mode" id="sidebar">
                 <h2 class="section-title">Add New Word</h2>
                 <form id="addWordForm">
@@ -585,124 +535,6 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-// Quiz Preview Functionality
-let quizPreviewAnswered = false;
-let quizPreviewCorrect = false;
-let currentPreviewQuestion = null;
-
-// Function to select a quiz option
-function selectQuizOption(selectedIndex, correctIndex) {
-    if (quizPreviewAnswered) return;
-    
-    quizPreviewAnswered = true;
-    quizPreviewCorrect = (selectedIndex === correctIndex);
-    
-    const options = document.querySelectorAll('.quiz-option');
-    const feedbackElement = document.getElementById('quizFeedback');
-    
-    // Highlight selected option
-    options[selectedIndex].classList.add('selected');
-    
-    // Highlight correct answer
-    options[correctIndex].classList.add('correct');
-    
-    // If wrong, highlight incorrect selection
-    if (selectedIndex !== correctIndex) {
-        options[selectedIndex].classList.add('incorrect');
-    }
-    
-    // Show feedback
-    feedbackElement.textContent = quizPreviewCorrect 
-        ? "Correct! You're ready for a challenge." 
-        : "Good attempt! Practice makes perfect.";
-    feedbackElement.className = `quiz-feedback ${quizPreviewCorrect ? 'correct' : 'incorrect'}`;
-    feedbackElement.style.display = 'block';
-    
-    // Show action buttons
-    document.getElementById('continueToQuizBtn').style.display = 'block';
-    document.getElementById('tryAnotherBtn').style.display = 'block';
-    
-    // Disable all options
-    options.forEach(option => {
-        option.style.cursor = 'default';
-        option.onclick = null;
-    });
-}
-
-// Function to continue to full quiz
-function continueToFullQuiz() {
-    // Redirect to quiz.html with difficulty parameter based on preview performance
-    const difficulty = quizPreviewCorrect ? 'medium' : 'easy';
-    window.location.href = `quiz.html?difficulty=${difficulty}&source=preview`;
-}
-
-// Function to try another question
-function tryAnotherQuestion() {
-    // Reset the quiz preview
-    quizPreviewAnswered = false;
-    
-    const options = document.querySelectorAll('.quiz-option');
-    const feedbackElement = document.getElementById('quizFeedback');
-    
-    // Reset option styles and re-enable them
-    options.forEach(option => {
-        option.classList.remove('selected', 'correct', 'incorrect');
-        option.style.cursor = 'pointer';
-        // Re-attach click handlers
-        const index = Array.from(options).indexOf(option);
-        option.onclick = () => selectQuizOption(index, 0);
-    });
-    
-    // Hide feedback and buttons
-    feedbackElement.style.display = 'none';
-    document.getElementById('continueToQuizBtn').style.display = 'none';
-    document.getElementById('tryAnotherBtn').style.display = 'none';
-}
-
-// Function to show a new random word
-function showNewRandomWord() {
-    // For demo purposes, we'll cycle through a few sample words
-    const sampleWords = [
-        {
-            word: "Serendipity",
-            definition: `<p>The occurrence and development of events by chance in a happy or beneficial way.</p>
-                        <p><strong>Example:</strong> "Finding this book was a wonderful serendipity."</p>
-                        <p><strong>Synonyms:</strong> chance, fortune, luck, fluke</p>`
-        },
-        {
-            word: "Eloquent",
-            definition: `<p>Fluent or persuasive in speaking or writing.</p>
-                        <p><strong>Example:</strong> "Her eloquent speech moved the entire audience."</p>
-                        <p><strong>Synonyms:</strong> articulate, fluent, expressive, silver-tongued</p>`
-        },
-        {
-            word: "Resilient",
-            definition: `<p>Able to withstand or recover quickly from difficult conditions.</p>
-                        <p><strong>Example:</strong> "Children are often more resilient than adults."</p>
-                        <p><strong>Synonyms:</strong> tough, durable, strong, flexible</p>`
-        }
-    ];
-    
-    const randomIndex = Math.floor(Math.random() * sampleWords.length);
-    const randomWord = sampleWords[randomIndex];
-    
-    document.getElementById('wordOfTheDayTitle').textContent = randomWord.word;
-    document.getElementById('wordOfTheDayDefinition').innerHTML = randomWord.definition;
-}
-
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    // Show the initial word of the day
-    showNewRandomWord();
-    
-    // Set up quiz functionality
-    const options = document.querySelectorAll('.quiz-option');
-    options.forEach((option, index) => {
-        option.onclick = () => selectQuizOption(index, 0);
-    });
-});
-
-// The rest of your existing JavaScript code remains the same...
 const SafeStorage = {
     isAvailable: false,
     memoryStorage: {},
@@ -775,6 +607,12 @@ let supabaseInitialized = false;
 let editingWordId = null;
 let hasShownWordOfTheDay = false;
 
+// Quiz variables
+let quizQuestions = [];
+let currentQuizQuestion = null;
+let selectedQuizAnswer = null;
+let quizAnswered = false;
+
 // Search index for faster lookups
 let searchIndex = null;
 
@@ -806,6 +644,7 @@ async function initializeSupabase() {
         supabaseInitialized = true;
         
         await syncWithSupabase();
+        await loadQuizQuestions();
     } catch(error) {
         console.error('Supabase init error:', error);
         isSupabaseConfigured = false;
@@ -866,18 +705,782 @@ async function syncWithSupabase() {
     }
 }
 
-function displayWordOfTheDay(){
-    const rd=document.getElementById('randomWordDisplay');
+async function saveDictionary() {
+    buildSearchIndex();
+    SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
     
-    if(!dictionary || dictionary.length===0){
-        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+    if (isSupabaseConfigured && supabaseInitialized) {
+        try {
+            const dataToSave = dictionary.map(w => ({
+                id: w.id,
+                word: w.word,
+                definition: w.definition,
+                date_added: w.dateAdded,
+                date_modified: w.dateModified || new Date().toISOString()
+            }));
+            
+            const { error } = await supabaseClient
+                .from('dictionary')
+                .upsert(dataToSave, { onConflict: 'id' });
+            
+            if (error) throw error;
+        } catch(e) {
+            console.error('Save error:', e);
+        }
+    }
+}
+
+async function saveQuickAddList() {
+    SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+    
+    if (isSupabaseConfigured && supabaseInitialized) {
+        try {
+            await supabaseClient.from('quick_add_list').delete().neq('id', 0);
+            
+            if (quickAddList.length > 0) {
+                const dataToSave = quickAddList.map(word => ({ word }));
+                const { error } = await supabaseClient
+                    .from('quick_add_list')
+                    .insert(dataToSave);
+                
+                if (error) throw error;
+            }
+        } catch(e) {
+            console.error('Save quick list error:', e);
+        }
+    }
+}
+
+async function authenticateAdmin() {
+    if (!isSupabaseConfigured) return;
+    
+    try {
+        const { data, error } = await supabaseClient.auth.signInAnonymously();
+        if (error) throw error;
+        console.log('Admin authenticated');
+    } catch(e) {
+        console.error('Auth error:', e);
+    }
+}
+
+// Quiz Functions
+async function loadQuizQuestions() {
+    try {
+        console.log('Loading quiz questions...');
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_questions?select=*`, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        quizQuestions = await response.json();
+        console.log('Quiz questions loaded:', quizQuestions);
+
+        if (quizQuestions.length === 0) {
+            showQuizError('No quiz questions found in the database.');
+            return;
+        }
+
+        // Hide loading, show quiz content
+        document.getElementById('quizLoadingMessage').style.display = 'none';
+        document.getElementById('quizQuestion').style.display = 'block';
+        
+        displayQuizQuestion();
+    } catch (error) {
+        console.error('Error loading quiz questions:', error);
+        showQuizError(`Failed to load quiz: ${error.message}. Please check your Supabase configuration.`);
+    }
+}
+
+function showQuizError(message) {
+    document.getElementById('quizLoadingMessage').style.display = 'none';
+    document.getElementById('quizErrorMessage').style.display = 'block';
+    document.getElementById('quizErrorMessage').textContent = message;
+}
+
+function displayQuizQuestion() {
+    if (quizQuestions.length === 0) return;
+    
+    // Get a random question
+    const randomIndex = Math.floor(Math.random() * quizQuestions.length);
+    currentQuizQuestion = quizQuestions[randomIndex];
+    
+    document.getElementById('quizQuestionText').textContent = currentQuizQuestion.question_text;
+    document.getElementById('quizStats').textContent = `1 question`;
+    
+    // Create options
+    const optionsGrid = document.getElementById('quizOptionsGrid');
+    optionsGrid.innerHTML = '';
+    
+    // Make sure options is an array
+    const optionsArray = Array.isArray(currentQuizQuestion.options) ? 
+        currentQuizQuestion.options : 
+        JSON.parse(currentQuizQuestion.options || '[]');
+    
+    optionsArray.forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'quiz-option';
+        optionDiv.textContent = option;
+        optionDiv.onclick = () => selectQuizAnswer(index);
+        optionsGrid.appendChild(optionDiv);
+    });
+
+    // Reset UI state
+    document.getElementById('quizExplanation').classList.remove('show');
+    document.getElementById('quizResult').style.display = 'none';
+    document.getElementById('quizSubmitBtn').style.display = 'block';
+    document.getElementById('quizContinueBtn').style.display = 'none';
+    quizAnswered = false;
+    selectedQuizAnswer = null;
+}
+
+function selectQuizAnswer(index) {
+    if (quizAnswered) return;
+    
+    selectedQuizAnswer = index;
+    
+    const options = document.querySelectorAll('.quiz-option');
+    options.forEach(opt => opt.classList.remove('selected'));
+    options[index].classList.add('selected');
+}
+
+function checkQuizAnswer() {
+    if (selectedQuizAnswer === null) {
+        alert('Please select an answer first!');
         return;
     }
     
-    const wordOfDay = getWordOfTheDay();
-    if (wordOfDay) {
-        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
+    quizAnswered = true;
+    
+    const isCorrect = selectedQuizAnswer === currentQuizQuestion.correct_answer;
+    const resultDiv = document.getElementById('quizResult');
+    
+    if (isCorrect) {
+        resultDiv.textContent = 'Correct! 🎉';
+        resultDiv.className = 'quiz-result correct';
+    } else {
+        resultDiv.textContent = 'Incorrect! 😞';
+        resultDiv.className = 'quiz-result incorrect';
     }
+    
+    resultDiv.style.display = 'block';
+    
+    // Show explanation
+    document.getElementById('quizExplanationText').textContent = currentQuizQuestion.explanation;
+    document.getElementById('quizExplanation').classList.add('show');
+    
+    // Show continue button
+    document.getElementById('quizSubmitBtn').style.display = 'none';
+    document.getElementById('quizContinueBtn').style.display = 'block';
+    
+    // Highlight correct and incorrect answers
+    const options = document.querySelectorAll('.quiz-option');
+    
+    // Highlight correct answer
+    options[currentQuizQuestion.correct_answer].classList.add('correct');
+    
+    // If wrong answer, also highlight the incorrect choice
+    if (!isCorrect) {
+        options[selectedQuizAnswer].classList.add('incorrect');
+    }
+    
+    // Disable all options after selection
+    options.forEach(opt => {
+        opt.style.cursor = 'default';
+        opt.onclick = null;
+    });
+}
+
+function continueToFullQuiz() {
+    window.location.href = 'quiz.html';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const editor = document.getElementById('definitionInput');
+    if (editor) {
+        editor.addEventListener('keydown', handleMarkdownFormatting);
+        editor.addEventListener('paste', handlePaste);
+        editor.addEventListener('mouseup', updateFormatDropdown);
+        editor.addEventListener('keyup', updateFormatDropdown);
+        editor.addEventListener('focus', updateFormatDropdown);
+    }
+    
+    const hasLocalData = loadFromLocalStorage();
+    
+    checkAdminStatus();
+    
+    if (isAdmin) {
+        displayWords();
+        displayQuickAddList();
+    } else {
+        if (hasLocalData) {
+            // Show skeleton loading initially, wait for Supabase to sync
+            const rd = document.getElementById('randomWordDisplay');
+            rd.innerHTML = `
+                <div class="skeleton-loading">
+                    <div class="skeleton-word"></div>
+                    <div class="skeleton-line extra-long"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line medium"></div>
+                    <div class="skeleton-line short"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            `;
+        } else {
+            const rd = document.getElementById('randomWordDisplay');
+            rd.innerHTML = `
+                <div class="skeleton-loading">
+                    <div class="skeleton-word"></div>
+                    <div class="skeleton-line extra-long"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line medium"></div>
+                    <div class="skeleton-line short"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            `;
+        }
+    }
+    
+    setTimeout(initializeSupabase, hasLocalData ? 100 : 10);
+});
+
+function handleMarkdownFormatting(e) {
+    const editor = document.getElementById('definitionInput');
+    const selection = window.getSelection();
+    
+    if (e.key === ' ' && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const node = range.startContainer;
+        
+        let textBeforeCursor = '';
+        if (node.nodeType === Node.TEXT_NODE) {
+            textBeforeCursor = node.textContent.substring(0, range.startOffset);
+        }
+        
+        const inlineBoldMatch = textBeforeCursor.match(/\*\*([^\*]+)\*\*$/);
+        if (inlineBoldMatch) {
+            e.preventDefault();
+            const boldText = inlineBoldMatch[1];
+            const matchLength = inlineBoldMatch[0].length;
+            
+            const textNode = node;
+            const startPos = range.startOffset - matchLength;
+            
+            textNode.textContent = textNode.textContent.substring(0, startPos) + textNode.textContent.substring(range.startOffset);
+            
+            const boldElement = document.createElement('strong');
+            boldElement.textContent = boldText;
+            
+            const tempRange = document.createRange();
+            tempRange.setStart(textNode, startPos);
+            tempRange.collapse(true);
+            tempRange.insertNode(boldElement);
+            
+            const spaceNode = document.createTextNode(' ');
+            boldElement.parentNode.insertBefore(spaceNode, boldElement.nextSibling);
+            
+            const newRange = document.createRange();
+            newRange.setStartAfter(spaceNode);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+            
+            return;
+        }
+        
+        const lineStart = getLineStart(node, range.startOffset);
+        const lineText = lineStart.text;
+        
+        if (lineText === '#') {
+            e.preventDefault();
+            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h1');
+            return;
+        }
+        
+        if (lineText === '##') {
+            e.preventDefault();
+            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h2');
+            return;
+        }
+        
+        if (lineText === '###') {
+            e.preventDefault();
+            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h3');
+            return;
+        }
+        
+        if (lineText === '####') {
+            e.preventDefault();
+            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'h4');
+            return;
+        }
+        
+        if (lineText === '**') {
+            e.preventDefault();
+            replaceMarkdownWithFormat(lineStart.node, lineStart.offset, lineText.length, 'bold');
+            return;
+        }
+    }
+}
+
+function getLineStart(node, offset) {
+    let currentNode = node;
+    let currentOffset = offset;
+    
+    if (node.nodeType === Node.TEXT_NODE) {
+        const textBefore = node.textContent.substring(0, offset);
+        const lastNewline = textBefore.lastIndexOf('\n');
+        
+        if (lastNewline === -1) {
+            let parent = node.parentNode;
+            while (parent && parent.id !== 'definitionInput') {
+                const prevSibling = getPreviousTextContent(parent);
+                if (prevSibling.hasNewline) {
+                    return { node: node, offset: lastNewline + 1, text: textBefore };
+                }
+                parent = parent.parentNode;
+            }
+            return { node: node, offset: 0, text: textBefore };
+        } else {
+            return { node: node, offset: lastNewline + 1, text: textBefore.substring(lastNewline + 1) };
+        }
+    }
+    
+    return { node: node, offset: 0, text: '' };
+}
+
+function getPreviousTextContent(node) {
+    let prev = node.previousSibling;
+    while (prev) {
+        if (prev.nodeType === Node.TEXT_NODE && prev.textContent.includes('\n')) {
+            return { hasNewline: true };
+        }
+        if (prev.nodeType === Node.ELEMENT_NODE && ['DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BR'].includes(prev.tagName)) {
+            return { hasNewline: true };
+        }
+        prev = prev.previousSibling;
+    }
+    return { hasNewline: false };
+}
+
+function replaceMarkdownWithFormat(node, startOffset, length, format) {
+    const editor = document.getElementById('definitionInput');
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    
+    if (node.nodeType === Node.TEXT_NODE) {
+        const beforeText = node.textContent.substring(0, startOffset);
+        const afterText = node.textContent.substring(range.startOffset);
+        node.textContent = beforeText + afterText;
+        
+        range.setStart(node, startOffset);
+        range.collapse(true);
+    }
+    
+    if (format === 'bold') {
+        document.execCommand('bold', false, null);
+    } else {
+        document.execCommand('formatBlock', false, format);
+    }
+    
+    updateFormatDropdown();
+    editor.focus();
+}
+
+function handlePaste(e) {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (!isMobile) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        const html = convertMarkdownToHTML(text);
+        document.execCommand('insertHTML', false, html);
+    } else {
+        setTimeout(() => {
+            convertExistingMarkdown();
+        }, 100);
+    }
+}
+
+function convertExistingMarkdown() {
+    const editor = document.getElementById('definitionInput');
+    const currentHTML = editor.innerHTML;
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = currentHTML;
+    const text = tempDiv.textContent || tempDiv.innerText || '';
+    
+    const html = convertMarkdownToHTML(text);
+    editor.innerHTML = html;
+    
+    const range = document.createRange();
+    const sel = window.getSelection();
+    
+    const lastNode = getLastNode(editor);
+    if (lastNode) {
+        range.setStartAfter(lastNode);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+    
+    editor.focus();
+}
+
+function getLastNode(node) {
+    while (node.lastChild) {
+        node = node.lastChild;
+    }
+    return node;
+}
+
+function convertMarkdownToHTML(text) {
+    const lines = text.split('\n');
+    let html = '';
+    let inParagraph = false;
+    let paragraphContent = '';
+    
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        let processedLine = line;
+        let isHeading = false;
+        
+        if (/^####\s/.test(processedLine)) {
+            if (inParagraph && paragraphContent.trim()) {
+                html += '<p>' + paragraphContent + '</p>';
+                paragraphContent = '';
+                inParagraph = false;
+            }
+            processedLine = '<h4>' + processedLine.substring(5) + '</h4>';
+            html += processedLine;
+            isHeading = true;
+        } else if (/^###\s/.test(processedLine)) {
+            if (inParagraph && paragraphContent.trim()) {
+                html += '<p>' + paragraphContent + '</p>';
+                paragraphContent = '';
+                inParagraph = false;
+            }
+            processedLine = '<h3>' + processedLine.substring(4) + '</h3>';
+            html += processedLine;
+            isHeading = true;
+        } else if (/^##\s/.test(processedLine)) {
+            if (inParagraph && paragraphContent.trim()) {
+                html += '<p>' + paragraphContent + '</p>';
+                paragraphContent = '';
+                inParagraph = false;
+            }
+            processedLine = '<h2>' + processedLine.substring(3) + '</h2>';
+            html += processedLine;
+            isHeading = true;
+        } else if (/^#\s/.test(processedLine)) {
+            if (inParagraph && paragraphContent.trim()) {
+                html += '<p>' + paragraphContent + '</p>';
+                paragraphContent = '';
+                inParagraph = false;
+            }
+            processedLine = '<h1>' + processedLine.substring(2) + '</h1>';
+            html += processedLine;
+            isHeading = true;
+        }
+        
+        if (!isHeading) {
+            processedLine = processedLine.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            processedLine = processedLine.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+            
+            if (processedLine.trim()) {
+                if (inParagraph) {
+                    paragraphContent += '<br>' + processedLine;
+                } else {
+                    inParagraph = true;
+                    paragraphContent = processedLine;
+                }
+            } else {
+                if (inParagraph && paragraphContent.trim()) {
+                    html += '<p>' + paragraphContent + '</p>';
+                    paragraphContent = '';
+                    inParagraph = false;
+                }
+            }
+        }
+    }
+    
+    if (inParagraph && paragraphContent.trim()) {
+        html += '<p>' + paragraphContent + '</p>';
+    }
+    
+    return html;
+}
+
+function scrollToAddSection() {
+}
+
+function formatText(c){document.execCommand(c,false,null);document.getElementById('definitionInput').focus()}
+function formatHeading(tag){const d=document.getElementById('definitionInput');if(tag===''){document.execCommand('formatBlock',false,'div');document.execCommand('formatBlock',false,'p')}else document.execCommand('formatBlock',false,tag);d.focus();setTimeout(updateFormatDropdown,50)}
+function updateFormatDropdown(){const s=window.getSelection();if(s.rangeCount===0)return;const n=s.anchorNode,p=n.nodeType===3?n.parentNode:n;let b=p;while(b&&!['H1','H2','H3','H4','H5','H6','P','DIV'].includes(b.tagName))b=b.parentElement;const d=document.getElementById('formatDropdown');if(b){const t=b.tagName.toLowerCase();d.value=['h1','h2','h3','h4','h5','h6'].includes(t)?t:''}}
+
+function checkExistingWord(){const w=document.getElementById('wordInput').value.trim(),warn=document.getElementById('wordWarning');if(!w){warn.style.display='none';return}const existing=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase());if(existing&&existing.id!==editingWordId){warn.style.display='block'}else{warn.style.display='none'}}
+
+async function addToQuickList(){const i=document.getElementById('quickAddSearch'),w=i.value.trim(),warn=document.getElementById('quickAddWarning');if(!w)return;const e=dictionary.find(x=>x.word.toLowerCase()===w.toLowerCase()),a=quickAddList.find(x=>x.toLowerCase()===w.toLowerCase());if(e){warn.textContent='⚠️ This word already exists in the dictionary';warn.style.display='block';return}if(a){warn.textContent='⚠️ This word is already in the quick list';warn.style.display='block';return}quickAddList.unshift(w);i.value='';warn.style.display='none';document.getElementById('quickAddSearchResults').innerHTML='';await saveQuickAddList();displayQuickAddList()}
+
+function displayQuickAddList(){const c=document.getElementById('quickAddList'),cnt=document.getElementById('quickAddCount');cnt.textContent=`(${quickAddList.length})`;c.innerHTML=quickAddList.length===0?'<div class="quick-add-empty">No words in quick list yet</div>':quickAddList.map((w,i)=>`<div class="quick-add-item"><span class="quick-add-word">${w}</span><button class="quick-add-remove" onclick="removeFromQuickList(${i})">Remove</button></div>`).join('')}
+
+async function removeFromQuickList(i){quickAddList.splice(i,1);await saveQuickAddList();displayQuickAddList()}
+
+function searchWordsForQuickAdd(){const s=document.getElementById('quickAddSearch').value.toLowerCase().trim(),r=document.getElementById('quickAddSearchResults'),w=document.getElementById('quickAddWarning');if(!s){r.innerHTML='';w.style.display='none';return}const a=quickAddList.find(x=>x.toLowerCase()===s);if(a){r.innerHTML='';w.textContent='⚠️ This word is already in the quick list';w.style.display='block';return}const m=searchIndex?searchIndex.filter(i=>i.wordLower.includes(s)).slice(0,20).map(i=>dictionary.find(d=>d.id===i.id)):[];if(m.length===0){r.innerHTML='<div class="no-results">No matching words found in dictionary</div>';w.style.display='none'}else{r.innerHTML=m.map(i=>{const d=i.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;return`<div class="quick-add-result-item" onclick="selectQuickAddWord('${i.word.replace(/'/g,"\\'")}')"><div class="quick-add-result-word">${i.word}</div><div class="quick-add-result-definition">${p}</div></div>`}).join('');w.textContent='⚠️ These words already exist in the dictionary';w.style.display='block'}}
+
+function selectQuickAddWord(w){document.getElementById('quickAddSearch').value=w;document.getElementById('quickAddSearchResults').innerHTML=''}
+
+async function refreshQuickList(){if(isSupabaseConfigured){try{const { data: quickData, error: quickError } = await supabaseClient.from('quick_add_list').select('word').order('created_at', { ascending: false });if(!quickError && quickData){quickAddList=quickData.map(item=>item.word);SafeStorage.setItem('quickAddList',JSON.stringify(quickAddList));displayQuickAddList();alert('Quick list refreshed! Found '+quickAddList.length+' word(s)')}}catch(e){alert('Failed to refresh. Error: '+e.message)}}else alert('Supabase not connected')}
+
+function checkAdminStatus(){
+    const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle');
+    if(isAdmin){
+        sb.style.display='block';
+        mc.classList.remove('full-width');
+        at.textContent='🔓';
+        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});
+        am.forEach(e=>e.style.display='block');
+        sr.style.display='none';
+        ht.textContent="Murali's Dictionary";
+    }else{
+        sb.style.display='none';
+        mc.classList.add('full-width');
+        at.textContent='🔒';
+        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});
+        am.forEach(e=>e.style.display='none');
+        sr.style.display='none';
+        ht.innerHTML="The Only Dictionary<br>You Ever Need";
+    }
+}
+
+function showPasswordModal(){
+    if(isAdmin){
+        isAdmin=false;
+        SafeStorage.setItem('isAdmin','false');
+        checkAdminStatus();
+        displayWordOfTheDay();
+    }else{
+        document.getElementById('passwordModal').classList.add('show');
+        document.getElementById('passwordInput').focus();
+    }
+}
+
+function hidePasswordModal(){
+    document.getElementById('passwordModal').classList.remove('show');
+    document.getElementById('passwordInput').value='';
+}
+
+function checkPassword(){
+    const p=document.getElementById('passwordInput').value;
+    if(p===ADMIN_PASSWORD){
+        isAdmin=true;
+        SafeStorage.setItem('isAdmin','true');
+        authenticateAdmin();
+        hidePasswordModal();
+        checkAdminStatus();
+        displayWords();
+        displayQuickAddList();
+    }else{
+        alert('Incorrect password!');
+        document.getElementById('passwordInput').focus();
+    }
+}
+
+document.getElementById('addWordForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    const w=document.getElementById('wordInput').value.trim(),de=document.getElementById('definitionInput'),d=de.innerHTML.trim();
+    if(!d||d==='<br>'){alert('Please enter a definition');return}
+    
+    if(editingWordId !== null){
+        const ei=dictionary.findIndex(i=>i.id===editingWordId);
+        if(ei!==-1){
+            dictionary[ei].word=w;
+            dictionary[ei].definition=d;
+            dictionary[ei].dateModified=new Date().toISOString();
+            document.getElementById('wordInput').value='';
+            de.innerHTML='';
+            editingWordId=null;
+            displayWords();
+            setTimeout(() => {
+                const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+                if (quickAddSection) {
+                    quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+            await saveDictionary();
+        }
+    }else{
+        const ei=dictionary.findIndex(i=>i.word.toLowerCase()===w.toLowerCase());
+        if(ei!==-1){
+            if(confirm(`"${w}" already exists. Update it?`)){
+                dictionary[ei].definition=d;
+                dictionary[ei].dateModified=new Date().toISOString();
+                document.getElementById('wordInput').value='';
+                de.innerHTML='';
+                displayWords();
+                setTimeout(() => {
+                    const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+                    if (quickAddSection) {
+                        quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+                await saveDictionary();
+            }
+        }else{
+            const newWord={id:Date.now(),word:w,definition:d,dateAdded:new Date().toISOString()};
+            dictionary.push(newWord);
+            document.getElementById('wordInput').value='';
+            de.innerHTML='';
+            displayWords();
+            setTimeout(() => {
+                const quickAddSection = document.querySelector('h2.section-title:nth-of-type(2)');
+                if (quickAddSection) {
+                    quickAddSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+            await saveDictionary();
+        }
+    }
+});
+
+// OPTIMIZED SEARCH WITH TYPING DETECTION
+function showAutocomplete(s){
+    const d=document.getElementById('autocompleteDropdown');
+    if(!s){d.classList.remove('show');return}
+    
+    if(!searchIndex) return;
+    
+    const sLower = s.toLowerCase();
+    const matches = [];
+    const maxResults = 8;
+    
+    for(let i = 0; i < searchIndex.length && matches.length < maxResults; i++){
+        const item = searchIndex[i];
+        if(item.wordLower.startsWith(sLower)){
+            matches.push(item);
+        }
+    }
+    
+    if(matches.length < maxResults){
+        for(let i = 0; i < searchIndex.length && matches.length < maxResults; i++){
+            const item = searchIndex[i];
+            if(!matches.some(m => m.id === item.id) && item.wordLower.includes(sLower)){
+                matches.push(item);
+            }
+        }
+    }
+    
+    if(matches.length===0){d.classList.remove('show');return}
+    
+    let html = '';
+    matches.forEach((item,idx)=>{
+        const word = dictionary.find(w=>w.id===item.id);
+        const escapedWord = word.word.replace(/'/g,"\\'");
+        html += `<div class="autocomplete-item" data-index="${idx}" onclick="selectAutocompleteItem('${escapedWord}')"><div class="autocomplete-word">${word.word}</div></div>`;
+    });
+    d.innerHTML=html;
+    d.classList.add('show');
+    selectedAutocompleteIndex=-1;
+}
+
+function selectAutocompleteItem(w){
+    document.getElementById('searchInput').value=w;
+    document.getElementById('autocompleteDropdown').classList.remove('show');
+    const s=w.toLowerCase();
+    isAdmin?displayWords(s):displaySearchResults(s);
+}
+
+// OPTIMIZED TYPING DETECTION - Wait for user to stop typing
+document.getElementById('searchInput').addEventListener('input',function(e){
+    const s=e.target.value;
+    
+    // Clear previous timer
+    clearTimeout(typingTimer);
+    
+    // Hide dropdown if empty
+    if(!s) {
+        document.getElementById('autocompleteDropdown').classList.remove('show');
+        if(!isAdmin) document.getElementById('searchResultsColumn').style.display='none';
+        return;
+    }
+    
+    // Wait 300ms after user stops typing before searching
+    typingTimer = setTimeout(() => {
+        showAutocomplete(s);
+        if(s&&isAdmin)displayWords(s);
+        else if(s&&!isAdmin)displaySearchResults(s);
+    }, 300);
+});
+
+document.getElementById('searchInput').addEventListener('keydown',function(e){
+    const d=document.getElementById('autocompleteDropdown'),it=d.querySelectorAll('.autocomplete-item');
+    if(!d.classList.contains('show')||it.length===0)return;
+    if(e.key==='ArrowDown'){
+        e.preventDefault();
+        selectedAutocompleteIndex=Math.min(selectedAutocompleteIndex+1,it.length-1);
+        updateAutocompleteSelection(it);
+    }else if(e.key==='ArrowUp'){
+        e.preventDefault();
+        selectedAutocompleteIndex=Math.max(selectedAutocompleteIndex-1,-1);
+        updateAutocompleteSelection(it);
+    }else if(e.key==='Enter'&&selectedAutocompleteIndex>=0){
+        e.preventDefault();
+        it[selectedAutocompleteIndex].click();
+    }else if(e.key==='Escape'){
+        d.classList.remove('show');
+        selectedAutocompleteIndex=-1;
+    }
+});
+
+function updateAutocompleteSelection(it){
+    it.forEach((i,idx)=>{
+        if(idx===selectedAutocompleteIndex){
+            i.classList.add('selected');
+            i.scrollIntoView({block:'nearest'});
+        }else i.classList.remove('selected');
+    });
+}
+
+document.addEventListener('click',function(e){
+    const sc=document.querySelector('.search-container'),d=document.getElementById('autocompleteDropdown');
+    if(!sc.contains(e.target)){
+        d.classList.remove('show');
+        selectedAutocompleteIndex=-1;
+    }
+});
+
+function displaySearchResults(s){
+    const wl=document.getElementById('wordsList'),sr=document.getElementById('searchResultsColumn');
+    
+    if(!searchIndex){
+        sr.style.display='none';
+        return;
+    }
+    
+    const sLower = s.toLowerCase();
+    const matches = searchIndex.filter(item=>item.wordLower.includes(sLower));
+    
+    if(matches.length===0){
+        wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📖</div><p>No words found matching "${s}"</p></div>`;
+    }else{
+        const sortedMatches = matches.sort((a,b)=>a.word.localeCompare(b.word));
+        let html = '';
+        sortedMatches.forEach(item => {
+            const word = dictionary.find(w=>w.id===item.id);
+            html += `<div class="word-entry"><div class="word-definition">${word.definition}</div></div>`;
+        });
+        wl.innerHTML = html;
+    }
+    sr.style.display='block';
 }
 
 function getWordOfTheDay() {
@@ -900,7 +1503,161 @@ function getWordOfTheDay() {
     return dictionary[index];
 }
 
-// ... rest of your existing JavaScript functions ...
+function displayWordOfTheDay(){
+    const rd=document.getElementById('randomWordDisplay');
+    
+    if(!dictionary || dictionary.length===0){
+        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+        return;
+    }
+    
+    const wordOfDay = getWordOfTheDay();
+    if (wordOfDay) {
+        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
+    }
+}
+
+function showNewRandomWord(){
+    if(dictionary.length>0){
+        const rd=document.getElementById('randomWordDisplay');
+        const ri=Math.floor(Math.random()*dictionary.length);
+        const rw=dictionary[ri];
+        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${rw.definition}</div></div>`;
+        document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+}
+
+// Optimized displayWords function
+function displayWords(s=''){
+    const wl=document.getElementById('wordsList'),ce=document.getElementById('dictionaryCount');
+    if(ce)ce.textContent=`(${dictionary.length})`;
+    
+    let fd;
+    if(s && searchIndex){
+        const sLower = s.toLowerCase();
+        const matches = searchIndex.filter(item=>item.wordLower.includes(sLower) || item.definitionText.includes(sLower));
+        fd = matches.map(item=>dictionary.find(w=>w.id===item.id));
+    }else{
+        fd = dictionary;
+    }
+    
+    fd.sort((a,b)=>a.word.localeCompare(b.word));
+    
+    if(fd.length===0){
+        wl.innerHTML=`<div class="no-words"><div class="no-words-icon">📚</div><p>${s?'No words found matching your search.':'Your dictionary is empty. Add your first word!'}</p></div>`;
+    }else{
+        let html = '';
+        fd.forEach(i=>{
+            html += `<div class="word-entry">
+                <div class="word-title">${i.word}</div>
+                <div class="word-definition">${i.definition}</div>
+                <div class="word-actions" style="display:${isAdmin?'flex':'none'}">
+                    <button class="btn-action btn-edit" onclick="editWord(${i.id})">Edit</button>
+                    <button class="btn-action btn-delete" onclick="deleteWord(${i.id})">Delete</button>
+                </div>
+            </div>`;
+        });
+        wl.innerHTML = html;
+    }
+}
+
+async function editWord(id){
+    const i=dictionary.find(w=>w.id===id);
+    if(i){
+        document.getElementById('wordInput').value=i.word;
+        document.getElementById('definitionInput').innerHTML=i.definition;
+        editingWordId=id;
+        document.getElementById('editSearchInput').value='';
+        document.getElementById('editSearchResults').innerHTML='';
+        document.getElementById('definitionSearchInput').value='';
+        document.getElementById('definitionSearchResults').innerHTML='';
+        const sb=document.getElementById('sidebar');
+        sb.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+}
+
+function searchWordsToEdit(){
+    const s=document.getElementById('editSearchInput').value.toLowerCase().trim(),r=document.getElementById('editSearchResults');
+    if(!s){r.innerHTML='';return}
+    
+    if(!searchIndex){r.innerHTML='';return}
+    
+    const matches = searchIndex.filter(item=>item.wordLower.includes(s)).slice(0,20);
+    
+    r.innerHTML=matches.length===0?'<div class="no-results">No matching words found</div>':matches.map(item=>{
+        const word = dictionary.find(w=>w.id===item.id);
+        const d=word.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;
+        return`<div class="edit-result-item" onclick="editWord(${word.id})"><div class="edit-result-word">${word.word}</div><div class="edit-result-definition">${p}</div></div>`
+    }).join('');
+}
+
+function searchDefinitions(){
+    const s=document.getElementById('definitionSearchInput').value.toLowerCase(),r=document.getElementById('definitionSearchResults');
+    if(!s.trim()){r.innerHTML='';return}
+    
+    if(!searchIndex){r.innerHTML='';return}
+    
+    const matches = searchIndex.filter(item=>item.definitionText.includes(s)).slice(0,20);
+    
+    r.innerHTML=matches.length===0?'<div class="no-results">No matching definitions found</div>':matches.map(item=>{
+        const word = dictionary.find(w=>w.id===item.id);
+        const d=word.definition.replace(/<[^>]*>/g,''),p=d.length>100?d.substring(0,100)+'...':d;
+        return`<div class="definition-result-item" onclick="editWord(${word.id})"><div class="definition-result-word">${word.word}</div><div class="definition-result-definition">${p}</div></div>`
+    }).join('');
+}
+
+async function deleteWord(id){
+    const i=dictionary.find(w=>w.id===id);
+    if(i&&confirm(`Delete "${i.word}"?`)){
+        dictionary=dictionary.filter(w=>w.id!==id);
+        
+        if(isSupabaseConfigured && supabaseInitialized){
+            try{
+                await supabaseClient.from('dictionary').delete().eq('id',id);
+            }catch(e){
+                console.error('Delete error:',e);
+            }
+        }
+        
+        await saveDictionary();
+        displayWords();
+    }
+}
+
+function exportData(){
+    const ds=JSON.stringify(dictionary,null,2),db=new Blob([ds],{type:'application/json'}),u=URL.createObjectURL(db),l=document.createElement('a');
+    l.href=u;
+    l.download=`dictionary_${new Date().toISOString().split('T')[0]}.json`;
+    l.click();
+    URL.revokeObjectURL(u);
+}
+
+async function importData(e){
+    const f=e.target.files[0];
+    if(f){
+        const r=new FileReader();
+        r.onload=async function(ev){
+            try{
+                const imp=JSON.parse(ev.target.result);
+                if(Array.isArray(imp)){
+                    if(confirm(`Import ${imp.length} words? This will merge with existing entries.`)){
+                        imp.forEach(w=>{
+                            const ex=dictionary.find(x=>x.word.toLowerCase()===w.word.toLowerCase());
+                            if(!ex)dictionary.push(w);
+                        });
+                        await saveDictionary();
+                        displayWords();
+                        alert('Import successful!');
+                    }
+                }else alert('Invalid file format');
+            }catch(er){
+                alert('Error reading file');
+            }
+        };
+        r.readAsText(f);
+    }
+    e.target.value='';
+}
     </script>
 </body>
 </html>
