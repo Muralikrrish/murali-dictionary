@@ -433,6 +433,7 @@
         let questions = [];
         let selectedAnswer = null;
         let answerSubmitted = false;
+        let questionsAnswered = 0;
 
         // Initialize quiz
         async function initQuiz() {
@@ -488,9 +489,9 @@
             document.getElementById('difficulty-badge').textContent = question.difficulty;
             document.getElementById('difficulty-badge').className = `difficulty-badge badge-${question.difficulty.toLowerCase()}`;
             
-            // Update progress - FIXED: Use currentQuestion + 1 to include current question
+            // Update progress - Only show completed questions in progress
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${questions.length}`;
-            document.getElementById('progress-fill').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            document.getElementById('progress-fill').style.width = `${(questionsAnswered / questions.length) * 100}%`;
 
             // Create options
             const optionsGrid = document.getElementById('options-grid');
@@ -537,6 +538,10 @@
             if (isCorrect) {
                 score++;
             }
+
+            // Increment questions answered and update progress
+            questionsAnswered++;
+            document.getElementById('progress-fill').style.width = `${(questionsAnswered / questions.length) * 100}%`;
 
             // Show explanation
             document.getElementById('explanation-text').textContent = question.explanation;
@@ -588,6 +593,7 @@
         function restartQuiz() {
             currentQuestion = 0;
             score = 0;
+            questionsAnswered = 0;
             document.getElementById('results-screen').style.display = 'none';
             document.getElementById('question-card').style.display = 'block';
             document.getElementById('loading-message').style.display = 'block';
