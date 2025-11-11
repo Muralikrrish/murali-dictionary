@@ -670,6 +670,16 @@ let quizAnswered = false;
 // Search index for faster lookups
 let searchIndex = null;
 
+// Fisher-Yates shuffle algorithm for randomizing arrays
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
 function buildSearchIndex() {
     searchIndex = dictionary.map(item => ({
         id: item.id,
@@ -868,7 +878,7 @@ function displayQuizQuestion() {
     
     document.getElementById('quizQuestionText').textContent = currentQuizQuestion.question_text;
     
-    // Create options
+    // Create options with randomization
     const optionsGrid = document.getElementById('quizOptionsGrid');
     optionsGrid.innerHTML = '';
     
@@ -877,7 +887,21 @@ function displayQuizQuestion() {
         currentQuizQuestion.options : 
         JSON.parse(currentQuizQuestion.options || '[]');
     
-    optionsArray.forEach((option, index) => {
+    // Store the original correct answer before shuffling
+    const originalCorrectAnswer = optionsArray[currentQuizQuestion.correct_answer];
+    
+    // Shuffle the options array
+    const shuffledOptions = shuffleArray(optionsArray);
+    
+    // Find the new position of the correct answer after shuffling
+    const newCorrectAnswerIndex = shuffledOptions.indexOf(originalCorrectAnswer);
+    
+    // Update the question object with shuffled options and new correct answer index
+    currentQuizQuestion.shuffledOptions = shuffledOptions;
+    currentQuizQuestion.currentCorrectAnswer = newCorrectAnswerIndex;
+    
+    // Create the option buttons
+    shuffledOptions.forEach((option, index) => {
         const optionDiv = document.createElement('button');
         optionDiv.className = 'option-btn';
         optionDiv.textContent = option;
@@ -910,7 +934,8 @@ function selectQuizAnswer(index) {
 function checkQuizAnswer() {
     quizAnswered = true;
 
-    const isCorrect = selectedQuizAnswer === currentQuizQuestion.correct_answer;
+    // Use the current correct answer index (after shuffling)
+    const isCorrect = selectedQuizAnswer === currentQuizQuestion.currentCorrectAnswer;
     const resultDiv = document.getElementById('quizResult');
     
     if (isCorrect) {
@@ -933,8 +958,8 @@ function checkQuizAnswer() {
     // Highlight correct and incorrect answers
     const options = document.querySelectorAll('.option-btn');
     
-    // Highlight correct answer
-    options[currentQuizQuestion.correct_answer].classList.add('correct');
+    // Highlight correct answer (using current correct answer index)
+    options[currentQuizQuestion.currentCorrectAnswer].classList.add('correct');
     
     // If wrong answer, also highlight the incorrect choice
     if (!isCorrect) {
