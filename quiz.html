@@ -51,16 +51,15 @@
         .quiz-header {
             background: var(--bg-secondary);
             color: var(--text-primary);
-            padding: 25px 30px 15px 30px;
+            padding: 30px 30px 20px 30px;
             text-align: center;
             position: relative;
             border-bottom: 1px solid var(--border-color);
         }
 
         .quiz-title {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 8px;
             background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -68,15 +67,9 @@
             letter-spacing: -0.02em;
         }
 
-        .quiz-subtitle {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
         .progress-container {
             background: var(--bg-tertiary);
-            padding: 12px 30px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -177,6 +170,18 @@
             color: var(--bg-primary);
         }
 
+        .option-btn.correct {
+            background: rgba(123, 200, 127, 0.1);
+            border-color: #7bc87f;
+            color: #7bc87f;
+        }
+
+        .option-btn.incorrect {
+            background: rgba(217, 83, 79, 0.1);
+            border-color: #d9534f;
+            color: #d9534f;
+        }
+
         .explanation-box {
             background: var(--bg-tertiary);
             padding: 20px;
@@ -224,17 +229,6 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(200, 121, 65, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 2px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--border-color);
-            border-color: var(--accent-primary);
         }
 
         .results-screen {
@@ -300,30 +294,18 @@
             }
             
             .quiz-header {
-                padding: 20px 20px 12px 20px;
+                padding: 25px 20px 15px 20px;
             }
             
             .quiz-title {
-                font-size: 1.8rem;
-            }
-            
-            .quiz-subtitle {
-                font-size: 0.9rem;
+                font-size: 2.2rem;
             }
             
             .progress-container {
-                padding: 10px 20px;
-                flex-direction: column;
-                gap: 8px;
+                padding: 12px 20px;
             }
             
-            .progress-bar {
-                width: 100%;
-                margin: 5px 0;
-                order: 2;
-            }
-            
-            #question-count, #score {
+            #question-count {
                 font-size: 0.9rem;
             }
             
@@ -367,15 +349,11 @@
 
         @media (max-width: 480px) {
             .quiz-header {
-                padding: 15px 15px 10px 15px;
+                padding: 20px 15px 12px 15px;
             }
             
             .quiz-title {
-                font-size: 1.5rem;
-            }
-            
-            .quiz-subtitle {
-                font-size: 0.85rem;
+                font-size: 2rem;
             }
             
             .question-card {
@@ -402,7 +380,6 @@
     <div class="quiz-container">
         <div class="quiz-header">
             <h1 class="quiz-title">Lexicon Quest</h1>
-            <p class="quiz-subtitle">Test your vocabulary mastery</p>
         </div>
 
         <div class="progress-container">
@@ -410,7 +387,6 @@
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
-            <span id="score">Score: 0</span>
         </div>
 
         <div class="question-card" id="question-card">
@@ -434,8 +410,6 @@
                     <strong>Explanation:</strong> <span id="explanation-text"></span>
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-secondary" onclick="skipQuestion()" id="skip-btn">Skip</button>
-                    <button class="btn btn-primary" onclick="submitAnswer()" id="submit-btn" disabled>Submit Answer</button>
                     <button class="btn btn-primary" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
                 </div>
             </div>
@@ -458,6 +432,7 @@
         let score = 0;
         let questions = [];
         let selectedAnswer = null;
+        let answerSubmitted = false;
 
         // Initialize quiz
         async function initQuiz() {
@@ -516,7 +491,6 @@
             // Update progress
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${questions.length}`;
             document.getElementById('progress-fill').style.width = `${((currentQuestion) / questions.length) * 100}%`;
-            document.getElementById('score').textContent = `Score: ${score}`;
 
             // Create options
             const optionsGrid = document.getElementById('options-grid');
@@ -535,19 +509,23 @@
 
             // Reset UI state
             document.getElementById('explanation-box').classList.remove('show');
-            document.getElementById('submit-btn').disabled = true;
-            document.getElementById('submit-btn').style.display = 'block';
             document.getElementById('next-btn').style.display = 'none';
-            document.getElementById('skip-btn').style.display = 'block';
+            answerSubmitted = false;
             selectedAnswer = null;
         }
 
         function selectAnswer(index) {
+            if (answerSubmitted) return; // Prevent multiple submissions
+            
             selectedAnswer = index;
+            answerSubmitted = true;
+            
             const buttons = document.querySelectorAll('.option-btn');
             buttons.forEach(btn => btn.classList.remove('selected'));
             buttons[index].classList.add('selected');
-            document.getElementById('submit-btn').disabled = false;
+            
+            // Immediately process the answer
+            submitAnswer();
         }
 
         function submitAnswer() {
@@ -564,31 +542,28 @@
             document.getElementById('explanation-text').textContent = question.explanation;
             document.getElementById('explanation-box').classList.add('show');
 
-            // Update UI
-            document.getElementById('submit-btn').style.display = 'none';
+            // Show next button
             document.getElementById('next-btn').style.display = 'block';
-            document.getElementById('skip-btn').style.display = 'none';
-            document.getElementById('score').textContent = `Score: ${score}`;
 
-            // Highlight correct answer
+            // Highlight correct and incorrect answers
             const buttons = document.querySelectorAll('.option-btn');
-            buttons[question.correct_answer].style.background = 'rgba(123, 200, 127, 0.1)';
-            buttons[question.correct_answer].style.borderColor = '#7bc87f';
-            buttons[question.correct_answer].style.color = '#7bc87f';
             
+            // Highlight correct answer
+            buttons[question.correct_answer].classList.add('correct');
+            
+            // If wrong answer, also highlight the incorrect choice
             if (!isCorrect) {
-                buttons[selectedAnswer].style.background = 'rgba(217, 83, 79, 0.1)';
-                buttons[selectedAnswer].style.borderColor = '#d9534f';
-                buttons[selectedAnswer].style.color = '#d9534f';
+                buttons[selectedAnswer].classList.add('incorrect');
             }
+            
+            // Disable all options after selection
+            buttons.forEach(btn => {
+                btn.style.cursor = 'default';
+                btn.onclick = null;
+            });
         }
 
         function nextQuestion() {
-            currentQuestion++;
-            displayQuestion();
-        }
-
-        function skipQuestion() {
             currentQuestion++;
             displayQuestion();
         }
