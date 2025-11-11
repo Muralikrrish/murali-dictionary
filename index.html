@@ -477,16 +477,19 @@
                 </div>
                 
                 <div class="quiz-preview-content" id="quizPreviewContent">
-                    <div class="quiz-preview-question" id="quizPreviewQuestion">Loading question...</div>
+                    <div class="quiz-preview-question" id="quizPreviewQuestion">What is the meaning of 'ephemeral'?</div>
                     <div class="quiz-preview-options" id="quizPreviewOptions">
-                        <!-- Options will be loaded here -->
+                        <button class="quiz-option" onclick="selectQuizOption(0, 0)">Lasting for a very short time</button>
+                        <button class="quiz-option" onclick="selectQuizOption(1, 0)">Extremely large in size</button>
+                        <button class="quiz-option" onclick="selectQuizOption(2, 0)">Difficult to understand</button>
+                        <button class="quiz-option" onclick="selectQuizOption(3, 0)">Full of energy and enthusiasm</button>
                     </div>
                     <div class="quiz-feedback" id="quizFeedback"></div>
                 </div>
                 
                 <div class="quiz-actions" id="quizActions">
-                    <button class="btn-quiz btn-quiz-primary" id="continueToQuizBtn" style="display: none;">Continue to Full Quiz</button>
-                    <button class="btn-quiz btn-quiz-secondary" id="tryAnotherBtn" style="display: none;">Try Another Question</button>
+                    <button class="btn-quiz btn-quiz-primary" id="continueToQuizBtn" onclick="continueToFullQuiz()" style="display: none;">Continue to Full Quiz</button>
+                    <button class="btn-quiz btn-quiz-secondary" id="tryAnotherBtn" onclick="tryAnotherQuestion()" style="display: none;">Try Another Question</button>
                 </div>
                 
                 <div class="quiz-preview-footer">
@@ -500,7 +503,16 @@
             </div>
             <div class="words-column" id="wordOfTheDaySection">
                 <h2 class="section-title">Word of the Day</h2>
-                <div id="randomWordDisplay"></div>
+                <div id="randomWordDisplay">
+                    <div class="word-entry">
+                        <div class="word-title" id="wordOfTheDayTitle">Ephemeral</div>
+                        <div class="word-definition" id="wordOfTheDayDefinition">
+                            <p>Lasting for a very short time; transient.</p>
+                            <p><strong>Example:</strong> "The ephemeral beauty of cherry blossoms makes them particularly special."</p>
+                            <p><strong>Synonyms:</strong> transient, fleeting, momentary, short-lived</p>
+                        </div>
+                    </div>
+                </div>
                 <button class="btn-show-word" onclick="showNewRandomWord()" style="margin-top:20px;width:auto;display:block;margin-left:auto;margin-right:auto">Show another word</button>
             </div>
             <div class="sidebar admin-mode" id="sidebar">
@@ -578,88 +590,7 @@ let quizPreviewAnswered = false;
 let quizPreviewCorrect = false;
 let currentPreviewQuestion = null;
 
-// Initialize quiz preview
-async function initQuizPreview() {
-    try {
-        // Fetch a random question from Supabase
-        const { data, error } = await supabaseClient
-            .from('quiz_questions')
-            .select('*')
-            .limit(1);
-        
-        if (error) throw error;
-        
-        if (data && data.length > 0) {
-            currentPreviewQuestion = data[0];
-            displayQuizPreviewQuestion(currentPreviewQuestion);
-        } else {
-            // Fallback to a sample question if no questions in database
-            displaySampleQuizQuestion();
-        }
-    } catch (error) {
-        console.error('Error loading quiz preview:', error);
-        displaySampleQuizQuestion();
-    }
-}
-
-function displayQuizPreviewQuestion(question) {
-    const questionElement = document.getElementById('quizPreviewQuestion');
-    const optionsContainer = document.getElementById('quizPreviewOptions');
-    
-    questionElement.textContent = question.question_text;
-    
-    // Clear previous options
-    optionsContainer.innerHTML = '';
-    
-    // Create option buttons
-    const options = Array.isArray(question.options) ? question.options : JSON.parse(question.options || '[]');
-    
-    options.forEach((option, index) => {
-        const optionButton = document.createElement('button');
-        optionButton.className = 'quiz-option';
-        optionButton.textContent = option;
-        optionButton.onclick = () => selectQuizOption(index, question.correct_answer);
-        optionsContainer.appendChild(optionButton);
-    });
-    
-    // Reset UI state
-    document.getElementById('quizFeedback').style.display = 'none';
-    document.getElementById('continueToQuizBtn').style.display = 'none';
-    document.getElementById('tryAnotherBtn').style.display = 'none';
-    quizPreviewAnswered = false;
-}
-
-function displaySampleQuizQuestion() {
-    const questionElement = document.getElementById('quizPreviewQuestion');
-    const optionsContainer = document.getElementById('quizPreviewOptions');
-    
-    questionElement.textContent = "What is the meaning of 'ephemeral'?";
-    
-    // Clear previous options
-    optionsContainer.innerHTML = '';
-    
-    const sampleOptions = [
-        "Lasting for a very short time",
-        "Extremely large in size",
-        "Difficult to understand",
-        "Full of energy and enthusiasm"
-    ];
-    
-    sampleOptions.forEach((option, index) => {
-        const optionButton = document.createElement('button');
-        optionButton.className = 'quiz-option';
-        optionButton.textContent = option;
-        optionButton.onclick = () => selectQuizOption(index, 0); // Correct answer is index 0
-        optionsContainer.appendChild(optionButton);
-    });
-    
-    // Reset UI state
-    document.getElementById('quizFeedback').style.display = 'none';
-    document.getElementById('continueToQuizBtn').style.display = 'none';
-    document.getElementById('tryAnotherBtn').style.display = 'none';
-    quizPreviewAnswered = false;
-}
-
+// Function to select a quiz option
 function selectQuizOption(selectedIndex, correctIndex) {
     if (quizPreviewAnswered) return;
     
@@ -698,50 +629,78 @@ function selectQuizOption(selectedIndex, correctIndex) {
     });
 }
 
+// Function to continue to full quiz
 function continueToFullQuiz() {
     // Redirect to quiz.html with difficulty parameter based on preview performance
     const difficulty = quizPreviewCorrect ? 'medium' : 'easy';
     window.location.href = `quiz.html?difficulty=${difficulty}&source=preview`;
 }
 
+// Function to try another question
 function tryAnotherQuestion() {
-    // Reload a new question
-    initQuizPreview();
-}
-
-// Add this to your existing DOMContentLoaded event listener
-document.addEventListener('DOMContentLoaded', function() {
-    // ... your existing code ...
+    // Reset the quiz preview
+    quizPreviewAnswered = false;
     
-    // Initialize quiz preview for non-admin users
-    if (!isAdmin) {
-        initQuizPreview();
-    }
-});
-
-// Add this to your checkAdminStatus function
-function checkAdminStatus(){
-    const sb=document.getElementById('sidebar'),mc=document.getElementById('mainContent'),at=document.getElementById('adminToggle'),wc=document.querySelectorAll('.words-column'),am=document.querySelectorAll('.admin-mode'),sr=document.getElementById('searchResultsColumn'),ht=document.getElementById('heroTitle'),qp=document.getElementById('quizPreviewCard');
-    if(isAdmin){
-        sb.style.display='block';
-        mc.classList.remove('full-width');
-        at.textContent='🔓';
-        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='none'});
-        am.forEach(e=>e.style.display='block');
-        sr.style.display='none';
-        qp.style.display='none';
-        ht.textContent="Murali's Dictionary";
-    }else{
-        sb.style.display='none';
-        mc.classList.add('full-width');
-        at.textContent='🔒';
-        wc.forEach(c=>{if(c.id!=='searchResultsColumn')c.style.display='block'});
-        am.forEach(e=>e.style.display='none');
-        sr.style.display='none';
-        qp.style.display='block';
-        ht.innerHTML="The Only Dictionary<br>You Ever Need";
-    }
+    const options = document.querySelectorAll('.quiz-option');
+    const feedbackElement = document.getElementById('quizFeedback');
+    
+    // Reset option styles and re-enable them
+    options.forEach(option => {
+        option.classList.remove('selected', 'correct', 'incorrect');
+        option.style.cursor = 'pointer';
+        // Re-attach click handlers
+        const index = Array.from(options).indexOf(option);
+        option.onclick = () => selectQuizOption(index, 0);
+    });
+    
+    // Hide feedback and buttons
+    feedbackElement.style.display = 'none';
+    document.getElementById('continueToQuizBtn').style.display = 'none';
+    document.getElementById('tryAnotherBtn').style.display = 'none';
 }
+
+// Function to show a new random word
+function showNewRandomWord() {
+    // For demo purposes, we'll cycle through a few sample words
+    const sampleWords = [
+        {
+            word: "Serendipity",
+            definition: `<p>The occurrence and development of events by chance in a happy or beneficial way.</p>
+                        <p><strong>Example:</strong> "Finding this book was a wonderful serendipity."</p>
+                        <p><strong>Synonyms:</strong> chance, fortune, luck, fluke</p>`
+        },
+        {
+            word: "Eloquent",
+            definition: `<p>Fluent or persuasive in speaking or writing.</p>
+                        <p><strong>Example:</strong> "Her eloquent speech moved the entire audience."</p>
+                        <p><strong>Synonyms:</strong> articulate, fluent, expressive, silver-tongued</p>`
+        },
+        {
+            word: "Resilient",
+            definition: `<p>Able to withstand or recover quickly from difficult conditions.</p>
+                        <p><strong>Example:</strong> "Children are often more resilient than adults."</p>
+                        <p><strong>Synonyms:</strong> tough, durable, strong, flexible</p>`
+        }
+    ];
+    
+    const randomIndex = Math.floor(Math.random() * sampleWords.length);
+    const randomWord = sampleWords[randomIndex];
+    
+    document.getElementById('wordOfTheDayTitle').textContent = randomWord.word;
+    document.getElementById('wordOfTheDayDefinition').innerHTML = randomWord.definition;
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+    // Show the initial word of the day
+    showNewRandomWord();
+    
+    // Set up quiz functionality
+    const options = document.querySelectorAll('.quiz-option');
+    options.forEach((option, index) => {
+        option.onclick = () => selectQuizOption(index, 0);
+    });
+});
 
 // The rest of your existing JavaScript code remains the same...
 const SafeStorage = {
@@ -907,66 +866,41 @@ async function syncWithSupabase() {
     }
 }
 
-async function saveDictionary() {
-    buildSearchIndex();
-    SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
+function displayWordOfTheDay(){
+    const rd=document.getElementById('randomWordDisplay');
     
-    if (isSupabaseConfigured && supabaseInitialized) {
-        try {
-            const dataToSave = dictionary.map(w => ({
-                id: w.id,
-                word: w.word,
-                definition: w.definition,
-                date_added: w.dateAdded,
-                date_modified: w.dateModified || new Date().toISOString()
-            }));
-            
-            const { error } = await supabaseClient
-                .from('dictionary')
-                .upsert(dataToSave, { onConflict: 'id' });
-            
-            if (error) throw error;
-        } catch(e) {
-            console.error('Save error:', e);
-        }
+    if(!dictionary || dictionary.length===0){
+        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+        return;
+    }
+    
+    const wordOfDay = getWordOfTheDay();
+    if (wordOfDay) {
+        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
     }
 }
 
-async function saveQuickAddList() {
-    SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
-    
-    if (isSupabaseConfigured && supabaseInitialized) {
-        try {
-            await supabaseClient.from('quick_add_list').delete().neq('id', 0);
-            
-            if (quickAddList.length > 0) {
-                const dataToSave = quickAddList.map(word => ({ word }));
-                const { error } = await supabaseClient
-                    .from('quick_add_list')
-                    .insert(dataToSave);
-                
-                if (error) throw error;
-            }
-        } catch(e) {
-            console.error('Save quick list error:', e);
-        }
+function getWordOfTheDay() {
+    if (!dictionary || dictionary.length === 0) {
+        return null;
     }
-}
-
-async function authenticateAdmin() {
-    if (!isSupabaseConfigured) return;
     
-    try {
-        const { data, error } = await supabaseClient.auth.signInAnonymously();
-        if (error) throw error;
-        console.log('Admin authenticated');
-    } catch(e) {
-        console.error('Auth error:', e);
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(today.getDate()).padStart(2, '0');
+    
+    let hash = 0;
+    for (let i = 0; i < dateString.length; i++) {
+        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
+        hash = hash & hash;
     }
+    
+    const index = Math.abs(hash) % dictionary.length;
+    return dictionary[index];
 }
 
 // ... rest of your existing JavaScript functions ...
-
     </script>
 </body>
 </html>
