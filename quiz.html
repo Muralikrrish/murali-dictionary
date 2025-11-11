@@ -383,7 +383,7 @@
         </div>
 
         <div class="progress-container">
-            <span id="question-count">Question 1/3</span>
+            <span id="question-count">Question 1/10</span>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
@@ -417,7 +417,7 @@
 
         <div class="results-screen" id="results-screen">
             <h2>Quiz Complete! 🎉</h2>
-            <div class="score-display" id="final-score">0/3</div>
+            <div class="score-display" id="final-score">0/10</div>
             <div class="encouragement" id="encouragement-message">Keep practicing!</div>
             <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
         </div>
@@ -434,6 +434,7 @@
         let selectedAnswer = null;
         let answerSubmitted = false;
         let questionsAnswered = 0;
+        const TOTAL_QUESTIONS = 10;
 
         // Initialize quiz
         async function initQuiz() {
@@ -453,13 +454,17 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                questions = await response.json();
-                console.log('Questions loaded:', questions);
+                const allQuestions = await response.json();
+                console.log('All questions loaded:', allQuestions);
 
-                if (questions.length === 0) {
+                if (allQuestions.length === 0) {
                     showError('No questions found in the database. Please add questions to the quiz_questions table.');
                     return;
                 }
+
+                // Select 10 random questions
+                questions = getRandomQuestions(allQuestions, TOTAL_QUESTIONS);
+                console.log('Selected 10 random questions:', questions);
 
                 // Hide loading, show quiz content
                 document.getElementById('loading-message').style.display = 'none';
@@ -470,6 +475,13 @@
                 console.error('Error fetching questions:', error);
                 showError(`Failed to load questions: ${error.message}. Please check your Supabase configuration and RLS policies.`);
             }
+        }
+
+        // Function to get random questions
+        function getRandomQuestions(allQuestions, count) {
+            // Create a copy of the array to avoid modifying the original
+            const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
         }
 
         function showError(message) {
@@ -489,9 +501,9 @@
             document.getElementById('difficulty-badge').textContent = question.difficulty;
             document.getElementById('difficulty-badge').className = `difficulty-badge badge-${question.difficulty.toLowerCase()}`;
             
-            // Update progress - Only show completed questions in progress
-            document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${questions.length}`;
-            document.getElementById('progress-fill').style.width = `${(questionsAnswered / questions.length) * 100}%`;
+            // Update progress
+            document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
+            document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
             // Create options
             const optionsGrid = document.getElementById('options-grid');
@@ -541,7 +553,7 @@
 
             // Increment questions answered and update progress
             questionsAnswered++;
-            document.getElementById('progress-fill').style.width = `${(questionsAnswered / questions.length) * 100}%`;
+            document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
             // Show explanation
             document.getElementById('explanation-text').textContent = question.explanation;
@@ -578,10 +590,10 @@
             document.getElementById('progress-fill').style.width = '100%';
             document.getElementById('question-card').style.display = 'none';
             document.getElementById('results-screen').style.display = 'block';
-            document.getElementById('final-score').textContent = `${score}/${questions.length}`;
+            document.getElementById('final-score').textContent = `${score}/${TOTAL_QUESTIONS}`;
             
             // Encouragement message
-            const percentage = (score / questions.length) * 100;
+            const percentage = (score / TOTAL_QUESTIONS) * 100;
             let message = '';
             if (percentage >= 80) message = 'Outstanding! You\'re a vocabulary master! 🎯';
             else if (percentage >= 60) message = 'Great job! You\'re getting there! 💪';
