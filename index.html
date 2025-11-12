@@ -389,6 +389,63 @@
             border-left: 4px solid var(--error-color);
         }
 
+        /* NEW: Word of the Day Progressive Disclosure Styles */
+        .word-definition-preview {
+            position: relative;
+            max-height: 120px;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+        }
+
+        .word-definition-preview.expanded {
+            max-height: none;
+        }
+
+        .definition-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, var(--bg-secondary));
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .word-definition-preview.expanded .definition-fade {
+            opacity: 0;
+        }
+
+        .read-more-btn {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: var(--bg-primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(200, 121, 65, 0.3);
+        }
+
+        .read-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(200, 121, 65, 0.4);
+        }
+
+        .read-more-btn .icon {
+            transition: transform 0.3s ease;
+        }
+
+        .read-more-btn.expanded .icon {
+            transform: rotate(180deg);
+        }
+
         /* Mobile Optimizations for Lexicon Quest */
         @media (max-width: 768px) {
             .quiz-container {
@@ -455,6 +512,15 @@
             .skeleton-line.long {
                 width: 100%;
             }
+
+            /* Mobile optimization for word preview */
+            .word-definition-preview {
+                max-height: 100px;
+            }
+            
+            .definition-fade {
+                height: 40px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -510,6 +576,20 @@
             .skeleton-line {
                 height: 12px;
                 margin-bottom: 8px;
+            }
+
+            /* Mobile optimization for word preview */
+            .word-definition-preview {
+                max-height: 80px;
+            }
+            
+            .definition-fade {
+                height: 30px;
+            }
+            
+            .read-more-btn {
+                padding: 8px 16px;
+                font-size: 13px;
             }
         }
 
@@ -1069,6 +1149,61 @@ function checkQuizAnswer() {
 
 function continueToFullQuiz() {
     window.location.href = 'quiz.html';
+}
+
+// NEW: Progressive Disclosure for Word of the Day
+function createExpandableDefinition(definitionHTML) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = definitionHTML;
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Check if definition is long enough to need expansion
+    const isLongDefinition = textContent.length > 200 || definitionHTML.includes('<h1') || definitionHTML.includes('<h2') || definitionHTML.includes('<h3') || definitionHTML.includes('<ul') || definitionHTML.includes('<ol');
+    
+    if (!isLongDefinition) {
+        return `
+            <div class="word-entry">
+                <div class="word-definition">
+                    ${definitionHTML}
+                </div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="word-entry">
+            <div class="word-definition-preview">
+                <div class="word-definition">
+                    ${definitionHTML}
+                </div>
+                <div class="definition-fade"></div>
+            </div>
+            <button class="read-more-btn" onclick="toggleDefinitionExpansion(this)">
+                <span>Read more</span>
+                <span class="icon">▼</span>
+            </button>
+        </div>
+    `;
+}
+
+function toggleDefinitionExpansion(button) {
+    const preview = button.previousElementSibling;
+    const isExpanded = preview.classList.contains('expanded');
+    
+    if (isExpanded) {
+        preview.classList.remove('expanded');
+        button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
+        button.classList.remove('expanded');
+        
+        // Scroll to keep the button in view
+        setTimeout(() => {
+            button.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
+    } else {
+        preview.classList.add('expanded');
+        button.innerHTML = '<span>Read less</span><span class="icon">▼</span>';
+        button.classList.add('expanded');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1695,7 +1830,7 @@ function displayWordOfTheDay(){
     
     const wordOfDay = getWordOfTheDay();
     if (wordOfDay) {
-        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${wordOfDay.definition}</div></div>`;
+        rd.innerHTML = createExpandableDefinition(wordOfDay.definition);
     }
 }
 
@@ -1704,7 +1839,7 @@ function showNewRandomWord(){
         const rd=document.getElementById('randomWordDisplay');
         const ri=Math.floor(Math.random()*dictionary.length);
         const rw=dictionary[ri];
-        rd.innerHTML=`<div class="word-entry"><div class="word-definition">${rw.definition}</div></div>`;
+        rd.innerHTML = createExpandableDefinition(rw.definition);
         document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
     }
 }
