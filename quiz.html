@@ -51,7 +51,7 @@
         .quiz-header {
             background: var(--bg-secondary);
             color: var(--text-primary);
-            padding: 40px 30px 30px 30px;
+            padding: 40px 30px 20px 30px;
             text-align: center;
             position: relative;
             border-bottom: 1px solid var(--border-color);
@@ -96,38 +96,6 @@
 
         .question-card {
             padding: 30px;
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .difficulty-badge {
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            border: 1px solid;
-        }
-
-        .badge-easy { 
-            background: rgba(123, 200, 127, 0.1); 
-            color: #7bc87f; 
-            border-color: rgba(123, 200, 127, 0.3);
-        }
-        .badge-medium { 
-            background: rgba(243, 156, 18, 0.1); 
-            color: #f39c12; 
-            border-color: rgba(243, 156, 18, 0.3);
-        }
-        .badge-hard { 
-            background: rgba(217, 83, 79, 0.1); 
-            color: #d9534f; 
-            border-color: rgba(217, 83, 79, 0.3);
         }
 
         .question-text {
@@ -308,15 +276,6 @@
             100% { background-position: 200% 0; }
         }
 
-        /* Progress indicator above title */
-        .quiz-progress-top {
-            text-align: center;
-            margin-bottom: 15px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
         /* Mobile-first Responsive Design - Optimized */
         @media (max-width: 768px) {
             body {
@@ -328,7 +287,7 @@
             }
             
             .quiz-header {
-                padding: 30px 20px 20px 20px;
+                padding: 30px 20px 15px 20px;
             }
             
             .quiz-title {
@@ -408,7 +367,7 @@
 
         @media (max-width: 480px) {
             .quiz-header {
-                padding: 25px 15px 15px 15px;
+                padding: 25px 15px 12px 15px;
             }
             
             .quiz-title {
@@ -466,8 +425,6 @@
 <body>
     <div class="quiz-container">
         <div class="quiz-header">
-            <!-- Progress indicator above title -->
-            <div class="quiz-progress-top" id="quiz-progress-top">Question 1 of 10</div>
             <h1 class="quiz-title">Lexicon Quest</h1>
         </div>
 
@@ -490,9 +447,6 @@
             <div class="error-message" id="error-message" style="display: none;"></div>
             
             <div id="quiz-content" style="display: none;">
-                <div class="question-header">
-                    <span class="difficulty-badge" id="difficulty-badge">Medium</span>
-                </div>
                 <div class="question-text" id="question-text">
                     Loading question...
                 </div>
@@ -601,12 +555,9 @@
 
             const question = questions[currentQuestion];
             document.getElementById('question-text').textContent = question.question_text;
-            document.getElementById('difficulty-badge').textContent = question.difficulty;
-            document.getElementById('difficulty-badge').className = `difficulty-badge badge-${question.difficulty.toLowerCase()}`;
             
-            // Update progress indicators
+            // Update progress indicators (removed the duplicate top progress indicator)
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
-            document.getElementById('quiz-progress-top').textContent = `Question ${currentQuestion + 1} of ${TOTAL_QUESTIONS}`;
             document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
             // Create options with randomization
