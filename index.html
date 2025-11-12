@@ -118,7 +118,7 @@
         .loading-subtext{font-size:14px;color:var(--text-muted);margin-top:-12px}
         .hero-section{background:linear-gradient(135deg,var(--bg-secondary) 0%,#1f1f1f 100%);padding:40px 30px;text-align:center;color:var(--text-primary)}
         .hero-title{font-size:48px;font-weight:700;margin-bottom:20px;text-shadow:0 2px 8px rgba(200,121,65,0.3);background:linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.02em}
-        .hero-subtitle{font-size:20px;margin-bottom:40px;opacity:0.85}
+        .hero-subtitle{font-size:20px;margin-bottom:20px;opacity:0.85}
         .search-container{max-width:550px;margin:0 auto;position:relative}
         .search-box{position:relative;background:var(--bg-secondary);border-radius:50px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);border:1px solid var(--border-color);transition:all 0.3s ease}
         .search-box:focus-within{box-shadow:0 8px 32px rgba(200,121,65,0.4);border-color:var(--accent-primary)}
@@ -247,25 +247,6 @@
             overflow: hidden;
             border: 1px solid var(--border-color);
             margin-bottom: 24px;
-        }
-
-        .quiz-header {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: 30px 30px 20px 30px;
-            text-align: center;
-            position: relative;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .quiz-title {
-            font-size: 48px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
         }
 
         .question-card {
@@ -478,14 +459,6 @@
                 border-radius: 16px;
             }
             
-            .quiz-header {
-                padding: 25px 20px 15px 20px;
-            }
-            
-            .quiz-title {
-                font-size: 36px;
-            }
-            
             .question-card {
                 padding: 20px;
             }
@@ -550,14 +523,6 @@
         }
 
         @media (max-width: 480px) {
-            .quiz-header {
-                padding: 20px 15px 12px 15px;
-            }
-            
-            .quiz-title {
-                font-size: 28px;
-            }
-            
             .question-card {
                 padding: 15px;
             }
@@ -659,10 +624,6 @@
             
             <!-- Lexicon Quest Section - Single Card Design -->
             <div class="quiz-container" id="quizPreviewSection">
-                <div class="quiz-header">
-                    <h1 class="quiz-title">Lexicon Quest</h1>
-                </div>
-
                 <div class="question-card">
                     <div class="quiz-loading" id="quizLoadingMessage">
                         <div class="skeleton-loading">
@@ -1202,6 +1163,7 @@ function createExpandableDefinition(definitionHTML) {
             <div class="word-definition-preview">
                 <div class="word-definition">
                     ${definitionHTML}
+                    <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
                 </div>
                 <div class="definition-fade"></div>
             </div>
@@ -1211,7 +1173,6 @@ function createExpandableDefinition(definitionHTML) {
                     <span class="icon">▼</span>
                 </button>
             </div>
-            <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
         </div>
     `;
 }
