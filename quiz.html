@@ -47,28 +47,87 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Simplified Modern Header */
+        /* Updated Header to match index.html hero title size */
         .quiz-header {
             background: var(--bg-secondary);
             color: var(--text-primary);
-            padding: 30px 30px 20px 30px;
+            padding: 40px 30px 30px 30px;
             text-align: center;
             position: relative;
             border-bottom: 1px solid var(--border-color);
         }
 
         .quiz-title {
-            font-size: 2.5rem;
+            font-size: 48px;
             font-weight: 700;
             background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background: var(--bg-tertiary);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 10px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            width: 0%;
+            transition: width 0.3s ease;
         }
 
         .question-card {
             padding: 30px;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .difficulty-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border: 1px solid;
+        }
+
+        .badge-easy { 
+            background: rgba(123, 200, 127, 0.1); 
+            color: #7bc87f; 
+            border-color: rgba(123, 200, 127, 0.3);
+        }
+        .badge-medium { 
+            background: rgba(243, 156, 18, 0.1); 
+            color: #f39c12; 
+            border-color: rgba(243, 156, 18, 0.3);
+        }
+        .badge-hard { 
+            background: rgba(217, 83, 79, 0.1); 
+            color: #d9534f; 
+            border-color: rgba(217, 83, 79, 0.3);
         }
 
         .question-text {
@@ -152,26 +211,27 @@
             margin-top: 25px;
         }
 
-        .btn {
-            padding: 14px 25px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+        /* Updated Next Question button to match "Show another word" button style */
+        .btn-next {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            flex: 1;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(200,121,65,0.4);
+            border-color: var(--accent-primary);
+            width: auto;
+            display: block;
+            margin: 20px auto 0 auto;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            color: var(--bg-primary);
-            box-shadow: 0 4px 12px rgba(200, 121, 65, 0.3);
-        }
-
-        .btn-primary:hover {
+        .btn-next:hover {
+            box-shadow: 0 8px 24px rgba(200,121,65,0.5);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(200, 121, 65, 0.4);
         }
 
         .results-screen {
@@ -205,28 +265,59 @@
             border-left: 4px solid var(--error-color);
         }
 
-        .loading {
+        /* Skeleton Loading Animation (replaced circle spinner) */
+        .skeleton-loading {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .skeleton-line {
+            height: 16px;
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.medium { width: 80%; }
+        .skeleton-line.long { width: 95%; }
+        .skeleton-line.extra-long { width: 100%; height: 24px; margin-bottom: 16px; }
+
+        .skeleton-title {
+            height: 28px;
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            width: 40%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1 }
+            50% { opacity: 0.5 }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Progress indicator above title */
+        .quiz-progress-top {
             text-align: center;
-            padding: 40px;
+            margin-bottom: 15px;
             color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
-        .loading-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--accent-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Mobile-first Responsive Design */
+        /* Mobile-first Responsive Design - Optimized */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -237,11 +328,19 @@
             }
             
             .quiz-header {
-                padding: 25px 20px 15px 20px;
+                padding: 30px 20px 20px 20px;
             }
             
             .quiz-title {
-                font-size: 2.2rem;
+                font-size: 36px; /* Matches index.html mobile size */
+            }
+            
+            .progress-container {
+                padding: 12px 20px;
+            }
+            
+            #question-count {
+                font-size: 0.9rem;
             }
             
             .question-card {
@@ -252,11 +351,15 @@
                 font-size: 1.1rem;
                 padding: 15px;
                 margin-bottom: 20px;
+                line-height: 1.4;
             }
             
             .option-btn {
                 padding: 15px;
                 font-size: 0.95rem;
+                min-height: 60px;
+                display: flex;
+                align-items: center;
             }
             
             .action-buttons {
@@ -264,9 +367,10 @@
                 gap: 10px;
             }
             
-            .btn {
+            .btn-next {
                 width: 100%;
                 padding: 12px 20px;
+                font-size: 14px;
             }
             
             .results-screen {
@@ -280,15 +384,35 @@
             .encouragement {
                 font-size: 1.1rem;
             }
+
+            /* Mobile-optimized skeleton loading */
+            .skeleton-loading {
+                padding: 20px;
+            }
+            
+            .skeleton-title {
+                height: 24px;
+                margin-bottom: 15px;
+                width: 60%;
+            }
+            
+            .skeleton-line {
+                height: 14px;
+                margin-bottom: 10px;
+            }
+            
+            .skeleton-line.long {
+                width: 100%;
+            }
         }
 
         @media (max-width: 480px) {
             .quiz-header {
-                padding: 20px 15px 12px 15px;
+                padding: 25px 15px 15px 15px;
             }
             
             .quiz-title {
-                font-size: 2rem;
+                font-size: 28px; /* Further reduced for very small screens */
             }
             
             .question-card {
@@ -298,6 +422,7 @@
             .question-text {
                 font-size: 1rem;
                 padding: 12px;
+                line-height: 1.4;
             }
             
             .options-grid {
@@ -307,6 +432,33 @@
             .option-btn {
                 padding: 12px;
                 font-size: 0.9rem;
+                min-height: 55px;
+            }
+            
+            .explanation-box {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+            
+            .btn-next {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+            
+            /* Further mobile optimization for skeleton */
+            .skeleton-loading {
+                padding: 15px;
+            }
+            
+            .skeleton-title {
+                height: 20px;
+                margin-bottom: 12px;
+                width: 70%;
+            }
+            
+            .skeleton-line {
+                height: 12px;
+                margin-bottom: 8px;
             }
         }
     </style>
@@ -314,17 +466,33 @@
 <body>
     <div class="quiz-container">
         <div class="quiz-header">
+            <!-- Progress indicator above title -->
+            <div class="quiz-progress-top" id="quiz-progress-top">Question 1 of 10</div>
             <h1 class="quiz-title">Lexicon Quest</h1>
         </div>
 
+        <div class="progress-container">
+            <span id="question-count">Question 1/10</span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
         <div class="question-card" id="question-card">
-            <div class="loading" id="loading-message">
-                <div class="loading-spinner"></div>
-                Loading questions...
+            <!-- Skeleton Loading Animation (replaced circle spinner) -->
+            <div class="skeleton-loading" id="loading-message">
+                <div class="skeleton-title"></div>
+                <div class="skeleton-line extra-long"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line long"></div>
             </div>
             <div class="error-message" id="error-message" style="display: none;"></div>
             
             <div id="quiz-content" style="display: none;">
+                <div class="question-header">
+                    <span class="difficulty-badge" id="difficulty-badge">Medium</span>
+                </div>
                 <div class="question-text" id="question-text">
                     Loading question...
                 </div>
@@ -335,7 +503,7 @@
                     <strong>Explanation:</strong> <span id="explanation-text"></span>
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
+                    <button class="btn-next" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
                 </div>
             </div>
         </div>
@@ -344,12 +512,12 @@
             <h2>Quiz Complete! 🎉</h2>
             <div class="score-display" id="final-score">0/10</div>
             <div class="encouragement" id="encouragement-message">Keep practicing!</div>
-            <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
+            <button class="btn-next" onclick="restartQuiz()">Try Again</button>
         </div>
     </div>
 
     <script>
-        // Supabase configuration
+        // Supabase configuration - use the same as your main site
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
         
@@ -433,12 +601,19 @@
 
             const question = questions[currentQuestion];
             document.getElementById('question-text').textContent = question.question_text;
+            document.getElementById('difficulty-badge').textContent = question.difficulty;
+            document.getElementById('difficulty-badge').className = `difficulty-badge badge-${question.difficulty.toLowerCase()}`;
+            
+            // Update progress indicators
+            document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
+            document.getElementById('quiz-progress-top').textContent = `Question ${currentQuestion + 1} of ${TOTAL_QUESTIONS}`;
+            document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
             // Create options with randomization
             const optionsGrid = document.getElementById('options-grid');
             optionsGrid.innerHTML = '';
             
-            // Make sure options is an array (jsonb field)
+            // Make sure options is an array
             const optionsArray = Array.isArray(question.options) ? question.options : JSON.parse(question.options || '[]');
             
             // Store the original correct answer before shuffling
@@ -495,8 +670,9 @@
                 score++;
             }
 
-            // Increment questions answered
+            // Increment questions answered and update progress
             questionsAnswered++;
+            document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
             // Show explanation
             document.getElementById('explanation-text').textContent = question.explanation;
@@ -529,6 +705,8 @@
         }
 
         function showResults() {
+            // Set progress bar to 100% when showing results
+            document.getElementById('progress-fill').style.width = '100%';
             document.getElementById('question-card').style.display = 'none';
             document.getElementById('results-screen').style.display = 'block';
             document.getElementById('final-score').textContent = `${score}/${TOTAL_QUESTIONS}`;
