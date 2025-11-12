@@ -259,7 +259,7 @@
         }
 
         .quiz-title {
-            font-size: 2.5rem;
+            font-size: 48px;
             font-weight: 700;
             background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
             -webkit-background-clip: text;
@@ -348,27 +348,6 @@
             margin-top: 25px;
         }
 
-        .quiz-result {
-            text-align: center;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-weight: 600;
-            display: none;
-        }
-
-        .quiz-result.correct {
-            background: rgba(123, 200, 127, 0.1);
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
-        }
-
-        .quiz-result.incorrect {
-            background: rgba(217, 83, 79, 0.1);
-            color: var(--error-color);
-            border: 1px solid var(--error-color);
-        }
-
         .quiz-loading {
             text-align: center;
             padding: 40px;
@@ -396,7 +375,7 @@
             }
             
             .quiz-title {
-                font-size: 2.2rem;
+                font-size: 36px;
             }
             
             .question-card {
@@ -432,9 +411,24 @@
                 font-size: 0.9rem;
             }
             
-            .quiz-result {
-                padding: 12px;
-                font-size: 0.9rem;
+            /* Mobile-optimized skeleton loading */
+            .skeleton-loading {
+                padding: 20px;
+            }
+            
+            .skeleton-title {
+                height: 24px;
+                margin-bottom: 15px;
+                width: 60%;
+            }
+            
+            .skeleton-line {
+                height: 14px;
+                margin-bottom: 10px;
+            }
+            
+            .skeleton-line.long {
+                width: 100%;
             }
         }
 
@@ -444,7 +438,7 @@
             }
             
             .quiz-title {
-                font-size: 2rem;
+                font-size: 28px;
             }
             
             .question-card {
@@ -475,6 +469,22 @@
             .btn {
                 padding: 12px 18px;
                 font-size: 0.9rem;
+            }
+            
+            /* Further mobile optimization for skeleton */
+            .skeleton-loading {
+                padding: 15px;
+            }
+            
+            .skeleton-title {
+                height: 20px;
+                margin-bottom: 12px;
+                width: 70%;
+            }
+            
+            .skeleton-line {
+                height: 12px;
+                margin-bottom: 8px;
             }
         }
 
@@ -541,7 +551,6 @@
                         <div class="options-grid" id="quizOptionsGrid">
                             <!-- Quiz options will be inserted here -->
                         </div>
-                        <div class="quiz-result" id="quizResult"></div>
                         <div class="explanation-box" id="quizExplanation">
                             <strong>Explanation:</strong> <span id="quizExplanationText"></span>
                         </div>
@@ -747,8 +756,9 @@ async function initializeSupabase() {
         isSupabaseConfigured = true;
         supabaseInitialized = true;
         
-        await syncWithSupabase();
+        // Load quiz questions immediately without waiting for dictionary sync
         await loadQuizQuestions();
+        await syncWithSupabase();
     } catch(error) {
         console.error('Supabase init error:', error);
         isSupabaseConfigured = false;
@@ -867,11 +877,24 @@ async function authenticateAdmin() {
     }
 }
 
-// Quiz Functions
+// Quiz Functions - Optimized for faster loading
 async function loadQuizQuestions() {
     try {
         console.log('Loading quiz questions...');
         
+        // Try to load from cache first for faster display
+        const cachedQuestions = SafeStorage.getItem('cachedQuizQuestions');
+        if (cachedQuestions) {
+            quizQuestions = JSON.parse(cachedQuestions);
+            console.log('Loaded quiz questions from cache:', quizQuestions.length);
+            
+            // Show quiz immediately if we have cached questions
+            document.getElementById('quizLoadingMessage').style.display = 'none';
+            document.getElementById('quizQuestion').style.display = 'block';
+            displayQuizQuestion();
+        }
+        
+        // Always fetch fresh data in background
         const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_questions?select=*`, {
             headers: {
                 'apikey': SUPABASE_ANON_KEY,
@@ -884,22 +907,37 @@ async function loadQuizQuestions() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        quizQuestions = await response.json();
-        console.log('Quiz questions loaded:', quizQuestions);
+        const freshQuestions = await response.json();
+        console.log('Fresh quiz questions loaded:', freshQuestions.length);
 
-        if (quizQuestions.length === 0) {
+        if (freshQuestions.length === 0) {
             showQuizError('No quiz questions found in the database.');
             return;
         }
 
-        // Hide loading, show quiz content
-        document.getElementById('quizLoadingMessage').style.display = 'none';
-        document.getElementById('quizQuestion').style.display = 'block';
+        // Update cache with fresh data
+        quizQuestions = freshQuestions;
+        SafeStorage.setItem('cachedQuizQuestions', JSON.stringify(freshQuestions));
         
-        displayQuizQuestion();
+        // If we didn't have cached data, show the quiz now
+        if (!cachedQuestions) {
+            document.getElementById('quizLoadingMessage').style.display = 'none';
+            document.getElementById('quizQuestion').style.display = 'block';
+            displayQuizQuestion();
+        } else {
+            // If we had cached data, just update the current question if needed
+            displayQuizQuestion();
+        }
     } catch (error) {
         console.error('Error loading quiz questions:', error);
-        showQuizError(`Failed to load quiz: ${error.message}. Please check your Supabase configuration.`);
+        // If we have cached questions, use them even if fetch fails
+        if (quizQuestions.length > 0) {
+            document.getElementById('quizLoadingMessage').style.display = 'none';
+            document.getElementById('quizQuestion').style.display = 'block';
+            displayQuizQuestion();
+        } else {
+            showQuizError(`Failed to load quiz: ${error.message}. Please check your Supabase configuration.`);
+        }
     }
 }
 
@@ -951,7 +989,6 @@ function displayQuizQuestion() {
 
     // Reset UI state
     document.getElementById('quizExplanation').classList.remove('show');
-    document.getElementById('quizResult').style.display = 'none';
     document.getElementById('quizContinueBtn').style.display = 'none';
     quizAnswered = false;
     selectedQuizAnswer = null;
@@ -976,22 +1013,11 @@ function checkQuizAnswer() {
 
     // Use the current correct answer index (after shuffling)
     const isCorrect = selectedQuizAnswer === currentQuizQuestion.currentCorrectAnswer;
-    const resultDiv = document.getElementById('quizResult');
-    
-    if (isCorrect) {
-        resultDiv.textContent = 'Correct! 🎉';
-        resultDiv.className = 'quiz-result correct';
-    } else {
-        resultDiv.textContent = 'Incorrect! 😞';
-        resultDiv.className = 'quiz-result incorrect';
-    }
-    
-    resultDiv.style.display = 'block';
-    
+
     // Show explanation
     document.getElementById('quizExplanationText').textContent = currentQuizQuestion.explanation;
     document.getElementById('quizExplanation').classList.add('show');
-    
+
     // Show continue button
     document.getElementById('quizContinueBtn').style.display = 'block';
     
@@ -1065,7 +1091,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    setTimeout(initializeSupabase, hasLocalData ? 100 : 10);
+    // Initialize Supabase immediately for faster loading
+    setTimeout(initializeSupabase, 0);
 });
 
 function handleMarkdownFormatting(e) {
