@@ -67,31 +67,6 @@
             letter-spacing: -0.02em;
         }
 
-        .progress-container {
-            background: var(--bg-tertiary);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .progress-bar {
-            flex-grow: 1;
-            height: 6px;
-            background: var(--border-color);
-            border-radius: 10px;
-            margin: 0 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
         .question-card {
             padding: 30px;
         }
@@ -301,14 +276,6 @@
                 font-size: 2.2rem;
             }
             
-            .progress-container {
-                padding: 12px 20px;
-            }
-            
-            #question-count {
-                font-size: 0.9rem;
-            }
-            
             .question-card {
                 padding: 20px;
             }
@@ -380,13 +347,6 @@
     <div class="quiz-container">
         <div class="quiz-header">
             <h1 class="quiz-title">Lexicon Quest</h1>
-        </div>
-
-        <div class="progress-container">
-            <span id="question-count">Question 1/10</span>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
         </div>
 
         <div class="question-card" id="question-card">
@@ -510,10 +470,6 @@
             document.getElementById('question-text').textContent = question.question_text;
             document.getElementById('difficulty-badge').textContent = question.difficulty;
             document.getElementById('difficulty-badge').className = `difficulty-badge badge-${question.difficulty.toLowerCase()}`;
-            
-            // Update progress
-            document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
-            document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
             // Create options with randomization
             const optionsGrid = document.getElementById('options-grid');
@@ -576,9 +532,8 @@
                 score++;
             }
 
-            // Increment questions answered and update progress
+            // Increment questions answered
             questionsAnswered++;
-            document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
             // Show explanation
             document.getElementById('explanation-text').textContent = question.explanation;
@@ -611,8 +566,6 @@
         }
 
         function showResults() {
-            // Set progress bar to 100% when showing results
-            document.getElementById('progress-fill').style.width = '100%';
             document.getElementById('question-card').style.display = 'none';
             document.getElementById('results-screen').style.display = 'block';
             document.getElementById('final-score').textContent = `${score}/${TOTAL_QUESTIONS}`;
