@@ -71,38 +71,6 @@
             padding: 30px;
         }
 
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .difficulty-badge {
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            border: 1px solid;
-        }
-
-        .badge-easy { 
-            background: rgba(123, 200, 127, 0.1); 
-            color: #7bc87f; 
-            border-color: rgba(123, 200, 127, 0.3);
-        }
-        .badge-medium { 
-            background: rgba(243, 156, 18, 0.1); 
-            color: #f39c12; 
-            border-color: rgba(243, 156, 18, 0.3);
-        }
-        .badge-hard { 
-            background: rgba(217, 83, 79, 0.1); 
-            color: #d9534f; 
-            border-color: rgba(217, 83, 79, 0.3);
-        }
-
         .question-text {
             font-size: 1.3rem;
             font-weight: 600;
@@ -357,9 +325,6 @@
             <div class="error-message" id="error-message" style="display: none;"></div>
             
             <div id="quiz-content" style="display: none;">
-                <div class="question-header">
-                    <span class="difficulty-badge" id="difficulty-badge">Medium</span>
-                </div>
                 <div class="question-text" id="question-text">
                     Loading question...
                 </div>
@@ -384,7 +349,7 @@
     </div>
 
     <script>
-        // Supabase configuration - use the same as your main site
+        // Supabase configuration
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
         
@@ -468,14 +433,12 @@
 
             const question = questions[currentQuestion];
             document.getElementById('question-text').textContent = question.question_text;
-            document.getElementById('difficulty-badge').textContent = question.difficulty;
-            document.getElementById('difficulty-badge').className = `difficulty-badge badge-${question.difficulty.toLowerCase()}`;
 
             // Create options with randomization
             const optionsGrid = document.getElementById('options-grid');
             optionsGrid.innerHTML = '';
             
-            // Make sure options is an array
+            // Make sure options is an array (jsonb field)
             const optionsArray = Array.isArray(question.options) ? question.options : JSON.parse(question.options || '[]');
             
             // Store the original correct answer before shuffling
