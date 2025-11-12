@@ -47,26 +47,33 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Updated Header to match index.html hero title size */
+        /* Updated Header to exactly match index.html hero title */
         .quiz-header {
-            background: var(--bg-secondary);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #1f1f1f 100%);
             color: var(--text-primary);
-            padding: 40px 30px 20px 30px;
+            padding: 40px 30px 30px 30px;
             text-align: center;
             position: relative;
-            border-bottom: 1px solid var(--border-color);
         }
 
         .quiz-title {
             font-size: 48px;
             font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 8px rgba(200,121,65,0.3);
             background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             letter-spacing: -0.02em;
             line-height: 1.2;
+        }
+
+        .quiz-subtitle {
+            font-size: 20px;
             margin-bottom: 10px;
+            opacity: 0.85;
+            color: var(--text-primary);
         }
 
         .progress-container {
@@ -287,11 +294,15 @@
             }
             
             .quiz-header {
-                padding: 30px 20px 15px 20px;
+                padding: 30px 20px 20px 20px;
             }
             
             .quiz-title {
                 font-size: 36px; /* Matches index.html mobile size */
+            }
+            
+            .quiz-subtitle {
+                font-size: 18px;
             }
             
             .progress-container {
@@ -367,11 +378,15 @@
 
         @media (max-width: 480px) {
             .quiz-header {
-                padding: 25px 15px 12px 15px;
+                padding: 25px 15px 15px 15px;
             }
             
             .quiz-title {
                 font-size: 28px; /* Further reduced for very small screens */
+            }
+            
+            .quiz-subtitle {
+                font-size: 16px;
             }
             
             .question-card {
@@ -426,6 +441,7 @@
     <div class="quiz-container">
         <div class="quiz-header">
             <h1 class="quiz-title">Lexicon Quest</h1>
+            <p class="quiz-subtitle">Test your vocabulary knowledge</p>
         </div>
 
         <div class="progress-container">
@@ -556,7 +572,7 @@
             const question = questions[currentQuestion];
             document.getElementById('question-text').textContent = question.question_text;
             
-            // Update progress indicators (removed the duplicate top progress indicator)
+            // Update progress indicators
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
             document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
