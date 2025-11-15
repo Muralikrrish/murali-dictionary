@@ -295,7 +295,6 @@
         /* Vocabulary Quiz Styles */
         .quiz-container {
             margin-bottom: 30px;
-            width: 100%;
         }
 
         .question-text {
@@ -769,10 +768,6 @@
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 6px;
-            }
-            
             .hero-title {
                 font-size: 2rem;
             }
@@ -875,7 +870,6 @@
             /* Optimize quiz for mobile */
             .quiz-container {
                 margin-bottom: 20px;
-                width: 100%;
             }
             
             .question-text {
@@ -911,16 +905,35 @@
                 margin-top: 20px;
             }
             
-            /* Optimize interactive cards for mobile - make width 100% */
+            /* REMOVE SIDE PADDING FOR VOCABULARY QUIZ AND WORD SPOTLIGHT */
+            /* Vocabulary Quiz Section - Remove side padding */
+            .modern-section:nth-of-type(2) .interactive-card {
+                margin-left: -15px;
+                margin-right: -15px;
+                width: calc(100% + 30px);
+                border-radius: 0;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            /* Word Spotlight Section - Remove side padding */
+            .modern-section:nth-of-type(3) .interactive-card {
+                margin-left: -15px;
+                margin-right: -15px;
+                width: calc(100% + 30px);
+                border-radius: 0;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            /* Optimize interactive cards for mobile */
             .interactive-card {
                 padding: 20px 15px;
-                width: 100%;
             }
             
             /* Improve container padding for mobile */
             .container {
                 padding: 0 15px;
-                width: 100%;
             }
         }
 
