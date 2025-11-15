@@ -51,7 +51,7 @@
             padding: 80px 0 100px;
             text-align: center;
             position: relative;
-            overflow: hidden;
+            overflow: visible; /* Changed from hidden to visible */
         }
 
         .hero-section::before {
@@ -1509,8 +1509,8 @@
             } else {
                 let html = '';
                 matches.forEach(item => {
+                    // FIXED: Remove the redundant word title since it's already in the definition
                     html += `<div class="interactive-card">
-                                <h3 class="word-title">${item.word}</h3>
                                 <div class="word-definition">${item.definition}</div>
                              </div>`;
                 });
