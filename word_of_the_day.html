@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word of the Day - Murali's Dictionary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for consistent theming */
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #242424;
+            --bg-tertiary: #2a2a2a;
+            --accent-primary: #c87941;
+            --accent-secondary: #d89057;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b8b8b8;
+            --text-muted: #666;
+            --border-color: #3d3d3d;
+            --success-color: #7bc87f;
+            --warning-color: #f39c12;
+            --error-color: #d9534f;
+        }
+
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Google Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif}
+        body{background:var(--bg-primary);color:var(--text-primary);line-height:1.6;font-family:'Google Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        @keyframes shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
+        
+        /* Enhanced Grid Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content.full-width {
+                grid-template-columns: minmax(0, 1fr);
+                max-width: 900px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Enhanced container for better spacing */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 60px 40px;
+            }
+        }
+        
+        /* Skeleton Loading Styles */
+        .skeleton-loading {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .skeleton-line {
+            height: 16px;
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.medium { width: 80%; }
+        .skeleton-line.long { width: 95%; }
+        .skeleton-line.extra-long { width: 100%; height: 24px; margin-bottom: 16px; }
+
+        .skeleton-word {
+            height: 32px;
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            width: 50%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .loading-container{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:24px}
+        .loading-spinner{width:48px;height:48px;border:4px solid var(--border-color);border-top:4px solid var(--accent-primary);border-radius:50%;animation:spin 1s linear infinite}
+        .loading-text{font-size:18px;color:var(--text-secondary);font-weight:500;animation:pulse 2s ease-in-out infinite}
+        .loading-subtext{font-size:14px;color:var(--text-muted);margin-top:-12px}
+        .hero-section{background:linear-gradient(135deg,var(--bg-secondary) 0%,#1f1f1f 100%);padding:40px 30px;text-align:center;color:var(--text-primary)}
+        .hero-title{font-size:48px;font-weight:700;margin-bottom:20px;text-shadow:0 2px 8px rgba(200,121,65,0.3);background:linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.02em}
+        .hero-subtitle{font-size:20px;margin-bottom:20px;opacity:0.85}
+        .words-column{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid var(--border-color)}
+        .section-title{font-size:22px;font-weight:600;color:var(--text-primary);margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid var(--accent-primary);opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
+        .word-entry{padding:15px 0;border-bottom:1px solid var(--border-color)}
+        .word-entry:first-child{padding-top:0}
+        .word-entry:last-child{border-bottom:none;padding-bottom:0}
+        .word-title{font-size:26px;font-weight:700;color:var(--text-primary);margin-bottom:12px}
+        .word-definition{font-size:16px;color:#d8d8d8;line-height:1.6;margin-bottom:15px;white-space:normal;word-wrap:break-word;font-weight:500;word-spacing:-0.05em}
+        .word-definition p{margin:0.75em 0}
+        .word-definition ul,.word-definition ol{margin:0.5em 0;padding-left:1.2em}
+        .word-definition li{margin:0.25em 0;line-height:1.45}
+        .word-definition h1{font-size:25px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .word-definition h2{font-size:22px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .word-definition h3{font-size:20px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .word-definition h4{font-size:18px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .word-definition h5{font-size:16px;margin:1em 0 0.4em 0;line-height:1.3;color:#efefef}
+        .word-definition h6{font-size:14px;margin:1em 0 0.4em 0;line-height:1.3;color:#efefef}
+        .word-definition strong,.word-definition b{color:#efefef}
+        .btn-show-word{background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:50px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.3s ease;box-shadow:0 6px 20px rgba(200,121,65,0.4);border-color:var(--accent-primary);width:auto;display:block;margin:20px auto 0 auto}
+        .btn-show-word:hover{box-shadow:0 8px 24px rgba(200,121,65,0.5);transform:translateY(-2px)}
+        .no-words{text-align:center;padding:60px 20px;color:var(--text-muted)}
+        .no-words-icon{font-size:48px;margin-bottom:15px}
+
+        /* IMPROVED: Word of the Day Progressive Disclosure Styles */
+        .word-definition-preview {
+            position: relative;
+            max-height: 400px;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+        }
+
+        .word-definition-preview.expanded {
+            max-height: none;
+        }
+
+        .definition-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--bg-secondary));
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .word-definition-preview.expanded .definition-fade {
+            opacity: 0;
+        }
+
+        .read-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .read-more-btn {
+            background: var(--bg-secondary);
+            color: var(--accent-primary);
+            border: 2px solid var(--accent-primary);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(200, 121, 65, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .read-more-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(200, 121, 65, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .read-more-btn:hover::before {
+            left: 100%;
+        }
+
+        .read-more-btn:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(200, 121, 65, 0.4);
+        }
+
+        .read-more-btn .icon {
+            transition: transform 0.3s ease;
+            font-size: 12px;
+        }
+
+        .read-more-btn.expanded .icon {
+            transform: rotate(180deg);
+        }
+
+        /* Navigation Link */
+        .nav-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 1px solid var(--accent-primary);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            /* Mobile-optimized skeleton loading */
+            .skeleton-loading {
+                padding: 20px;
+            }
+            
+            .skeleton-title {
+                height: 24px;
+                margin-bottom: 15px;
+                width: 60%;
+            }
+            
+            .skeleton-line {
+                height: 14px;
+                margin-bottom: 10px;
+            }
+            
+            .skeleton-line.long {
+                width: 100%;
+            }
+
+            /* Mobile optimization for word preview */
+            .word-definition-preview {
+                max-height: 600px;
+            }
+            
+            .definition-fade {
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Further mobile optimization for skeleton */
+            .skeleton-loading {
+                padding: 15px;
+            }
+            
+            .skeleton-title {
+                height: 20px;
+                margin-bottom: 12px;
+                width: 70%;
+            }
+            
+            .skeleton-line {
+                height: 12px;
+                margin-bottom: 8px;
+            }
+
+            /* Mobile optimization for word preview */
+            .word-definition-preview {
+                max-height: 600px;
+            }
+            
+            .definition-fade {
+                height: 50px;
+            }
+            
+            .read-more-btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.container{padding:15px;max-width:100%}.words-column{padding:20px}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.btn-show-word{padding:12px 20px;font-size:15px}}
+        @media (max-width:480px){.hero-title{font-size:28px}.hero-subtitle{font-size:16px}.hero-section{padding:25px 15px}.words-column{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.btn-show-word{padding:12px 20px;font-size:15px}}
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <h1 class="hero-title">Word of the Day</h1>
+        <p class="hero-subtitle">Discover a new word every day</p>
+        <a href="index.html" class="nav-link">← Back to Main Dictionary</a>
+    </div>
+    <div class="container">
+        <div class="main-content full-width" id="mainContent">
+            <!-- Word of the Day Section -->
+            <div class="words-column" id="wordOfTheDaySection">
+                <h2 class="section-title">Word of the Day</h2>
+                <div id="randomWordDisplay"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+const SafeStorage = {
+    isAvailable: false,
+    memoryStorage: {},
+    
+    init: function() {
+        try {
+            const test = '__storage_test__';
+            localStorage.setItem(test, test);
+            localStorage.removeItem(test);
+            this.isAvailable = true;
+            console.log('localStorage is available');
+        } catch(e) {
+            console.warn('localStorage not available, using memory storage:', e);
+            this.isAvailable = false;
+        }
+    },
+    
+    setItem: function(key, value) {
+        try {
+            if (this.isAvailable) {
+                localStorage.setItem(key, value);
+            }
+            this.memoryStorage[key] = value;
+        } catch(e) {
+            console.warn('Storage setItem failed:', e);
+            this.memoryStorage[key] = value;
+        }
+    },
+    
+    getItem: function(key) {
+        try {
+            if (this.isAvailable) {
+                const value = localStorage.getItem(key);
+                if (value !== null) return value;
+            }
+            return this.memoryStorage[key] || null;
+        } catch(e) {
+            console.warn('Storage getItem failed:', e);
+            return this.memoryStorage[key] || null;
+        }
+    },
+    
+    removeItem: function(key) {
+        try {
+            if (this.isAvailable) {
+                localStorage.removeItem(key);
+            }
+            delete this.memoryStorage[key];
+        } catch(e) {
+            console.warn('Storage removeItem failed:', e);
+            delete this.memoryStorage[key];
+        }
+    }
+};
+
+SafeStorage.init();
+
+const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
+
+let supabaseClient;
+let isSupabaseConfigured = false;
+let dictionary = [];
+let supabaseInitialized = false;
+let hasShownWordOfTheDay = false;
+
+// Search index for faster lookups
+let searchIndex = null;
+
+function buildSearchIndex() {
+    searchIndex = dictionary.map(item => ({
+        id: item.id,
+        word: item.word,
+        wordLower: item.word.toLowerCase(),
+        definition: item.definition,
+        definitionText: item.definition.replace(/<[^>]*>/g,'').toLowerCase()
+    }));
+}
+
+function loadFromLocalStorage() {
+    const localDict = SafeStorage.getItem('dictionary');
+    dictionary = localDict ? JSON.parse(localDict) : [];
+    buildSearchIndex();
+    return dictionary.length > 0;
+}
+
+async function initializeSupabase() {
+    try {
+        const { createClient } = supabase;
+        supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        isSupabaseConfigured = true;
+        supabaseInitialized = true;
+        
+        await syncWithSupabase();
+    } catch(error) {
+        console.error('Supabase init error:', error);
+        isSupabaseConfigured = false;
+        if (dictionary.length === 0) {
+            displayWordOfTheDay();
+        }
+    }
+}
+
+async function syncWithSupabase() {
+    if (!isSupabaseConfigured || !supabaseInitialized) return;
+    
+    try {
+        const { data: dictData, error: dictError } = await supabaseClient
+            .from('dictionary')
+            .select('*')
+            .order('word', { ascending: true });
+        
+        if (dictError) throw dictError;
+        
+        if (dictData && dictData.length > 0) {
+            dictionary = dictData.map(item => ({
+                id: item.id,
+                word: item.word,
+                definition: item.definition,
+                dateAdded: item.date_added,
+                dateModified: item.date_modified
+            }));
+            
+            buildSearchIndex();
+            SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
+            
+            // Only show word of the day if we haven't already shown it
+            if (!hasShownWordOfTheDay) {
+                displayWordOfTheDay();
+                hasShownWordOfTheDay = true;
+            }
+        }
+    } catch(error) {
+        console.error('Sync error:', error);
+    }
+}
+
+// IMPROVED: Word of the Day Progressive Disclosure 
+function createExpandableDefinition(definitionHTML) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = definitionHTML;
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Check if definition is long enough to need expansion
+    const isLongDefinition = textContent.length > 800 || definitionHTML.includes('<h1') || definitionHTML.includes('<h2') || definitionHTML.includes('<h3') || definitionHTML.includes('<ul') || definitionHTML.includes('<ol');
+    
+    if (!isLongDefinition) {
+        return `
+            <div class="word-entry">
+                <div class="word-definition">
+                    ${definitionHTML}
+                </div>
+                <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="word-entry">
+            <div class="word-definition-preview">
+                <div class="word-definition">
+                    ${definitionHTML}
+                    <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
+                </div>
+                <div class="definition-fade"></div>
+            </div>
+            <div class="read-more-container">
+                <button class="read-more-btn" onclick="toggleDefinitionExpansion(this)">
+                    <span>Read more</span>
+                    <span class="icon">▼</span>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function toggleDefinitionExpansion(button) {
+    const preview = button.closest('.word-entry').querySelector('.word-definition-preview');
+    const isExpanded = preview.classList.contains('expanded');
+    
+    if (isExpanded) {
+        preview.classList.remove('expanded');
+        button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
+        button.classList.remove('expanded');
+        
+        // Scroll to keep the preview in view
+        setTimeout(() => {
+            preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+    } else {
+        preview.classList.add('expanded');
+        button.innerHTML = '<span>Read less</span><span class="icon">▼</span>';
+        button.classList.add('expanded');
+    }
+}
+
+function getWordOfTheDay() {
+    if (!dictionary || dictionary.length === 0) {
+        return null;
+    }
+    
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(today.getDate()).padStart(2, '0');
+    
+    let hash = 0;
+    for (let i = 0; i < dateString.length; i++) {
+        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
+        hash = hash & hash;
+    }
+    
+    const index = Math.abs(hash) % dictionary.length;
+    return dictionary[index];
+}
+
+function displayWordOfTheDay(){
+    const rd=document.getElementById('randomWordDisplay');
+    
+    if(!dictionary || dictionary.length===0){
+        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+        return;
+    }
+    
+    const wordOfDay = getWordOfTheDay();
+    if (wordOfDay) {
+        rd.innerHTML = createExpandableDefinition(wordOfDay.definition);
+    }
+}
+
+function showNewRandomWord(){
+    if(dictionary.length>0){
+        const rd=document.getElementById('randomWordDisplay');
+        const ri=Math.floor(Math.random()*dictionary.length);
+        const rw=dictionary[ri];
+        rd.innerHTML = createExpandableDefinition(rw.definition);
+        document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const hasLocalData = loadFromLocalStorage();
+    
+    if (hasLocalData) {
+        // Show skeleton loading initially, wait for Supabase to sync
+        const rd = document.getElementById('randomWordDisplay');
+        rd.innerHTML = `
+            <div class="skeleton-loading">
+                <div class="skeleton-word"></div>
+                <div class="skeleton-line extra-long"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        `;
+    } else {
+        const rd = document.getElementById('randomWordDisplay');
+        rd.innerHTML = `
+            <div class="skeleton-loading">
+                <div class="skeleton-word"></div>
+                <div class="skeleton-line extra-long"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        `;
+    }
+    
+    // Initialize Supabase immediately for faster loading
+    setTimeout(initializeSupabase, 0);
+});
+    </script>
+</body>
+</html>
