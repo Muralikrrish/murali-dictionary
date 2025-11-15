@@ -1,15 +1,4 @@
-# Updated Quiz with Improved Fast Fingers System
-
-I've made all the requested changes to the quiz:
-
-1. Changed points: 50 for correct answers, 150 for fast fingers
-2. Timer now only reduces points after 5 seconds (when below 15 seconds remaining)
-3. Moved fast fingers timer above the question
-4. Added current score display above the question
-5. Shortened "fast fingers bonus" to "fast fingers"
-6. Simplified points display
-
-Here's the updated code:
+Here's the clean code for the updated quiz.html:
 
 ```html
 <!DOCTYPE html>
@@ -69,7 +58,6 @@ Here's the updated code:
             width: 100%;
         }
 
-        /* Updated Header to match index.html hero section */
         .quiz-header {
             background: linear-gradient(135deg, var(--bg-secondary) 0%, #151822 100%);
             padding: 30px 20px 25px 20px;
@@ -260,7 +248,6 @@ Here's the updated code:
             margin-top: 20px;
         }
 
-        /* Updated Next Question button to match index.html style */
         .btn-next {
             background: var(--bg-secondary);
             color: var(--text-primary);
@@ -351,7 +338,6 @@ Here's the updated code:
             border-left: 4px solid var(--error-color);
         }
 
-        /* Skeleton Loading Animation */
         .skeleton-loading {
             background: var(--bg-secondary);
             border-radius: 8px;
@@ -394,7 +380,6 @@ Here's the updated code:
             100% { background-position: 200% 0; }
         }
 
-        /* Mobile-first Responsive Design - Optimized */
         @media (max-width: 768px) {
             body {
                 padding: 8px;
@@ -481,7 +466,6 @@ Here's the updated code:
                 font-size: 1.1rem;
             }
 
-            /* Mobile-optimized skeleton loading */
             .skeleton-loading {
                 padding: 16px;
             }
@@ -568,7 +552,6 @@ Here's the updated code:
                 font-size: 13px;
             }
             
-            /* Further mobile optimization for skeleton */
             .skeleton-loading {
                 padding: 12px;
             }
@@ -585,7 +568,6 @@ Here's the updated code:
             }
         }
 
-        /* Large screen adjustments */
         @media (min-width: 1200px) {
             .container {
                 max-width: 900px;
@@ -617,7 +599,6 @@ Here's the updated code:
             </div>
 
             <div class="question-card" id="question-card">
-                <!-- Skeleton Loading Animation -->
                 <div class="skeleton-loading" id="loading-message">
                     <div class="skeleton-title"></div>
                     <div class="skeleton-line extra-long"></div>
@@ -633,7 +614,6 @@ Here's the updated code:
                     </div>
                     
                     <div class="options-grid" id="options-grid">
-                        <!-- Options will be inserted here -->
                     </div>
                     <div class="explanation-box" id="explanation-box">
                         <strong>Explanation:</strong> <span id="explanation-text"></span>
@@ -671,7 +651,6 @@ Here's the updated code:
     </div>
 
     <script>
-        // Supabase configuration - use the same as your main site
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
         
@@ -683,15 +662,13 @@ Here's the updated code:
         let questionsAnswered = 0;
         const TOTAL_QUESTIONS = 10;
         
-        // Fast fingers scoring system
         let fastFingersBonus = 150;
         let timerInterval;
-        let timeLeft = 20; // 20 seconds to get full bonus
+        let timeLeft = 20;
         let currentQuestionPoints = 0;
         let totalFastFingersPoints = 0;
         let totalCorrectAnswers = 0;
 
-        // Fisher-Yates shuffle algorithm for randomizing arrays
         function shuffleArray(array) {
             const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -701,12 +678,8 @@ Here's the updated code:
             return shuffled;
         }
 
-        // Initialize quiz
         async function initQuiz() {
             try {
-                console.log('Fetching questions from Supabase...');
-                
-                // Fetch questions from Supabase
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_questions?select=*`, {
                     headers: {
                         'apikey': SUPABASE_KEY,
@@ -720,18 +693,14 @@ Here's the updated code:
                 }
                 
                 const allQuestions = await response.json();
-                console.log('All questions loaded:', allQuestions);
 
                 if (allQuestions.length === 0) {
                     showError('No questions found in the database. Please add questions to the quiz_questions table.');
                     return;
                 }
 
-                // Select 10 random questions
                 questions = getRandomQuestions(allQuestions, TOTAL_QUESTIONS);
-                console.log('Selected 10 random questions:', questions);
 
-                // Hide loading, show quiz content
                 document.getElementById('loading-message').style.display = 'none';
                 document.getElementById('quiz-content').style.display = 'block';
                 document.getElementById('question-stats').style.display = 'flex';
@@ -743,9 +712,7 @@ Here's the updated code:
             }
         }
 
-        // Function to get random questions
         function getRandomQuestions(allQuestions, count) {
-            // Create a copy of the array to avoid modifying the original
             const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
             return shuffled.slice(0, count);
         }
@@ -765,40 +732,29 @@ Here's the updated code:
             const question = questions[currentQuestion];
             document.getElementById('question-text').textContent = question.question_text;
             
-            // Update progress indicators
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
             document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
-            // Update current score
             document.getElementById('current-score').textContent = score;
             
-            // Reset fast fingers timer
             resetTimer();
             
-            // Show fast fingers timer
             document.getElementById('question-stats').style.display = 'flex';
 
-            // Create options with randomization
             const optionsGrid = document.getElementById('options-grid');
             optionsGrid.innerHTML = '';
             
-            // Make sure options is an array
             const optionsArray = Array.isArray(question.options) ? question.options : JSON.parse(question.options || '[]');
             
-            // Store the original correct answer before shuffling
             const originalCorrectAnswer = optionsArray[question.correct_answer];
             
-            // Shuffle the options array
             const shuffledOptions = shuffleArray(optionsArray);
             
-            // Find the new position of the correct answer after shuffling
             const newCorrectAnswerIndex = shuffledOptions.indexOf(originalCorrectAnswer);
             
-            // Update the question object with shuffled options and new correct answer index
             question.shuffledOptions = shuffledOptions;
             question.currentCorrectAnswer = newCorrectAnswerIndex;
             
-            // Create the option buttons
             shuffledOptions.forEach((option, index) => {
                 const button = document.createElement('button');
                 button.className = 'option-btn';
@@ -807,10 +763,8 @@ Here's the updated code:
                 optionsGrid.appendChild(button);
             });
 
-            // Reset UI state
             document.getElementById('explanation-box').classList.remove('show');
             
-            // Change button text for last question
             if (currentQuestion === TOTAL_QUESTIONS - 1) {
                 document.getElementById('next-btn').textContent = 'See Results';
             } else {
@@ -821,7 +775,6 @@ Here's the updated code:
             answerSubmitted = false;
             selectedAnswer = null;
             
-            // Start the fast fingers timer
             startTimer();
         }
 
@@ -837,12 +790,10 @@ Here's the updated code:
                 timeLeft--;
                 document.getElementById('timer-value').textContent = timeLeft;
                 
-                // Reduce fast fingers bonus by 10 points every second after 5 seconds
                 if (timeLeft < 15) {
                     fastFingersBonus = Math.max(0, fastFingersBonus - 10);
                 }
                 
-                // Hide timer when time runs out
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     document.getElementById('question-stats').style.display = 'none';
@@ -851,19 +802,17 @@ Here's the updated code:
         }
 
         function selectAnswer(index) {
-            if (answerSubmitted) return; // Prevent multiple submissions
+            if (answerSubmitted) return;
             
             selectedAnswer = index;
             answerSubmitted = true;
             
-            // Stop the timer
             clearInterval(timerInterval);
             
             const buttons = document.querySelectorAll('.option-btn');
             buttons.forEach(btn => btn.classList.remove('selected'));
             buttons[index].classList.add('selected');
             
-            // Immediately process the answer
             submitAnswer();
         }
 
@@ -871,10 +820,8 @@ Here's the updated code:
             if (selectedAnswer === null) return;
 
             const question = questions[currentQuestion];
-            // Use the current correct answer index (after shuffling)
             const isCorrect = selectedAnswer === question.currentCorrectAnswer;
             
-            // Calculate points
             currentQuestionPoints = isCorrect ? 50 : 0;
             if (isCorrect) {
                 currentQuestionPoints += fastFingersBonus;
@@ -884,33 +831,25 @@ Here's the updated code:
             
             score += currentQuestionPoints;
 
-            // Update current score display
             document.getElementById('current-score').textContent = score;
             
-            // Increment questions answered and update progress
             questionsAnswered++;
             document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
-            // Show explanation
             document.getElementById('explanation-text').textContent = question.explanation;
             
             document.getElementById('explanation-box').classList.add('show');
 
-            // Show next button
             document.getElementById('next-btn').style.display = 'block';
 
-            // Highlight correct and incorrect answers
             const buttons = document.querySelectorAll('.option-btn');
             
-            // Highlight correct answer (using current correct answer index)
             buttons[question.currentCorrectAnswer].classList.add('correct');
             
-            // If wrong answer, also highlight the incorrect choice
             if (!isCorrect) {
                 buttons[selectedAnswer].classList.add('incorrect');
             }
             
-            // Disable all options after selection
             buttons.forEach(btn => {
                 btn.style.cursor = 'default';
                 btn.onclick = null;
@@ -923,19 +862,16 @@ Here's the updated code:
         }
 
         function showResults() {
-            // Set progress bar to 100% when showing results
             document.getElementById('progress-fill').style.width = '100%';
             document.getElementById('question-card').style.display = 'none';
             document.getElementById('question-stats').style.display = 'none';
             document.getElementById('results-screen').style.display = 'block';
             document.getElementById('final-score').textContent = score;
             
-            // Update points breakdown
             document.getElementById('correct-answers-points').textContent = `${totalCorrectAnswers * 50} (${totalCorrectAnswers} × 50)`;
             document.getElementById('fast-fingers-points').textContent = totalFastFingersPoints;
             document.getElementById('total-points').textContent = score;
             
-            // Encouragement message
             const percentage = (totalCorrectAnswers / TOTAL_QUESTIONS) * 100;
             let message = '';
             if (percentage >= 80) message = 'Outstanding! You\'re a vocabulary master! 🎯';
@@ -962,33 +898,8 @@ Here's the updated code:
             initQuiz();
         }
 
-        // Start the quiz when page loads
         window.onload = initQuiz;
     </script>
 </body>
 </html>
 ```
-
-## Key Changes Made
-
-1. **Updated Points System**:
-   - 50 points for correct answers (reduced from 100)
-   - 150 points for fast fingers (reduced from 200)
-   - Points only start decreasing after 5 seconds (when timer goes below 15)
-
-2. **Improved Layout**:
-   - Added a new "question-stats" section above the question
-   - Current score is displayed on the left
-   - Fast fingers timer is displayed on the right
-   - Timer disappears when time runs out
-
-3. **Simplified Text**:
-   - Changed "Fast Fingers Bonus" to just "Fast Fingers"
-   - Removed the detailed points explanation after each question
-   - Current score updates in real-time
-
-4. **Mobile Optimization**:
-   - Responsive layout for the question stats section
-   - Proper spacing and sizing for mobile devices
-
-The quiz now provides a cleaner interface with the scoring information prominently displayed above each question, making it easier for users to track their progress and the fast fingers bonus.
