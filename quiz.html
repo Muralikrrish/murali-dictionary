@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexicon Quest - Murali Dictionary</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>LexiQuest - Vocabulary Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* CSS Variables for consistent theming */
         :root {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #242424;
-            --bg-tertiary: #2a2a2a;
-            --accent-primary: #c87941;
-            --accent-secondary: #d89057;
-            --text-primary: #e8e8e8;
-            --text-secondary: #b8b8b8;
-            --text-muted: #666;
-            --border-color: #3d3d3d;
-            --success-color: #7bc87f;
-            --warning-color: #f39c12;
-            --error-color: #d9534f;
+            --bg-primary: #0f1117;
+            --bg-secondary: #1a1d28;
+            --bg-tertiary: #232838;
+            --accent-primary: #ff6b35;
+            --accent-secondary: #ff8e35;
+            --accent-gradient: linear-gradient(135deg, #ff6b35, #ff8e35);
+            --text-primary: #f0f2fc;
+            --text-secondary: #b8c0e0;
+            --text-muted: #6b728c;
+            --border-color: #2a3042;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --error-color: #f44336;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            --section-spacing: 60px;
         }
 
         * {
@@ -37,43 +40,54 @@
             padding: 20px;
         }
 
-        .quiz-container {
+        .container {
             max-width: 800px;
             margin: 0 auto;
+        }
+
+        .quiz-container {
             background: var(--bg-secondary);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            box-shadow: var(--card-shadow);
             overflow: hidden;
             border: 1px solid var(--border-color);
         }
 
-        /* Updated Header to exactly match index.html hero title */
+        /* Updated Header to match index.html hero section */
         .quiz-header {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #1f1f1f 100%);
-            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #151822 100%);
             padding: 40px 30px 30px 30px;
             text-align: center;
             position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 70% 20%, rgba(255, 107, 53, 0.15) 0%, transparent 60%);
         }
 
         .quiz-title {
-            font-size: 48px;
-            font-weight: 700;
+            font-size: 2.5rem;
+            font-weight: 800;
             margin-bottom: 10px;
-            text-shadow: 0 2px 8px rgba(200,121,65,0.3);
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             letter-spacing: -0.02em;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         .quiz-subtitle {
-            font-size: 20px;
-            margin-bottom: 10px;
-            opacity: 0.85;
-            color: var(--text-primary);
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            opacity: 0.9;
         }
 
         .progress-container {
@@ -96,7 +110,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            background: var(--accent-gradient);
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -113,18 +127,19 @@
             margin-bottom: 25px;
             padding: 20px;
             background: var(--bg-tertiary);
-            border-radius: 12px;
+            border-radius: 16px;
             border-left: 4px solid var(--accent-primary);
         }
 
         .options-grid {
             display: grid;
+            grid-template-columns: 1fr;
             gap: 12px;
             margin-bottom: 25px;
         }
 
         .option-btn {
-            padding: 18px;
+            padding: 18px 20px;
             border: 2px solid var(--border-color);
             border-radius: 12px;
             background: var(--bg-tertiary);
@@ -138,25 +153,25 @@
         .option-btn:hover {
             border-color: var(--accent-primary);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(200, 121, 65, 0.2);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
         }
 
         .option-btn.selected {
             border-color: var(--accent-primary);
             background: var(--accent-primary);
-            color: var(--bg-primary);
+            color: white;
         }
 
         .option-btn.correct {
-            background: rgba(123, 200, 127, 0.1);
-            border-color: #7bc87f;
-            color: #7bc87f;
+            background: rgba(76, 175, 80, 0.1);
+            border-color: var(--success-color);
+            color: var(--success-color);
         }
 
         .option-btn.incorrect {
-            background: rgba(217, 83, 79, 0.1);
-            border-color: #d9534f;
-            color: #d9534f;
+            background: rgba(244, 67, 54, 0.1);
+            border-color: var(--error-color);
+            color: var(--error-color);
         }
 
         .explanation-box {
@@ -167,6 +182,8 @@
             margin-top: 20px;
             display: none;
             color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.5;
         }
 
         .explanation-box.show {
@@ -186,7 +203,7 @@
             margin-top: 25px;
         }
 
-        /* Updated Next Question button to match "Show another word" button style */
+        /* Updated Next Question button to match index.html style */
         .btn-next {
             background: var(--bg-secondary);
             color: var(--text-primary);
@@ -197,7 +214,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(200,121,65,0.4);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
             border-color: var(--accent-primary);
             width: auto;
             display: block;
@@ -205,7 +222,7 @@
         }
 
         .btn-next:hover {
-            box-shadow: 0 8px 24px rgba(200,121,65,0.5);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
             transform: translateY(-2px);
         }
 
@@ -218,7 +235,7 @@
         .score-display {
             font-size: 3.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 20px 0;
@@ -231,7 +248,7 @@
         }
 
         .error-message {
-            background: #3a1f1f;
+            background: rgba(244, 67, 54, 0.1);
             color: var(--error-color);
             padding: 20px;
             border-radius: 10px;
@@ -240,7 +257,7 @@
             border-left: 4px solid var(--error-color);
         }
 
-        /* Skeleton Loading Animation (replaced circle spinner) */
+        /* Skeleton Loading Animation */
         .skeleton-loading {
             background: var(--bg-secondary);
             border-radius: 8px;
@@ -289,6 +306,10 @@
                 padding: 10px;
             }
             
+            .container {
+                padding: 0 15px;
+            }
+            
             .quiz-container {
                 border-radius: 16px;
             }
@@ -298,11 +319,11 @@
             }
             
             .quiz-title {
-                font-size: 36px; /* Matches index.html mobile size */
+                font-size: 2rem;
             }
             
             .quiz-subtitle {
-                font-size: 18px;
+                font-size: 1rem;
             }
             
             .progress-container {
@@ -382,11 +403,11 @@
             }
             
             .quiz-title {
-                font-size: 28px; /* Further reduced for very small screens */
+                font-size: 1.8rem;
             }
             
             .quiz-subtitle {
-                font-size: 16px;
+                font-size: 0.9rem;
             }
             
             .question-card {
@@ -438,51 +459,53 @@
     </style>
 </head>
 <body>
-    <div class="quiz-container">
-        <div class="quiz-header">
-            <h1 class="quiz-title">Lexicon Quest</h1>
-            <p class="quiz-subtitle">Test your vocabulary knowledge</p>
-        </div>
-
-        <div class="progress-container">
-            <span id="question-count">Question 1/10</span>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
+    <div class="container">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h1 class="quiz-title">LexiQuest</h1>
+                <p class="quiz-subtitle">Test your vocabulary knowledge</p>
             </div>
-        </div>
 
-        <div class="question-card" id="question-card">
-            <!-- Skeleton Loading Animation (replaced circle spinner) -->
-            <div class="skeleton-loading" id="loading-message">
-                <div class="skeleton-title"></div>
-                <div class="skeleton-line extra-long"></div>
-                <div class="skeleton-line long"></div>
-                <div class="skeleton-line long"></div>
-                <div class="skeleton-line long"></div>
-            </div>
-            <div class="error-message" id="error-message" style="display: none;"></div>
-            
-            <div id="quiz-content" style="display: none;">
-                <div class="question-text" id="question-text">
-                    Loading question...
-                </div>
-                <div class="options-grid" id="options-grid">
-                    <!-- Options will be inserted here -->
-                </div>
-                <div class="explanation-box" id="explanation-box">
-                    <strong>Explanation:</strong> <span id="explanation-text"></span>
-                </div>
-                <div class="action-buttons">
-                    <button class="btn-next" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
+            <div class="progress-container">
+                <span id="question-count">Question 1/10</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
                 </div>
             </div>
-        </div>
 
-        <div class="results-screen" id="results-screen">
-            <h2>Quiz Complete! 🎉</h2>
-            <div class="score-display" id="final-score">0/10</div>
-            <div class="encouragement" id="encouragement-message">Keep practicing!</div>
-            <button class="btn-next" onclick="restartQuiz()">Try Again</button>
+            <div class="question-card" id="question-card">
+                <!-- Skeleton Loading Animation -->
+                <div class="skeleton-loading" id="loading-message">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-line extra-long"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line long"></div>
+                </div>
+                <div class="error-message" id="error-message" style="display: none;"></div>
+                
+                <div id="quiz-content" style="display: none;">
+                    <div class="question-text" id="question-text">
+                        Loading question...
+                    </div>
+                    <div class="options-grid" id="options-grid">
+                        <!-- Options will be inserted here -->
+                    </div>
+                    <div class="explanation-box" id="explanation-box">
+                        <strong>Explanation:</strong> <span id="explanation-text"></span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-next" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-screen" id="results-screen">
+                <h2>Quiz Complete! 🎉</h2>
+                <div class="score-display" id="final-score">0/10</div>
+                <div class="encouragement" id="encouragement-message">Keep practicing!</div>
+                <button class="btn-next" onclick="restartQuiz()">Try Again</button>
+            </div>
         </div>
     </div>
 
