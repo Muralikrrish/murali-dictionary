@@ -90,7 +90,7 @@
             max-width: 650px;
             margin: 0 auto;
             position: relative;
-            z-index: 1001; /* Higher z-index to ensure dropdown appears above content */
+            z-index: 1000; /* Ensure search container has proper z-index */
         }
 
         .search-box {
@@ -147,7 +147,7 @@
             max-height: 320px;
             overflow-y: auto;
             display: none;
-            z-index: 1002; /* Higher than search-container */
+            z-index: 1001; /* Higher than search container */
             backdrop-filter: blur(10px);
             animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -192,6 +192,7 @@
 
         .modern-section {
             margin-bottom: var(--section-spacing);
+            position: relative;
         }
 
         .modern-section-title {
@@ -222,6 +223,8 @@
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            z-index: 1; /* Ensure cards don't interfere with dropdown */
         }
 
         .interactive-card:hover {
@@ -512,6 +515,8 @@
         /* Search Results Section */
         .search-results-section {
             display: none;
+            position: relative;
+            z-index: 1; /* Lower than search dropdown */
         }
 
         .search-results-section.show {
@@ -1434,9 +1439,6 @@
                     
                     // Show autocomplete suggestions
                     showAutocomplete(query);
-                    
-                    // Show search results
-                    displaySearchResults(query);
                 }, 300);
             });
             
@@ -1517,8 +1519,10 @@
             
             searchResultsSection.classList.add('show');
             
-            // REMOVED: Automatic scroll to search results when dropdown appears
-            // This was causing the page to scroll down when the autocomplete dropdown appeared
+            // Scroll to search results only when explicitly selecting from dropdown or pressing enter
+            setTimeout(() => {
+                searchResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
     </script>
 </body>
