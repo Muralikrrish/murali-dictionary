@@ -295,6 +295,7 @@
         /* Vocabulary Quiz Styles */
         .quiz-container {
             margin-bottom: 30px;
+            width: 100%;
         }
 
         .question-text {
@@ -768,6 +769,10 @@
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 6px;
+            }
+            
             .hero-title {
                 font-size: 2rem;
             }
@@ -870,6 +875,7 @@
             /* Optimize quiz for mobile */
             .quiz-container {
                 margin-bottom: 20px;
+                width: 100%;
             }
             
             .question-text {
@@ -905,14 +911,16 @@
                 margin-top: 20px;
             }
             
-            /* Optimize interactive cards for mobile */
+            /* Optimize interactive cards for mobile - make width 100% */
             .interactive-card {
                 padding: 20px 15px;
+                width: 100%;
             }
             
             /* Improve container padding for mobile */
             .container {
                 padding: 0 15px;
+                width: 100%;
             }
         }
 
