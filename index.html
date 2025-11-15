@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LexiQuest - Modern English Dictionary</title>
+    <title>LexiQuest - Expand Your Knowledge</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -331,23 +331,97 @@
             transform: translateY(-2px);
         }
 
-        /* Word Spotlight Styles */
+        /* Word Spotlight Styles - Reverted to original styling */
         .word-entry {
-            padding: 20px 0;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .word-entry:first-child {
+            padding-top: 0;
+        }
+
+        .word-entry:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
         }
 
         .word-title {
-            font-size: 2rem;
+            font-size: 26px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .word-definition {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 20px;
+            font-size: 16px;
+            color: #d8d8d8;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            white-space: normal;
+            word-wrap: break-word;
+            font-weight: 500;
+            word-spacing: -0.05em;
+        }
+
+        .word-definition p {
+            margin: 0.75em 0;
+        }
+
+        .word-definition ul, .word-definition ol {
+            margin: 0.5em 0;
+            padding-left: 1.2em;
+        }
+
+        .word-definition li {
+            margin: 0.25em 0;
+            line-height: 1.45;
+        }
+
+        .word-definition h1 {
+            font-size: 25px;
+            margin: 1em 0 0.15em 0;
+            line-height: 1.3;
+            color: #efefef;
+        }
+
+        .word-definition h2 {
+            font-size: 22px;
+            margin: 1em 0 0.15em 0;
+            line-height: 1.3;
+            color: #efefef;
+        }
+
+        .word-definition h3 {
+            font-size: 20px;
+            margin: 1em 0 0.15em 0;
+            line-height: 1.3;
+            color: #efefef;
+        }
+
+        .word-definition h4 {
+            font-size: 18px;
+            margin: 1em 0 0.15em 0;
+            line-height: 1.3;
+            color: #efefef;
+        }
+
+        .word-definition h5 {
+            font-size: 16px;
+            margin: 1em 0 0.4em 0;
+            line-height: 1.3;
+            color: #efefef;
+        }
+
+        .word-definition h6 {
+            font-size: 14px;
+            margin: 1em 0 0.4em 0;
+            line-height: 1.3;
+            color: #efefef;
+        }
+
+        .word-definition strong, .word-definition b {
+            color: #efefef;
         }
 
         .word-definition-preview {
@@ -389,7 +463,7 @@
             border: 2px solid var(--accent-primary);
             padding: 12px 24px;
             border-radius: 25px;
-            font-size: 0.9rem;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -401,28 +475,30 @@
 
         .read-more-btn:hover {
             background: var(--accent-primary);
-            color: white;
+            color: var(--bg-primary);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
         }
 
         .btn-show-word {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
             border-radius: 50px;
-            padding: 14px 28px;
-            font-size: 1rem;
+            padding: 12px 24px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            border-color: var(--accent-primary);
+            width: auto;
             display: block;
-            margin: 30px auto 0;
+            margin: 20px auto 0 auto;
         }
 
         .btn-show-word:hover {
-            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
             transform: translateY(-2px);
         }
 
@@ -603,6 +679,15 @@
             .stats-grid, .tips-grid {
                 grid-template-columns: 1fr;
             }
+            
+            /* Mobile optimization for word preview */
+            .word-definition-preview {
+                max-height: 600px;
+            }
+            
+            .definition-fade {
+                height: 60px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -623,12 +708,26 @@
             }
             
             .word-title {
-                font-size: 1.7rem;
+                font-size: 22px;
             }
             
             .quiz-take-btn, .btn-show-word {
-                padding: 12px 24px;
-                font-size: 0.9rem;
+                padding: 12px 20px;
+                font-size: 15px;
+            }
+            
+            /* Mobile optimization for word preview */
+            .word-definition-preview {
+                max-height: 600px;
+            }
+            
+            .definition-fade {
+                height: 50px;
+            }
+            
+            .read-more-btn {
+                padding: 10px 20px;
+                font-size: 13px;
             }
         }
     </style>
@@ -637,8 +736,8 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            <h1 class="hero-title">Expand Your Vocabulary</h1>
-            <p class="hero-subtitle">Discover words, master definitions, and elevate your language skills with our modern dictionary</p>
+            <h1 class="hero-title">Expand Your Knowledge</h1>
+            <p class="hero-subtitle">Words, wisdom, and wonder in one place</p>
             <div class="search-container">
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Search for any word..." autocomplete="off">
