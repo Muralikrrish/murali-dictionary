@@ -234,6 +234,27 @@
             position: relative;
         }
 
+        /* Add subtle gradient divider for mobile */
+        @media (max-width: 480px) {
+            .modern-section::after {
+                content: '';
+                position: absolute;
+                bottom: -30px;
+                left: 10%;
+                right: 10%;
+                height: 1px;
+                background: linear-gradient(90deg, 
+                    transparent 0%, 
+                    var(--border-color) 20%, 
+                    var(--border-color) 80%, 
+                    transparent 100%);
+            }
+            
+            .modern-section:last-child::after {
+                display: none;
+            }
+        }
+
         .modern-section-title {
             font-size: 1.75rem;
             font-weight: 700;
@@ -854,6 +875,9 @@
             .question-text {
                 margin-bottom: 20px;
                 padding: 15px;
+                /* Mobile: Same font size as Word Spotlight normal text */
+                font-size: 1rem;
+                font-weight: 500;
             }
             
             .options-grid {
@@ -866,11 +890,15 @@
                 min-height: 60px;
                 display: flex;
                 align-items: center;
+                font-size: 0.95rem;
             }
             
             .explanation-box {
                 padding: 15px;
                 margin-top: 15px;
+                /* Mobile: Same font size as options but Word Spotlight color */
+                font-size: 0.95rem;
+                color: var(--text-secondary);
             }
             
             .quiz-action-buttons {
@@ -885,6 +913,51 @@
             /* Improve container padding for mobile */
             .container {
                 padding: 0 15px;
+            }
+        }
+
+        /* Desktop and Tablet Font Size Adjustments */
+        @media (min-width: 769px) {
+            /* Word Spotlight: Normal text same size as Vocabulary Quiz questions */
+            .word-definition {
+                font-size: 1.3rem;
+                line-height: 1.6;
+            }
+            
+            /* Adjust Word Spotlight headers proportionally */
+            .word-definition h1 {
+                font-size: 2.2rem;
+                margin: 1.2em 0 0.2em 0;
+            }
+            
+            .word-definition h2 {
+                font-size: 1.9rem;
+                margin: 1.2em 0 0.2em 0;
+            }
+            
+            .word-definition h3 {
+                font-size: 1.7rem;
+                margin: 1.2em 0 0.2em 0;
+            }
+            
+            .word-definition h4 {
+                font-size: 1.5rem;
+                margin: 1.2em 0 0.2em 0;
+            }
+            
+            .word-definition h5 {
+                font-size: 1.3rem;
+                margin: 1.2em 0 0.4em 0;
+            }
+            
+            .word-definition h6 {
+                font-size: 1.2rem;
+                margin: 1.2em 0 0.4em 0;
+            }
+            
+            /* Adjust main word title for consistency */
+            .word-title {
+                font-size: 2.4rem;
             }
         }
     </style>
