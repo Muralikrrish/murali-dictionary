@@ -735,11 +735,13 @@
                 height: 50px;
             }
             
+            /* Fixed Read More button border for mobile */
             .read-more-btn {
                 padding: 10px 20px;
                 font-size: 13px;
                 width: 100%;
                 max-width: 200px;
+                border: 2px solid var(--accent-primary) !important; /* Ensure border is visible */
             }
             
             /* Reduce section spacing for mobile */
@@ -1036,6 +1038,9 @@
         // Search index for faster lookups
         let searchIndex = null;
 
+        // Track if we've already displayed a word from local storage
+        let hasDisplayedWordSpotlight = false;
+
         // Fisher-Yates shuffle algorithm for randomizing arrays
         function shuffleArray(array) {
             const shuffled = [...array];
@@ -1061,9 +1066,10 @@
             dictionary = localDict ? JSON.parse(localDict) : [];
             buildSearchIndex();
             
-            // Immediately display a random word from local storage
-            if (dictionary.length > 0) {
+            // Only display a word if we have data and haven't displayed one yet
+            if (dictionary.length > 0 && !hasDisplayedWordSpotlight) {
                 displayWordSpotlight();
+                hasDisplayedWordSpotlight = true;
             }
             
             return dictionary.length > 0;
@@ -1110,8 +1116,11 @@
                     buildSearchIndex();
                     SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
                     
-                    // Update Word Spotlight with fresh data
-                    displayWordSpotlight();
+                    // Only update Word Spotlight if we haven't displayed one yet
+                    if (!hasDisplayedWordSpotlight) {
+                        displayWordSpotlight();
+                        hasDisplayedWordSpotlight = true;
+                    }
                 }
             } catch(error) {
                 console.error('Sync error:', error);
