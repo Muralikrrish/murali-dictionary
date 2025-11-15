@@ -643,7 +643,7 @@
             line-height: 1.5;
         }
 
-        /* Responsive Design */
+        /* Mobile Optimizations */
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2.5rem;
@@ -651,7 +651,7 @@
             
             .hero-subtitle {
                 font-size: 1.1rem;
-                margin-bottom: 35px; /* Slightly reduced margin */
+                margin-bottom: 35px;
             }
             
             .search-box input {
@@ -697,20 +697,22 @@
             }
             
             .hero-section {
-                padding: 70px 0 80px; /* Reduced top padding slightly for mobile */
+                padding: 50px 0 70px; /* Reduced top gap to 2/3 of previous value */
             }
             
             .hero-subtitle {
-                font-size: 1rem; /* Reduced font size for mobile to fit in one line */
+                font-size: 1rem;
                 margin-bottom: 30px;
             }
             
             .search-box input {
                 padding: 14px 45px 14px 18px;
+                font-size: 0.95rem;
             }
             
             .modern-section-title {
                 font-size: 1.3rem;
+                margin-bottom: 20px;
             }
             
             .word-title {
@@ -720,6 +722,8 @@
             .quiz-take-btn, .btn-show-word {
                 padding: 12px 20px;
                 font-size: 15px;
+                width: 100%;
+                max-width: 280px;
             }
             
             /* Mobile optimization for word preview */
@@ -734,6 +738,90 @@
             .read-more-btn {
                 padding: 10px 20px;
                 font-size: 13px;
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            /* Reduce section spacing for mobile */
+            .main-content {
+                padding: 40px 0;
+            }
+            
+            .modern-section {
+                margin-bottom: 40px;
+            }
+            
+            /* Optimize stats and tips for mobile */
+            .stats-grid {
+                gap: 15px;
+            }
+            
+            .stat-item {
+                padding: 15px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .tips-grid {
+                gap: 15px;
+            }
+            
+            .tip-item {
+                padding: 15px;
+            }
+            
+            /* Improve search results for mobile */
+            .autocomplete-dropdown {
+                left: 10px;
+                right: 10px;
+                max-width: calc(100% - 20px);
+            }
+            
+            .autocomplete-item {
+                padding: 14px 16px;
+            }
+            
+            /* Optimize quiz for mobile */
+            .quiz-container {
+                margin-bottom: 20px;
+            }
+            
+            .question-text {
+                margin-bottom: 20px;
+                padding: 15px;
+            }
+            
+            .options-grid {
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .option-btn {
+                padding: 14px 16px;
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+            }
+            
+            .explanation-box {
+                padding: 15px;
+                margin-top: 15px;
+            }
+            
+            .quiz-action-buttons {
+                margin-top: 20px;
+            }
+            
+            /* Optimize interactive cards for mobile */
+            .interactive-card {
+                padding: 20px 15px;
+            }
+            
+            /* Improve container padding for mobile */
+            .container {
+                padding: 0 15px;
             }
         }
     </style>
