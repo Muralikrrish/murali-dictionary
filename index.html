@@ -665,22 +665,32 @@
                 <h2 class="modern-section-title">Vocabulary Quiz</h2>
                 <div class="interactive-card">
                     <div class="quiz-container">
-                        <div class="question-text" id="quizQuestionText">
-                            What is the meaning of the word "ephemeral"?
+                        <div class="quiz-loading" id="quizLoadingMessage">
+                            <div class="skeleton-loading">
+                                <div class="skeleton-title"></div>
+                                <div class="skeleton-line long"></div>
+                                <div class="skeleton-line long"></div>
+                                <div class="skeleton-line long"></div>
+                                <div class="skeleton-line long"></div>
+                            </div>
                         </div>
-                        <div class="options-grid" id="quizOptionsGrid">
-                            <button class="option-btn">Lasting for a very short time</button>
-                            <button class="option-btn">Extremely large in size</button>
-                            <button class="option-btn">Difficult to understand</button>
-                            <button class="option-btn">Related to ancient history</button>
-                        </div>
-                        <div class="explanation-box" id="quizExplanation">
-                            <strong>Explanation:</strong> <span id="quizExplanationText">"Ephemeral" describes something that lasts for a very short period, like a flower that blooms for just one day.</span>
-                        </div>
-                        <div class="quiz-action-buttons">
-                            <button class="quiz-take-btn" id="quizContinueBtn">
-                                <i class="fas fa-play-circle"></i> Take Full Quiz
-                            </button>
+                        <div class="quiz-error" id="quizErrorMessage" style="display: none;"></div>
+                        
+                        <div id="quizQuestion" style="display: none;">
+                            <div class="question-text" id="quizQuestionText">
+                                Loading question...
+                            </div>
+                            <div class="options-grid" id="quizOptionsGrid">
+                                <!-- Quiz options will be inserted here -->
+                            </div>
+                            <div class="explanation-box" id="quizExplanation">
+                                <strong>Explanation:</strong> <span id="quizExplanationText"></span>
+                            </div>
+                            <div class="quiz-action-buttons">
+                                <button class="quiz-take-btn" onclick="continueToFullQuiz()" id="quizContinueBtn" style="display: none;">
+                                    <i class="fas fa-play-circle"></i> Take Full Quiz
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -690,28 +700,17 @@
             <section class="modern-section">
                 <h2 class="modern-section-title">Word Spotlight</h2>
                 <div class="interactive-card">
-                    <div class="word-entry">
-                        <h3 class="word-title">Serendipity</h3>
-                        <div class="word-definition-preview">
-                            <div class="word-definition">
-                                <p><strong>Definition:</strong> The occurrence and development of events by chance in a happy or beneficial way.</p>
-                                <p><strong>Example:</strong> "Finding this perfect dictionary was a wonderful serendipity."</p>
-                                <p><strong>Origin:</strong> Coined by Horace Walpole in 1754, from the Persian fairy tale "The Three Princes of Serendip".</p>
-                                <p><strong>Synonyms:</strong> chance, fortune, luck, fluke, accident.</p>
-                                <p><strong>Usage:</strong> Serendipity often describes fortunate discoveries made when not specifically looking for them.</p>
-                            </div>
-                            <div class="definition-fade"></div>
-                        </div>
-                        <div class="read-more-container">
-                            <button class="read-more-btn" onclick="toggleDefinitionExpansion(this)">
-                                <span>Read more</span>
-                                <span class="icon">▼</span>
-                            </button>
+                    <div id="wordSpotlightDisplay">
+                        <div class="skeleton-loading">
+                            <div class="skeleton-word"></div>
+                            <div class="skeleton-line extra-long"></div>
+                            <div class="skeleton-line long"></div>
+                            <div class="skeleton-line medium"></div>
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line long"></div>
+                            <div class="skeleton-line short"></div>
                         </div>
                     </div>
-                    <button class="btn-show-word" onclick="showNewRandomWord()">
-                        <i class="fas fa-random"></i> Discover Another Word
-                    </button>
                 </div>
             </section>
 
@@ -763,59 +762,444 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Sample dictionary data
-        const dictionary = [
-            { word: "Serendipity", definition: "<p><strong>Definition:</strong> The occurrence and development of events by chance in a happy or beneficial way.</p><p><strong>Example:</strong> 'Finding this perfect dictionary was a wonderful serendipity.'</p><p><strong>Origin:</strong> Coined by Horace Walpole in 1754, from the Persian fairy tale 'The Three Princes of Serendip'.</p><p><strong>Synonyms:</strong> chance, fortune, luck, fluke, accident.</p><p><strong>Usage:</strong> Serendipity often describes fortunate discoveries made when not specifically looking for them.</p>" },
-            { word: "Ephemeral", definition: "<p><strong>Definition:</strong> Lasting for a very short time.</p><p><strong>Example:</strong> 'The ephemeral beauty of cherry blossoms attracts visitors from around the world.'</p><p><strong>Origin:</strong> From Greek 'ephēmeros' meaning 'lasting only a day'.</p><p><strong>Synonyms:</strong> transient, fleeting, momentary, short-lived, temporary.</p><p><strong>Antonyms:</strong> permanent, eternal, everlasting, perpetual.</p>" },
-            { word: "Ubiquitous", definition: "<p><strong>Definition:</strong> Present, appearing, or found everywhere.</p><p><strong>Example:</strong> 'Mobile phones have become ubiquitous in modern society.'</p><p><strong>Origin:</strong> From Latin 'ubique' meaning 'everywhere'.</p><p><strong>Synonyms:</strong> omnipresent, universal, pervasive, widespread.</p><p><strong>Usage:</strong> Often used to describe technology, trends, or phenomena that are everywhere.</p>" },
-            { word: "Eloquent", definition: "<p><strong>Definition:</strong> Fluent or persuasive in speaking or writing.</p><p><strong>Example:</strong> 'Her eloquent speech moved the entire audience to tears.'</p><p><strong>Origin:</strong> From Latin 'eloqui' meaning 'to speak out'.</p><p><strong>Synonyms:</strong> articulate, expressive, fluent, persuasive, silver-tongued.</p><p><strong>Related:</strong> Eloquence (noun), eloquently (adverb).</p>" },
-            { word: "Mellifluous", definition: "<p><strong>Definition:</strong> Sweet or musical; pleasant to hear.</p><p><strong>Example:</strong> 'The mellifluous tones of the cello filled the concert hall.'</p><p><strong>Origin:</strong> From Latin 'mel' (honey) + 'fluere' (to flow).</p><p><strong>Synonyms:</strong> dulcet, harmonious, melodious, musical, sweet-sounding.</p><p><strong>Usage:</strong> Typically used to describe voices, sounds, or music that are particularly pleasing.</p>" }
-        ];
+        // SafeStorage utility
+        const SafeStorage = {
+            isAvailable: false,
+            memoryStorage: {},
+            
+            init: function() {
+                try {
+                    const test = '__storage_test__';
+                    localStorage.setItem(test, test);
+                    localStorage.removeItem(test);
+                    this.isAvailable = true;
+                    console.log('localStorage is available');
+                } catch(e) {
+                    console.warn('localStorage not available, using memory storage:', e);
+                    this.isAvailable = false;
+                }
+            },
+            
+            setItem: function(key, value) {
+                try {
+                    if (this.isAvailable) {
+                        localStorage.setItem(key, value);
+                    }
+                    this.memoryStorage[key] = value;
+                } catch(e) {
+                    console.warn('Storage setItem failed:', e);
+                    this.memoryStorage[key] = value;
+                }
+            },
+            
+            getItem: function(key) {
+                try {
+                    if (this.isAvailable) {
+                        const value = localStorage.getItem(key);
+                        if (value !== null) return value;
+                    }
+                    return this.memoryStorage[key] || null;
+                } catch(e) {
+                    console.warn('Storage getItem failed:', e);
+                    return this.memoryStorage[key] || null;
+                }
+            },
+            
+            removeItem: function(key) {
+                try {
+                    if (this.isAvailable) {
+                        localStorage.removeItem(key);
+                    }
+                    delete this.memoryStorage[key];
+                } catch(e) {
+                    console.warn('Storage removeItem failed:', e);
+                    delete this.memoryStorage[key];
+                }
+            }
+        };
+
+        SafeStorage.init();
+
+        // Supabase configuration
+        const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
+
+        let supabaseClient;
+        let isSupabaseConfigured = false;
+        let dictionary = [];
+        let selectedAutocompleteIndex = -1;
+        let typingTimer;
+        let supabaseInitialized = false;
+
+        // Quiz variables
+        let quizQuestions = [];
+        let currentQuizQuestion = null;
+        let selectedQuizAnswer = null;
+        let quizAnswered = false;
+        let questionDisplayed = false;
+
+        // Search index for faster lookups
+        let searchIndex = null;
+
+        // Fisher-Yates shuffle algorithm for randomizing arrays
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function buildSearchIndex() {
+            searchIndex = dictionary.map(item => ({
+                id: item.id,
+                word: item.word,
+                wordLower: item.word.toLowerCase(),
+                definition: item.definition,
+                definitionText: item.definition.replace(/<[^>]*>/g,'').toLowerCase()
+            }));
+        }
+
+        function loadFromLocalStorage() {
+            const localDict = SafeStorage.getItem('dictionary');
+            dictionary = localDict ? JSON.parse(localDict) : [];
+            buildSearchIndex();
+            
+            // Immediately display a random word from local storage
+            if (dictionary.length > 0) {
+                displayWordSpotlight();
+            }
+            
+            return dictionary.length > 0;
+        }
+
+        async function initializeSupabase() {
+            try {
+                const { createClient } = supabase;
+                supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                isSupabaseConfigured = true;
+                supabaseInitialized = true;
+                
+                // Load quiz questions immediately without waiting for dictionary sync
+                await loadQuizQuestions();
+                await syncWithSupabase();
+            } catch(error) {
+                console.error('Supabase init error:', error);
+                isSupabaseConfigured = false;
+                // Word Spotlight is already loaded from local storage, so no need to display again
+            }
+        }
+
+        async function syncWithSupabase() {
+            if (!isSupabaseConfigured || !supabaseInitialized) return;
+            
+            try {
+                const { data: dictData, error: dictError } = await supabaseClient
+                    .from('dictionary')
+                    .select('*')
+                    .order('word', { ascending: true });
+                
+                if (dictError) throw dictError;
+                
+                if (dictData && dictData.length > 0) {
+                    dictionary = dictData.map(item => ({
+                        id: item.id,
+                        word: item.word,
+                        definition: item.definition,
+                        dateAdded: item.date_added,
+                        dateModified: item.date_modified
+                    }));
+                    
+                    buildSearchIndex();
+                    SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
+                    
+                    // Update Word Spotlight with fresh data
+                    displayWordSpotlight();
+                }
+            } catch(error) {
+                console.error('Sync error:', error);
+            }
+        }
+
+        // Quiz Functions - Optimized for faster loading
+        async function loadQuizQuestions() {
+            try {
+                console.log('Loading quiz questions...');
+                
+                // Try to load from cache first for faster display
+                const cachedQuestions = SafeStorage.getItem('cachedQuizQuestions');
+                if (cachedQuestions) {
+                    quizQuestions = JSON.parse(cachedQuestions);
+                    console.log('Loaded quiz questions from cache:', quizQuestions.length);
+                    
+                    // Show quiz immediately if we have cached questions
+                    document.getElementById('quizLoadingMessage').style.display = 'none';
+                    document.getElementById('quizQuestion').style.display = 'block';
+                    displayQuizQuestion();
+                }
+                
+                // Always fetch fresh data in background
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_questions?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const freshQuestions = await response.json();
+                console.log('Fresh quiz questions loaded:', freshQuestions.length);
+
+                if (freshQuestions.length === 0) {
+                    showQuizError('No quiz questions found in the database.');
+                    return;
+                }
+
+                // Update cache with fresh data
+                quizQuestions = freshQuestions;
+                SafeStorage.setItem('cachedQuizQuestions', JSON.stringify(freshQuestions));
+                
+                // If we didn't have cached data, show the quiz now
+                if (!cachedQuestions) {
+                    document.getElementById('quizLoadingMessage').style.display = 'none';
+                    document.getElementById('quizQuestion').style.display = 'block';
+                    displayQuizQuestion();
+                }
+                // If we had cached data, don't change the current question to avoid glitch
+            } catch (error) {
+                console.error('Error loading quiz questions:', error);
+                // If we have cached questions, use them even if fetch fails
+                if (quizQuestions.length > 0) {
+                    document.getElementById('quizLoadingMessage').style.display = 'none';
+                    document.getElementById('quizQuestion').style.display = 'block';
+                    displayQuizQuestion();
+                } else {
+                    showQuizError(`Failed to load quiz: ${error.message}. Please check your Supabase configuration.`);
+                }
+            }
+        }
+
+        function showQuizError(message) {
+            document.getElementById('quizLoadingMessage').style.display = 'none';
+            document.getElementById('quizErrorMessage').style.display = 'block';
+            document.getElementById('quizErrorMessage').textContent = message;
+        }
+
+        function displayQuizQuestion() {
+            if (quizQuestions.length === 0) return;
+            
+            // Prevent multiple question displays
+            if (questionDisplayed) return;
+            questionDisplayed = true;
+            
+            // Get a random question
+            const randomIndex = Math.floor(Math.random() * quizQuestions.length);
+            currentQuizQuestion = quizQuestions[randomIndex];
+            
+            document.getElementById('quizQuestionText').textContent = currentQuizQuestion.question_text;
+            
+            // Create options with randomization
+            const optionsGrid = document.getElementById('quizOptionsGrid');
+            optionsGrid.innerHTML = '';
+            
+            // Make sure options is an array
+            const optionsArray = Array.isArray(currentQuizQuestion.options) ? 
+                currentQuizQuestion.options : 
+                JSON.parse(currentQuizQuestion.options || '[]');
+            
+            // Store the original correct answer before shuffling
+            const originalCorrectAnswer = optionsArray[currentQuizQuestion.correct_answer];
+            
+            // Shuffle the options array
+            const shuffledOptions = shuffleArray(optionsArray);
+            
+            // Find the new position of the correct answer after shuffling
+            const newCorrectAnswerIndex = shuffledOptions.indexOf(originalCorrectAnswer);
+            
+            // Update the question object with shuffled options and new correct answer index
+            currentQuizQuestion.shuffledOptions = shuffledOptions;
+            currentQuizQuestion.currentCorrectAnswer = newCorrectAnswerIndex;
+            
+            // Create the option buttons
+            shuffledOptions.forEach((option, index) => {
+                const optionDiv = document.createElement('button');
+                optionDiv.className = 'option-btn';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectQuizAnswer(index);
+                optionsGrid.appendChild(optionDiv);
+            });
+
+            // Reset UI state
+            document.getElementById('quizExplanation').classList.remove('show');
+            document.getElementById('quizContinueBtn').style.display = 'none';
+            quizAnswered = false;
+            selectedQuizAnswer = null;
+        }
+
+        function selectQuizAnswer(index) {
+            if (quizAnswered) return;
+            
+            selectedQuizAnswer = index;
+            quizAnswered = true;
+            
+            const options = document.querySelectorAll('.option-btn');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            
+            // Immediately check the answer
+            checkQuizAnswer();
+        }
+
+        function checkQuizAnswer() {
+            quizAnswered = true;
+
+            // Use the current correct answer index (after shuffling)
+            const isCorrect = selectedQuizAnswer === currentQuizQuestion.currentCorrectAnswer;
+
+            // Show explanation
+            document.getElementById('quizExplanationText').textContent = currentQuizQuestion.explanation;
+            document.getElementById('quizExplanation').classList.add('show');
+
+            // Show continue button
+            document.getElementById('quizContinueBtn').style.display = 'block';
+            
+            // Highlight correct and incorrect answers
+            const options = document.querySelectorAll('.option-btn');
+            
+            // Highlight correct answer (using current correct answer index)
+            options[currentQuizQuestion.currentCorrectAnswer].classList.add('correct');
+            
+            // If wrong answer, also highlight the incorrect choice
+            if (!isCorrect) {
+                options[selectedQuizAnswer].classList.add('incorrect');
+            }
+            
+            // Disable all options after selection
+            options.forEach(opt => {
+                opt.style.cursor = 'default';
+                opt.onclick = null;
+            });
+        }
+
+        function continueToFullQuiz() {
+            window.location.href = 'quiz.html';
+        }
+
+        // FAST LOADING: Word Spotlight with local storage
+        function createExpandableDefinition(definitionHTML) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = definitionHTML;
+            const textContent = tempDiv.textContent || tempDiv.innerText || '';
+            
+            // Check if definition is long enough to need expansion
+            const isLongDefinition = textContent.length > 800 || definitionHTML.includes('<h1') || definitionHTML.includes('<h2') || definitionHTML.includes('<h3') || definitionHTML.includes('<ul') || definitionHTML.includes('<ol');
+            
+            if (!isLongDefinition) {
+                return `
+                    <div class="word-entry">
+                        <div class="word-definition">
+                            ${definitionHTML}
+                        </div>
+                        <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="word-entry">
+                    <div class="word-definition-preview">
+                        <div class="word-definition">
+                            ${definitionHTML}
+                            <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
+                        </div>
+                        <div class="definition-fade"></div>
+                    </div>
+                    <div class="read-more-container">
+                        <button class="read-more-btn" onclick="toggleDefinitionExpansion(this)">
+                            <span>Read more</span>
+                            <span class="icon">▼</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleDefinitionExpansion(button) {
+            const preview = button.closest('.word-entry').querySelector('.word-definition-preview');
+            const isExpanded = preview.classList.contains('expanded');
+            
+            if (isExpanded) {
+                preview.classList.remove('expanded');
+                button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
+            } else {
+                preview.classList.add('expanded');
+                button.innerHTML = '<span>Read less</span><span class="icon">▼</span>';
+                
+                // Scroll to keep the preview in view
+                setTimeout(() => {
+                    preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }
+        }
+
+        // FAST LOADING: Word Spotlight function - uses local storage immediately
+        function displayWordSpotlight(){
+            const ws=document.getElementById('wordSpotlightDisplay');
+            
+            if(!dictionary || dictionary.length===0){
+                ws.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words available yet!</p></div>';
+                return;
+            }
+            
+            // Always pick a completely random word
+            const randomIndex = Math.floor(Math.random() * dictionary.length);
+            const randomWord = dictionary[randomIndex];
+            ws.innerHTML = createExpandableDefinition(randomWord.definition);
+        }
+
+        function showNewRandomWord(){
+            if(dictionary.length>0){
+                const ws=document.getElementById('wordSpotlightDisplay');
+                const randomIndex = Math.floor(Math.random() * dictionary.length);
+                const randomWord = dictionary[randomIndex];
+                ws.innerHTML = createExpandableDefinition(randomWord.definition);
+                document.getElementById('wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
+            }
+        }
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
-            // Set up quiz interaction
-            setupQuiz();
+            const hasLocalData = loadFromLocalStorage();
+            
+            if (!hasLocalData) {
+                const ws = document.getElementById('wordSpotlightDisplay');
+                ws.innerHTML = `
+                    <div class="skeleton-loading">
+                        <div class="skeleton-word"></div>
+                        <div class="skeleton-line extra-long"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                `;
+            }
+            
+            // Initialize Supabase immediately for faster loading
+            setTimeout(initializeSupabase, 0);
             
             // Set up search functionality
             setupSearch();
         });
-
-        // Quiz functionality
-        function setupQuiz() {
-            const optionButtons = document.querySelectorAll('.option-btn');
-            const explanationBox = document.getElementById('quizExplanation');
-            const explanationText = document.getElementById('quizExplanationText');
-            const continueBtn = document.getElementById('quizContinueBtn');
-            
-            optionButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove selected class from all buttons
-                    optionButtons.forEach(btn => btn.classList.remove('selected'));
-                    
-                    // Add selected class to clicked button
-                    this.classList.add('selected');
-                    
-                    // Show explanation
-                    explanationBox.classList.add('show');
-                    
-                    // Enable continue button
-                    continueBtn.style.display = 'flex';
-                    
-                    // Scroll to explanation
-                    setTimeout(() => {
-                        explanationBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }, 300);
-                });
-            });
-            
-            // Continue button action
-            continueBtn.addEventListener('click', function() {
-                alert('Redirecting to full quiz page...');
-                // In a real implementation, this would navigate to a full quiz page
-            });
-        }
 
         // Search functionality
         function setupSearch() {
@@ -926,43 +1310,6 @@
             setTimeout(() => {
                 searchResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
-        }
-
-        // Word spotlight functionality
-        function toggleDefinitionExpansion(button) {
-            const preview = button.closest('.word-entry').querySelector('.word-definition-preview');
-            const isExpanded = preview.classList.contains('expanded');
-            
-            if (isExpanded) {
-                preview.classList.remove('expanded');
-                button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
-            } else {
-                preview.classList.add('expanded');
-                button.innerHTML = '<span>Read less</span><span class="icon">▼</span>';
-                
-                // Scroll to keep the preview in view
-                setTimeout(() => {
-                    preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 300);
-            }
-        }
-
-        function showNewRandomWord() {
-            const randomIndex = Math.floor(Math.random() * dictionary.length);
-            const randomWord = dictionary[randomIndex];
-            
-            const wordSpotlight = document.querySelector('#wordSpotlightSection .interactive-card .word-entry');
-            wordSpotlight.querySelector('.word-title').textContent = randomWord.word;
-            wordSpotlight.querySelector('.word-definition').innerHTML = randomWord.definition;
-            
-            // Reset read more state
-            const preview = wordSpotlight.querySelector('.word-definition-preview');
-            const readMoreBtn = wordSpotlight.querySelector('.read-more-btn');
-            preview.classList.remove('expanded');
-            readMoreBtn.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
-            
-            // Scroll to word spotlight
-            document.getElementById('wordSpotlightSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     </script>
 </body>
