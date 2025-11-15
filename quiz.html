@@ -283,40 +283,16 @@
             margin: 20px 0;
         }
 
-        .points-breakdown {
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .points-breakdown h3 {
-            margin-bottom: 15px;
+        .correct-answers {
+            font-size: 1.5rem;
             color: var(--text-primary);
-            font-size: 1.2rem;
+            margin-bottom: 15px;
         }
 
-        .points-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .points-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .points-item.total {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 2px solid var(--accent-primary);
+        .score-summary {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
         }
 
         .encouragement {
@@ -457,6 +433,14 @@
             
             .score-display {
                 font-size: 2.5rem;
+            }
+            
+            .correct-answers {
+                font-size: 1.3rem;
+            }
+            
+            .score-summary {
+                font-size: 1.1rem;
             }
             
             .encouragement {
@@ -624,23 +608,8 @@
             <div class="results-screen" id="results-screen">
                 <h2>Quiz Complete! 🎉</h2>
                 <div class="score-display" id="final-score">0</div>
-                
-                <div class="points-breakdown" id="points-breakdown">
-                    <h3>Points Breakdown</h3>
-                    <div class="points-item">
-                        <span>Correct Answers:</span>
-                        <span id="correct-answers-points">0</span>
-                    </div>
-                    <div class="points-item">
-                        <span>Fast Fingers Bonus:</span>
-                        <span id="fast-fingers-points">0</span>
-                    </div>
-                    <div class="points-item total">
-                        <span>Total Score:</span>
-                        <span id="total-points">0</span>
-                    </div>
-                </div>
-                
+                <div class="correct-answers" id="correct-answers">You've got 0/10 correct!</div>
+                <div class="score-summary" id="score-summary">Your score: 0/2000</div>
                 <div class="encouragement" id="encouragement-message">Keep practicing!</div>
                 <button class="btn-next" onclick="restartQuiz()">Try Again</button>
             </div>
@@ -866,10 +835,11 @@
             document.getElementById('results-screen').style.display = 'block';
             document.getElementById('final-score').textContent = score;
             
-            document.getElementById('correct-answers-points').textContent = `${totalCorrectAnswers * 50} (${totalCorrectAnswers} × 50)`;
-            document.getElementById('fast-fingers-points').textContent = totalFastFingersPoints;
-            document.getElementById('total-points').textContent = score;
+            // Update results display
+            document.getElementById('correct-answers').textContent = `You've got ${totalCorrectAnswers}/10 correct!`;
+            document.getElementById('score-summary').textContent = `Your score: ${score}/2000`;
             
+            // Encouragement message
             const percentage = (totalCorrectAnswers / TOTAL_QUESTIONS) * 100;
             let message = '';
             if (percentage >= 80) message = 'Outstanding! You\'re a vocabulary master! 🎯';
