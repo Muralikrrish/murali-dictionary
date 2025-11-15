@@ -635,6 +635,76 @@
         let totalFastFingersPoints = 0;
         let totalCorrectAnswers = 0;
 
+        // Sound effects
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(frequency, duration, type = 'sine', volume = 0.3) {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = type;
+            
+            gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+        
+        function playCorrectSound() {
+            playSound(800, 0.1, 'sine', 0.2);
+        }
+        
+        function playIncorrectSound() {
+            playSound(400, 0.15, 'sine', 0.2);
+        }
+        
+        function playSelectSound() {
+            playSound(600, 0.05, 'sine', 0.1);
+        }
+        
+        function playNextSound() {
+            playSound(700, 0.08, 'sine', 0.15);
+        }
+        
+        function playTimerTick() {
+            playSound(300, 0.03, 'sine', 0.1);
+        }
+        
+        function playCompleteSound() {
+            // Play a little victory melody
+            const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+            let time = audioContext.currentTime;
+            
+            notes.forEach((note, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = note;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, time);
+                gainNode.gain.linearRampToValueAtTime(0.2, time + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
+                
+                oscillator.start(time);
+                oscillator.stop(time + 0.3);
+                
+                time += 0.1;
+            });
+        }
+
         function shuffleArray(array) {
             const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -761,6 +831,11 @@
                     fastFingersBonus = Math.max(0, fastFingersBonus - 10);
                 }
                 
+                // Play subtle tick sound when time is running low
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    playTimerTick();
+                }
+                
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     document.getElementById('fast-fingers-timer').style.display = 'none';
@@ -773,6 +848,9 @@
             
             selectedAnswer = index;
             answerSubmitted = true;
+            
+            // Play selection sound
+            playSelectSound();
             
             clearInterval(timerInterval);
             
@@ -788,6 +866,13 @@
 
             const question = questions[currentQuestion];
             const isCorrect = selectedAnswer === question.currentCorrectAnswer;
+            
+            // Play appropriate sound
+            if (isCorrect) {
+                playCorrectSound();
+            } else {
+                playIncorrectSound();
+            }
             
             currentQuestionPoints = isCorrect ? 50 : 0;
             if (isCorrect) {
@@ -824,11 +909,17 @@
         }
 
         function nextQuestion() {
+            // Play transition sound
+            playNextSound();
+            
             currentQuestion++;
             displayQuestion();
         }
 
         function showResults() {
+            // Play completion sound
+            playCompleteSound();
+            
             document.getElementById('progress-fill').style.width = '100%';
             document.getElementById('question-card').style.display = 'none';
             document.getElementById('question-stats').style.display = 'none';
