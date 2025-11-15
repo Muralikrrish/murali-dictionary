@@ -186,14 +186,48 @@
             border-left: 4px solid var(--accent-primary);
             margin-top: 16px;
             display: none;
-            color: var(--text-primary);
-            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-size: 1rem;
             line-height: 1.5;
         }
 
         .explanation-box.show {
             display: block;
             animation: slideDown 0.3s ease;
+        }
+
+        .points-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .fast-fingers-timer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            gap: 10px;
+        }
+
+        .timer-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
         @keyframes slideDown {
@@ -245,6 +279,42 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 20px 0;
+        }
+
+        .points-breakdown {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .points-breakdown h3 {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+        }
+
+        .points-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .points-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .points-item.total {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid var(--accent-primary);
         }
 
         .encouragement {
@@ -448,12 +518,22 @@
             
             .explanation-box {
                 padding: 12px;
-                font-size: 0.85rem;
+                font-size: 0.9rem;
             }
             
             .btn-next {
                 padding: 12px 18px;
                 font-size: 13px;
+            }
+            
+            .timer-circle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .timer-label {
+                font-size: 0.8rem;
             }
             
             /* Further mobile optimization for skeleton */
@@ -511,11 +591,18 @@
                     <div class="question-text" id="question-text">
                         Loading question...
                     </div>
+                    
+                    <div class="fast-fingers-timer" id="fast-fingers-timer" style="display: none;">
+                        <div class="timer-label">Fast Fingers Bonus:</div>
+                        <div class="timer-circle" id="timer-value">20</div>
+                    </div>
+                    
                     <div class="options-grid" id="options-grid">
                         <!-- Options will be inserted here -->
                     </div>
                     <div class="explanation-box" id="explanation-box">
                         <strong>Explanation:</strong> <span id="explanation-text"></span>
+                        <div class="points-info" id="points-info"></div>
                     </div>
                     <div class="action-buttons">
                         <button class="btn-next" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
@@ -525,7 +612,24 @@
 
             <div class="results-screen" id="results-screen">
                 <h2>Quiz Complete! 🎉</h2>
-                <div class="score-display" id="final-score">0/10</div>
+                <div class="score-display" id="final-score">0</div>
+                
+                <div class="points-breakdown" id="points-breakdown">
+                    <h3>Points Breakdown</h3>
+                    <div class="points-item">
+                        <span>Correct Answers:</span>
+                        <span id="correct-answers-points">0</span>
+                    </div>
+                    <div class="points-item">
+                        <span>Fast Fingers Bonus:</span>
+                        <span id="fast-fingers-points">0</span>
+                    </div>
+                    <div class="points-item total">
+                        <span>Total Score:</span>
+                        <span id="total-points">0</span>
+                    </div>
+                </div>
+                
                 <div class="encouragement" id="encouragement-message">Keep practicing!</div>
                 <button class="btn-next" onclick="restartQuiz()">Try Again</button>
             </div>
@@ -544,6 +648,14 @@
         let answerSubmitted = false;
         let questionsAnswered = 0;
         const TOTAL_QUESTIONS = 10;
+        
+        // Fast fingers scoring system
+        let fastFingersBonus = 200;
+        let timerInterval;
+        let timeLeft = 20; // 20 seconds to get full bonus
+        let currentQuestionPoints = 0;
+        let totalFastFingersPoints = 0;
+        let totalCorrectAnswers = 0;
 
         // Fisher-Yates shuffle algorithm for randomizing arrays
         function shuffleArray(array) {
@@ -622,6 +734,12 @@
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
             document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
+            // Reset fast fingers timer
+            resetTimer();
+            
+            // Show fast fingers timer
+            document.getElementById('fast-fingers-timer').style.display = 'flex';
+
             // Create options with randomization
             const optionsGrid = document.getElementById('options-grid');
             optionsGrid.innerHTML = '';
@@ -653,9 +771,44 @@
 
             // Reset UI state
             document.getElementById('explanation-box').classList.remove('show');
+            
+            // Change button text for last question
+            if (currentQuestion === TOTAL_QUESTIONS - 1) {
+                document.getElementById('next-btn').textContent = 'See Results';
+            } else {
+                document.getElementById('next-btn').textContent = 'Next Question';
+            }
+            
             document.getElementById('next-btn').style.display = 'none';
             answerSubmitted = false;
             selectedAnswer = null;
+            
+            // Start the fast fingers timer
+            startTimer();
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 20;
+            document.getElementById('timer-value').textContent = timeLeft;
+            fastFingersBonus = 200;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-value').textContent = timeLeft;
+                
+                // Reduce fast fingers bonus by 10 points every second
+                if (timeLeft < 20) {
+                    fastFingersBonus = Math.max(0, fastFingersBonus - 10);
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    // Auto-submit if time runs out?
+                }
+            }, 1000);
         }
 
         function selectAnswer(index) {
@@ -663,6 +816,9 @@
             
             selectedAnswer = index;
             answerSubmitted = true;
+            
+            // Stop the timer
+            clearInterval(timerInterval);
             
             const buttons = document.querySelectorAll('.option-btn');
             buttons.forEach(btn => btn.classList.remove('selected'));
@@ -679,9 +835,15 @@
             // Use the current correct answer index (after shuffling)
             const isCorrect = selectedAnswer === question.currentCorrectAnswer;
             
+            // Calculate points
+            currentQuestionPoints = isCorrect ? 100 : 0;
             if (isCorrect) {
-                score++;
+                currentQuestionPoints += fastFingersBonus;
+                totalFastFingersPoints += fastFingersBonus;
+                totalCorrectAnswers++;
             }
+            
+            score += currentQuestionPoints;
 
             // Increment questions answered and update progress
             questionsAnswered++;
@@ -689,6 +851,15 @@
 
             // Show explanation
             document.getElementById('explanation-text').textContent = question.explanation;
+            
+            // Show points info
+            const pointsInfo = document.getElementById('points-info');
+            if (isCorrect) {
+                pointsInfo.innerHTML = `You earned <strong>${currentQuestionPoints} points</strong> (100 for correct answer + ${fastFingersBonus} fast fingers bonus)!`;
+            } else {
+                pointsInfo.innerHTML = `You earned <strong>0 points</strong>. The correct answer was: ${question.shuffledOptions[question.currentCorrectAnswer]}`;
+            }
+            
             document.getElementById('explanation-box').classList.add('show');
 
             // Show next button
@@ -722,10 +893,15 @@
             document.getElementById('progress-fill').style.width = '100%';
             document.getElementById('question-card').style.display = 'none';
             document.getElementById('results-screen').style.display = 'block';
-            document.getElementById('final-score').textContent = `${score}/${TOTAL_QUESTIONS}`;
+            document.getElementById('final-score').textContent = score;
+            
+            // Update points breakdown
+            document.getElementById('correct-answers-points').textContent = `${totalCorrectAnswers * 100} (${totalCorrectAnswers} × 100)`;
+            document.getElementById('fast-fingers-points').textContent = totalFastFingersPoints;
+            document.getElementById('total-points').textContent = score;
             
             // Encouragement message
-            const percentage = (score / TOTAL_QUESTIONS) * 100;
+            const percentage = (totalCorrectAnswers / TOTAL_QUESTIONS) * 100;
             let message = '';
             if (percentage >= 80) message = 'Outstanding! You\'re a vocabulary master! 🎯';
             else if (percentage >= 60) message = 'Great job! You\'re getting there! 💪';
@@ -738,6 +914,10 @@
             currentQuestion = 0;
             score = 0;
             questionsAnswered = 0;
+            totalFastFingersPoints = 0;
+            totalCorrectAnswers = 0;
+            clearInterval(timerInterval);
+            
             document.getElementById('results-screen').style.display = 'none';
             document.getElementById('question-card').style.display = 'block';
             document.getElementById('loading-message').style.display = 'block';
