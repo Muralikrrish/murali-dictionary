@@ -286,7 +286,7 @@
             border-left: 4px solid var(--error-color);
         }
 
-        /* IMPROVED: Word of the Day Progressive Disclosure Styles */
+        /* IMPROVED: Word Spotlight Progressive Disclosure Styles */
         .word-definition-preview {
             position: relative;
             max-height: 400px;
@@ -569,10 +569,10 @@
                 </div>
             </div>
             
-            <!-- Word of the Day Section -->
-            <div class="words-column" id="wordOfTheDaySection">
-                <h2 class="section-title">Word of the Day</h2>
-                <div id="randomWordDisplay"></div>
+            <!-- Word Spotlight Section - Fast loading with local storage -->
+            <div class="words-column" id="wordSpotlightSection">
+                <h2 class="section-title">Word Spotlight</h2>
+                <div id="wordSpotlightDisplay"></div>
             </div>
         </div>
     </div>
@@ -645,7 +645,6 @@ let dictionary = [];
 let selectedAutocompleteIndex = -1;
 let typingTimer;
 let supabaseInitialized = false;
-let hasShownWordOfTheDay = false;
 
 // Quiz variables
 let quizQuestions = [];
@@ -681,6 +680,12 @@ function loadFromLocalStorage() {
     const localDict = SafeStorage.getItem('dictionary');
     dictionary = localDict ? JSON.parse(localDict) : [];
     buildSearchIndex();
+    
+    // Immediately display a random word from local storage
+    if (dictionary.length > 0) {
+        displayWordSpotlight();
+    }
+    
     return dictionary.length > 0;
 }
 
@@ -698,9 +703,7 @@ async function initializeSupabase() {
     } catch(error) {
         console.error('Supabase init error:', error);
         isSupabaseConfigured = false;
-        if (dictionary.length === 0) {
-            displayWordOfTheDay();
-        }
+        // Word Spotlight is already loaded from local storage, so no need to display again
     }
 }
 
@@ -726,12 +729,6 @@ async function syncWithSupabase() {
             
             buildSearchIndex();
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
-            
-            // Only show word of the day if we haven't already shown it
-            if (!hasShownWordOfTheDay) {
-                displayWordOfTheDay();
-                hasShownWordOfTheDay = true;
-            }
         }
     } catch(error) {
         console.error('Sync error:', error);
@@ -906,7 +903,7 @@ function continueToFullQuiz() {
     window.location.href = 'quiz.html';
 }
 
-// IMPROVED: Word of the Day Progressive Disclosure 
+// FAST LOADING: Word Spotlight with local storage
 function createExpandableDefinition(definitionHTML) {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = definitionHTML;
@@ -968,23 +965,9 @@ function toggleDefinitionExpansion(button) {
 document.addEventListener('DOMContentLoaded', function() {
     const hasLocalData = loadFromLocalStorage();
     
-    if (hasLocalData) {
-        // Show skeleton loading initially, wait for Supabase to sync
-        const rd = document.getElementById('randomWordDisplay');
-        rd.innerHTML = `
-            <div class="skeleton-loading">
-                <div class="skeleton-word"></div>
-                <div class="skeleton-line extra-long"></div>
-                <div class="skeleton-line long"></div>
-                <div class="skeleton-line medium"></div>
-                <div class="skeleton-line short"></div>
-                <div class="skeleton-line long"></div>
-                <div class="skeleton-line short"></div>
-            </div>
-        `;
-    } else {
-        const rd = document.getElementById('randomWordDisplay');
-        rd.innerHTML = `
+    if (!hasLocalData) {
+        const ws = document.getElementById('wordSpotlightDisplay');
+        ws.innerHTML = `
             <div class="skeleton-loading">
                 <div class="skeleton-word"></div>
                 <div class="skeleton-line extra-long"></div>
@@ -1141,47 +1124,28 @@ function displaySearchResults(s){
     }, 100);
 }
 
-function getWordOfTheDay() {
-    if (!dictionary || dictionary.length === 0) {
-        return null;
-    }
-    
-    const today = new Date();
-    const dateString = today.getFullYear() + '-' + 
-                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-                      String(today.getDate()).padStart(2, '0');
-    
-    let hash = 0;
-    for (let i = 0; i < dateString.length; i++) {
-        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
-        hash = hash & hash;
-    }
-    
-    const index = Math.abs(hash) % dictionary.length;
-    return dictionary[index];
-}
-
-function displayWordOfTheDay(){
-    const rd=document.getElementById('randomWordDisplay');
+// FAST LOADING: Word Spotlight function - uses local storage immediately
+function displayWordSpotlight(){
+    const ws=document.getElementById('wordSpotlightDisplay');
     
     if(!dictionary || dictionary.length===0){
-        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+        ws.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words available yet!</p></div>';
         return;
     }
     
-    const wordOfDay = getWordOfTheDay();
-    if (wordOfDay) {
-        rd.innerHTML = createExpandableDefinition(wordOfDay.definition);
-    }
+    // Always pick a completely random word
+    const randomIndex = Math.floor(Math.random() * dictionary.length);
+    const randomWord = dictionary[randomIndex];
+    ws.innerHTML = createExpandableDefinition(randomWord.definition);
 }
 
 function showNewRandomWord(){
     if(dictionary.length>0){
-        const rd=document.getElementById('randomWordDisplay');
-        const ri=Math.floor(Math.random()*dictionary.length);
-        const rw=dictionary[ri];
-        rd.innerHTML = createExpandableDefinition(rw.definition);
-        document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
+        const ws=document.getElementById('wordSpotlightDisplay');
+        const randomIndex = Math.floor(Math.random() * dictionary.length);
+        const randomWord = dictionary[randomIndex];
+        ws.innerHTML = createExpandableDefinition(randomWord.definition);
+        document.getElementById('wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
     }
 }
     </script>
