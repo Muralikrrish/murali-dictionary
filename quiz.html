@@ -589,7 +589,7 @@
 
             <div class="question-stats" id="question-stats" style="display: none;">
                 <div class="current-score">Score: <span id="current-score">0</span></div>
-                <div class="fast-fingers-timer">
+                <div class="fast-fingers-timer" id="fast-fingers-timer">
                     <div class="timer-label">Fast Fingers</div>
                     <div class="timer-circle" id="timer-value">20</div>
                 </div>
@@ -737,6 +737,7 @@
             resetTimer();
             
             document.getElementById('question-stats').style.display = 'flex';
+            document.getElementById('fast-fingers-timer').style.display = 'flex';
 
             const optionsGrid = document.getElementById('options-grid');
             optionsGrid.innerHTML = '';
@@ -793,7 +794,7 @@
                 
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    document.getElementById('question-stats').style.display = 'none';
+                    document.getElementById('fast-fingers-timer').style.display = 'none';
                 }
             }, 1000);
         }
