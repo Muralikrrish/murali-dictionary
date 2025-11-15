@@ -1,3 +1,17 @@
+# Updated Quiz with Improved Fast Fingers System
+
+I've made all the requested changes to the quiz:
+
+1. Changed points: 50 for correct answers, 150 for fast fingers
+2. Timer now only reduces points after 5 seconds (when below 15 seconds remaining)
+3. Moved fast fingers timer above the question
+4. Added current score display above the question
+5. Shortened "fast fingers bonus" to "fast fingers"
+6. Simplified points display
+
+Here's the updated code:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -117,8 +131,46 @@
             transition: width 0.3s ease;
         }
 
+        .question-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px 0;
+            margin-bottom: 15px;
+        }
+
+        .current-score {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .fast-fingers-timer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
+        }
+
+        .timer-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
         .question-card {
-            padding: 20px;
+            padding: 0 20px 20px;
         }
 
         .question-text {
@@ -194,40 +246,6 @@
         .explanation-box.show {
             display: block;
             animation: slideDown 0.3s ease;
-        }
-
-        .points-info {
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        .fast-fingers-timer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 15px 0;
-            gap: 10px;
-        }
-
-        .timer-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--accent-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
-        }
-
-        .timer-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
         }
 
         @keyframes slideDown {
@@ -414,8 +432,13 @@
                 margin: 0 12px;
             }
             
+            .question-stats {
+                padding: 12px 16px 0;
+                margin-bottom: 12px;
+            }
+            
             .question-card {
-                padding: 16px;
+                padding: 0 16px 16px;
             }
             
             .question-text {
@@ -496,8 +519,27 @@
                 font-size: 0.85rem;
             }
             
+            .question-stats {
+                padding: 10px 12px 0;
+                margin-bottom: 10px;
+            }
+            
+            .current-score {
+                font-size: 1rem;
+            }
+            
+            .timer-label {
+                font-size: 0.8rem;
+            }
+            
+            .timer-circle {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
             .question-card {
-                padding: 12px;
+                padding: 0 12px 12px;
             }
             
             .question-text {
@@ -524,16 +566,6 @@
             .btn-next {
                 padding: 12px 18px;
                 font-size: 13px;
-            }
-            
-            .timer-circle {
-                width: 35px;
-                height: 35px;
-                font-size: 0.9rem;
-            }
-            
-            .timer-label {
-                font-size: 0.8rem;
             }
             
             /* Further mobile optimization for skeleton */
@@ -576,6 +608,14 @@
                 </div>
             </div>
 
+            <div class="question-stats" id="question-stats" style="display: none;">
+                <div class="current-score">Score: <span id="current-score">0</span></div>
+                <div class="fast-fingers-timer">
+                    <div class="timer-label">Fast Fingers</div>
+                    <div class="timer-circle" id="timer-value">20</div>
+                </div>
+            </div>
+
             <div class="question-card" id="question-card">
                 <!-- Skeleton Loading Animation -->
                 <div class="skeleton-loading" id="loading-message">
@@ -592,17 +632,11 @@
                         Loading question...
                     </div>
                     
-                    <div class="fast-fingers-timer" id="fast-fingers-timer" style="display: none;">
-                        <div class="timer-label">Fast Fingers Bonus:</div>
-                        <div class="timer-circle" id="timer-value">20</div>
-                    </div>
-                    
                     <div class="options-grid" id="options-grid">
                         <!-- Options will be inserted here -->
                     </div>
                     <div class="explanation-box" id="explanation-box">
                         <strong>Explanation:</strong> <span id="explanation-text"></span>
-                        <div class="points-info" id="points-info"></div>
                     </div>
                     <div class="action-buttons">
                         <button class="btn-next" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
@@ -650,7 +684,7 @@
         const TOTAL_QUESTIONS = 10;
         
         // Fast fingers scoring system
-        let fastFingersBonus = 200;
+        let fastFingersBonus = 150;
         let timerInterval;
         let timeLeft = 20; // 20 seconds to get full bonus
         let currentQuestionPoints = 0;
@@ -700,6 +734,7 @@
                 // Hide loading, show quiz content
                 document.getElementById('loading-message').style.display = 'none';
                 document.getElementById('quiz-content').style.display = 'block';
+                document.getElementById('question-stats').style.display = 'flex';
                 
                 displayQuestion();
             } catch (error) {
@@ -734,11 +769,14 @@
             document.getElementById('question-count').textContent = `Question ${currentQuestion + 1}/${TOTAL_QUESTIONS}`;
             document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
+            // Update current score
+            document.getElementById('current-score').textContent = score;
+            
             // Reset fast fingers timer
             resetTimer();
             
             // Show fast fingers timer
-            document.getElementById('fast-fingers-timer').style.display = 'flex';
+            document.getElementById('question-stats').style.display = 'flex';
 
             // Create options with randomization
             const optionsGrid = document.getElementById('options-grid');
@@ -791,7 +829,7 @@
             clearInterval(timerInterval);
             timeLeft = 20;
             document.getElementById('timer-value').textContent = timeLeft;
-            fastFingersBonus = 200;
+            fastFingersBonus = 150;
         }
 
         function startTimer() {
@@ -799,14 +837,15 @@
                 timeLeft--;
                 document.getElementById('timer-value').textContent = timeLeft;
                 
-                // Reduce fast fingers bonus by 10 points every second
-                if (timeLeft < 20) {
+                // Reduce fast fingers bonus by 10 points every second after 5 seconds
+                if (timeLeft < 15) {
                     fastFingersBonus = Math.max(0, fastFingersBonus - 10);
                 }
                 
+                // Hide timer when time runs out
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    // Auto-submit if time runs out?
+                    document.getElementById('question-stats').style.display = 'none';
                 }
             }, 1000);
         }
@@ -836,7 +875,7 @@
             const isCorrect = selectedAnswer === question.currentCorrectAnswer;
             
             // Calculate points
-            currentQuestionPoints = isCorrect ? 100 : 0;
+            currentQuestionPoints = isCorrect ? 50 : 0;
             if (isCorrect) {
                 currentQuestionPoints += fastFingersBonus;
                 totalFastFingersPoints += fastFingersBonus;
@@ -845,20 +884,15 @@
             
             score += currentQuestionPoints;
 
+            // Update current score display
+            document.getElementById('current-score').textContent = score;
+            
             // Increment questions answered and update progress
             questionsAnswered++;
             document.getElementById('progress-fill').style.width = `${(questionsAnswered / TOTAL_QUESTIONS) * 100}%`;
 
             // Show explanation
             document.getElementById('explanation-text').textContent = question.explanation;
-            
-            // Show points info
-            const pointsInfo = document.getElementById('points-info');
-            if (isCorrect) {
-                pointsInfo.innerHTML = `You earned <strong>${currentQuestionPoints} points</strong> (100 for correct answer + ${fastFingersBonus} fast fingers bonus)!`;
-            } else {
-                pointsInfo.innerHTML = `You earned <strong>0 points</strong>. The correct answer was: ${question.shuffledOptions[question.currentCorrectAnswer]}`;
-            }
             
             document.getElementById('explanation-box').classList.add('show');
 
@@ -892,11 +926,12 @@
             // Set progress bar to 100% when showing results
             document.getElementById('progress-fill').style.width = '100%';
             document.getElementById('question-card').style.display = 'none';
+            document.getElementById('question-stats').style.display = 'none';
             document.getElementById('results-screen').style.display = 'block';
             document.getElementById('final-score').textContent = score;
             
             // Update points breakdown
-            document.getElementById('correct-answers-points').textContent = `${totalCorrectAnswers * 100} (${totalCorrectAnswers} × 100)`;
+            document.getElementById('correct-answers-points').textContent = `${totalCorrectAnswers * 50} (${totalCorrectAnswers} × 50)`;
             document.getElementById('fast-fingers-points').textContent = totalFastFingersPoints;
             document.getElementById('total-points').textContent = score;
             
@@ -922,6 +957,7 @@
             document.getElementById('question-card').style.display = 'block';
             document.getElementById('loading-message').style.display = 'block';
             document.getElementById('quiz-content').style.display = 'none';
+            document.getElementById('question-stats').style.display = 'none';
             document.getElementById('error-message').style.display = 'none';
             initQuiz();
         }
@@ -931,3 +967,28 @@
     </script>
 </body>
 </html>
+```
+
+## Key Changes Made
+
+1. **Updated Points System**:
+   - 50 points for correct answers (reduced from 100)
+   - 150 points for fast fingers (reduced from 200)
+   - Points only start decreasing after 5 seconds (when timer goes below 15)
+
+2. **Improved Layout**:
+   - Added a new "question-stats" section above the question
+   - Current score is displayed on the left
+   - Fast fingers timer is displayed on the right
+   - Timer disappears when time runs out
+
+3. **Simplified Text**:
+   - Changed "Fast Fingers Bonus" to just "Fast Fingers"
+   - Removed the detailed points explanation after each question
+   - Current score updates in real-time
+
+4. **Mobile Optimization**:
+   - Responsive layout for the question stats section
+   - Proper spacing and sizing for mobile devices
+
+The quiz now provides a cleaner interface with the scoring information prominently displayed above each question, making it easier for users to track their progress and the fast fingers bonus.
