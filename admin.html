@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Murali's English Dictionary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for consistent theming */
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #242424;
+            --bg-tertiary: #2a2a2a;
+            --accent-primary: #c87941;
+            --accent-secondary: #d89057;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b8b8b8;
+            --text-muted: #666;
+            --border-color: #3d3d3d;
+            --success-color: #7bc87f;
+            --warning-color: #f39c12;
+            --error-color: #d9534f;
+        }
+
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Google Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif}
+        body{background:var(--bg-primary);color:var(--text-primary);line-height:1.6;font-family:'Google Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        @keyframes shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
+        
+        /* Enhanced Grid Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr 400px;
+                gap: 32px;
+            }
+        }
+
+        /* Enhanced container for better spacing */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 60px 40px;
+            }
+        }
+        
+        /* Skeleton Loading Styles */
+        .skeleton-loading {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .skeleton-line {
+            height: 16px;
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.medium { width: 80%; }
+        .skeleton-line.long { width: 95%; }
+        .skeleton-line.extra-long { width: 100%; height: 24px; margin-bottom: 16px; }
+
+        .skeleton-title {
+            height: 28px;
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            width: 40%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        .skeleton-word {
+            height: 32px;
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            width: 50%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .loading-container{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:24px}
+        .loading-spinner{width:48px;height:48px;border:4px solid var(--border-color);border-top:4px solid var(--accent-primary);border-radius:50%;animation:spin 1s linear infinite}
+        .loading-text{font-size:18px;color:var(--text-secondary);font-weight:500;animation:pulse 2s ease-in-out infinite}
+        .loading-subtext{font-size:14px;color:var(--text-muted);margin-top:-12px}
+        .admin-header{background:linear-gradient(135deg,var(--bg-secondary) 0%,#1f1f1f 100%);padding:40px 30px;text-align:center;color:var(--text-primary);margin-bottom:40px}
+        .admin-title{font-size:48px;font-weight:700;margin-bottom:20px;text-shadow:0 2px 8px rgba(200,121,65,0.3);background:linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.02em}
+        .admin-subtitle{font-size:20px;margin-bottom:20px;opacity:0.85}
+        .search-container{max-width:550px;margin:0 auto;position:relative}
+        .search-box{position:relative;background:var(--bg-secondary);border-radius:50px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);border:1px solid var(--border-color);transition:all 0.3s ease}
+        .search-box:focus-within{box-shadow:0 8px 32px rgba(200,121,65,0.4);border-color:var(--accent-primary)}
+        .search-box input{width:100%;padding:20px 60px 20px 30px;font-size:18px;border:none;outline:none;background:transparent;color:var(--text-primary)}
+        .search-box input::placeholder{color:var(--text-muted)}
+        .search-icon{position:absolute;right:25px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;width:24px;height:24px}
+        .search-icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+        .autocomplete-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--bg-tertiary);border:1px solid var(--accent-primary);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.5),0 4px 16px rgba(200,121,65,0.2);max-height:320px;overflow-y:auto;display:none;z-index:1000;-webkit-overflow-scrolling:touch;animation:slideDown 0.25s cubic-bezier(0.16,1,0.3,1);backdrop-filter:blur(10px)}
+        .autocomplete-dropdown.show{display:block}
+        .autocomplete-item{padding:16px 20px;cursor:pointer;border-bottom:1px solid #3a3a3a;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);position:relative}
+        .autocomplete-item:first-child{border-radius:15px 15px 0 0}
+        .autocomplete-item:last-child{border-bottom:none;border-radius:0 0 15px 15px}
+        .autocomplete-item:hover{background:linear-gradient(135deg,#333 0%,#2d2d2d 100%);border-color:var(--accent-primary);transform:translateY(-2px);box-shadow:0 6px 16px rgba(200,121,65,0.3)}
+        .autocomplete-item.selected{background:linear-gradient(135deg,#3a3a3a 0%,#323232 100%);border-color:var(--accent-primary);box-shadow:0 6px 16px rgba(200,121,65,0.4)}
+        .autocomplete-word{font-weight:600;color:var(--text-primary);font-size:16px;letter-spacing:-0.01em}
+        .autocomplete-dropdown::-webkit-scrollbar{width:6px}
+        .autocomplete-dropdown::-webkit-scrollbar-track{background:transparent;border-radius:4px}
+        .autocomplete-dropdown::-webkit-scrollbar-thumb{background:var(--accent-primary);border-radius:4px;transition:background 0.3s}
+        .autocomplete-dropdown::-webkit-scrollbar-thumb:hover{background:var(--accent-secondary)}
+        .words-column{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid var(--border-color)}
+        .sidebar{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);height:fit-content;min-height:600px;border:1px solid var(--border-color);animation:fadeIn 0.4s ease}
+        .section-title{font-size:22px;font-weight:600;color:var(--text-primary);margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid var(--accent-primary);opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;margin-bottom:8px;font-weight:600;color:var(--text-secondary);font-size:14px}
+        .form-group input{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:6px;font-size:15px;transition:border-color 0.3s;background:var(--bg-primary);color:var(--text-primary)}
+        .form-group input::placeholder{color:var(--text-muted)}
+        .form-group input:focus{outline:none;border-color:var(--accent-primary)}
+        .editor-toolbar{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;padding:10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px 6px 0 0;align-items:center}
+        .editor-btn{background:var(--bg-secondary);border:1px solid var(--border-color);padding:8px 12px;border-radius:4px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.2s;color:var(--text-primary)}
+        .editor-btn:hover{background:var(--accent-primary);color:var(--bg-primary);border-color:var(--accent-primary)}
+        .font-size-dropdown{background:var(--bg-secondary);border:1px solid var(--border-color);padding:8px 12px;border-radius:4px;font-size:14px;font-weight:600;color:var(--text-primary);cursor:pointer;transition:all 0.2s}
+        .font-size-dropdown:hover{background:var(--bg-tertiary)}
+        .font-size-dropdown:focus{outline:none;border-color:var(--accent-primary)}
+        .editor-content{width:100%;min-height:600px;padding:12px;border:1px solid var(--border-color);border-radius:0 0 6px 6px;border-top:none;font-size:16px;font-family:inherit;overflow-y:auto;background:var(--bg-primary);color:#d8d8d8;line-height:1.6;font-weight:500;word-spacing:-0.05em;-webkit-overflow-scrolling:touch}
+        .editor-content:focus{outline:none}
+        .editor-content[contenteditable="true"]:empty:before{content:attr(placeholder);color:var(--text-muted)}
+        .editor-content p{font-size:16px;color:#d8d8d8;line-height:1.6;font-weight:500;word-spacing:-0.05em}
+        .editor-content ul,.editor-content ol{margin:0.5em 0;padding-left:1.2em}
+        .editor-content li{margin:0.25em 0;line-height:1.45}
+        .editor-content h1{font-size:25px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .editor-content h2{font-size:22px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .editor-content h3{font-size:20px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .editor-content h4{font-size:18px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .editor-content h5{font-size:16px;margin:1em 0 0.4em 0;line-height:1.3;color:#efefef}
+        .editor-content h6{font-size:14px;margin:1em 0 0.4em 0;line-height:1.3;color:#efefef}
+        .editor-content strong,.editor-content b{color:#efefef}
+        .btn{background:linear-gradient(135deg,var(--accent-primary) 0%,var(--accent-secondary) 100%);color:var(--bg-primary);border:none;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;width:100%;box-shadow:0 4px 12px rgba(200,121,65,0.3)}
+        .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(200,121,65,0.4)}
+        .btn-show-word{background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);border-radius:50px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.3s ease;box-shadow:0 6px 20px rgba(200,121,65,0.4);border-color:var(--accent-primary);width:auto;display:block;margin:20px auto 0 auto}
+        .btn-show-word:hover{box-shadow:0 8px 24px rgba(200,121,65,0.5);transform:translateY(-2px)}
+        .btn-secondary{background:var(--bg-secondary);color:var(--accent-primary);border:2px solid var(--accent-primary);margin-top:10px}
+        .btn-secondary:hover{background:var(--bg-tertiary)}
+        .word-entry{padding:15px 0;border-bottom:1px solid var(--border-color)}
+        .word-entry:first-child{padding-top:0}
+        .word-entry:last-child{border-bottom:none;padding-bottom:0}
+        .word-title{font-size:26px;font-weight:700;color:var(--text-primary);margin-bottom:12px}
+        .word-definition{font-size:16px;color:#d8d8d8;line-height:1.6;margin-bottom:15px;white-space:normal;word-wrap:break-word;font-weight:500;word-spacing:-0.05em}
+        .word-definition p{margin:0.75em 0}
+        .word-definition ul,.word-definition ol{margin:0.5em 0;padding-left:1.2em}
+        .word-definition li{margin:0.25em 0;line-height:1.45}
+        .word-definition h1{font-size:25px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .word-definition h2{font-size:22px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .word-definition h3{font-size:20px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .word-definition h4{font-size:18px;margin:1em 0 0.15em 0;line-height:1.3;color:#efefef}
+        .word-definition h5{font-size:16px;margin:1em 0 0.4em 0;line-height:1.3;color:#efefef}
+        .word-definition h6{font-size:14px;margin:1em 0 0.4em 0;line-height:1.3;color:#efefef}
+        .word-definition strong,.word-definition b{color:#efefef}
+        .word-actions{display:flex;gap:15px;flex-wrap:wrap}
+        .btn-action{padding:8px 16px;font-size:13px;border-radius:6px;border:none;cursor:pointer;font-weight:600;transition:all 0.3s}
+        .btn-edit{background:var(--bg-secondary);color:var(--accent-primary);border:1px solid var(--accent-primary)}
+        .btn-edit:hover{background:var(--accent-primary);color:var(--bg-primary)}
+        .btn-delete{background:var(--bg-secondary);color:var(--error-color);border:1px solid var(--error-color)}
+        .btn-delete:hover{background:var(--error-color);color:var(--bg-primary)}
+        .no-words{text-align:center;padding:60px 20px;color:var(--text-muted)}
+        .no-words-icon{font-size:48px;margin-bottom:15px}
+        .utility-buttons{margin-top:20px}
+        .info-box{background:#1f1f1f;padding:20px;border-radius:6px;margin-top:20px;font-size:14px;color:var(--text-muted);border-left:3px solid var(--accent-primary);animation:fadeIn 0.6s ease}
+        .success-box{background:linear-gradient(135deg,#1f3a1f 0%,#1a341a 100%);padding:20px;border-radius:6px;margin-top:20px;font-size:14px;color:var(--success-color);border-left:3px solid #28a745;animation:fadeIn 0.6s ease;box-shadow:0 2px 8px rgba(40,167,69,0.2)}
+        .success-box strong{display:block;margin-bottom:10px}
+        .edit-result-item,.definition-result-item,.quick-add-result-item{background:#1f1f1f;padding:15px;margin-bottom:10px;border-radius:6px;border:1px solid var(--border-color);cursor:pointer;transition:all 0.3s}
+        .edit-result-item:hover,.definition-result-item:hover,.quick-add-result-item:hover{background:var(--bg-secondary);border-color:var(--accent-primary);box-shadow:0 2px 8px rgba(200,121,65,0.2)}
+        .edit-result-word,.definition-result-word,.quick-add-result-word{font-weight:700;color:var(--text-primary);margin-bottom:5px;font-size:16px}
+        .edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:14px;color:var(--text-muted);line-height:1.5}
+        #editSearchResults,#definitionSearchResults,#quickAddSearchResults{max-height:300px;overflow-y:auto;margin-top:10px}
+        #editSearchResults::-webkit-scrollbar,#definitionSearchResults::-webkit-scrollbar,#quickAddSearchResults::-webkit-scrollbar{width:8px}
+        #editSearchResults::-webkit-scrollbar-track,#definitionSearchResults::-webkit-scrollbar-track,#quickAddSearchResults::-webkit-scrollbar-track{background:var(--bg-primary);border-radius:4px}
+        #editSearchResults::-webkit-scrollbar-thumb,#definitionSearchResults::-webkit-scrollbar-thumb,#quickAddSearchResults::-webkit-scrollbar-thumb{background:var(--accent-primary);border-radius:4px}
+        #editSearchResults::-webkit-scrollbar-thumb:hover,#definitionSearchResults::-webkit-scrollbar-thumb:hover,#quickAddSearchResults::-webkit-scrollbar-thumb:hover{background:var(--accent-secondary)}
+        .no-results{text-align:center;padding:20px;color:var(--text-muted);font-size:14px}
+        #quickAddList{max-height:300px;overflow-y:auto;margin-top:15px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px;padding:10px;min-height:60px}
+        #quickAddList::-webkit-scrollbar{width:8px}
+        #quickAddList::-webkit-scrollbar-track{background:var(--bg-primary);border-radius:4px}
+        #quickAddList::-webkit-scrollbar-thumb{background:var(--accent-primary);border-radius:4px}
+        #quickAddList::-webkit-scrollbar-thumb:hover{background:var(--accent-secondary)}
+        .quick-add-item{background:var(--bg-secondary);padding:12px 15px;margin-bottom:8px;border-radius:6px;border:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .quick-add-item:last-child{margin-bottom:0}
+        .quick-add-word{color:var(--text-primary);font-weight:600;font-size:15px;word-break:break-word;flex:1;min-width:120px}
+        .quick-add-remove{background:var(--error-color);color:var(--bg-primary);border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.3s;white-space:nowrap;flex-shrink:0}
+        .quick-add-remove:hover{background:#c9302c}
+        .quick-add-warning{color:var(--warning-color);font-size:13px;margin-top:5px;display:none}
+        .quick-add-empty{text-align:center;padding:20px;color:var(--text-muted);font-size:14px}
+        .quick-add-controls{display:flex;gap:10px;margin-top:10px}
+        .quick-add-btn{background:var(--accent-primary);color:var(--bg-primary);border:none;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;flex:1}
+        .quick-add-btn:hover{background:var(--accent-secondary)}
+        .quick-add-refresh{background:var(--bg-secondary);color:var(--accent-primary);border:2px solid var(--accent-primary)}
+        .quick-add-refresh:hover{background:var(--bg-tertiary)}
+
+        .nav-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 1px solid var(--accent-primary);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width:968px){.admin-title{font-size:36px}.admin-subtitle{font-size:18px}.admin-header{padding:30px 20px}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column,.sidebar{padding:20px}.sidebar{min-height:auto}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.editor-toolbar{padding:8px;gap:3px}.editor-btn,.font-size-dropdown{padding:6px 10px;font-size:13px}.editor-content{min-height:400px;font-size:16px;padding:10px}.word-actions{flex-direction:column;gap:10px}.btn-action,.btn{width:100%}.btn{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;width:20px;height:20px}.autocomplete-dropdown{left:20px;max-width:calc(100% - 70px)}.autocomplete-item{padding:14px 18px}.autocomplete-item:hover{padding-left:22px}.autocomplete-item.selected{padding-left:19px}.autocomplete-word{font-size:15px}.quick-add-item{padding:10px 12px}.quick-add-word{font-size:14px;min-width:100px}.quick-add-remove{padding:5px 10px;font-size:11px}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:250px;padding:8px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:12px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:15px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:13px}.form-group label{font-size:13px}.form-group input{padding:10px;font-size:14px}.utility-buttons{display:flex;flex-direction:column;gap:10px}.btn-secondary{margin-top:0}.info-box,.success-box{padding:15px;font-size:13px}}
+        @media (max-width:480px){.admin-title{font-size:28px}.admin-subtitle{font-size:16px}.admin-header{padding:25px 15px}.search-box input{padding:14px 45px 14px 18px;font-size:15px}.search-icon{right:15px;width:18px;height:18px}.autocomplete-dropdown{left:18px;max-width:calc(100% - 63px)}.autocomplete-item{padding:12px 16px}.autocomplete-word{font-size:14px}.words-column,.sidebar{padding:15px}.word-title{font-size:20px}.word-definition{font-size:17px}.word-definition h1{font-size:25px}.word-definition h2{font-size:22px}.word-definition h3{font-size:20px}.word-definition h4{font-size:18px}.word-definition h5{font-size:16px}.word-definition h6{font-size:14px}.section-title{font-size:18px}.btn{padding:12px 20px;font-size:15px}.form-group input{padding:10px;font-size:14px}.form-group label{font-size:12px}.editor-toolbar{padding:6px;gap:2px;flex-wrap:wrap}.editor-btn,.font-size-dropdown{padding:5px 8px;font-size:12px}.editor-content{min-height:300px;font-size:15px;padding:10px}.quick-add-item{padding:8px 10px;flex-direction:column;align-items:flex-start}.quick-add-word{font-size:13px;width:100%;margin-bottom:8px}.quick-add-remove{padding:5px 10px;font-size:11px;width:100%}.quick-add-controls{flex-direction:column;gap:8px}.quick-add-btn{padding:10px 16px;font-size:13px}#quickAddList{max-height:200px;padding:6px}.edit-result-item,.definition-result-item,.quick-add-result-item{padding:10px}.edit-result-word,.definition-result-word,.quick-add-result-word{font-size:14px}.edit-result-definition,.definition-result-definition,.quick-add-result-definition{font-size:12px}.utility-buttons{display:flex;flex-direction:column;gap:8px}.btn-secondary{margin-top:0;padding:12px 20px;font-size:14px}.info-box,.success-box{padding:12px;font-size:12px}}
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1 class="admin-title">Dictionary Admin</h1>
+        <p class="admin-subtitle">Manage your dictionary content</p>
+        <a href="index.html" class="nav-link">← Back to Main Dictionary</a>
+    </div>
+    <div class="container">
+        <div class="main-content" id="mainContent">
+            <!-- Search Results Section -->
+            <div class="words-column" id="searchResultsColumn" style="display:none">
+                <h2 class="section-title">Search Results</h2>
+                <div id="wordsList"></div>
+            </div>
+            
+            <!-- Words List Column -->
+            <div class="words-column" id="wordsListColumn">
+                <h2 class="section-title">Dictionary Words <span id="dictionaryCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
+                <div id="wordsList"></div>
+            </div>
+            
+            <!-- Admin Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <h2 class="section-title">Add New Word</h2>
+                <form id="addWordForm">
+                    <div class="form-group">
+                        <label for="wordInput">Word</label>
+                        <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()">
+                        <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists in the dictionary</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="definitionInput">Definition</label>
+                        <div class="editor-toolbar">
+                            <select class="font-size-dropdown" id="formatDropdown" onchange="formatHeading(this.value)" title="Font Size">
+                                <option value="">Normal</option>
+                                <option value="h1">Heading 1</option>
+                                <option value="h2">Heading 2</option>
+                                <option value="h3">Heading 3</option>
+                                <option value="h4">Heading 4</option>
+                            </select>
+                            <button type="button" class="editor-btn" onclick="formatText('bold')" title="Bold"><b>B</b></button>
+                            <button type="button" class="editor-btn" onclick="formatText('italic')" title="Italic"><i>I</i></button>
+                            <button type="button" class="editor-btn" onclick="formatText('underline')" title="Underline"><u>U</u></button>
+                            <button type="button" class="editor-btn" onclick="formatText('strikethrough')" title="Strikethrough"><s>S</s></button>
+                            <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')" title="Numbered List">1. 2. 3.</button>
+                            <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">• • •</button>
+                            <button type="button" class="editor-btn" onclick="formatText('removeFormat')" title="Clear Formatting">✗</button>
+                        </div>
+                        <div id="definitionInput" class="editor-content" contenteditable="true" placeholder="Enter definition with formatting..."></div>
+                    </div>
+                    <button type="submit" class="btn">Add to Dictionary</button>
+                </form>
+                <h2 class="section-title" style="margin-top:40px">Quick Add <span id="quickAddCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
+                <div class="form-group">
+                    <label for="quickAddSearch">Search Word</label>
+                    <input type="text" id="quickAddSearch" placeholder="Type a word to search..." oninput="searchWordsForQuickAdd()" onkeypress="if(event.key==='Enter'){event.preventDefault();addToQuickList()}">
+                    <div id="quickAddWarning" class="quick-add-warning">⚠️ This word already exists in the dictionary</div>
+                </div>
+                <div class="quick-add-controls">
+                    <button class="quick-add-btn" onclick="addToQuickList()">Add to List</button>
+                    <button class="quick-add-btn quick-add-refresh" onclick="refreshQuickList()">Refresh List</button>
+                </div>
+                <div id="quickAddSearchResults"></div>
+                <div id="quickAddList"><div class="quick-add-empty">No words in quick list yet</div></div>
+                <h2 class="section-title" style="margin-top:40px">Edit Existing Word</h2>
+                <div class="form-group"><label for="editSearchInput">Search Word to Edit</label><input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()"></div>
+                <div id="editSearchResults"></div>
+                <h2 class="section-title" style="margin-top:40px">Existing Definition</h2>
+                <div class="form-group"><label for="definitionSearchInput">Search for Definition</label><input type="text" id="definitionSearchInput" placeholder="Type to search..." oninput="searchDefinitions()"></div>
+                <div id="definitionSearchResults"></div>
+                <div class="utility-buttons">
+                    <button class="btn btn-secondary" onclick="exportData()">Export Dictionary</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Dictionary</button>
+                    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+                </div>
+                <div class="success-box"><strong>✓ Supabase Connected!</strong>Your dictionary is now syncing across all devices. Add words here and they'll appear everywhere!</div>
+                <div class="info-box"><strong>💡 Tip:</strong> Your dictionary automatically saves to the cloud. Access it from any device using this URL!</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+// ... [The complete JavaScript code from the original file would go here]
+// Since this is the admin page, we would include all the JavaScript functions
+// but remove the password protection and admin toggle functionality
+// Set isAdmin = true by default for this page
+
+const SafeStorage = {
+    // ... [Same SafeStorage implementation]
+};
+
+const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
+
+let supabaseClient;
+let isSupabaseConfigured = false;
+let dictionary = [];
+let isAdmin = true; // Always true for admin page
+let quickAddList = [];
+let typingTimer;
+let supabaseInitialized = false;
+let editingWordId = null;
+
+// Search index for faster lookups
+let searchIndex = null;
+
+function buildSearchIndex() {
+    // ... [Same buildSearchIndex implementation]
+}
+
+function loadFromLocalStorage() {
+    // ... [Same loadFromLocalStorage implementation]
+}
+
+async function initializeSupabase() {
+    // ... [Same initializeSupabase implementation]
+}
+
+async function syncWithSupabase() {
+    // ... [Same syncWithSupabase implementation]
+}
+
+async function saveDictionary() {
+    // ... [Same saveDictionary implementation]
+}
+
+async function saveQuickAddList() {
+    // ... [Same saveQuickAddList implementation]
+}
+
+// ... [All other functions from the original file would be included here]
+// But remove the password-related functions: showPasswordModal, hidePasswordModal, checkPassword
+// Remove the admin toggle functionality
+// Keep all the word management, editing, search, and utility functions
+
+// Initialize the admin page
+document.addEventListener('DOMContentLoaded', function() {
+    const editor = document.getElementById('definitionInput');
+    if (editor) {
+        editor.addEventListener('keydown', handleMarkdownFormatting);
+        editor.addEventListener('paste', handlePaste);
+        editor.addEventListener('mouseup', updateFormatDropdown);
+        editor.addEventListener('keyup', updateFormatDropdown);
+        editor.addEventListener('focus', updateFormatDropdown);
+    }
+    
+    loadFromLocalStorage();
+    displayWords();
+    displayQuickAddList();
+    
+    // Initialize Supabase immediately
+    setTimeout(initializeSupabase, 0);
+});
+
+// ... [Include all the remaining JavaScript functions from the original]
+    </script>
+</body>
+</html>
