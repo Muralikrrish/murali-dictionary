@@ -286,34 +286,90 @@
             border-left: 4px solid var(--error-color);
         }
 
-        /* Search results positioning */
-        #searchResultsColumn {
-            order: -1;
+        /* IMPROVED: Word of the Day Progressive Disclosure Styles */
+        .word-definition-preview {
+            position: relative;
+            max-height: 400px;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
         }
 
-        .normal-order #searchResultsColumn {
-            order: 0;
+        .word-definition-preview.expanded {
+            max-height: none;
         }
 
-        /* Navigation Link */
-        .nav-link {
-            display: inline-block;
+        .definition-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--bg-secondary));
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .word-definition-preview.expanded .definition-fade {
+            opacity: 0;
+        }
+
+        .read-more-container {
+            display: flex;
+            justify-content: center;
             margin-top: 20px;
-            color: var(--accent-primary);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 10px 20px;
-            border: 1px solid var(--accent-primary);
-            border-radius: 6px;
-            transition: all 0.3s ease;
+            width: 100%;
         }
 
-        .nav-link:hover {
+        .read-more-btn {
+            background: var(--bg-secondary);
+            color: var(--accent-primary);
+            border: 2px solid var(--accent-primary);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(200, 121, 65, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .read-more-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(200, 121, 65, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .read-more-btn:hover::before {
+            left: 100%;
+        }
+
+        .read-more-btn:hover {
             background: var(--accent-primary);
             color: var(--bg-primary);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(200, 121, 65, 0.4);
         }
 
+        .read-more-btn .icon {
+            transition: transform 0.3s ease;
+            font-size: 12px;
+        }
+
+        .read-more-btn.expanded .icon {
+            transform: rotate(180deg);
+        }
+
+        /* Mobile Optimizations */
         @media (max-width: 768px) {
             .quiz-container {
                 border-radius: 16px;
@@ -371,6 +427,15 @@
             .skeleton-line.long {
                 width: 100%;
             }
+
+            /* Mobile optimization for word preview */
+            .word-definition-preview {
+                max-height: 600px;
+            }
+            
+            .definition-fade {
+                height: 60px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -419,6 +484,29 @@
                 height: 12px;
                 margin-bottom: 8px;
             }
+
+            /* Mobile optimization for word preview */
+            .word-definition-preview {
+                max-height: 600px;
+            }
+            
+            .definition-fade {
+                height: 50px;
+            }
+            
+            .read-more-btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+
+        /* Search results positioning */
+        #searchResultsColumn {
+            order: -1;
+        }
+
+        .normal-order #searchResultsColumn {
+            order: 0;
         }
 
         @media (max-width:968px){.hero-title{font-size:36px}.hero-subtitle{font-size:18px}.hero-section{padding:30px 20px}.search-container{max-width:90%}.container{padding:15px;max-width:100%}.words-column{padding:20px}.word-title{font-size:22px}.word-definition{font-size:16px}.word-definition h1{font-size:27px}.word-definition h2{font-size:24px}.word-definition h3{font-size:22px}.word-definition h4{font-size:20px}.word-definition h5{font-size:18px}.word-definition h6{font-size:16px}.section-title{font-size:20px}.btn-show-word{padding:12px 20px;font-size:15px}.search-box input{padding:16px 50px 16px 20px;font-size:16px}.search-icon{right:20px;width:20px;height:20px}.autocomplete-dropdown{left:20px;max-width:calc(100% - 70px)}.autocomplete-item{padding:14px 18px}.autocomplete-item:hover{padding-left:22px}.autocomplete-item.selected{padding-left:19px}.autocomplete-word{font-size:15px}}
@@ -441,7 +529,6 @@
             </div>
             <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
         </div>
-        <a href="word_of_the_day.html" class="nav-link">Discover Word of the Day</a>
     </div>
     <div class="container">
         <div class="main-content full-width" id="mainContent">
@@ -481,20 +568,17 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Word of the Day Section -->
+            <div class="words-column" id="wordOfTheDaySection">
+                <h2 class="section-title">Word of the Day</h2>
+                <div id="randomWordDisplay"></div>
+            </div>
         </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-// ... [Keep all the same JavaScript code from your current index.html]
-// Only remove the Word of the Day specific functions and variables:
-// - getWordOfTheDay()
-// - displayWordOfTheDay() 
-// - showNewRandomWord()
-// - createExpandableDefinition()
-// - toggleDefinitionExpansion()
-// - hasShownWordOfTheDay variable
-
 const SafeStorage = {
     isAvailable: false,
     memoryStorage: {},
@@ -561,6 +645,7 @@ let dictionary = [];
 let selectedAutocompleteIndex = -1;
 let typingTimer;
 let supabaseInitialized = false;
+let hasShownWordOfTheDay = false;
 
 // Quiz variables
 let quizQuestions = [];
@@ -613,6 +698,9 @@ async function initializeSupabase() {
     } catch(error) {
         console.error('Supabase init error:', error);
         isSupabaseConfigured = false;
+        if (dictionary.length === 0) {
+            displayWordOfTheDay();
+        }
     }
 }
 
@@ -638,6 +726,12 @@ async function syncWithSupabase() {
             
             buildSearchIndex();
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
+            
+            // Only show word of the day if we haven't already shown it
+            if (!hasShownWordOfTheDay) {
+                displayWordOfTheDay();
+                hasShownWordOfTheDay = true;
+            }
         }
     } catch(error) {
         console.error('Sync error:', error);
@@ -812,8 +906,96 @@ function continueToFullQuiz() {
     window.location.href = 'quiz.html';
 }
 
+// IMPROVED: Word of the Day Progressive Disclosure 
+function createExpandableDefinition(definitionHTML) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = definitionHTML;
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Check if definition is long enough to need expansion
+    const isLongDefinition = textContent.length > 800 || definitionHTML.includes('<h1') || definitionHTML.includes('<h2') || definitionHTML.includes('<h3') || definitionHTML.includes('<ul') || definitionHTML.includes('<ol');
+    
+    if (!isLongDefinition) {
+        return `
+            <div class="word-entry">
+                <div class="word-definition">
+                    ${definitionHTML}
+                </div>
+                <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="word-entry">
+            <div class="word-definition-preview">
+                <div class="word-definition">
+                    ${definitionHTML}
+                    <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
+                </div>
+                <div class="definition-fade"></div>
+            </div>
+            <div class="read-more-container">
+                <button class="read-more-btn" onclick="toggleDefinitionExpansion(this)">
+                    <span>Read more</span>
+                    <span class="icon">▼</span>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function toggleDefinitionExpansion(button) {
+    const preview = button.closest('.word-entry').querySelector('.word-definition-preview');
+    const isExpanded = preview.classList.contains('expanded');
+    
+    if (isExpanded) {
+        preview.classList.remove('expanded');
+        button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
+        button.classList.remove('expanded');
+        
+        // Scroll to keep the preview in view
+        setTimeout(() => {
+            preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+    } else {
+        preview.classList.add('expanded');
+        button.innerHTML = '<span>Read less</span><span class="icon">▼</span>';
+        button.classList.add('expanded');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const hasLocalData = loadFromLocalStorage();
+    
+    if (hasLocalData) {
+        // Show skeleton loading initially, wait for Supabase to sync
+        const rd = document.getElementById('randomWordDisplay');
+        rd.innerHTML = `
+            <div class="skeleton-loading">
+                <div class="skeleton-word"></div>
+                <div class="skeleton-line extra-long"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        `;
+    } else {
+        const rd = document.getElementById('randomWordDisplay');
+        rd.innerHTML = `
+            <div class="skeleton-loading">
+                <div class="skeleton-word"></div>
+                <div class="skeleton-line extra-long"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        `;
+    }
     
     // Initialize Supabase immediately for faster loading
     setTimeout(initializeSupabase, 0);
@@ -957,6 +1139,50 @@ function displaySearchResults(s){
     setTimeout(() => {
         sr.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
+}
+
+function getWordOfTheDay() {
+    if (!dictionary || dictionary.length === 0) {
+        return null;
+    }
+    
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + 
+                      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                      String(today.getDate()).padStart(2, '0');
+    
+    let hash = 0;
+    for (let i = 0; i < dateString.length; i++) {
+        hash = ((hash << 5) - hash) + dateString.charCodeAt(i);
+        hash = hash & hash;
+    }
+    
+    const index = Math.abs(hash) % dictionary.length;
+    return dictionary[index];
+}
+
+function displayWordOfTheDay(){
+    const rd=document.getElementById('randomWordDisplay');
+    
+    if(!dictionary || dictionary.length===0){
+        rd.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+        return;
+    }
+    
+    const wordOfDay = getWordOfTheDay();
+    if (wordOfDay) {
+        rd.innerHTML = createExpandableDefinition(wordOfDay.definition);
+    }
+}
+
+function showNewRandomWord(){
+    if(dictionary.length>0){
+        const rd=document.getElementById('randomWordDisplay');
+        const ri=Math.floor(Math.random()*dictionary.length);
+        const rw=dictionary[ri];
+        rd.innerHTML = createExpandableDefinition(rw.definition);
+        document.getElementById('wordOfTheDaySection').scrollIntoView({behavior:'smooth',block:'start'});
+    }
 }
     </script>
 </body>
