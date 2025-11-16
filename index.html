@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LexiQuest - Expand Your Knowledge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Lora:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -47,8 +47,8 @@
 
         /* Hero Section */
         .hero-section {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #151822 100%);
-            padding: 80px 0 100px;
+            background: linear-gradient(135deg, #1a1d28 0%, #232838 100%);
+            padding: 100px 0 110px;
             text-align: center;
             position: relative;
             overflow: visible;
@@ -61,28 +61,32 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 70% 20%, rgba(255, 107, 53, 0.15) 0%, transparent 60%);
+            background: radial-gradient(circle at 70% 20%, rgba(224, 117, 84, 0.08) 0%, transparent 60%);
         }
 
         .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-primary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #a8b4d4;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
-            margin-bottom: 40px;
-            color: var(--text-secondary);
+            font-family: 'Lora', serif;
+            font-size: 1.35rem;
+            margin-bottom: 50px;
+            color: #8892b0;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            font-style: italic;
         }
 
         /* Modern Search Section */
@@ -256,13 +260,13 @@
         }
 
         .modern-section-title {
-            font-size: 1.1rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: white;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
             position: relative;
             display: inline-block;
-            padding: 3px 16px 3px 8px;
+            padding: 10px 24px 10px 16px;
             background: linear-gradient(135deg, #d15a3f, #e07554);
             clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
             box-shadow: 0 3px 10px rgba(209, 90, 63, 0.3);
@@ -715,12 +719,12 @@
         /* Mobile Optimizations */
         @media (max-width: 768px) {
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 3rem;
             }
             
             .hero-subtitle {
-                font-size: 1.1rem;
-                margin-bottom: 35px;
+                font-size: 1.15rem;
+                margin-bottom: 40px;
             }
             
             .search-box input {
@@ -733,7 +737,8 @@
             }
             
             .modern-section-title {
-                font-size: 1.1rem;
+                font-size: 1.5rem;
+                padding: 8px 20px 8px 14px;
             }
             
             .interactive-card {
@@ -766,16 +771,17 @@
 
         @media (max-width: 480px) {
             .hero-title {
-                font-size: 2rem;
+                font-size: 2.5rem;
+                line-height: 1.15;
             }
             
             .hero-section {
-                padding: 50px 0 70px;
+                padding: 60px 0 80px;
             }
             
             .hero-subtitle {
-                font-size: 1rem;
-                margin-bottom: 30px;
+                font-size: 1.05rem;
+                margin-bottom: 35px;
             }
             
             .search-box input {
@@ -788,8 +794,9 @@
             }
             
             .modern-section-title {
-                font-size: 1.1rem;
-                margin-bottom: 10px;
+                font-size: 1.3rem;
+                margin-bottom: 20px;
+                padding: 7px 18px 7px 12px;
             }
             
             .word-title {
@@ -984,8 +991,8 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            <h1 class="hero-title">Expand Your Knowledge</h1>
-            <p class="hero-subtitle">Words, wisdom, and wonder in one place</p>
+            <h1 class="hero-title">Exploring the World<br>of English</h1>
+            <p class="hero-subtitle">Unveiling creativity, language, and expression</p>
             <div class="search-container">
                 <div class="search-box">
                     <div class="search-input-wrapper">
@@ -1497,7 +1504,7 @@
                 button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
             } else {
                 preview.classList.add('expanded');
-                button.innerHTML = '<span>Read less</span><span class="icon">▼</span>';
+                button.innerHTML = '<span>Read less</span><span class="icon">▲</span>';
                 
                 // Scroll to keep the preview in view
                 setTimeout(() => {
