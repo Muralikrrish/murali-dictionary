@@ -270,61 +270,60 @@
             padding-bottom: 15px;
         }
 
-        .read-more-btn {
-            background: linear-gradient(135deg, #d15a3f, #e07554);
-            color: white;
-            border: 2px solid transparent;
-            padding: 12px 24px;
-            border-radius: 25px;
+        .explanation-read-more-btn {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-primary);
+            border-radius: 50px;
+            padding: 8px 16px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(209, 90, 63, 0.3);
-            text-align: center;
-            justify-content: center;
-            width: auto;
-            min-width: 140px;
         }
 
-        .read-more-btn:hover {
-            background: linear-gradient(135deg, #b84a30, #d15a3f);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(209, 90, 63, 0.5);
-        }
-
-        .quiz-take-btn {
-            background: linear-gradient(135deg, #d15a3f, #e07554);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 14px 28px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(209, 90, 63, 0.4);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            max-width: 280px;
-            display: block;
-            margin: 0 auto;
-            justify-content: center;
-        }
-
-        .quiz-take-btn:hover {
-            box-shadow: 0 8px 25px rgba(209, 90, 63, 0.5);
+        .explanation-read-more-btn:hover {
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
             transform: translateY(-2px);
         }
 
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn-next {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            border-color: var(--accent-primary);
+            width: 100%;
+            max-width: 280px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .btn-next:hover {
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
+            transform: translateY(-2px);
         }
 
         .results-screen {
@@ -476,7 +475,11 @@
                 min-height: 55px;
             }
             
-            .quiz-take-btn {
+            .action-buttons {
+                margin-top: 16px;
+            }
+            
+            .btn-next {
                 padding: 12px 20px;
                 font-size: 14px;
                 max-width: 100%;
@@ -531,16 +534,6 @@
             
             .explanation-content {
                 padding: 16px;
-            }
-            
-            .read-more-btn {
-                padding: 10px 18px;
-                font-size: 13px;
-                width: auto;
-                min-width: 140px;
-                border: 2px solid transparent !important;
-                display: flex;
-                justify-content: center;
             }
         }
 
@@ -616,23 +609,14 @@
                 height: 50px;
             }
             
-            .read-more-btn {
-                padding: 10px 18px;
-                font-size: 13px;
-                width: auto;
-                min-width: 140px;
-                border: 2px solid transparent !important;
-                display: flex;
-                justify-content: center;
+            .explanation-read-more-btn {
+                padding: 6px 12px;
+                font-size: 12px;
             }
             
-            .quiz-take-btn {
+            .btn-next {
                 padding: 12px 18px;
                 font-size: 13px;
-                width: auto;
-                max-width: 280px;
-                margin-left: auto;
-                margin-right: auto;
             }
             
             .skeleton-loading {
@@ -706,16 +690,14 @@
                             <div class="explanation-fade"></div>
                         </div>
                         <div class="explanation-read-more-container">
-                            <button class="read-more-btn" onclick="toggleExplanationExpansion(this, 'explanation-box')">
+                            <button class="explanation-read-more-btn" onclick="toggleExplanationExpansion(this, 'explanation-box')">
                                 <span>Read more</span>
                                 <span class="icon">▼</span>
                             </button>
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button class="quiz-take-btn" onclick="nextQuestion()" id="next-btn" style="display: none;">
-                            <i class="fas fa-arrow-right"></i> Next Question
-                        </button>
+                        <button class="btn-next" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
                     </div>
                 </div>
             </div>
@@ -726,9 +708,7 @@
                 <div class="correct-answers" id="correct-answers">You've got 0/10 correct!</div>
                 <div class="score-summary" id="score-summary">Your score: 0/2000</div>
                 <div class="encouragement" id="encouragement-message">Keep practicing!</div>
-                <button class="quiz-take-btn" onclick="restartQuiz()">
-                    <i class="fas fa-redo"></i> Try Again
-                </button>
+                <button class="btn-next" onclick="restartQuiz()">Try Again</button>
             </div>
         </div>
     </div>
@@ -935,9 +915,9 @@
             document.getElementById('explanation-box').classList.remove('show');
             
             if (currentQuestion === TOTAL_QUESTIONS - 1) {
-                document.getElementById('next-btn').innerHTML = '<i class="fas fa-trophy"></i> See Results';
+                document.getElementById('next-btn').textContent = 'See Results';
             } else {
-                document.getElementById('next-btn').innerHTML = '<i class="fas fa-arrow-right"></i> Next Question';
+                document.getElementById('next-btn').textContent = 'Next Question';
             }
             
             document.getElementById('next-btn').style.display = 'none';
