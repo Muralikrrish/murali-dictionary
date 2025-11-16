@@ -281,6 +281,14 @@
             box-shadow: 0 3px 10px rgba(209, 90, 63, 0.3);
         }
 
+        /* Mobile-specific adjustments for section titles */
+        @media (max-width: 480px) {
+            .modern-section-title {
+                background: linear-gradient(135deg, #a04532, #b55a43);
+                box-shadow: 0 2px 8px rgba(160, 69, 50, 0.25);
+            }
+        }
+
         .interactive-card {
             background: var(--bg-secondary);
             border-radius: 20px;
@@ -407,6 +415,40 @@
             transform: translateY(-2px);
         }
 
+        .read-more-btn, .btn-show-word {
+            background: linear-gradient(135deg, #d15a3f, #e07554);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(209, 90, 63, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .read-more-btn:hover, .btn-show-word:hover {
+            box-shadow: 0 8px 25px rgba(209, 90, 63, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile-specific adjustments for buttons */
+        @media (max-width: 480px) {
+            .quiz-take-btn, .read-more-btn, .btn-show-word {
+                background: linear-gradient(135deg, #a04532, #b55a43);
+                box-shadow: 0 4px 12px rgba(160, 69, 50, 0.3);
+            }
+            
+            .quiz-take-btn:hover, .read-more-btn:hover, .btn-show-word:hover {
+                background: linear-gradient(135deg, #8a3b2a, #a04532);
+                box-shadow: 0 6px 20px rgba(160, 69, 50, 0.4);
+            }
+        }
+
         .word-entry {
             padding: 15px 0;
             border-bottom: 1px solid var(--border-color);
@@ -498,53 +540,6 @@
             justify-content: center;
             margin-top: 20px;
             width: 100%;
-        }
-
-        .read-more-btn {
-            background: linear-gradient(135deg, #d15a3f, #e07554);
-            color: white;
-            border: 2px solid transparent;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(209, 90, 63, 0.3);
-            text-align: center;
-            justify-content: center;
-            width: auto;
-            min-width: 140px;
-        }
-
-        .read-more-btn:hover {
-            background: linear-gradient(135deg, #b84a30, #d15a3f);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(209, 90, 63, 0.5);
-        }
-
-        .btn-show-word {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--accent-primary);
-            border-radius: 50px;
-            padding: 12px 24px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-            width: auto;
-            display: block;
-            margin: 20px auto 0 auto;
-        }
-
-        .btn-show-word:hover {
-            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
-            transform: translateY(-2px);
         }
 
         .search-results-section {
@@ -707,8 +702,7 @@
             .search-icon { padding: 12px 14px; }
             .modern-section-title { font-size: 1.1rem; margin-bottom: 10px; }
             .word-title { font-size: 22px; }
-            .quiz-take-btn, .btn-show-word { padding: 10px 18px; font-size: 15px; width: auto; max-width: 280px; margin-left: auto; margin-right: auto; }
-            .read-more-btn { padding: 10px 18px; font-size: 13px; width: auto; min-width: 140px; border: 2px solid transparent !important; display: flex; justify-content: center; }
+            .quiz-take-btn, .btn-show-word, .read-more-btn { padding: 10px 18px; font-size: 15px; width: auto; max-width: 280px; margin-left: auto; margin-right: auto; }
             .main-content { padding: 30px 0 40px; }
             .modern-section { margin-bottom: 40px; }
             .stats-grid, .tips-grid { gap: 15px; }
