@@ -53,6 +53,18 @@
             position: relative;
             overflow: visible;
         }
+        
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-primary) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
 
         .hero-section::before {
             content: '';
@@ -62,6 +74,7 @@
             right: 0;
             bottom: 0;
             background: radial-gradient(circle at 70% 20%, rgba(224, 117, 84, 0.08) 0%, transparent 60%);
+            z-index: 0;
         }
 
         .hero-title {
@@ -94,7 +107,7 @@
             max-width: 700px;
             margin: 0 auto;
             position: relative;
-            z-index: 1000;
+            z-index: 10;
         }
 
         .search-box {
@@ -775,7 +788,7 @@
             }
             
             .hero-section {
-                padding: 60px 0 80px;
+                padding: 60px 0 50px;
             }
             
             .hero-subtitle {
