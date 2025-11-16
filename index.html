@@ -962,11 +962,9 @@
                 supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 isSupabaseConfigured = supabaseInitialized = true;
                 
-                // Load quiz questions and sync data in parallel
-                await Promise.all([
-                    loadQuizQuestions(),
-                    syncWithSupabase()
-                ]);
+                // Start both requests immediately without waiting
+                loadQuizQuestions();
+                syncWithSupabase();
             } catch(error) {
                 console.error('Supabase init error:', error);
                 isSupabaseConfigured = false;
@@ -1300,11 +1298,26 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Load from localStorage immediately
-            const hasLocalData = loadFromLocalStorage();
+            // Immediately try to load and display from cache
+            const cachedDict = SafeStorage.getItem('dictionary');
             
-            // If no local data, keep showing skeleton
-            if (!hasLocalData) {
+            if (cachedDict) {
+                try {
+                    dictionary = JSON.parse(cachedDict);
+                    buildSearchIndex();
+                    
+                    // Show word spotlight immediately from cache
+                    if (dictionary.length > 0) {
+                        displayWordSpotlight();
+                        hasDisplayedWordSpotlight = true;
+                    }
+                } catch(e) {
+                    console.error('Cache parse error:', e);
+                }
+            }
+            
+            // Show skeleton only if no cache
+            if (dictionary.length === 0) {
                 document.getElementById('wordSpotlightDisplay').innerHTML = `
                     <div class="skeleton-loading">
                         <div class="skeleton-word"></div>
@@ -1318,11 +1331,11 @@
                 `;
             }
             
-            // Initialize Supabase immediately (no timeout)
-            initializeSupabase();
-            
-            // Setup search functionality
-            setupSearch();
+            // Start background sync (non-blocking)
+            requestAnimationFrame(() => {
+                initializeSupabase();
+                setupSearch();
+            });
         });
     </script>
 </body>
