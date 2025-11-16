@@ -228,6 +228,13 @@
             box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
         }
 
+        .modern-section-title .word-count {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-weight: 500;
+            margin-left: 5px;
+        }
+
         .interactive-card {
             background: var(--bg-secondary);
             border-radius: 20px;
@@ -326,7 +333,7 @@
 
         .editor-content {
             width: 100%;
-            min-height: 300px;
+            min-height: 400px; /* Increased from 300px */
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 0 0 6px 6px;
@@ -628,7 +635,7 @@
         <div class="container">
             <div class="main-content" id="mainContent">
                 <div class="modern-section">
-                    <h2 class="modern-section-title">Add New Word</h2>
+                    <h2 class="modern-section-title">Add New Word <span class="word-count" id="dictionaryCount">(0)</span></h2>
                     <div class="interactive-card">
                         <form id="addWordForm">
                             <div class="form-group">
@@ -809,10 +816,15 @@
             }));
         }
 
+        function updateWordCount() {
+            document.getElementById('dictionaryCount').textContent = `(${dictionary.length})`;
+        }
+
         function loadFromLocalStorage() {
             const localDict = SafeStorage.getItem('dictionary');
             dictionary = localDict ? JSON.parse(localDict) : [];
             buildSearchIndex();
+            updateWordCount();
             
             const localQuickAdd = SafeStorage.getItem('quickAddList');
             quickAddList = localQuickAdd ? JSON.parse(localQuickAdd) : [];
@@ -852,6 +864,7 @@
                     }));
                     
                     buildSearchIndex();
+                    updateWordCount();
                     SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
                 }
             } catch(error) {
@@ -861,6 +874,7 @@
 
         async function saveDictionary() {
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
+            updateWordCount();
             if (isSupabaseConfigured && supabaseInitialized) {
                 try {
                     const { error } = await supabaseClient
@@ -971,6 +985,7 @@
         function formatText(command) {
             document.execCommand(command, false, null);
             document.getElementById('definitionInput').focus();
+            updateFormatDropdown();
         }
 
         function formatHeading(tag) {
@@ -979,9 +994,38 @@
             } else {
                 document.execCommand('formatBlock', false, 'p');
             }
-            document.getElementById('formatDropdown').value = '';
             document.getElementById('definitionInput').focus();
+            updateFormatDropdown();
         }
+
+        function updateFormatDropdown() {
+            const editor = document.getElementById('definitionInput');
+            const dropdown = document.getElementById('formatDropdown');
+            
+            // Get the current selection
+            const selection = window.getSelection();
+            if (selection.rangeCount === 0) return;
+            
+            const node = selection.getRangeAt(0).startContainer;
+            const blockElement = node.nodeType === 3 ? node.parentNode : node;
+            
+            // Check if the block element is a heading
+            if (blockElement.nodeName.match(/^H[1-4]$/)) {
+                dropdown.value = blockElement.nodeName.toLowerCase();
+            } else {
+                dropdown.value = '';
+            }
+        }
+
+        // Add event listener to update dropdown when selection changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const editor = document.getElementById('definitionInput');
+            if (editor) {
+                editor.addEventListener('input', updateFormatDropdown);
+                editor.addEventListener('click', updateFormatDropdown);
+                editor.addEventListener('keyup', updateFormatDropdown);
+            }
+        });
 
         function searchWordsToEdit() {
             const query = document.getElementById('editSearchInput').value.trim().toLowerCase();
