@@ -48,7 +48,7 @@
         /* Hero Section */
         .hero-section {
             background: linear-gradient(135deg, #1a1d28 0%, #232838 100%);
-            padding: 80px 0 90px;
+            padding: 80px 0 70px;
             text-align: center;
             position: relative;
             overflow: visible;
@@ -87,6 +87,13 @@
             line-height: 1.2;
             position: relative;
             z-index: 1;
+        }
+        
+        /* Single line title for desktop and tablet */
+        @media (min-width: 481px) {
+            .hero-title br {
+                display: none;
+            }
         }
 
         .hero-subtitle {
@@ -216,7 +223,7 @@
         }
 
         .autocomplete-item::before {
-            content: '🔍';
+            content: '📖';
             margin-right: 12px;
             font-size: 0.9rem;
             opacity: 0.7;
@@ -241,7 +248,7 @@
 
         /* Modern Sections */
         .main-content {
-            padding: var(--section-spacing) 0;
+            padding: 30px 0 60px;
             position: relative;
             z-index: 1;
         }
@@ -788,7 +795,7 @@
             }
             
             .hero-section {
-                padding: 60px 0 50px;
+                padding: 50px 0 50px;
             }
             
             .hero-subtitle {
@@ -843,7 +850,7 @@
             
             /* Reduce section spacing for mobile */
             .main-content {
-                padding: 40px 0;
+                padding: 30px 0 40px;
             }
             
             .modern-section {
