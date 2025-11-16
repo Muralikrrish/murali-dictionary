@@ -368,7 +368,7 @@
             border-left: 4px solid var(--accent-primary);
             margin-top: 20px;
             display: none;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             font-size: 1rem;
             line-height: 1.5;
         }
@@ -413,28 +413,28 @@
             justify-content: center;
             margin-top: 10px;
             margin-bottom: 10px;
+            padding-bottom: 15px;
         }
 
         .explanation-read-more-btn {
-            background: linear-gradient(135deg, #d15a3f, #e07554);
-            color: white;
-            border: 2px solid transparent;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-primary);
+            border-radius: 50px;
             padding: 8px 16px;
-            border-radius: 25px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(209, 90, 63, 0.3);
         }
 
         .explanation-read-more-btn:hover {
-            background: linear-gradient(135deg, #b84a30, #d15a3f);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(209, 90, 63, 0.5);
         }
 
         .quiz-action-buttons {
@@ -755,6 +755,8 @@
             .stats-grid, .tips-grid { grid-template-columns: 1fr; }
             .word-definition-preview { max-height: 500px; }
             .definition-fade { height: 100px; }
+            .explanation-preview { max-height: 250px; }
+            .explanation-fade { height: 70px; }
         }
 
         @media (max-width: 480px) {
@@ -767,7 +769,7 @@
             .word-title { font-size: 22px; }
             .quiz-take-btn, .btn-show-word { padding: 10px 18px; font-size: 15px; width: auto; max-width: 280px; margin-left: auto; margin-right: auto; }
             .read-more-btn { padding: 10px 18px; font-size: 13px; width: auto; min-width: 140px; border: 2px solid transparent !important; display: flex; justify-content: center; }
-            .explanation-read-more-btn { padding: 6px 12px; font-size: 12px; }
+            .explanation-read-more-btn { padding: 8px 14px; font-size: 13px; }
             .main-content { padding: 30px 0 40px; }
             .modern-section { margin-bottom: 40px; }
             .stats-grid, .tips-grid { gap: 15px; }
@@ -782,8 +784,8 @@
             .option-btn { padding: 16px; min-height: 60px; display: flex; align-items: center; font-size: 0.95rem; }
             .explanation-box { margin-top: 15px; }
             .explanation-content { padding: 15px; }
-            .explanation-preview { max-height: 120px; }
-            .explanation-fade { height: 40px; }
+            .explanation-preview { max-height: 200px; }
+            .explanation-fade { height: 60px; }
             .quiz-action-buttons { margin-top: 20px; }
             .modern-section:nth-of-type(2) .interactive-card,
             .modern-section:nth-of-type(3) .interactive-card,
@@ -1323,7 +1325,7 @@
             selectedQuizAnswer = index;
             quizAnswered = true;
             
-            const options = document.querySelectorAll('.option-btn');
+            const options = document.querySelectorAll('#quizOptionsGrid .option-btn');
             options.forEach(opt => opt.classList.remove('selected'));
             options[index].classList.add('selected');
             
@@ -1351,7 +1353,7 @@
             document.getElementById('quizExplanation').classList.add('show');
             document.getElementById('quizContinueBtn').style.display = 'block';
             
-            const options = document.querySelectorAll('.option-btn');
+            const options = document.querySelectorAll('#quizOptionsGrid .option-btn');
             options[currentQuizQuestion.currentCorrectAnswer].classList.add('correct');
             
             if (!isCorrect) options[selectedQuizAnswer].classList.add('incorrect');
