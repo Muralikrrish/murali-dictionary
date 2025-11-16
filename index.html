@@ -92,7 +92,12 @@
         /* Single line title for desktop and tablet */
         @media (min-width: 481px) {
             .hero-title br {
-                display: none;
+                content: ' ';
+                display: inline;
+            }
+            
+            .hero-title br::after {
+                content: ' ';
             }
         }
 
@@ -316,6 +321,13 @@
         /* Vocabulary Quiz Styles */
         .quiz-container {
             margin-bottom: 30px;
+        }
+        
+        /* Desktop and tablet: reduce bottom padding in quiz section */
+        @media (min-width: 481px) {
+            .quiz-container {
+                margin-bottom: 0;
+            }
         }
 
         .question-text {
