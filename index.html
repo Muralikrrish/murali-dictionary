@@ -364,7 +364,6 @@
 
         .explanation-box {
             background: var(--bg-tertiary);
-            padding: 20px;
             border-radius: 12px;
             border-left: 4px solid var(--accent-primary);
             margin-top: 20px;
@@ -377,6 +376,65 @@
         .explanation-box.show {
             display: block;
             animation: slideDown 0.3s ease;
+        }
+
+        .explanation-preview {
+            position: relative;
+            max-height: 150px;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+        }
+
+        .explanation-preview.expanded {
+            max-height: none;
+        }
+
+        .explanation-content {
+            padding: 20px;
+        }
+
+        .explanation-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(transparent, var(--bg-tertiary));
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .explanation-preview.expanded .explanation-fade {
+            opacity: 0;
+        }
+
+        .explanation-read-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .explanation-read-more-btn {
+            background: linear-gradient(135deg, #d15a3f, #e07554);
+            color: white;
+            border: 2px solid transparent;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(209, 90, 63, 0.3);
+        }
+
+        .explanation-read-more-btn:hover {
+            background: linear-gradient(135deg, #b84a30, #d15a3f);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(209, 90, 63, 0.5);
         }
 
         .quiz-action-buttons {
@@ -709,6 +767,7 @@
             .word-title { font-size: 22px; }
             .quiz-take-btn, .btn-show-word { padding: 10px 18px; font-size: 15px; width: auto; max-width: 280px; margin-left: auto; margin-right: auto; }
             .read-more-btn { padding: 10px 18px; font-size: 13px; width: auto; min-width: 140px; border: 2px solid transparent !important; display: flex; justify-content: center; }
+            .explanation-read-more-btn { padding: 6px 12px; font-size: 12px; }
             .main-content { padding: 30px 0 40px; }
             .modern-section { margin-bottom: 40px; }
             .stats-grid, .tips-grid { gap: 15px; }
@@ -721,7 +780,10 @@
             .question-text { margin-bottom: 20px; padding: 15px; font-size: 1rem; font-weight: 500; }
             .options-grid { gap: 10px; margin-bottom: 20px; }
             .option-btn { padding: 16px; min-height: 60px; display: flex; align-items: center; font-size: 0.95rem; }
-            .explanation-box { padding: 15px; margin-top: 15px; font-size: 0.95rem; color: var(--text-secondary); }
+            .explanation-box { margin-top: 15px; }
+            .explanation-content { padding: 15px; }
+            .explanation-preview { max-height: 120px; }
+            .explanation-fade { height: 40px; }
             .quiz-action-buttons { margin-top: 20px; }
             .modern-section:nth-of-type(2) .interactive-card,
             .modern-section:nth-of-type(3) .interactive-card,
@@ -791,7 +853,18 @@
                             <div class="question-text" id="quizQuestionText">Loading question...</div>
                             <div class="options-grid" id="quizOptionsGrid"></div>
                             <div class="explanation-box" id="quizExplanation">
-                                <strong>Explanation:</strong> <span id="quizExplanationText"></span>
+                                <div class="explanation-preview">
+                                    <div class="explanation-content">
+                                        <strong>Explanation:</strong> <span id="quizExplanationText"></span>
+                                    </div>
+                                    <div class="explanation-fade"></div>
+                                </div>
+                                <div class="explanation-read-more-container">
+                                    <button class="explanation-read-more-btn" onclick="toggleExplanationExpansion(this, 'quizExplanation')">
+                                        <span>Read more</span>
+                                        <span class="icon">▼</span>
+                                    </button>
+                                </div>
                             </div>
                             <div class="quiz-action-buttons">
                                 <button class="quiz-take-btn" onclick="continueToFullQuiz()" id="quizContinueBtn" style="display: none;">
@@ -822,7 +895,18 @@
                             <div class="question-text" id="gkQuizQuestionText">Loading question...</div>
                             <div class="options-grid" id="gkQuizOptionsGrid"></div>
                             <div class="explanation-box" id="gkQuizExplanation">
-                                <strong>Explanation:</strong> <span id="gkQuizExplanationText"></span>
+                                <div class="explanation-preview">
+                                    <div class="explanation-content">
+                                        <strong>Explanation:</strong> <span id="gkQuizExplanationText"></span>
+                                    </div>
+                                    <div class="explanation-fade"></div>
+                                </div>
+                                <div class="explanation-read-more-container">
+                                    <button class="explanation-read-more-btn" onclick="toggleExplanationExpansion(this, 'gkQuizExplanation')">
+                                        <span>Read more</span>
+                                        <span class="icon">▼</span>
+                                    </button>
+                                </div>
                             </div>
                             <div class="quiz-action-buttons">
                                 <button class="quiz-take-btn" onclick="continueToFullGkQuiz()" id="gkQuizContinueBtn" style="display: none;">
@@ -953,6 +1037,21 @@
         // New variables for General Knowledge quiz
         let gkQuizQuestions = [], currentGkQuizQuestion = null, selectedGkQuizAnswer = null;
         let gkQuizAnswered = false, gkQuestionDisplayed = false;
+
+        function toggleExplanationExpansion(button, explanationId) {
+            const explanationBox = document.getElementById(explanationId);
+            const preview = explanationBox.querySelector('.explanation-preview');
+            const isExpanded = preview.classList.contains('expanded');
+            
+            if (isExpanded) {
+                preview.classList.remove('expanded');
+                button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
+            } else {
+                preview.classList.add('expanded');
+                button.innerHTML = '<span>Read less</span><span class="icon">▲</span>';
+                setTimeout(() => preview.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+            }
+        }
 
         function shuffleArray(array) {
             const shuffled = [...array];
