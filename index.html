@@ -961,10 +961,8 @@
                 const { createClient } = supabase;
                 supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 isSupabaseConfigured = supabaseInitialized = true;
-                
-                // Start both requests immediately without waiting
-                loadQuizQuestions();
-                syncWithSupabase();
+                await loadQuizQuestions();
+                await syncWithSupabase();
             } catch(error) {
                 console.error('Supabase init error:', error);
                 isSupabaseConfigured = false;
@@ -1197,7 +1195,7 @@
                 const ws = document.getElementById('wordSpotlightDisplay');
                 const randomIndex = Math.floor(Math.random() * dictionary.length);
                 ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
-                document.querySelector('.modern-section:nth-of-type(3)').scrollIntoView({behavior:'smooth',block:'start'});
+                document.getElementById('wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
             }
         }
 
@@ -1298,26 +1296,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Immediately try to load and display from cache
-            const cachedDict = SafeStorage.getItem('dictionary');
+            const hasLocalData = loadFromLocalStorage();
             
-            if (cachedDict) {
-                try {
-                    dictionary = JSON.parse(cachedDict);
-                    buildSearchIndex();
-                    
-                    // Show word spotlight immediately from cache
-                    if (dictionary.length > 0) {
-                        displayWordSpotlight();
-                        hasDisplayedWordSpotlight = true;
-                    }
-                } catch(e) {
-                    console.error('Cache parse error:', e);
-                }
-            }
-            
-            // Show skeleton only if no cache
-            if (dictionary.length === 0) {
+            if (!hasLocalData) {
                 document.getElementById('wordSpotlightDisplay').innerHTML = `
                     <div class="skeleton-loading">
                         <div class="skeleton-word"></div>
@@ -1331,11 +1312,8 @@
                 `;
             }
             
-            // Start background sync (non-blocking)
-            requestAnimationFrame(() => {
-                initializeSupabase();
-                setupSearch();
-            });
+            setTimeout(initializeSupabase, 0);
+            setupSearch();
         });
     </script>
 </body>
