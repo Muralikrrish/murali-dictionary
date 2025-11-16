@@ -262,6 +262,14 @@
             opacity: 0;
         }
 
+        .explanation-read-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 15px;
+        }
+
         .read-more-btn {
             background: linear-gradient(135deg, #d15a3f, #e07554);
             color: white;
@@ -317,13 +325,6 @@
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 20px;
         }
 
         .results-screen {
@@ -475,10 +476,6 @@
                 min-height: 55px;
             }
             
-            .action-buttons {
-                margin-top: 16px;
-            }
-            
             .quiz-take-btn {
                 padding: 12px 20px;
                 font-size: 14px;
@@ -534,6 +531,16 @@
             
             .explanation-content {
                 padding: 16px;
+            }
+            
+            .read-more-btn {
+                padding: 10px 18px;
+                font-size: 13px;
+                width: auto;
+                min-width: 140px;
+                border: 2px solid transparent !important;
+                display: flex;
+                justify-content: center;
             }
         }
 
@@ -620,8 +627,8 @@
             }
             
             .quiz-take-btn {
-                padding: 10px 18px;
-                font-size: 15px;
+                padding: 12px 18px;
+                font-size: 13px;
                 width: auto;
                 max-width: 280px;
                 margin-left: auto;
@@ -707,7 +714,7 @@
                     </div>
                     <div class="action-buttons">
                         <button class="quiz-take-btn" onclick="nextQuestion()" id="next-btn" style="display: none;">
-                            <i class="fas fa-play-circle"></i> <span id="next-btn-text">Next Question</span>
+                            <i class="fas fa-arrow-right"></i> Next Question
                         </button>
                     </div>
                 </div>
@@ -928,9 +935,9 @@
             document.getElementById('explanation-box').classList.remove('show');
             
             if (currentQuestion === TOTAL_QUESTIONS - 1) {
-                document.getElementById('next-btn-text').textContent = 'See Results';
+                document.getElementById('next-btn').innerHTML = '<i class="fas fa-trophy"></i> See Results';
             } else {
-                document.getElementById('next-btn-text').textContent = 'Next Question';
+                document.getElementById('next-btn').innerHTML = '<i class="fas fa-arrow-right"></i> Next Question';
             }
             
             document.getElementById('next-btn').style.display = 'none';
