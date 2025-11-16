@@ -258,21 +258,18 @@
         .modern-section-title {
             font-size: 1.75rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: white;
             margin-bottom: 30px;
             position: relative;
-            padding-bottom: 12px;
+            display: inline-block;
+            padding: 12px 30px 12px 20px;
+            background: var(--accent-gradient);
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
         }
 
         .modern-section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: var(--accent-gradient);
-            border-radius: 2px;
+            display: none;
         }
 
         /* Interactive Cards */
