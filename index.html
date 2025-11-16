@@ -19,7 +19,6 @@
             --text-muted: #6b728c;
             --border-color: #2a3042;
             --success-color: #4caf50;
-            --warning-color: #ff9800;
             --error-color: #f44336;
             --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
             --section-spacing: 60px;
@@ -45,7 +44,6 @@
             padding: 0 20px;
         }
 
-        /* Hero Section */
         .hero-section {
             background: linear-gradient(135deg, #1a1d28 0%, #232838 100%);
             padding: 80px 0 70px;
@@ -89,7 +87,6 @@
             z-index: 1;
         }
         
-        /* Single line title for desktop and tablet */
         @media (min-width: 481px) {
             .hero-title br {
                 content: ' ';
@@ -114,7 +111,6 @@
             font-style: italic;
         }
 
-        /* Modern Search Section */
         .search-container {
             max-width: 700px;
             margin: 0 auto;
@@ -182,7 +178,6 @@
             font-size: 1.2rem;
         }
 
-        /* Modern Autocomplete Dropdown */
         .autocomplete-dropdown {
             position: absolute;
             top: calc(100% + 12px);
@@ -251,7 +246,6 @@
             font-weight: 500;
         }
 
-        /* Modern Sections */
         .main-content {
             padding: 30px 0 60px;
             position: relative;
@@ -263,7 +257,6 @@
             position: relative;
         }
 
-        /* Add subtle gradient divider for mobile */
         @media (max-width: 480px) {
             .modern-section::after {
                 content: '';
@@ -272,11 +265,7 @@
                 left: 10%;
                 right: 10%;
                 height: 1px;
-                background: linear-gradient(90deg, 
-                    transparent 0%, 
-                    var(--border-color) 20%, 
-                    var(--border-color) 80%, 
-                    transparent 100%);
+                background: linear-gradient(90deg, transparent 0%, var(--border-color) 20%, var(--border-color) 80%, transparent 100%);
             }
             
             .modern-section:last-child::after {
@@ -297,11 +286,6 @@
             box-shadow: 0 3px 10px rgba(209, 90, 63, 0.3);
         }
 
-        .modern-section-title::after {
-            display: none;
-        }
-
-        /* Interactive Cards */
         .interactive-card {
             background: var(--bg-secondary);
             border-radius: 20px;
@@ -318,12 +302,10 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
         }
 
-        /* Vocabulary Quiz Styles */
         .quiz-container {
             margin-bottom: 30px;
         }
         
-        /* Desktop and tablet: reduce bottom padding in quiz section */
         @media (min-width: 481px) {
             .quiz-container {
                 margin-bottom: 0;
@@ -430,7 +412,6 @@
             transform: translateY(-2px);
         }
 
-        /* Word Spotlight Styles */
         .word-entry {
             padding: 15px 0;
             border-bottom: 1px solid var(--border-color);
@@ -477,51 +458,19 @@
             line-height: 1.45;
         }
 
-        .word-definition h1 {
-            font-size: 25px;
-            margin: 0.15em 0 0.15em 0;
-            line-height: 1.3;
-            color: var(--text-secondary);
-        }
-
-        .word-definition h2 {
-            font-size: 22px;
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-            color: var(--text-secondary);
-        }
-
-        .word-definition h3 {
-            font-size: 20px;
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-            color: var(--text-secondary);
-        }
-
-        .word-definition h4 {
-            font-size: 18px;
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-            color: var(--text-secondary);
-        }
-
-        .word-definition h5 {
-            font-size: 16px;
-            margin: 1em 0 0.4em 0;
-            line-height: 1.3;
-            color: var(--text-secondary);
-        }
-
-        .word-definition h6 {
-            font-size: 14px;
-            margin: 1em 0 0.4em 0;
-            line-height: 1.3;
-            color: var(--text-secondary);
-        }
-
+        .word-definition h1, .word-definition h2, .word-definition h3, 
+        .word-definition h4, .word-definition h5, .word-definition h6,
         .word-definition strong, .word-definition b {
             color: var(--text-secondary);
+            line-height: 1.3;
         }
+
+        .word-definition h1 { font-size: 25px; margin: 0.15em 0; }
+        .word-definition h2 { font-size: 22px; margin: 1em 0 0.15em 0; }
+        .word-definition h3 { font-size: 20px; margin: 1em 0 0.15em 0; }
+        .word-definition h4 { font-size: 18px; margin: 1em 0 0.15em 0; }
+        .word-definition h5 { font-size: 16px; margin: 1em 0 0.4em 0; }
+        .word-definition h6 { font-size: 14px; margin: 1em 0 0.4em 0; }
 
         .word-definition-preview {
             position: relative;
@@ -578,7 +527,6 @@
 
         .read-more-btn:hover {
             background: linear-gradient(135deg, #b84a30, #d15a3f);
-            color: white;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(209, 90, 63, 0.5);
         }
@@ -586,7 +534,7 @@
         .btn-show-word {
             background: var(--bg-secondary);
             color: var(--text-primary);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--accent-primary);
             border-radius: 50px;
             padding: 12px 24px;
             font-size: 15px;
@@ -594,7 +542,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-            border-color: var(--accent-primary);
             width: auto;
             display: block;
             margin: 20px auto 0 auto;
@@ -605,7 +552,6 @@
             transform: translateY(-2px);
         }
 
-        /* Search Results Section */
         .search-results-section {
             display: none;
             position: relative;
@@ -622,7 +568,6 @@
             gap: 20px;
         }
 
-        /* Skeleton Loading */
         .skeleton-loading {
             background: var(--bg-secondary);
             border-radius: 8px;
@@ -665,7 +610,6 @@
             animation: shimmer 1.5s infinite;
         }
 
-        /* Animations */
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -681,7 +625,6 @@
             100% { background-position: 200% 0; }
         }
 
-        /* Stats Section */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -715,7 +658,6 @@
             font-size: 0.9rem;
         }
 
-        /* Tips Section */
         .tips-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -748,279 +690,70 @@
             line-height: 1.5;
         }
 
-        /* Mobile Optimizations */
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 3rem;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.15rem;
-                margin-bottom: 40px;
-            }
-            
-            .search-box input {
-                padding: 16px 16px 16px 20px;
-                font-size: 1rem;
-            }
-            
-            .search-icon {
-                padding: 14px 16px;
-            }
-            
-            .modern-section-title {
-                font-size: 1.1rem;
-            }
-            
-            .interactive-card {
-                padding: 20px;
-            }
-            
-            .question-text {
-                font-size: 1.1rem;
-                padding: 15px;
-            }
-            
-            .option-btn {
-                padding: 15px;
-                font-size: 0.95rem;
-            }
-            
-            .stats-grid, .tips-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            /* Mobile optimization for word preview */
-            .word-definition-preview {
-                max-height: 500px;
-            }
-            
-            .definition-fade {
-                height: 100px;
-            }
+            .hero-title { font-size: 3rem; }
+            .hero-subtitle { font-size: 1.15rem; margin-bottom: 40px; }
+            .search-box input { padding: 16px 16px 16px 20px; font-size: 1rem; }
+            .search-icon { padding: 14px 16px; }
+            .modern-section-title { font-size: 1.1rem; }
+            .interactive-card { padding: 20px; }
+            .question-text { font-size: 1.1rem; padding: 15px; }
+            .option-btn { padding: 15px; font-size: 0.95rem; }
+            .stats-grid, .tips-grid { grid-template-columns: 1fr; }
+            .word-definition-preview { max-height: 500px; }
+            .definition-fade { height: 100px; }
         }
 
         @media (max-width: 480px) {
-            .hero-title {
-                font-size: 2.5rem;
-                line-height: 1.15;
-            }
-            
-            .hero-section {
-                padding: 50px 0 50px;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.05rem;
-                margin-bottom: 35px;
-            }
-            
-            .search-box input {
-                padding: 14px 14px 14px 18px;
-                font-size: 0.95rem;
-            }
-            
-            .search-icon {
-                padding: 12px 14px;
-            }
-            
-            .modern-section-title {
-                font-size: 1.1rem;
-                margin-bottom: 10px;
-            }
-            
-            .word-title {
-                font-size: 22px;
-            }
-            
-            .quiz-take-btn, .btn-show-word {
-                padding: 10px 18px;
-                font-size: 15px;
-                width: auto;
-                max-width: 280px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            
-            /* Mobile optimization for word preview */
-            .word-definition-preview {
-                max-height: 500px;
-            }
-            
-            .definition-fade {
-                height: 100px;
-            }
-            
-            /* Fixed Read More button for mobile */
-            .read-more-btn {
-                padding: 10px 18px;
-                font-size: 13px;
-                width: auto;
-                min-width: 140px;
-                border: 2px solid transparent !important;
-                display: flex;
-                justify-content: center;
-            }
-            
-            /* Reduce section spacing for mobile */
-            .main-content {
-                padding: 30px 0 40px;
-            }
-            
-            .modern-section {
-                margin-bottom: 40px;
-            }
-            
-            /* Optimize stats and tips for mobile */
-            .stats-grid {
-                gap: 15px;
-            }
-            
-            .stat-item {
-                padding: 15px;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
-            
-            .tips-grid {
-                gap: 15px;
-            }
-            
-            .tip-item {
-                padding: 15px;
-            }
-            
-            /* Improve search results for mobile */
-            .autocomplete-dropdown {
-                left: 10px;
-                right: 10px;
-                max-width: calc(100% - 20px);
-            }
-            
-            .autocomplete-item {
-                padding: 14px 16px;
-            }
-            
-            /* Optimize quiz for mobile */
-            .quiz-container {
-                margin-bottom: 0px;
-            }
-            
-            .question-text {
-                margin-bottom: 20px;
-                padding: 15px;
-                /* Mobile: Same font size as Word Spotlight normal text */
-                font-size: 1rem;
-                font-weight: 500;
-            }
-            
-            .options-grid {
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-            
-            .option-btn {
-                padding: 16px;
-                min-height: 60px;
-                display: flex;
-                align-items: center;
-                font-size: 0.95rem;
-            }
-            
-            .explanation-box {
-                padding: 15px;
-                margin-top: 15px;
-                /* Mobile: Same font size as options but Word Spotlight color */
-                font-size: 0.95rem;
-                color: var(--text-secondary);
-            }
-            
-            .quiz-action-buttons {
-                margin-top: 20px;
-            }
-            
-            /* 10% PADDING FOR VOCABULARY QUIZ AND WORD SPOTLIGHT */
-            /* Vocabulary Quiz Section - 5% side padding */
-            .modern-section:nth-of-type(2) .interactive-card {
-                margin-left: -5px;
-                margin-right: -5px;
-                width: calc(100% + 10px);
-                border-radius: 5;
-                padding-left: 5%;
-                padding-right: 5%;
-            }
-            
-            /* Word Spotlight Section - 5% side padding */
+            .hero-title { font-size: 2.5rem; line-height: 1.15; }
+            .hero-section { padding: 50px 0 50px; }
+            .hero-subtitle { font-size: 1.05rem; margin-bottom: 35px; }
+            .search-box input { padding: 14px 14px 14px 18px; font-size: 0.95rem; }
+            .search-icon { padding: 12px 14px; }
+            .modern-section-title { font-size: 1.1rem; margin-bottom: 10px; }
+            .word-title { font-size: 22px; }
+            .quiz-take-btn, .btn-show-word { padding: 10px 18px; font-size: 15px; width: auto; max-width: 280px; margin-left: auto; margin-right: auto; }
+            .read-more-btn { padding: 10px 18px; font-size: 13px; width: auto; min-width: 140px; border: 2px solid transparent !important; display: flex; justify-content: center; }
+            .main-content { padding: 30px 0 40px; }
+            .modern-section { margin-bottom: 40px; }
+            .stats-grid, .tips-grid { gap: 15px; }
+            .stat-item { padding: 15px; }
+            .stat-number { font-size: 2rem; }
+            .tip-item { padding: 15px; }
+            .autocomplete-dropdown { left: 10px; right: 10px; max-width: calc(100% - 20px); }
+            .autocomplete-item { padding: 14px 16px; }
+            .quiz-container { margin-bottom: 0px; }
+            .question-text { margin-bottom: 20px; padding: 15px; font-size: 1rem; font-weight: 500; }
+            .options-grid { gap: 10px; margin-bottom: 20px; }
+            .option-btn { padding: 16px; min-height: 60px; display: flex; align-items: center; font-size: 0.95rem; }
+            .explanation-box { padding: 15px; margin-top: 15px; font-size: 0.95rem; color: var(--text-secondary); }
+            .quiz-action-buttons { margin-top: 20px; }
+            .modern-section:nth-of-type(2) .interactive-card,
             .modern-section:nth-of-type(3) .interactive-card {
                 margin-left: -5px;
                 margin-right: -5px;
                 width: calc(100% + 10px);
-                border-radius: 5;
+                border-radius: 5px;
                 padding-left: 5%;
                 padding-right: 5%;
             }
-            
-            /* Optimize interactive cards for mobile */
-            .interactive-card {
-                padding: 20px 15px;
-            }
-            
-            /* Improve container padding for mobile */
-            .container {
-                padding: 0 15px;
-            }
+            .interactive-card { padding: 20px 15px; }
+            .container { padding: 0 15px; }
         }
 
-        /* Desktop and Tablet Font Size Adjustments */
         @media (min-width: 769px) {
-            /* Word Spotlight: Normal text same size as Vocabulary Quiz questions */
-            .word-definition {
-                font-size: 1.3rem;
-                line-height: 1.6;
-            }
-            
-            /* Adjust Word Spotlight headers proportionally */
-            .word-definition h1 {
-                font-size: 2.2rem;
-                margin: 0.2em 0 0.2em 0;
-            }
-            
-            .word-definition h2 {
-                font-size: 1.9rem;
-                margin: 1.2em 0 0.2em 0;
-            }
-            
-            .word-definition h3 {
-                font-size: 1.7rem;
-                margin: 1.2em 0 0.2em 0;
-            }
-            
-            .word-definition h4 {
-                font-size: 1.5rem;
-                margin: 1.2em 0 0.2em 0;
-            }
-            
-            .word-definition h5 {
-                font-size: 1.3rem;
-                margin: 1.2em 0 0.4em 0;
-            }
-            
-            .word-definition h6 {
-                font-size: 1.2rem;
-                margin: 1.2em 0 0.4em 0;
-            }
-            
-            /* Adjust main word title for consistency */
-            .word-title {
-                font-size: 2.4rem;
-            }
+            .word-definition { font-size: 1.3rem; line-height: 1.6; }
+            .word-definition h1 { font-size: 2.2rem; margin: 0.2em 0; }
+            .word-definition h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
+            .word-definition h3 { font-size: 1.7rem; margin: 1.2em 0 0.2em 0; }
+            .word-definition h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
+            .word-definition h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
+            .word-definition h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
+            .word-title { font-size: 2.4rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <h1 class="hero-title">Pearls of<br>knowledge</h1>
@@ -1029,9 +762,7 @@
                 <div class="search-box">
                     <div class="search-input-wrapper">
                         <input type="text" id="searchInput" placeholder="Search vocabulary..." autocomplete="off">
-                        <span class="search-icon">
-                            <i class="fas fa-search"></i>
-                        </span>
+                        <span class="search-icon"><i class="fas fa-search"></i></span>
                     </div>
                 </div>
                 <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
@@ -1039,16 +770,13 @@
         </div>
     </section>
 
-    <!-- Main Content -->
     <div class="container">
         <div class="main-content">
-            <!-- Search Results Section -->
             <section class="modern-section search-results-section" id="searchResultsSection">
                 <h2 class="modern-section-title">Search Results</h2>
                 <div class="words-list" id="wordsList"></div>
             </section>
 
-            <!-- Vocabulary Quiz Section -->
             <section class="modern-section">
                 <h2 class="modern-section-title">Vocabulary Quiz</h2>
                 <div class="interactive-card">
@@ -1063,14 +791,9 @@
                             </div>
                         </div>
                         <div class="quiz-error" id="quizErrorMessage" style="display: none;"></div>
-                        
                         <div id="quizQuestion" style="display: none;">
-                            <div class="question-text" id="quizQuestionText">
-                                Loading question...
-                            </div>
-                            <div class="options-grid" id="quizOptionsGrid">
-                                <!-- Quiz options will be inserted here -->
-                            </div>
+                            <div class="question-text" id="quizQuestionText">Loading question...</div>
+                            <div class="options-grid" id="quizOptionsGrid"></div>
                             <div class="explanation-box" id="quizExplanation">
                                 <strong>Explanation:</strong> <span id="quizExplanationText"></span>
                             </div>
@@ -1084,7 +807,6 @@
                 </div>
             </section>
 
-            <!-- Word Spotlight Section -->
             <section class="modern-section">
                 <h2 class="modern-section-title">Word Spotlight</h2>
                 <div class="interactive-card">
@@ -1102,7 +824,6 @@
                 </div>
             </section>
 
-            <!-- Learning Stats Section -->
             <section class="modern-section">
                 <h2 class="modern-section-title">Your Learning Journey</h2>
                 <div class="stats-grid">
@@ -1125,7 +846,6 @@
                 </div>
             </section>
 
-            <!-- Vocabulary Tips Section -->
             <section class="modern-section">
                 <h2 class="modern-section-title">Vocabulary Building Tips</h2>
                 <div class="tips-grid">
@@ -1152,37 +872,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // SafeStorage utility
         const SafeStorage = {
             isAvailable: false,
             memoryStorage: {},
-            
-            init: function() {
+            init() {
                 try {
                     const test = '__storage_test__';
                     localStorage.setItem(test, test);
                     localStorage.removeItem(test);
                     this.isAvailable = true;
-                    console.log('localStorage is available');
                 } catch(e) {
                     console.warn('localStorage not available, using memory storage:', e);
-                    this.isAvailable = false;
                 }
             },
-            
-            setItem: function(key, value) {
+            setItem(key, value) {
                 try {
-                    if (this.isAvailable) {
-                        localStorage.setItem(key, value);
-                    }
+                    if (this.isAvailable) localStorage.setItem(key, value);
                     this.memoryStorage[key] = value;
                 } catch(e) {
-                    console.warn('Storage setItem failed:', e);
                     this.memoryStorage[key] = value;
                 }
             },
-            
-            getItem: function(key) {
+            getItem(key) {
                 try {
                     if (this.isAvailable) {
                         const value = localStorage.getItem(key);
@@ -1190,19 +901,14 @@
                     }
                     return this.memoryStorage[key] || null;
                 } catch(e) {
-                    console.warn('Storage getItem failed:', e);
                     return this.memoryStorage[key] || null;
                 }
             },
-            
-            removeItem: function(key) {
+            removeItem(key) {
                 try {
-                    if (this.isAvailable) {
-                        localStorage.removeItem(key);
-                    }
+                    if (this.isAvailable) localStorage.removeItem(key);
                     delete this.memoryStorage[key];
                 } catch(e) {
-                    console.warn('Storage removeItem failed:', e);
                     delete this.memoryStorage[key];
                 }
             }
@@ -1210,31 +916,14 @@
 
         SafeStorage.init();
 
-        // Supabase configuration
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
 
-        let supabaseClient;
-        let isSupabaseConfigured = false;
-        let dictionary = [];
-        let selectedAutocompleteIndex = -1;
-        let typingTimer;
-        let supabaseInitialized = false;
+        let supabaseClient, dictionary = [], searchIndex = null;
+        let isSupabaseConfigured = false, supabaseInitialized = false, hasDisplayedWordSpotlight = false;
+        let quizQuestions = [], currentQuizQuestion = null, selectedQuizAnswer = null;
+        let quizAnswered = false, questionDisplayed = false;
 
-        // Quiz variables
-        let quizQuestions = [];
-        let currentQuizQuestion = null;
-        let selectedQuizAnswer = null;
-        let quizAnswered = false;
-        let questionDisplayed = false;
-
-        // Search index for faster lookups
-        let searchIndex = null;
-
-        // Track if we've already displayed a word from local storage
-        let hasDisplayedWordSpotlight = false;
-
-        // Fisher-Yates shuffle algorithm for randomizing arrays
         function shuffleArray(array) {
             const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -1259,7 +948,6 @@
             dictionary = localDict ? JSON.parse(localDict) : [];
             buildSearchIndex();
             
-            // Only display a word if we have data and haven't displayed one yet
             if (dictionary.length > 0 && !hasDisplayedWordSpotlight) {
                 displayWordSpotlight();
                 hasDisplayedWordSpotlight = true;
@@ -1272,17 +960,12 @@
             try {
                 const { createClient } = supabase;
                 supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                
-                isSupabaseConfigured = true;
-                supabaseInitialized = true;
-                
-                // Load quiz questions immediately without waiting for dictionary sync
+                isSupabaseConfigured = supabaseInitialized = true;
                 await loadQuizQuestions();
                 await syncWithSupabase();
             } catch(error) {
                 console.error('Supabase init error:', error);
                 isSupabaseConfigured = false;
-                // Word Spotlight is already loaded from local storage, so no need to display again
             }
         }
 
@@ -1309,7 +992,6 @@
                     buildSearchIndex();
                     SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
                     
-                    // Only update Word Spotlight if we haven't displayed one yet
                     if (!hasDisplayedWordSpotlight) {
                         displayWordSpotlight();
                         hasDisplayedWordSpotlight = true;
@@ -1320,24 +1002,16 @@
             }
         }
 
-        // Quiz Functions - Optimized for faster loading
         async function loadQuizQuestions() {
             try {
-                console.log('Loading quiz questions...');
-                
-                // Try to load from cache first for faster display
                 const cachedQuestions = SafeStorage.getItem('cachedQuizQuestions');
                 if (cachedQuestions) {
                     quizQuestions = JSON.parse(cachedQuestions);
-                    console.log('Loaded quiz questions from cache:', quizQuestions.length);
-                    
-                    // Show quiz immediately if we have cached questions
                     document.getElementById('quizLoadingMessage').style.display = 'none';
                     document.getElementById('quizQuestion').style.display = 'block';
                     displayQuizQuestion();
                 }
                 
-                // Always fetch fresh data in background
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/quiz_questions?select=*`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
@@ -1346,38 +1020,31 @@
                     }
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const freshQuestions = await response.json();
-                console.log('Fresh quiz questions loaded:', freshQuestions.length);
 
                 if (freshQuestions.length === 0) {
                     showQuizError('No quiz questions found in the database.');
                     return;
                 }
 
-                // Update cache with fresh data
                 quizQuestions = freshQuestions;
                 SafeStorage.setItem('cachedQuizQuestions', JSON.stringify(freshQuestions));
                 
-                // If we didn't have cached data, show the quiz now
                 if (!cachedQuestions) {
                     document.getElementById('quizLoadingMessage').style.display = 'none';
                     document.getElementById('quizQuestion').style.display = 'block';
                     displayQuizQuestion();
                 }
-                // If we had cached data, don't change the current question to avoid glitch
             } catch (error) {
                 console.error('Error loading quiz questions:', error);
-                // If we have cached questions, use them even if fetch fails
                 if (quizQuestions.length > 0) {
                     document.getElementById('quizLoadingMessage').style.display = 'none';
                     document.getElementById('quizQuestion').style.display = 'block';
                     displayQuizQuestion();
                 } else {
-                    showQuizError(`Failed to load quiz: ${error.message}. Please check your Supabase configuration.`);
+                    showQuizError(`Failed to load quiz: ${error.message}`);
                 }
             }
         }
@@ -1389,41 +1056,28 @@
         }
 
         function displayQuizQuestion() {
-            if (quizQuestions.length === 0) return;
-            
-            // Prevent multiple question displays
-            if (questionDisplayed) return;
+            if (quizQuestions.length === 0 || questionDisplayed) return;
             questionDisplayed = true;
             
-            // Get a random question
             const randomIndex = Math.floor(Math.random() * quizQuestions.length);
             currentQuizQuestion = quizQuestions[randomIndex];
             
             document.getElementById('quizQuestionText').textContent = currentQuizQuestion.question_text;
             
-            // Create options with randomization
             const optionsGrid = document.getElementById('quizOptionsGrid');
             optionsGrid.innerHTML = '';
             
-            // Make sure options is an array
             const optionsArray = Array.isArray(currentQuizQuestion.options) ? 
                 currentQuizQuestion.options : 
                 JSON.parse(currentQuizQuestion.options || '[]');
             
-            // Store the original correct answer before shuffling
             const originalCorrectAnswer = optionsArray[currentQuizQuestion.correct_answer];
-            
-            // Shuffle the options array
             const shuffledOptions = shuffleArray(optionsArray);
-            
-            // Find the new position of the correct answer after shuffling
             const newCorrectAnswerIndex = shuffledOptions.indexOf(originalCorrectAnswer);
             
-            // Update the question object with shuffled options and new correct answer index
             currentQuizQuestion.shuffledOptions = shuffledOptions;
             currentQuizQuestion.currentCorrectAnswer = newCorrectAnswerIndex;
             
-            // Create the option buttons
             shuffledOptions.forEach((option, index) => {
                 const optionDiv = document.createElement('button');
                 optionDiv.className = 'option-btn';
@@ -1432,7 +1086,6 @@
                 optionsGrid.appendChild(optionDiv);
             });
 
-            // Reset UI state
             document.getElementById('quizExplanation').classList.remove('show');
             document.getElementById('quizContinueBtn').style.display = 'none';
             quizAnswered = false;
@@ -1449,35 +1102,21 @@
             options.forEach(opt => opt.classList.remove('selected'));
             options[index].classList.add('selected');
             
-            // Immediately check the answer
             checkQuizAnswer();
         }
 
         function checkQuizAnswer() {
-            quizAnswered = true;
-
-            // Use the current correct answer index (after shuffling)
             const isCorrect = selectedQuizAnswer === currentQuizQuestion.currentCorrectAnswer;
 
-            // Show explanation
             document.getElementById('quizExplanationText').textContent = currentQuizQuestion.explanation;
             document.getElementById('quizExplanation').classList.add('show');
-
-            // Show continue button
             document.getElementById('quizContinueBtn').style.display = 'block';
             
-            // Highlight correct and incorrect answers
             const options = document.querySelectorAll('.option-btn');
-            
-            // Highlight correct answer (using current correct answer index)
             options[currentQuizQuestion.currentCorrectAnswer].classList.add('correct');
             
-            // If wrong answer, also highlight the incorrect choice
-            if (!isCorrect) {
-                options[selectedQuizAnswer].classList.add('incorrect');
-            }
+            if (!isCorrect) options[selectedQuizAnswer].classList.add('incorrect');
             
-            // Disable all options after selection
             options.forEach(opt => {
                 opt.style.cursor = 'default';
                 opt.onclick = null;
@@ -1488,21 +1127,19 @@
             window.location.href = 'quiz.html';
         }
 
-        // FAST LOADING: Word Spotlight with local storage
         function createExpandableDefinition(definitionHTML) {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = definitionHTML;
             const textContent = tempDiv.textContent || tempDiv.innerText || '';
             
-            // Check if definition is long enough to need expansion
-            const isLongDefinition = textContent.length > 800 || definitionHTML.includes('<h1') || definitionHTML.includes('<h2') || definitionHTML.includes('<h3') || definitionHTML.includes('<ul') || definitionHTML.includes('<ol');
+            const isLongDefinition = textContent.length > 800 || definitionHTML.includes('<h1') || 
+                definitionHTML.includes('<h2') || definitionHTML.includes('<h3') || 
+                definitionHTML.includes('<ul') || definitionHTML.includes('<ol');
             
             if (!isLongDefinition) {
                 return `
                     <div class="word-entry">
-                        <div class="word-definition">
-                            ${definitionHTML}
-                        </div>
+                        <div class="word-definition">${definitionHTML}</div>
                         <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
                     </div>
                 `;
@@ -1537,72 +1174,34 @@
             } else {
                 preview.classList.add('expanded');
                 button.innerHTML = '<span>Read less</span><span class="icon">▲</span>';
-                
-                // Scroll to keep the preview in view
-                setTimeout(() => {
-                    preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 300);
+                setTimeout(() => preview.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
             }
         }
 
-        // FAST LOADING: Word Spotlight function - uses local storage immediately
-        function displayWordSpotlight(){
-            const ws=document.getElementById('wordSpotlightDisplay');
+        function displayWordSpotlight() {
+            const ws = document.getElementById('wordSpotlightDisplay');
             
-            if(!dictionary || dictionary.length===0){
-                ws.innerHTML='<div class="no-words"><div class="no-words-icon">📚</div><p>No words available yet!</p></div>';
+            if (!dictionary || dictionary.length === 0) {
+                ws.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>No words available yet!</p></div>';
                 return;
             }
             
-            // Always pick a completely random word
             const randomIndex = Math.floor(Math.random() * dictionary.length);
-            const randomWord = dictionary[randomIndex];
-            ws.innerHTML = createExpandableDefinition(randomWord.definition);
+            ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
         }
 
-        function showNewRandomWord(){
-            if(dictionary.length>0){
-                const ws=document.getElementById('wordSpotlightDisplay');
+        function showNewRandomWord() {
+            if (dictionary.length > 0) {
+                const ws = document.getElementById('wordSpotlightDisplay');
                 const randomIndex = Math.floor(Math.random() * dictionary.length);
-                const randomWord = dictionary[randomIndex];
-                ws.innerHTML = createExpandableDefinition(randomWord.definition);
+                ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
                 document.getElementById('wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
             }
         }
 
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', function() {
-            const hasLocalData = loadFromLocalStorage();
-            
-            if (!hasLocalData) {
-                const ws = document.getElementById('wordSpotlightDisplay');
-                ws.innerHTML = `
-                    <div class="skeleton-loading">
-                        <div class="skeleton-word"></div>
-                        <div class="skeleton-line extra-long"></div>
-                        <div class="skeleton-line long"></div>
-                        <div class="skeleton-line medium"></div>
-                        <div class="skeleton-line short"></div>
-                        <div class="skeleton-line long"></div>
-                        <div class="skeleton-line short"></div>
-                    </div>
-                `;
-            }
-            
-            // Initialize Supabase immediately for faster loading
-            setTimeout(initializeSupabase, 0);
-            
-            // Set up search functionality
-            setupSearch();
-        });
-
-        // Search functionality
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
             const autocompleteDropdown = document.getElementById('autocompleteDropdown');
-            const searchResultsSection = document.getElementById('searchResultsSection');
-            const wordsList = document.getElementById('wordsList');
-            
             let typingTimer;
             
             searchInput.addEventListener('input', function() {
@@ -1612,22 +1211,18 @@
                     
                     if (query.length === 0) {
                         autocompleteDropdown.classList.remove('show');
-                        searchResultsSection.classList.remove('show');
+                        document.getElementById('searchResultsSection').classList.remove('show');
                         return;
                     }
                     
-                    // Show autocomplete suggestions
                     showAutocomplete(query);
                 }, 300);
             });
             
             searchInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    autocompleteDropdown.classList.remove('show');
-                }
+                if (e.key === 'Escape') autocompleteDropdown.classList.remove('show');
             });
             
-            // Close autocomplete when clicking outside
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.search-container')) {
                     autocompleteDropdown.classList.remove('show');
@@ -1697,12 +1292,29 @@
             }
             
             searchResultsSection.classList.add('show');
-            
-            // Scroll to search results only when explicitly selecting from dropdown or pressing enter
-            setTimeout(() => {
-                searchResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            setTimeout(() => searchResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const hasLocalData = loadFromLocalStorage();
+            
+            if (!hasLocalData) {
+                document.getElementById('wordSpotlightDisplay').innerHTML = `
+                    <div class="skeleton-loading">
+                        <div class="skeleton-word"></div>
+                        <div class="skeleton-line extra-long"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                `;
+            }
+            
+            setTimeout(initializeSupabase, 0);
+            setupSearch();
+        });
     </script>
 </body>
 </html>
