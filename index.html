@@ -961,8 +961,12 @@
                 const { createClient } = supabase;
                 supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 isSupabaseConfigured = supabaseInitialized = true;
-                await loadQuizQuestions();
-                await syncWithSupabase();
+                
+                // Load quiz questions and sync data in parallel
+                await Promise.all([
+                    loadQuizQuestions(),
+                    syncWithSupabase()
+                ]);
             } catch(error) {
                 console.error('Supabase init error:', error);
                 isSupabaseConfigured = false;
@@ -1195,7 +1199,7 @@
                 const ws = document.getElementById('wordSpotlightDisplay');
                 const randomIndex = Math.floor(Math.random() * dictionary.length);
                 ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
-                document.getElementById('wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
+                document.querySelector('.modern-section:nth-of-type(3)').scrollIntoView({behavior:'smooth',block:'start'});
             }
         }
 
@@ -1296,8 +1300,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Load from localStorage immediately
             const hasLocalData = loadFromLocalStorage();
             
+            // If no local data, keep showing skeleton
             if (!hasLocalData) {
                 document.getElementById('wordSpotlightDisplay').innerHTML = `
                     <div class="skeleton-loading">
@@ -1312,7 +1318,10 @@
                 `;
             }
             
-            setTimeout(initializeSupabase, 0);
+            // Initialize Supabase immediately (no timeout)
+            initializeSupabase();
+            
+            // Setup search functionality
             setupSearch();
         });
     </script>
