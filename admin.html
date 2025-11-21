@@ -3,80 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Pearls of Knowledge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Lora:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Admin - Murali's English Dictionary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* Login Screen Styles */
         :root {
-            --bg-primary: #0f1117;
-            --bg-secondary: #1a1d28;
-            --bg-tertiary: #232838;
-            --accent-primary: #ff6b35;
-            --accent-secondary: #ff8e35;
-            --accent-gradient: linear-gradient(135deg, #ff6b35, #ff8e35);
-            --text-primary: #f0f2fc;
-            --text-secondary: #b8c0e0;
-            --text-muted: #6b728c;
-            --border-color: #2a3042;
-            --success-color: #4caf50;
-            --error-color: #f44336;
-            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            --section-spacing: 60px;
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #242424;
+            --bg-tertiary: #2a2a2a;
+            --accent-primary: #c87941;
+            --accent-secondary: #d89057;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b8b8b8;
+            --text-muted: #666;
+            --border-color: #3d3d3d;
+            --success-color: #7bc87f;
+            --warning-color: #f39c12;
+            --error-color: #d9534f;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
         }
 
         body {
+            font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Login Screen Styles */
+        /* Login Container */
         .login-wrapper {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-            position: relative;
-        }
-
-        .login-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 70% 20%, rgba(224, 117, 84, 0.08) 0%, transparent 60%);
-            z-index: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .login-container {
-            background: var(--bg-secondary);
+            background: white;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
             max-width: 400px;
             animation: slideUp 0.4s ease;
-            position: relative;
-            z-index: 1;
         }
 
         @keyframes slideUp {
@@ -96,23 +72,19 @@
         }
 
         .login-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            font-weight: 700;
+            color: #333;
+            font-size: 28px;
             margin-bottom: 8px;
-            color: var(--text-primary);
-            letter-spacing: 0.02em;
         }
 
         .login-header p {
-            color: var(--text-muted);
-            font-size: 1rem;
+            color: #666;
+            font-size: 14px;
         }
 
         .lock-icon {
             font-size: 48px;
             margin-bottom: 20px;
-            color: var(--accent-primary);
         }
 
         .login-form-group {
@@ -121,7 +93,7 @@
 
         .login-form-group label {
             display: block;
-            color: var(--text-primary);
+            color: #333;
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 14px;
@@ -130,24 +102,22 @@
         .login-form-group input {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid var(--border-color);
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s ease;
-            background: var(--bg-primary);
-            color: var(--text-primary);
         }
 
         .login-form-group input:focus {
             outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .login-button {
             width: 100%;
             padding: 14px;
-            background: var(--accent-gradient);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -155,12 +125,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
         }
 
         .login-button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.5);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
 
         .login-button:disabled {
@@ -169,8 +138,8 @@
         }
 
         .error-message {
-            background: rgba(244, 67, 54, 0.1);
-            color: var(--error-color);
+            background: #fee;
+            color: #c33;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
@@ -178,7 +147,6 @@
             text-align: center;
             display: none;
             animation: shake 0.4s ease;
-            border: 1px solid var(--error-color);
         }
 
         .error-message.show {
@@ -209,391 +177,120 @@
             display: block;
         }
 
-        /* Modern Section Styling */
-        .modern-section {
-            margin-bottom: var(--section-spacing);
-            position: relative;
-        }
-
-        .modern-section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 15px;
-            position: relative;
-            display: inline-block;
-            padding: 3px 16px 3px 8px;
-            background: var(--accent-gradient);
-            clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
-            box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
-        }
-
-        .modern-section-title .word-count {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            font-weight: 500;
-            margin-left: 5px;
-        }
-
-        .interactive-card {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .interactive-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Form Styling */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 15px;
-            transition: border-color 0.3s;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .form-group input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-        }
-
-        .editor-toolbar {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            padding: 10px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px 6px 0 0;
-            align-items: center;
-        }
-
-        .editor-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-            color: var(--text-primary);
-        }
-
-        .editor-btn:hover {
-            background: var(--accent-primary);
-            color: var(--bg-primary);
-            border-color: var(--accent-primary);
-        }
-
-        .font-size-dropdown {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .font-size-dropdown:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-        }
-
-        .editor-content {
-            width: 100%;
-            min-height: 400px; /* Increased from 300px */
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 0 0 6px 6px;
-            border-top: none;
-            font-size: 16px;
-            overflow-y: auto;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            font-weight: 500;
-        }
-
-        .editor-content:focus {
-            outline: none;
-        }
-
-        .editor-content[contenteditable="true"]:empty:before {
-            content: attr(placeholder);
-            color: var(--text-muted);
-        }
-
-        .btn {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--accent-primary);
-            border: 2px solid var(--accent-primary);
-            margin-top: 10px;
-        }
-
-        .info-box {
-            background: var(--bg-tertiary);
-            padding: 20px;
-            border-radius: 6px;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--text-muted);
-            border-left: 3px solid var(--accent-primary);
-            animation: fadeIn 0.6s ease;
-        }
-
-        .success-box {
-            background: rgba(76, 175, 80, 0.1);
-            padding: 20px;
-            border-radius: 6px;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--success-color);
-            border-left: 3px solid var(--success-color);
-            animation: fadeIn 0.6s ease;
-            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-        }
-
-        .edit-result-item, .quick-add-result-item {
-            background: var(--bg-tertiary);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .edit-result-item:hover, .quick-add-result-item:hover {
-            background: var(--bg-secondary);
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-        }
-
-        .edit-result-word, .quick-add-result-word {
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-            font-size: 16px;
-        }
-
-        #editSearchResults, #quickAddSearchResults {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 10px;
-        }
-
-        #quickAddList {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 15px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px;
-            min-height: 60px;
-        }
-
-        .quick-add-item {
-            background: var(--bg-secondary);
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .quick-add-word {
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 15px;
-            word-break: break-word;
-            flex: 1;
-        }
-
-        .quick-add-remove {
-            background: var(--error-color);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .quick-add-remove:hover {
-            background: #d32f2f;
-            transform: translateY(-1px);
-        }
-
-        .quick-add-warning {
-            color: var(--warning-color);
-            font-size: 13px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .quick-add-empty {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .quick-add-controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .quick-add-btn {
-            background: var(--accent-primary);
-            color: white;
-            border: none;
+        .logout-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 1000;
         }
 
-        .quick-add-btn:hover {
-            background: var(--accent-secondary);
+        .logout-button:hover {
+            background: #d32f2f;
             transform: translateY(-2px);
         }
 
-        .quick-add-refresh {
-            background: var(--bg-secondary);
-            color: var(--accent-primary);
-            border: 2px solid var(--accent-primary);
-        }
-
-        .quick-add-refresh:hover {
-            background: var(--accent-primary);
-            color: white;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .login-container {
-                padding: 30px 20px;
-            }
-            
-            .login-header h1 {
-                font-size: 2rem;
-            }
-            
-            .interactive-card {
-                padding: 20px;
-            }
-            
-            .modern-section-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 25px 15px;
-            }
-            
-            .login-header h1 {
-                font-size: 1.8rem;
-            }
-            
-            .interactive-card {
-                padding: 20px 15px;
-            }
-            
-            .container {
-                padding: 0 15px;
-            }
-            
-            .modern-section {
-                margin-bottom: 40px;
-            }
-        }
-
+        /* Original Admin Styles */
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        @keyframes shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
+        
         .main-content {
-            padding: 40px 0 60px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr 400px;
+                gap: 32px;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
         }
 
         @media (min-width: 768px) {
-            .main-content {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 32px;
-                align-items: start;
+            .container {
+                padding: 60px 40px;
             }
+        }
+        
+        .admin-header{background:linear-gradient(135deg,var(--bg-secondary) 0%,#1f1f1f 100%);padding:40px 30px;text-align:center;color:var(--text-primary);margin-bottom:40px}
+        .admin-title{font-size:48px;font-weight:700;margin-bottom:20px;text-shadow:0 2px 8px rgba(200,121,65,0.3);background:linear-gradient(135deg, var(--text-primary) 0%, var(--accent-secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.02em}
+        .admin-subtitle{font-size:20px;margin-bottom:20px;opacity:0.85}
+        .words-column{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);border:1px solid var(--border-color)}
+        .sidebar{background:var(--bg-secondary);padding:30px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.3);height:fit-content;min-height:600px;border:1px solid var(--border-color);animation:fadeIn 0.4s ease}
+        .section-title{font-size:22px;font-weight:600;color:var(--text-primary);margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid var(--accent-primary);opacity:0.85}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;margin-bottom:8px;font-weight:600;color:var(--text-secondary);font-size:14px}
+        .form-group input{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:6px;font-size:15px;transition:border-color 0.3s;background:var(--bg-primary);color:var(--text-primary)}
+        .form-group input::placeholder{color:var(--text-muted)}
+        .form-group input:focus{outline:none;border-color:var(--accent-primary)}
+        .editor-toolbar{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;padding:10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px 6px 0 0;align-items:center}
+        .editor-btn{background:var(--bg-secondary);border:1px solid var(--border-color);padding:8px 12px;border-radius:4px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.2s;color:var(--text-primary)}
+        .editor-btn:hover{background:var(--accent-primary);color:var(--bg-primary);border-color:var(--accent-primary)}
+        .font-size-dropdown{background:var(--bg-secondary);border:1px solid var(--border-color);padding:8px 12px;border-radius:4px;font-size:14px;font-weight:600;color:var(--text-primary);cursor:pointer;transition:all 0.2s}
+        .font-size-dropdown:focus{outline:none;border-color:var(--accent-primary)}
+        .editor-content{width:100%;min-height:600px;padding:12px;border:1px solid var(--border-color);border-radius:0 0 6px 6px;border-top:none;font-size:16px;overflow-y:auto;background:var(--bg-primary);color:#d8d8d8;line-height:1.6;font-weight:500}
+        .editor-content:focus{outline:none}
+        .editor-content[contenteditable="true"]:empty:before{content:attr(placeholder);color:var(--text-muted)}
+        .btn{background:linear-gradient(135deg,var(--accent-primary) 0%,var(--accent-secondary) 100%);color:var(--bg-primary);border:none;padding:14px 28px;border-radius:6px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;width:100%;box-shadow:0 4px 12px rgba(200,121,65,0.3)}
+        .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(200,121,65,0.4)}
+        .btn-secondary{background:var(--bg-secondary);color:var(--accent-primary);border:2px solid var(--accent-primary);margin-top:10px}
+        .word-entry{padding:15px 0;border-bottom:1px solid var(--border-color)}
+        .word-title{font-size:26px;font-weight:700;color:var(--text-primary);margin-bottom:12px}
+        .word-definition{font-size:16px;color:#d8d8d8;line-height:1.6;margin-bottom:15px}
+        .word-actions{display:flex;gap:15px;flex-wrap:wrap}
+        .btn-action{padding:8px 16px;font-size:13px;border-radius:6px;border:none;cursor:pointer;font-weight:600;transition:all 0.3s}
+        .btn-edit{background:var(--bg-secondary);color:var(--accent-primary);border:1px solid var(--accent-primary)}
+        .btn-edit:hover{background:var(--accent-primary);color:var(--bg-primary)}
+        .btn-delete{background:var(--bg-secondary);color:var(--error-color);border:1px solid var(--error-color)}
+        .btn-delete:hover{background:var(--error-color);color:var(--bg-primary)}
+        .no-words{text-align:center;padding:60px 20px;color:var(--text-muted)}
+        .utility-buttons{margin-top:20px}
+        .info-box{background:#1f1f1f;padding:20px;border-radius:6px;margin-top:20px;font-size:14px;color:var(--text-muted);border-left:3px solid var(--accent-primary);animation:fadeIn 0.6s ease}
+        .success-box{background:linear-gradient(135deg,#1f3a1f 0%,#1a341a 100%);padding:20px;border-radius:6px;margin-top:20px;font-size:14px;color:var(--success-color);border-left:3px solid #28a745;animation:fadeIn 0.6s ease;box-shadow:0 2px 8px rgba(40,167,69,0.2)}
+        .edit-result-item,.quick-add-result-item{background:#1f1f1f;padding:15px;margin-bottom:10px;border-radius:6px;border:1px solid var(--border-color);cursor:pointer;transition:all 0.3s}
+        .edit-result-item:hover,.quick-add-result-item:hover{background:var(--bg-secondary);border-color:var(--accent-primary)}
+        .edit-result-word,.quick-add-result-word{font-weight:700;color:var(--text-primary);margin-bottom:5px;font-size:16px}
+        #editSearchResults,#quickAddSearchResults{max-height:300px;overflow-y:auto;margin-top:10px}
+        #quickAddList{max-height:300px;overflow-y:auto;margin-top:15px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px;padding:10px;min-height:60px}
+        .quick-add-item{background:var(--bg-secondary);padding:12px 15px;margin-bottom:8px;border-radius:6px;border:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .quick-add-word{color:var(--text-primary);font-weight:600;font-size:15px;word-break:break-word;flex:1}
+        .quick-add-remove{background:var(--error-color);color:var(--bg-primary);border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600}
+        .quick-add-warning{color:var(--warning-color);font-size:13px;margin-top:5px;display:none}
+        .quick-add-empty{text-align:center;padding:20px;color:var(--text-muted);font-size:14px}
+        .quick-add-controls{display:flex;gap:10px;margin-top:10px}
+        .quick-add-btn{background:var(--accent-primary);color:var(--bg-primary);border:none;padding:10px 20px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.3s;flex:1}
+        .quick-add-refresh{background:var(--bg-secondary);color:var(--accent-primary);border:2px solid var(--accent-primary)}
+        .nav-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 1px solid var(--accent-primary);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
         }
     </style>
 </head>
@@ -632,80 +329,71 @@
 
     <!-- Admin Content -->
     <div class="admin-content" id="adminContent">
+        <button class="logout-button" onclick="logout()">Logout</button>
+        
+        <div class="admin-header">
+            <h1 class="admin-title">Dictionary Admin</h1>
+            <p class="admin-subtitle">Manage your dictionary content</p>
+            <a href="index.html" class="nav-link">← Back to Main Dictionary</a>
+        </div>
         <div class="container">
             <div class="main-content" id="mainContent">
-                <div class="modern-section">
-                    <h2 class="modern-section-title">Add New Word <span class="word-count" id="dictionaryCount">(0)</span></h2>
-                    <div class="interactive-card">
-                        <form id="addWordForm">
-                            <div class="form-group">
-                                <label for="wordInput">Word</label>
-                                <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()">
-                                <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="definitionInput">Definition</label>
-                                <div class="editor-toolbar">
-                                    <select class="font-size-dropdown" id="formatDropdown" onchange="formatHeading(this.value)">
-                                        <option value="">Normal</option>
-                                        <option value="h1">Heading 1</option>
-                                        <option value="h2">Heading 2</option>
-                                        <option value="h3">Heading 3</option>
-                                        <option value="h4">Heading 4</option>
-                                    </select>
-                                    <button type="button" class="editor-btn" onclick="formatText('bold')"><b>B</b></button>
-                                    <button type="button" class="editor-btn" onclick="formatText('italic')"><i>I</i></button>
-                                    <button type="button" class="editor-btn" onclick="formatText('underline')"><u>U</u></button>
-                                    <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')">1.2.3.</button>
-                                    <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')">• • •</button>
-                                    <button type="button" class="editor-btn" onclick="formatText('removeFormat')">✗</button>
-                                </div>
-                                <div id="definitionInput" class="editor-content" contenteditable="true" placeholder="Enter definition..."></div>
-                            </div>
-                            <button type="submit" class="btn">Add to Dictionary</button>
-                        </form>
-                    </div>
+                <div class="words-column" id="wordsListColumn">
+                    <h2 class="section-title">Dictionary Words <span id="dictionaryCount" style="font-size:16px;opacity:0.7;font-weight:400">(0)</span></h2>
+                    <div id="wordsList"></div>
                 </div>
-
-                <div class="modern-section">
-                    <h2 class="modern-section-title">Quick Add <span id="quickAddCount">(0)</span></h2>
-                    <div class="interactive-card">
+                
+                <div class="sidebar" id="sidebar">
+                    <h2 class="section-title">Add New Word</h2>
+                    <form id="addWordForm">
                         <div class="form-group">
-                            <label for="quickAddSearch">Search Word</label>
-                            <input type="text" id="quickAddSearch" placeholder="Type a word..." oninput="searchWordsForQuickAdd()">
-                            <div id="quickAddWarning" class="quick-add-warning">⚠️ Word exists</div>
+                            <label for="wordInput">Word</label>
+                            <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()">
+                            <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists</div>
                         </div>
-                        <div class="quick-add-controls">
-                            <button class="quick-add-btn" onclick="addToQuickList()">Add to List</button>
-                            <button class="quick-add-btn quick-add-refresh" onclick="refreshQuickList()">Refresh</button>
-                        </div>
-                        <div id="quickAddSearchResults"></div>
-                        <div id="quickAddList"><div class="quick-add-empty">No words yet</div></div>
-                    </div>
-                </div>
-
-                <div class="modern-section">
-                    <h2 class="modern-section-title">Edit Word</h2>
-                    <div class="interactive-card">
                         <div class="form-group">
-                            <label for="editSearchInput">Search</label>
-                            <input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()">
+                            <label for="definitionInput">Definition</label>
+                            <div class="editor-toolbar">
+                                <select class="font-size-dropdown" id="formatDropdown" onchange="formatHeading(this.value)">
+                                    <option value="">Normal</option>
+                                    <option value="h1">Heading 1</option>
+                                    <option value="h2">Heading 2</option>
+                                    <option value="h3">Heading 3</option>
+                                    <option value="h4">Heading 4</option>
+                                </select>
+                                <button type="button" class="editor-btn" onclick="formatText('bold')"><b>B</b></button>
+                                <button type="button" class="editor-btn" onclick="formatText('italic')"><i>I</i></button>
+                                <button type="button" class="editor-btn" onclick="formatText('underline')"><u>U</u></button>
+                                <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')">1.2.3.</button>
+                                <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')">• • •</button>
+                                <button type="button" class="editor-btn" onclick="formatText('removeFormat')">✗</button>
+                            </div>
+                            <div id="definitionInput" class="editor-content" contenteditable="true" placeholder="Enter definition..."></div>
                         </div>
-                        <div id="editSearchResults"></div>
+                        <button type="submit" class="btn">Add to Dictionary</button>
+                    </form>
+                    <h2 class="section-title" style="margin-top:40px">Quick Add <span id="quickAddCount">(0)</span></h2>
+                    <div class="form-group">
+                        <label for="quickAddSearch">Search Word</label>
+                        <input type="text" id="quickAddSearch" placeholder="Type a word..." oninput="searchWordsForQuickAdd()">
+                        <div id="quickAddWarning" class="quick-add-warning">⚠️ Word exists</div>
                     </div>
-                </div>
-
-                <div class="modern-section">
-                    <h2 class="modern-section-title">Utilities</h2>
-                    <div class="interactive-card">
-                        <div class="utility-buttons">
-                            <button class="btn" onclick="exportData()">Export Dictionary</button>
-                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="margin-top: 15px;">Import Dictionary</button>
-                            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-                        </div>
-                        <div class="success-box"><strong>✓ Supabase Connected!</strong> Dictionary syncing across devices.</div>
-                        <div class="info-box"><strong>💡 Tip:</strong> Auto-saves to cloud!</div>
+                    <div class="quick-add-controls">
+                        <button class="quick-add-btn" onclick="addToQuickList()">Add to List</button>
+                        <button class="quick-add-btn quick-add-refresh" onclick="refreshQuickList()">Refresh</button>
                     </div>
+                    <div id="quickAddSearchResults"></div>
+                    <div id="quickAddList"><div class="quick-add-empty">No words yet</div></div>
+                    <h2 class="section-title" style="margin-top:40px">Edit Word</h2>
+                    <div class="form-group"><label for="editSearchInput">Search</label><input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()"></div>
+                    <div id="editSearchResults"></div>
+                    <div class="utility-buttons">
+                        <button class="btn btn-secondary" onclick="exportData()">Export Dictionary</button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Dictionary</button>
+                        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+                    </div>
+                    <div class="success-box"><strong>✓ Supabase Connected!</strong> Dictionary syncing across devices.</div>
+                    <div class="info-box"><strong>💡 Tip:</strong> Auto-saves to cloud!</div>
                 </div>
             </div>
         </div>
@@ -717,9 +405,11 @@
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
 
+        // Password Configuration - Use "admin123" to login
+        const CORRECT_PASSWORD = 'admin123';
+
         let supabaseClient;
         const SESSION_DURATION = 24 * 60 * 60 * 1000;
-        const CORRECT_PASSWORD = "murali";
         let dictionary = [], quickAddList = [], editingWordId = null, searchIndex = null;
         let isSupabaseConfigured = false, supabaseInitialized = false;
 
@@ -805,6 +495,15 @@
             initializeAdmin();
         }
 
+        function logout() {
+            sessionStorage.removeItem('adminSession');
+            location.reload();
+        }
+
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+
         // Dictionary Management Functions
         function buildSearchIndex() {
             searchIndex = dictionary.map(item => ({
@@ -816,15 +515,10 @@
             }));
         }
 
-        function updateWordCount() {
-            document.getElementById('dictionaryCount').textContent = `(${dictionary.length})`;
-        }
-
         function loadFromLocalStorage() {
             const localDict = SafeStorage.getItem('dictionary');
             dictionary = localDict ? JSON.parse(localDict) : [];
             buildSearchIndex();
-            updateWordCount();
             
             const localQuickAdd = SafeStorage.getItem('quickAddList');
             quickAddList = localQuickAdd ? JSON.parse(localQuickAdd) : [];
@@ -864,8 +558,8 @@
                     }));
                     
                     buildSearchIndex();
-                    updateWordCount();
                     SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
+                    displayWords();
                 }
             } catch(error) {
                 console.error('Sync error:', error);
@@ -874,7 +568,6 @@
 
         async function saveDictionary() {
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
-            updateWordCount();
             if (isSupabaseConfigured && supabaseInitialized) {
                 try {
                     const { error } = await supabaseClient
@@ -891,6 +584,33 @@
                     console.error('Save error:', error);
                 }
             }
+        }
+
+        function displayWords() {
+            const wordsList = document.getElementById('wordsList');
+            const dictionaryCount = document.getElementById('dictionaryCount');
+            
+            dictionaryCount.textContent = `(${dictionary.length})`;
+            
+            if (dictionary.length === 0) {
+                wordsList.innerHTML = '<div class="no-words"><div class="no-words-icon">📚</div><p>No words yet!</p></div>';
+                return;
+            }
+            
+            let html = '';
+            dictionary.forEach(item => {
+                html += `
+                    <div class="word-entry">
+                        <div class="word-title">${item.word}</div>
+                        <div class="word-definition">${item.definition}</div>
+                        <div class="word-actions">
+                            <button class="btn-action btn-edit" onclick="editWord(${item.id})">Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteWord(${item.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            wordsList.innerHTML = html;
         }
 
         function checkExistingWord() {
@@ -943,12 +663,11 @@
             dictionary.sort((a, b) => a.word.localeCompare(b.word));
             buildSearchIndex();
             await saveDictionary();
+            displayWords();
             
             wordInput.value = '';
             definitionInput.innerHTML = '';
             document.getElementById('wordWarning').style.display = 'none';
-            
-            alert(editingWordId !== null ? 'Word updated successfully!' : 'Word added successfully!');
         });
 
         function editWord(id) {
@@ -958,11 +677,7 @@
             editingWordId = id;
             document.getElementById('wordInput').value = word.word;
             document.getElementById('definitionInput').innerHTML = word.definition;
-            document.getElementById('editSearchInput').value = '';
-            document.getElementById('editSearchResults').innerHTML = '';
-            
-            // Scroll to the top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('sidebar').scrollIntoView({ behavior: 'smooth' });
         }
 
         async function deleteWord(id) {
@@ -980,12 +695,12 @@
             }
             
             await saveDictionary();
+            displayWords();
         }
 
         function formatText(command) {
             document.execCommand(command, false, null);
             document.getElementById('definitionInput').focus();
-            updateFormatDropdown();
         }
 
         function formatHeading(tag) {
@@ -994,38 +709,9 @@
             } else {
                 document.execCommand('formatBlock', false, 'p');
             }
+            document.getElementById('formatDropdown').value = '';
             document.getElementById('definitionInput').focus();
-            updateFormatDropdown();
         }
-
-        function updateFormatDropdown() {
-            const editor = document.getElementById('definitionInput');
-            const dropdown = document.getElementById('formatDropdown');
-            
-            // Get the current selection
-            const selection = window.getSelection();
-            if (selection.rangeCount === 0) return;
-            
-            const node = selection.getRangeAt(0).startContainer;
-            const blockElement = node.nodeType === 3 ? node.parentNode : node;
-            
-            // Check if the block element is a heading
-            if (blockElement.nodeName.match(/^H[1-4]$/)) {
-                dropdown.value = blockElement.nodeName.toLowerCase();
-            } else {
-                dropdown.value = '';
-            }
-        }
-
-        // Add event listener to update dropdown when selection changes
-        document.addEventListener('DOMContentLoaded', function() {
-            const editor = document.getElementById('definitionInput');
-            if (editor) {
-                editor.addEventListener('input', updateFormatDropdown);
-                editor.addEventListener('click', updateFormatDropdown);
-                editor.addEventListener('keyup', updateFormatDropdown);
-            }
-        });
 
         function searchWordsToEdit() {
             const query = document.getElementById('editSearchInput').value.trim().toLowerCase();
@@ -1165,6 +851,7 @@
                     dictionary = imported;
                     buildSearchIndex();
                     await saveDictionary();
+                    displayWords();
                     alert('Dictionary imported successfully!');
                 } catch (error) {
                     alert('Error importing file: ' + error.message);
@@ -1176,18 +863,15 @@
 
         function initializeAdmin() {
             loadFromLocalStorage();
+            displayWords();
             displayQuickAddList();
             initializeSupabase();
         }
 
         // Check authentication on page load
-        if (checkAuth()) {
-            // Already authenticated
+        if (!checkAuth()) {
+            // Show login screen
         }
-
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkPassword();
-        });
     </script>
 </body>
 </html>
