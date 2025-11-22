@@ -970,7 +970,7 @@
 
         // Improved Auto-format specific headings function
         function autoFormatHeadings(content) {
-            const headings = ['Core Idea', 'Nuances', 'Examples', 'Word partners', 'Tone', 'Synonym comparison'];
+            const headings = ['Core Idea', 'Nuances', 'Examples', 'Word partners', 'Tone'];
             let formattedContent = content;
             
             // Split content by line breaks to process each line individually
@@ -1272,7 +1272,7 @@
             definitionInput.innerHTML = '';
             document.getElementById('wordWarning').style.display = 'none';
             
-            alert(successMessage);
+            // Success message removed - no popup confirmation
         });
 
         function editWord(id) {
