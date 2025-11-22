@@ -331,6 +331,7 @@
             border-color: var(--accent-primary);
         }
 
+        /* Updated Editor Content Styles to Match index.html */
         .editor-content {
             width: 100%;
             min-height: 400px;
@@ -341,9 +342,12 @@
             font-size: 16px;
             overflow-y: auto;
             background: var(--bg-primary);
-            color: var(--text-primary);
+            color: var(--text-secondary);
             line-height: 1.6;
             font-weight: 500;
+            white-space: normal;
+            word-wrap: break-word;
+            word-spacing: -0.05em;
         }
 
         .editor-content:focus {
@@ -355,11 +359,11 @@
             color: var(--text-muted);
         }
 
-        /* Editor content styles to match index.html */
+        /* Editor content styles to match index.html exactly */
         .editor-content h1 {
             font-size: 25px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             margin: 0.15em 0;
             line-height: 1.3;
         }
@@ -367,7 +371,7 @@
         .editor-content h2 {
             font-size: 22px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             margin: 1em 0 0.15em 0;
             line-height: 1.3;
         }
@@ -375,7 +379,7 @@
         .editor-content h3 {
             font-size: 20px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             margin: 1em 0 0.15em 0;
             line-height: 1.3;
         }
@@ -383,7 +387,7 @@
         .editor-content h4 {
             font-size: 18px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             margin: 1em 0 0.15em 0;
             line-height: 1.3;
         }
@@ -391,7 +395,7 @@
         .editor-content h5 {
             font-size: 16px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             margin: 1em 0 0.4em 0;
             line-height: 1.3;
         }
@@ -399,7 +403,7 @@
         .editor-content h6 {
             font-size: 14px;
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             margin: 1em 0 0.4em 0;
             line-height: 1.3;
         }
@@ -682,13 +686,16 @@
                 align-items: start;
             }
 
-            .editor-content h1 { font-size: 2.2rem; }
-            .editor-content h2 { font-size: 1.9rem; }
-            .editor-content h3 { font-size: 1.7rem; }
-            .editor-content h4 { font-size: 1.5rem; }
-            .editor-content h5 { font-size: 1.3rem; }
-            .editor-content h6 { font-size: 1.2rem; }
-            .editor-content p { font-size: 1.3rem; }
+            .editor-content { 
+                font-size: 1.3rem; 
+                line-height: 1.6; 
+            }
+            .editor-content h1 { font-size: 2.2rem; margin: 0.2em 0; }
+            .editor-content h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
+            .editor-content h3 { font-size: 1.7rem; margin: 1.2em 0 0.2em 0; }
+            .editor-content h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
+            .editor-content h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
+            .editor-content h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
         }
     </style>
 </head>
