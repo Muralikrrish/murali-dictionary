@@ -333,7 +333,7 @@
 
         .editor-content {
             width: 100%;
-            min-height: 400px; /* Increased from 300px */
+            min-height: 400px;
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 0 0 6px 6px;
@@ -353,6 +353,86 @@
         .editor-content[contenteditable="true"]:empty:before {
             content: attr(placeholder);
             color: var(--text-muted);
+        }
+
+        /* Editor content styles to match index.html */
+        .editor-content h1 {
+            font-size: 25px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0.15em 0;
+            line-height: 1.3;
+        }
+
+        .editor-content h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 1em 0 0.15em 0;
+            line-height: 1.3;
+        }
+
+        .editor-content h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 1em 0 0.15em 0;
+            line-height: 1.3;
+        }
+
+        .editor-content h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 1em 0 0.15em 0;
+            line-height: 1.3;
+        }
+
+        .editor-content h5 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 1em 0 0.4em 0;
+            line-height: 1.3;
+        }
+
+        .editor-content h6 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 1em 0 0.4em 0;
+            line-height: 1.3;
+        }
+
+        .editor-content p {
+            font-size: 16px;
+            margin: 0.75em 0;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .editor-content ul, .editor-content ol {
+            margin: 0.5em 0;
+            padding-left: 1.2em;
+        }
+
+        .editor-content li {
+            margin: 0.25em 0;
+            line-height: 1.45;
+            color: var(--text-secondary);
+        }
+
+        .editor-content strong, .editor-content b {
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .editor-content em, .editor-content i {
+            font-style: italic;
+        }
+
+        .editor-content u {
+            text-decoration: underline;
         }
 
         .btn {
@@ -559,6 +639,13 @@
             .modern-section-title {
                 font-size: 1.1rem;
             }
+
+            .editor-content h1 { font-size: 25px; }
+            .editor-content h2 { font-size: 22px; }
+            .editor-content h3 { font-size: 20px; }
+            .editor-content h4 { font-size: 18px; }
+            .editor-content h5 { font-size: 16px; }
+            .editor-content h6 { font-size: 14px; }
         }
 
         @media (max-width: 480px) {
@@ -594,6 +681,14 @@
                 gap: 32px;
                 align-items: start;
             }
+
+            .editor-content h1 { font-size: 2.2rem; }
+            .editor-content h2 { font-size: 1.9rem; }
+            .editor-content h3 { font-size: 1.7rem; }
+            .editor-content h4 { font-size: 1.5rem; }
+            .editor-content h5 { font-size: 1.3rem; }
+            .editor-content h6 { font-size: 1.2rem; }
+            .editor-content p { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -907,6 +1002,65 @@
             warning.style.display = exists ? 'block' : 'none';
         }
 
+        // Fixed Text Formatting Functions
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('definitionInput').focus();
+            updateFormatDropdown();
+        }
+
+        function formatHeading(tag) {
+            if (tag) {
+                document.execCommand('formatBlock', false, `<${tag}>`);
+            } else {
+                document.execCommand('formatBlock', false, '<p>');
+            }
+            document.getElementById('definitionInput').focus();
+            updateFormatDropdown();
+        }
+
+        function updateFormatDropdown() {
+            const editor = document.getElementById('definitionInput');
+            const dropdown = document.getElementById('formatDropdown');
+            
+            try {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const parentElement = selection.getRangeAt(0).startContainer.parentElement;
+                    const tagName = parentElement.tagName.toLowerCase();
+                    
+                    if (['h1', 'h2', 'h3', 'h4'].includes(tagName)) {
+                        dropdown.value = tagName;
+                    } else {
+                        dropdown.value = '';
+                    }
+                }
+            } catch (e) {
+                console.log('Could not update format dropdown');
+            }
+        }
+
+        // Handle paste events to clean up formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const editor = document.getElementById('definitionInput');
+            if (editor) {
+                editor.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    
+                    // Get pasted text
+                    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+                    
+                    // Insert text with current formatting
+                    document.execCommand('insertText', false, text);
+                });
+                
+                // Update format dropdown when selection changes
+                editor.addEventListener('input', updateFormatDropdown);
+                editor.addEventListener('click', updateFormatDropdown);
+                editor.addEventListener('keyup', updateFormatDropdown);
+            }
+        });
+
         document.getElementById('addWordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -981,51 +1135,6 @@
             
             await saveDictionary();
         }
-
-        function formatText(command) {
-            document.execCommand(command, false, null);
-            document.getElementById('definitionInput').focus();
-            updateFormatDropdown();
-        }
-
-        function formatHeading(tag) {
-            if (tag) {
-                document.execCommand('formatBlock', false, tag);
-            } else {
-                document.execCommand('formatBlock', false, 'p');
-            }
-            document.getElementById('definitionInput').focus();
-            updateFormatDropdown();
-        }
-
-        function updateFormatDropdown() {
-            const editor = document.getElementById('definitionInput');
-            const dropdown = document.getElementById('formatDropdown');
-            
-            // Get the current selection
-            const selection = window.getSelection();
-            if (selection.rangeCount === 0) return;
-            
-            const node = selection.getRangeAt(0).startContainer;
-            const blockElement = node.nodeType === 3 ? node.parentNode : node;
-            
-            // Check if the block element is a heading
-            if (blockElement.nodeName.match(/^H[1-4]$/)) {
-                dropdown.value = blockElement.nodeName.toLowerCase();
-            } else {
-                dropdown.value = '';
-            }
-        }
-
-        // Add event listener to update dropdown when selection changes
-        document.addEventListener('DOMContentLoaded', function() {
-            const editor = document.getElementById('definitionInput');
-            if (editor) {
-                editor.addEventListener('input', updateFormatDropdown);
-                editor.addEventListener('click', updateFormatDropdown);
-                editor.addEventListener('keyup', updateFormatDropdown);
-            }
-        });
 
         function searchWordsToEdit() {
             const query = document.getElementById('editSearchInput').value.trim().toLowerCase();
