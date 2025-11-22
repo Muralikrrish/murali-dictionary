@@ -900,18 +900,37 @@
             initializeAdmin();
         }
 
-        // Auto-format specific headings function
+        // Improved Auto-format specific headings function
         function autoFormatHeadings(content) {
             const headings = ['Core Idea', 'Nuances', 'Examples', 'Word partners', 'Tone'];
             let formattedContent = content;
             
-            headings.forEach(heading => {
-                // Create regex to match the heading text as a complete line
-                const regex = new RegExp(`(<[^>]*>)*\\s*${heading}\\s*(<[^>]*>)*`, 'gi');
-                formattedContent = formattedContent.replace(regex, `<h2>${heading}</h2>`);
-            });
+            // Split content by line breaks to process each line individually
+            const lines = formattedContent.split(/(<br\s*\/?>|\n)/);
             
-            return formattedContent;
+            for (let i = 0; i < lines.length; i++) {
+                // Skip HTML tags and line break markers
+                if (lines[i].match(/<br\s*\/?>/) || lines[i].match(/<\/?[^>]+>/)) {
+                    continue;
+                }
+                
+                // Trim whitespace from the line
+                const trimmedLine = lines[i].trim();
+                
+                // Check if this line contains ONLY one of our headings (case insensitive)
+                for (let heading of headings) {
+                    // Create a regex to match the heading exactly (case insensitive)
+                    const regex = new RegExp(`^\\s*${heading}\\s*$`, 'i');
+                    if (regex.test(trimmedLine)) {
+                        // Replace the entire line with the heading wrapped in h2 tags
+                        lines[i] = lines[i].replace(trimmedLine, `<h2>${heading}</h2>`);
+                        break;
+                    }
+                }
+            }
+            
+            // Join the lines back together
+            return lines.join('');
         }
 
         // Dictionary Management Functions
