@@ -335,12 +335,13 @@
         .editor-content {
             width: 100%;
             min-height: 400px;
+            max-height: 500px; /* Added max-height for scrollbar */
             padding: 12px;
             border: 1px solid var(--border-color);
             border-radius: 0 0 6px 6px;
             border-top: none;
             font-size: 16px;
-            overflow-y: auto;
+            overflow-y: auto; /* Ensure scrollbar appears */
             background: var(--bg-primary);
             color: var(--text-secondary);
             line-height: 1.6;
@@ -348,6 +349,25 @@
             white-space: normal;
             word-wrap: break-word;
             word-spacing: -0.05em;
+        }
+
+        /* Custom scrollbar styling */
+        .editor-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .editor-content::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: 4px;
+        }
+
+        .editor-content::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
+        }
+
+        .editor-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
         }
 
         .editor-content:focus {
@@ -742,7 +762,7 @@
                         <form id="addWordForm">
                             <div class="form-group">
                                 <label for="wordInput">Word</label>
-                                <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()">
+                                <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()" onkeyup="autoLowerCase(this)" onpaste="handlePaste(event)">
                                 <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists</div>
                             </div>
                             <div class="form-group">
@@ -905,6 +925,20 @@
             document.body.classList.add('authenticated');
             document.getElementById('adminContent').classList.add('unlocked');
             initializeAdmin();
+        }
+
+        // NEW: Auto lowercase functions for word input
+        function autoLowerCase(input) {
+            input.value = input.value.toLowerCase();
+        }
+
+        function handlePaste(event) {
+            // Allow the paste to happen first
+            setTimeout(() => {
+                const input = event.target;
+                input.value = input.value.toLowerCase();
+                checkExistingWord(); // Check if word exists after paste
+            }, 0);
         }
 
         // Improved Auto-format specific headings function
@@ -1156,7 +1190,7 @@
             const wordInput = document.getElementById('wordInput');
             const definitionInput = document.getElementById('definitionInput');
             
-            const word = wordInput.value.trim();
+            const word = wordInput.value.trim().toLowerCase(); // Ensure lowercase on submit
             let definition = definitionInput.innerHTML.trim();
             
             // Auto-format headings before saving
@@ -1314,7 +1348,7 @@
 
         function addToQuickList() {
             const input = document.getElementById('quickAddSearch');
-            const word = input.value.trim();
+            const word = input.value.trim().toLowerCase(); // Ensure lowercase
             
             if (!word) return;
             
