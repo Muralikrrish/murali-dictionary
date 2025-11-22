@@ -900,6 +900,20 @@
             initializeAdmin();
         }
 
+        // Auto-format specific headings function
+        function autoFormatHeadings(content) {
+            const headings = ['Core Idea', 'Nuances', 'Examples', 'Word partners', 'Tone'];
+            let formattedContent = content;
+            
+            headings.forEach(heading => {
+                // Create regex to match the heading text as a complete line
+                const regex = new RegExp(`(<[^>]*>)*\\s*${heading}\\s*(<[^>]*>)*`, 'gi');
+                formattedContent = formattedContent.replace(regex, `<h2>${heading}</h2>`);
+            });
+            
+            return formattedContent;
+        }
+
         // Dictionary Management Functions
         function buildSearchIndex() {
             searchIndex = dictionary.map(item => ({
@@ -1086,7 +1100,7 @@
             }
         }
 
-        // Handle paste events to clean up formatting
+        // Handle paste events to clean up formatting and auto-format headings
         document.addEventListener('DOMContentLoaded', function() {
             const editor = document.getElementById('definitionInput');
             if (editor) {
@@ -1096,8 +1110,11 @@
                     // Get pasted text
                     const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                     
-                    // Insert text with current formatting
-                    document.execCommand('insertText', false, text);
+                    // Auto-format the headings
+                    const formattedText = autoFormatHeadings(text);
+                    
+                    // Insert formatted text
+                    document.execCommand('insertHTML', false, formattedText);
                 });
                 
                 // Update format dropdown when selection changes
@@ -1114,7 +1131,10 @@
             const definitionInput = document.getElementById('definitionInput');
             
             const word = wordInput.value.trim();
-            const definition = definitionInput.innerHTML.trim();
+            let definition = definitionInput.innerHTML.trim();
+            
+            // Auto-format headings before saving
+            definition = autoFormatHeadings(definition);
             
             if (!word || !definition) {
                 alert('Please fill in all fields');
