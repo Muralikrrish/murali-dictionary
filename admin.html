@@ -968,39 +968,6 @@
             }
         }
 
-        // Improved Auto-format specific headings function
-        function autoFormatHeadings(content) {
-            const headings = ['Definition', 'Most common usages', 'Useful nuances', 'Synonym comparison', 'Most common examples', 'Word partners', 'Tone'];
-            let formattedContent = content;
-            
-            // Split content by line breaks to process each line individually
-            const lines = formattedContent.split(/(<br\s*\/?>|\n)/);
-            
-            for (let i = 0; i < lines.length; i++) {
-                // Skip HTML tags and line break markers
-                if (lines[i].match(/<br\s*\/?>/) || lines[i].match(/<\/?[^>]+>/)) {
-                    continue;
-                }
-                
-                // Trim whitespace from the line
-                const trimmedLine = lines[i].trim();
-                
-                // Check if this line contains ONLY one of our headings (case insensitive)
-                for (let heading of headings) {
-                    // Create a regex to match the heading exactly (case insensitive)
-                    const regex = new RegExp(`^\\s*${heading}\\s*$`, 'i');
-                    if (regex.test(trimmedLine)) {
-                        // Replace the entire line with the heading wrapped in h2 tags
-                        lines[i] = lines[i].replace(trimmedLine, `<h2>${heading}</h2>`);
-                        break;
-                    }
-                }
-            }
-            
-            // Join the lines back together
-            return lines.join('');
-        }
-
         // Dictionary Management Functions
         function buildSearchIndex() {
             searchIndex = dictionary.map(item => ({
@@ -1187,21 +1154,26 @@
             }
         }
 
-        // Handle paste events to clean up formatting and auto-format headings
+        // Handle paste events to preserve formatting and line breaks
         document.addEventListener('DOMContentLoaded', function() {
             const editor = document.getElementById('definitionInput');
             if (editor) {
                 editor.addEventListener('paste', function(e) {
                     e.preventDefault();
                     
-                    // Get pasted text
+                    // Get pasted text with formatting preserved
+                    const html = (e.clipboardData || window.clipboardData).getData('text/html');
                     const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                     
-                    // Auto-format the headings
-                    const formattedText = autoFormatHeadings(text);
-                    
-                    // Insert formatted text
-                    document.execCommand('insertHTML', false, formattedText);
+                    // If HTML content is available, use it to preserve formatting
+                    if (html) {
+                        // Insert HTML content directly to preserve formatting and line breaks
+                        document.execCommand('insertHTML', false, html);
+                    } else {
+                        // Fallback to plain text with line breaks preserved
+                        const withLineBreaks = text.replace(/\n/g, '<br>');
+                        document.execCommand('insertHTML', false, withLineBreaks);
+                    }
                 });
                 
                 // Update format dropdown when selection changes
@@ -1219,9 +1191,6 @@
             
             const word = wordInput.value.trim().toLowerCase(); // Ensure lowercase on submit
             let definition = definitionInput.innerHTML.trim();
-            
-            // Auto-format headings before saving
-            definition = autoFormatHeadings(definition);
             
             if (!word || !definition) {
                 alert('Please fill in all fields');
