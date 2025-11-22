@@ -762,7 +762,7 @@
                         <form id="addWordForm">
                             <div class="form-group">
                                 <label for="wordInput">Word</label>
-                                <input type="text" id="wordInput" required placeholder="Enter word" oninput="checkExistingWord()" onkeyup="autoLowerCase(this)" onpaste="handlePaste(event)">
+                                <input type="text" id="wordInput" required placeholder="Enter word" oninput="updateDefinitionHeader(); checkExistingWord()" onkeyup="autoLowerCase(this)" onpaste="handlePaste(event)">
                                 <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists</div>
                             </div>
                             <div class="form-group">
@@ -937,13 +937,40 @@
             setTimeout(() => {
                 const input = event.target;
                 input.value = input.value.toLowerCase();
+                updateDefinitionHeader(); // Update the definition header after paste
                 checkExistingWord(); // Check if word exists after paste
             }, 0);
         }
 
+        // NEW: Update definition header with word in h1 style
+        function updateDefinitionHeader() {
+            const wordInput = document.getElementById('wordInput');
+            const editor = document.getElementById('definitionInput');
+            let word = wordInput.value.trim();
+            
+            if (!word) {
+                return;
+            }
+
+            // Capitalize first letter
+            let capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+            
+            // Check if the editor's first child is an h1
+            let firstChild = editor.firstChild;
+            if (firstChild && firstChild.nodeType === Node.ELEMENT_NODE && firstChild.tagName === 'H1') {
+                // Update the existing h1
+                firstChild.textContent = capitalizedWord;
+            } else {
+                // Create a new h1 and insert it at the beginning
+                let h1 = document.createElement('h1');
+                h1.textContent = capitalizedWord;
+                editor.insertBefore(h1, editor.firstChild);
+            }
+        }
+
         // Improved Auto-format specific headings function
         function autoFormatHeadings(content) {
-            const headings = ['Core Idea', 'Nuances', 'Examples', 'Word partners', 'Tone', 'Synonym comparison'];
+            const headings = ['Core Idea', 'Nuances', 'Examples', 'Word partners', 'Tone'];
             let formattedContent = content;
             
             // Split content by line breaks to process each line individually
