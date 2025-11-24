@@ -780,12 +780,35 @@
             font-weight: 500;
         }
 
-        /* Highlighter Toolbar - Sticky */
+        /* Highlighter Toolbar - Sticky with keyboard support */
         .sticky-toolbar-container {
             position: sticky;
             top: 10px;
             z-index: 100;
             margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile keyboard open state */
+        @media (max-width: 768px) {
+            body.keyboard-open .sticky-toolbar-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                margin: 0;
+                border-radius: 0;
+                padding: 10px;
+                background: var(--bg-tertiary);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            }
+            
+            body.keyboard-open .sticky-toolbar-container .highlighter-toolbar {
+                border-radius: 0;
+                margin: 0;
+                padding: 10px;
+            }
         }
 
         .highlighter-toolbar {
@@ -1720,6 +1743,10 @@
         let currentActiveUnderline = false;
         let currentActiveBold = false;
 
+        // Mobile keyboard detection
+        let isMobileKeyboardOpen = false;
+        let originalViewportHeight = window.innerHeight;
+
         // Safe Storage
         const SafeStorage = {
             isAvailable: false,
@@ -2435,10 +2462,60 @@
             annotatedContent.addEventListener('mouseup', trackTextSelection);
             annotatedContent.addEventListener('touchend', trackTextSelection);
             
+            // Set up keyboard detection for mobile
+            setupMobileKeyboardDetection(annotatedContent);
+            
             // Reset annotation history
             annotationHistory = [annotatedContent.innerHTML];
             historyIndex = 0;
             updateUndoRedoButtons();
+        }
+
+        // NEW: Mobile keyboard detection
+        function setupMobileKeyboardDetection(element) {
+            if (!element) return;
+            
+            // Store original viewport height
+            originalViewportHeight = window.innerHeight;
+            
+            // Add focus and blur events
+            element.addEventListener('focus', handleMobileKeyboardOpen);
+            element.addEventListener('blur', handleMobileKeyboardClose);
+            
+            // Also listen for window resize (keyboard triggers this on mobile)
+            window.addEventListener('resize', handleMobileResize);
+        }
+
+        function handleMobileKeyboardOpen() {
+            if (window.innerWidth <= 768) {
+                isMobileKeyboardOpen = true;
+                document.body.classList.add('keyboard-open');
+            }
+        }
+
+        function handleMobileKeyboardClose() {
+            if (window.innerWidth <= 768) {
+                isMobileKeyboardOpen = false;
+                document.body.classList.remove('keyboard-open');
+            }
+        }
+
+        function handleMobileResize() {
+            if (window.innerWidth <= 768) {
+                // Check if viewport height changed significantly (keyboard opened/closed)
+                const viewportChange = Math.abs(originalViewportHeight - window.innerHeight);
+                
+                if (viewportChange > 100) { // Keyboard likely opened
+                    isMobileKeyboardOpen = true;
+                    document.body.classList.add('keyboard-open');
+                } else if (isMobileKeyboardOpen && viewportChange < 50) { // Keyboard likely closed
+                    isMobileKeyboardOpen = false;
+                    document.body.classList.remove('keyboard-open');
+                }
+                
+                // Update original height for next comparison
+                originalViewportHeight = window.innerHeight;
+            }
         }
 
         function trackTextSelection() {
