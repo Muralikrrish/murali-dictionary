@@ -911,7 +911,7 @@
             left: 100%;
         }
 
-        /* Annotation Styles */
+        /* Annotation Styles - EXACTLY matching index.html Word Spotlight */
         .annotated-content {
             line-height: 1.6;
             min-height: 400px;
@@ -923,9 +923,11 @@
             font-size: 16px;
             font-weight: 500;
             word-spacing: -0.05em;
+            white-space: normal;
+            word-wrap: break-word;
         }
 
-        /* Match the exact font sizes from index.html */
+        /* EXACT font sizes from index.html word-definition */
         .annotated-content h1 {
             font-size: 25px;
             font-weight: 700;
@@ -989,6 +991,11 @@
         .annotated-content li {
             margin: 0.25em 0;
             line-height: 1.45;
+            color: var(--text-secondary);
+        }
+
+        .annotated-content strong, .annotated-content b {
+            font-weight: 700;
             color: var(--text-secondary);
         }
 
@@ -1309,7 +1316,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsive adjustments */
+        /* Enhanced Mobile Responsiveness */
         @media (max-width: 768px) {
             .login-container {
                 padding: 30px 20px;
@@ -1327,26 +1334,9 @@
                 font-size: 1.1rem;
             }
 
-            .editor-content h1 { font-size: 25px; }
-            .editor-content h2 { font-size: 22px; }
-            .editor-content h3 { font-size: 20px; }
-            .editor-content h4 { font-size: 18px; }
-            .editor-content h5 { font-size: 16px; }
-            .editor-content h6 { font-size: 14px; }
-
-            .highlighter-toolbar {
-                gap: 6px;
-                padding: 12px;
-            }
-
-            .highlighter-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 14px;
-            }
-
-            .toolbar-divider {
-                margin: 0 8px;
+            /* Mobile search adjustments */
+            .search-container {
+                margin: 0 auto 20px;
             }
 
             .search-box input { 
@@ -1358,17 +1348,48 @@
                 padding: 14px 16px; 
             }
 
-            .annotated-content {
-                padding: 20px;
-                font-size: 15px;
+            /* Mobile highlighter toolbar */
+            .highlighter-toolbar {
+                gap: 6px;
+                padding: 12px;
+                flex-direction: column;
             }
 
-            .annotated-content h1 { font-size: 25px; }
-            .annotated-content h2 { font-size: 22px; }
-            .annotated-content h3 { font-size: 20px; }
-            .annotated-content h4 { font-size: 18px; }
-            .annotated-content h5 { font-size: 16px; }
-            .annotated-content h6 { font-size: 14px; }
+            .toolbar-section {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .toolbar-divider {
+                display: none;
+            }
+
+            .highlighter-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+
+            .toolbar-label {
+                display: none;
+            }
+
+            /* Mobile annotated content */
+            .annotated-content {
+                padding: 20px;
+                min-height: 300px;
+            }
+
+            /* Mobile annotation controls */
+            .annotation-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .annotation-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1392,28 +1413,7 @@
                 margin-bottom: 40px;
             }
 
-            .highlighter-toolbar {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .toolbar-section {
-                justify-content: center;
-            }
-
-            .toolbar-divider {
-                display: none;
-            }
-
-            .annotation-controls {
-                flex-direction: column;
-            }
-
-            .annotation-btn {
-                width: 100%;
-                justify-content: center;
-            }
-
+            /* Mobile search adjustments */
             .search-box input { 
                 padding: 14px 14px 14px 18px; 
                 font-size: 0.95rem; 
@@ -1421,6 +1421,28 @@
 
             .search-icon { 
                 padding: 12px 14px; 
+            }
+
+            /* Mobile highlighter toolbar */
+            .highlighter-toolbar {
+                gap: 4px;
+                padding: 10px;
+            }
+
+            .toolbar-section {
+                gap: 4px;
+            }
+
+            .highlighter-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+
+            /* Mobile annotated content */
+            .annotated-content {
+                padding: 15px;
+                font-size: 15px;
             }
 
             .word-title { 
@@ -1436,36 +1458,33 @@
                 margin-right: auto; 
             }
 
-            .annotated-content h1 { font-size: 25px; }
-            .annotated-content h2 { font-size: 22px; }
-            .annotated-content h3 { font-size: 20px; }
-            .annotated-content h4 { font-size: 18px; }
-            .annotated-content h5 { font-size: 16px; }
-            .annotated-content h6 { font-size: 14px; }
+            /* Mobile card adjustments */
+            .modern-section:nth-of-type(1) .interactive-card {
+                margin-left: -5px;
+                margin-right: -5px;
+                width: calc(100% + 10px);
+                border-radius: 5px;
+                padding-left: 5%;
+                padding-right: 5%;
+            }
         }
 
         .main-content {
             padding: 40px 0 60px;
         }
 
-        @media (min-width: 768px) {
-            .main-content {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 32px;
-                align-items: start;
-            }
-
-            .editor-content, .annotated-content { 
+        /* Desktop font size adjustments - matching index.html exactly */
+        @media (min-width: 769px) {
+            .word-definition, .annotated-content { 
                 font-size: 1.3rem; 
                 line-height: 1.6; 
             }
-            .editor-content h1, .annotated-content h1 { font-size: 2.2rem; margin: 0.2em 0; }
-            .editor-content h2, .annotated-content h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
-            .editor-content h3, .annotated-content h3 { font-size: 1.7rem; margin: 1.2em 0 0.2em 0; }
-            .editor-content h4, .annotated-content h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
-            .editor-content h5, .annotated-content h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
-            .editor-content h6, .annotated-content h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
+            .word-definition h1, .annotated-content h1 { font-size: 2.2rem; margin: 0.2em 0; }
+            .word-definition h2, .annotated-content h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
+            .word-definition h3, .annotated-content h3 { font-size: 1.7rem; margin: 1.2em 0 0.2em 0; }
+            .word-definition h4, .annotated-content h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
+            .word-definition h5, .annotated-content h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
+            .word-definition h6, .annotated-content h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
         }
     </style>
 </head>
