@@ -780,7 +780,7 @@
             font-weight: 500;
         }
 
-        /* Highlighter Toolbar */
+        /* Highlighter Toolbar - FIXED POSITION */
         .highlighter-toolbar {
             display: flex;
             gap: 8px;
@@ -792,6 +792,10 @@
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .toolbar-section {
@@ -925,6 +929,12 @@
             word-spacing: -0.05em;
             white-space: normal;
             word-wrap: break-word;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+            -webkit-touch-callout: text;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* EXACT font sizes from index.html word-definition */
@@ -1132,6 +1142,12 @@
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 12px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .word-definition {
@@ -1353,6 +1369,9 @@
                 gap: 6px;
                 padding: 12px;
                 flex-direction: column;
+                position: sticky;
+                top: 0;
+                z-index: 100;
             }
 
             .toolbar-section {
@@ -1427,6 +1446,9 @@
             .highlighter-toolbar {
                 gap: 4px;
                 padding: 10px;
+                position: sticky;
+                top: 0;
+                z-index: 100;
             }
 
             .toolbar-section {
@@ -2406,15 +2428,25 @@
             displayDiv.innerHTML = `
                 <div class="word-entry">
                     <div class="word-title">${word.word}</div>
-                    <div class="annotated-content" id="annotatedDefinition" contenteditable="true">
+                    <div class="annotated-content" id="annotatedDefinition">
                         ${word.definition}
                     </div>
                 </div>
             `;
             
-            // Set up text selection tracking
+            // Set up text selection tracking - FIXED for mobile
             const annotatedContent = document.getElementById('annotatedDefinition');
+            
+            // Prevent keyboard on mobile when clicking on words
+            annotatedContent.addEventListener('touchstart', function(e) {
+                if (e.target.tagName === 'SPAN' || e.target.classList.contains('word-title')) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            // Track selection for both mouse and touch
             annotatedContent.addEventListener('mouseup', trackTextSelection);
+            annotatedContent.addEventListener('touchend', trackTextSelection);
             
             // Reset annotation history
             annotationHistory = [annotatedContent.innerHTML];
@@ -2429,9 +2461,54 @@
                     text: selection.toString(),
                     range: selection.getRangeAt(0)
                 };
+                
+                // FIX for mobile: Ensure the entire selection is captured
+                if (isMobile()) {
+                    // On mobile, we need to make sure we're capturing the full selection
+                    // This addresses the issue where only the first word gets formatted
+                    const range = selection.getRangeAt(0);
+                    const selectedNodes = getSelectedNodes(range);
+                    
+                    if (selectedNodes.length > 1) {
+                        // We have multiple nodes selected, create a new range that encompasses all
+                        const newRange = document.createRange();
+                        newRange.setStart(selectedNodes[0], 0);
+                        newRange.setEnd(selectedNodes[selectedNodes.length - 1], 
+                                       selectedNodes[selectedNodes.length - 1].length || 
+                                       selectedNodes[selectedNodes.length - 1].childNodes.length);
+                        
+                        selectedText.range = newRange;
+                        selectedText.text = newRange.toString();
+                    }
+                }
             } else {
                 selectedText = null;
             }
+        }
+
+        // Helper function to get all text nodes in a selection
+        function getSelectedNodes(range) {
+            const nodes = [];
+            let node = range.startContainer;
+            
+            // If it's an element, get the text node
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                node = node.childNodes[0] || node;
+            }
+            
+            while (node && range.intersectsNode(node)) {
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                    nodes.push(node);
+                }
+                node = node.nextSibling;
+            }
+            
+            return nodes;
+        }
+
+        // Helper function to detect mobile devices
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
 
         function toggleHighlighter(color) {
@@ -2502,6 +2579,17 @@
             saveToHistory();
             
             const range = selectedText.range;
+            
+            // FIX for mobile: Check if we need to handle multiple nodes
+            if (isMobile() && range.toString() !== selectedText.text) {
+                // Recreate the range to ensure we capture everything
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    selectedText.range = selection.getRangeAt(0);
+                    selectedText.text = selection.toString();
+                }
+            }
+            
             const selectedContent = range.extractContents();
             const span = document.createElement('span');
             span.className = `highlight-${color}`;
@@ -2526,6 +2614,17 @@
             saveToHistory();
             
             const range = selectedText.range;
+            
+            // FIX for mobile: Check if we need to handle multiple nodes
+            if (isMobile() && range.toString() !== selectedText.text) {
+                // Recreate the range to ensure we capture everything
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    selectedText.range = selection.getRangeAt(0);
+                    selectedText.text = selection.toString();
+                }
+            }
+            
             const selectedContent = range.extractContents();
             const span = document.createElement('span');
             span.className = 'annotation-underline';
@@ -2550,6 +2649,17 @@
             saveToHistory();
             
             const range = selectedText.range;
+            
+            // FIX for mobile: Check if we need to handle multiple nodes
+            if (isMobile() && range.toString() !== selectedText.text) {
+                // Recreate the range to ensure we capture everything
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    selectedText.range = selection.getRangeAt(0);
+                    selectedText.text = selection.toString();
+                }
+            }
+            
             const selectedContent = range.extractContents();
             const strong = document.createElement('strong');
             strong.appendChild(selectedContent);
@@ -2573,6 +2683,17 @@
             saveToHistory();
             
             const range = selectedText.range;
+            
+            // FIX for mobile: Check if we need to handle multiple nodes
+            if (isMobile() && range.toString() !== selectedText.text) {
+                // Recreate the range to ensure we capture everything
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    selectedText.range = selection.getRangeAt(0);
+                    selectedText.text = selection.toString();
+                }
+            }
+            
             const selectedContent = range.extractContents();
             
             // Create a new text node with just the text content (removes formatting)
