@@ -1375,33 +1375,30 @@
             }
         }
 
-        // Handle paste events to preserve formatting and line breaks
+        // FIXED: Handle paste events properly - don't prevent default for regular text
         document.addEventListener('DOMContentLoaded', function() {
             const editor = document.getElementById('definitionInput');
             if (editor) {
                 editor.addEventListener('paste', function(e) {
-                    e.preventDefault();
-                    
                     // Get pasted text with formatting preserved
                     const html = (e.clipboardData || window.clipboardData).getData('text/html');
                     const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                     
-                    // Check if the content contains markdown-style elements
-                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* '))) {
-                        // Process markdown content
+                    // Check if the content contains markdown-style elements that need processing
+                    if (text && (text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* '))) {
+                        // Process markdown content - prevent default and handle manually
+                        e.preventDefault();
                         let processedHtml = processMarkdownContent(text);
                         // Convert H2 elements to toggle format
                         processedHtml = convertH2ToToggle(processedHtml);
                         document.execCommand('insertHTML', false, processedHtml);
-                    } else if (html) {
-                        // Convert H2 elements to toggle format in HTML content
+                    } else if (html && html.includes('<h2')) {
+                        // If HTML contains H2 elements that need toggle conversion
+                        e.preventDefault();
                         const processedHtml = convertH2ToToggle(html);
                         document.execCommand('insertHTML', false, processedHtml);
-                    } else {
-                        // Fallback to plain text with line breaks preserved
-                        const withLineBreaks = text.replace(/\n/g, '<br>');
-                        document.execCommand('insertHTML', false, withLineBreaks);
                     }
+                    // For regular text/HTML without markdown or H2 elements, allow default paste behavior
                 });
                 
                 // Update format dropdown when selection changes
