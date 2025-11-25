@@ -540,6 +540,12 @@
             color: var(--text-secondary) !important;
         }
 
+        /* NEW: Reduced margin for h3 elements inside toggle content */
+        .toggle-content h3 {
+            margin-top: 0.33em !important;
+            margin-bottom: 0.15em !important;
+        }
+
         .btn {
             background: var(--accent-gradient);
             color: white;
@@ -1529,6 +1535,37 @@
             }
         });
 
+        // NEW: Improved event handling for text formatting within toggles
+        function enhanceEditorFormatting() {
+            const editor = document.getElementById('definitionInput');
+            
+            // Ensure formatting works within toggle content
+            editor.addEventListener('click', function(e) {
+                // If clicking inside a toggle, ensure the editor maintains focus
+                if (e.target.closest('.toggle-content') || e.target.closest('.toggle-header')) {
+                    // Set focus back to editor to maintain formatting capability
+                    setTimeout(() => {
+                        editor.focus();
+                    }, 0);
+                }
+            });
+            
+            // Monitor selection changes to ensure formatting works in all contexts
+            document.addEventListener('selectionchange', function() {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const selectedNode = range.startContainer;
+                    
+                    // If selection is inside a toggle, ensure we can still format
+                    if (selectedNode && editor.contains(selectedNode)) {
+                        // The selection is within our editor, formatting should work
+                        updateFormatDropdown();
+                    }
+                }
+            });
+        }
+
         document.getElementById('addWordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -1826,6 +1863,8 @@
             loadFromLocalStorage();
             displayQuickAddList();
             initializeSupabase();
+            // NEW: Initialize enhanced editor formatting
+            enhanceEditorFormatting();
         }
 
         // Check authentication on page load
