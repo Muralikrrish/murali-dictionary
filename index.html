@@ -682,7 +682,7 @@
             animation: shimmer 1.5s infinite;
         }
 
-        /* MODERN TOGGLE STYLES */
+        /* MODERN TOGGLE STYLES - FIXED VERSION */
         .toggle-wrapper {
             margin: 1.5em 0;
             border: 1px solid var(--border-color);
@@ -702,7 +702,7 @@
             width: 100%;
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* Changed to left align */
+            justify-content: flex-start;
             padding: 16px 20px;
             background: var(--bg-tertiary);
             border: none;
@@ -711,7 +711,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-align: left; /* Ensure text is left aligned */
+            text-align: left;
             position: relative;
         }
 
@@ -733,7 +733,7 @@
         .toggle-icon {
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 14px;
-            margin-left: auto; /* Push icon to the right */
+            margin-left: auto;
             color: var(--accent-primary);
         }
 
@@ -741,36 +741,16 @@
             transform: rotate(90deg);
         }
 
+        /* FIXED: Using height and transform for smoother toggle animation */
         .toggle-content {
-            max-height: 0;
+            height: 0;
             overflow: hidden;
-            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: height 0.4s cubic-bezier(0.2, 0.6, 0.3, 1);
             background: var(--bg-secondary);
         }
 
         .toggle-content.expanded {
-            max-height: 10000px;
-            padding: 20px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        /* NEW: Reduced margin for h3 elements inside toggle content */
-        .toggle-content h3 {
-            margin-top: 0.33em !important;
-            margin-bottom: 0.15em !important;
-        }
-
-        /* NEW: Fix for toggle stuttering - smooth height transition */
-        .toggle-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.2, 0.6, 0.3, 1);
-            background: var(--bg-secondary);
-        }
-
-        .toggle-content.expanded {
-            max-height: 5000px;
-            transition: max-height 0.6s cubic-bezier(0.2, 0.6, 0.3, 1);
+            height: auto;
             padding: 20px;
         }
 
@@ -782,7 +762,7 @@
 
         /* NEW: Increased top margin for h3 that are not at the top */
         .toggle-content h3:not(:first-child) {
-            margin-top: 1em !important;
+            margin-top: 2em !important;
             margin-bottom: 0.15em !important;
         }
 
@@ -1261,6 +1241,13 @@
                     
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
+                    
+                    // NEW: Fix for smooth toggle animation
+                    if (toggleContent.classList.contains('expanded')) {
+                        toggleContent.style.height = toggleContent.scrollHeight + 'px';
+                    } else {
+                        toggleContent.style.height = '0';
+                    }
                 });
                 
                 // Replace the h2 with the toggle structure
@@ -1290,6 +1277,13 @@
                     this.classList.toggle('active');
                     const content = this.nextElementSibling;
                     content.classList.toggle('expanded');
+                    
+                    // NEW: Fix for smooth toggle animation
+                    if (content.classList.contains('expanded')) {
+                        content.style.height = content.scrollHeight + 'px';
+                    } else {
+                        content.style.height = '0';
+                    }
                 });
             });
         }
