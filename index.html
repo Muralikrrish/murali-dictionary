@@ -486,10 +486,9 @@
             margin-bottom: 12px;
         }
 
-        /* RESTORED: Proper blue color and font styling for word definitions */
         .word-definition {
             font-size: 16px;
-            color: var(--text-secondary); /* Blue color */
+            color: var(--text-secondary);
             line-height: 1.6;
             margin-bottom: 15px;
             white-space: normal;
@@ -498,12 +497,25 @@
             word-spacing: -0.05em;
         }
 
+        /* Force consistent font sizes for all normal text */
+        .word-definition,
+        .word-definition *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+            font-size: 16px !important;
+            line-height: 1.6 !important;
+            color: var(--text-secondary) !important;
+        }
+
+        /* Reset any nested elements to inherit proper styling */
+        .word-definition div,
+        .word-definition span,
+        .word-definition p {
+            font-size: 16px !important;
+            line-height: 1.6 !important;
+            color: var(--text-secondary) !important;
+        }
+
         .word-definition p {
             margin: 0.75em 0;
-            color: var(--text-secondary); /* Blue color */
-            font-size: 16px;
-            line-height: 1.6;
-            font-weight: 500;
         }
 
         .word-definition ul, .word-definition ol {
@@ -513,60 +525,24 @@
 
         .word-definition li {
             margin: 0.25em 0;
-            line-height: 1.45;
-            color: var(--text-secondary); /* Blue color */
-            font-size: 16px;
-            font-weight: 500;
+            line-height: 1.45 !important;
+            color: var(--text-secondary) !important;
+            font-size: 16px !important;
         }
 
         .word-definition h1, .word-definition h2, .word-definition h3, 
         .word-definition h4, .word-definition h5, .word-definition h6,
         .word-definition strong, .word-definition b {
-            color: var(--text-secondary); /* Blue color */
+            color: var(--text-secondary);
             line-height: 1.3;
-            font-weight: 700;
         }
 
-        .word-definition h1 { 
-            font-size: 25px; 
-            margin: 0.15em 0; 
-            color: var(--text-secondary); /* Blue color */
-        }
-        .word-definition h2 { 
-            font-size: 22px; 
-            margin: 1em 0 0.15em 0; 
-            color: var(--text-secondary); /* Blue color */
-        }
-        .word-definition h3 { 
-            font-size: 20px; 
-            margin: 1em 0 0.15em 0; 
-            color: var(--text-secondary); /* Blue color */
-        }
-        .word-definition h4 { 
-            font-size: 18px; 
-            margin: 1em 0 0.15em 0; 
-            color: var(--text-secondary); /* Blue color */
-        }
-        .word-definition h5 { 
-            font-size: 16px; 
-            margin: 1em 0 0.4em 0; 
-            color: var(--text-secondary); /* Blue color */
-        }
-        .word-definition h6 { 
-            font-size: 14px; 
-            margin: 1em 0 0.4em 0; 
-            color: var(--text-secondary); /* Blue color */
-        }
-
-        .word-definition em, .word-definition i {
-            font-style: italic;
-            color: var(--text-secondary); /* Blue color */
-        }
-
-        .word-definition u {
-            text-decoration: underline;
-            color: var(--text-secondary); /* Blue color */
-        }
+        .word-definition h1 { font-size: 25px; margin: 0.15em 0; }
+        .word-definition h2 { font-size: 22px; margin: 1em 0 0.15em 0; }
+        .word-definition h3 { font-size: 20px !important; margin: 1em 0 0.15em 0; }
+        .word-definition h4 { font-size: 18px !important; margin: 1em 0 0.15em 0; }
+        .word-definition h5 { font-size: 16px !important; margin: 1em 0 0.4em 0; }
+        .word-definition h6 { font-size: 14px !important; margin: 1em 0 0.4em 0; }
 
         .word-definition-preview {
             position: relative;
@@ -722,16 +698,16 @@
             padding: 12px 16px;
             background: var(--bg-tertiary);
             border: none;
-            color: var(--text-secondary); /* Changed to match normal text */
-            font-size: 16px; /* Changed to match normal text */
-            font-weight: 500; /* Changed to match normal text weight */
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .toggle-header:hover {
-            background: var(--bg-secondary); /* More subtle hover effect */
-            color: var(--text-primary); /* Slight color change on hover for visibility */
+            background: var(--bg-secondary);
+            color: var(--text-primary);
         }
 
         .toggle-header:focus {
@@ -756,7 +732,6 @@
         }
 
         .toggle-content.expanded {
-            /* Use a very large max-height to accommodate any content */
             max-height: 10000px;
             padding: 16px;
             transition: max-height 0.8s ease-in;
@@ -766,29 +741,6 @@
         .toggle-content h3 {
             margin-top: 0.33em !important;
             margin-bottom: 0.15em !important;
-        }
-
-        /* RESTORED: Blue color for text inside toggle content */
-        .toggle-content,
-        .toggle-content p,
-        .toggle-content li,
-        .toggle-content ul,
-        .toggle-content ol,
-        .toggle-content h1,
-        .toggle-content h2,
-        .toggle-content h3,
-        .toggle-content h4,
-        .toggle-content h5,
-        .toggle-content h6,
-        .toggle-content strong,
-        .toggle-content b,
-        .toggle-content em,
-        .toggle-content i,
-        .toggle-content u {
-            color: var(--text-secondary) !important; /* Blue color */
-            font-size: 16px;
-            line-height: 1.6;
-            font-weight: 500;
         }
 
         @keyframes slideDown {
@@ -885,6 +837,26 @@
             .definition-fade { height: 100px; }
             .explanation-preview { max-height: 250px; }
             .explanation-fade { height: 70px; }
+
+            /* Ensure all normal text is consistent on mobile */
+            .word-definition, 
+            .word-definition *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+                font-size: 16px !important;
+            }
+            
+            .word-definition h1 { font-size: 24px; }
+            .word-definition h2 { font-size: 22px; }
+            .word-definition h3 { font-size: 20px !important; }
+            .word-definition h4 { font-size: 18px !important; }
+            .word-definition h5 { font-size: 17px !important; }
+            .word-definition h6 { font-size: 16px !important; }
+            
+            /* Ensure all normal text is consistent */
+            .word-definition, 
+            .word-definition p, 
+            .word-definition li {
+                font-size: 16px !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -930,22 +902,26 @@
         }
 
         @media (min-width: 769px) {
-            .word-definition, 
-            .word-definition p, 
-            .word-definition li, 
-            .toggle-content, 
-            .toggle-content p, 
-            .toggle-content li { 
-                font-size: 1.3rem; 
+            .word-definition { 
+                font-size: 16px;
                 line-height: 1.6; 
-                color: var(--text-secondary); /* Blue color */
             }
+            
+            /* Only headings get larger on desktop */
             .word-definition h1 { font-size: 2.2rem; margin: 0.2em 0; }
             .word-definition h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
-            .word-definition h3 { font-size: 20px !important; margin: 1em 0 0.15em 0; }
-            .word-definition h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
-            .word-definition h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
-            .word-definition h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
+            .word-definition h3 { font-size: 1.7rem !important; margin: 1.2em 0 0.2em 0; }
+            .word-definition h4 { font-size: 1.5rem !important; margin: 1.2em 0 0.2em 0; }
+            .word-definition h5 { font-size: 1.3rem !important; margin: 1.2em 0 0.4em 0; }
+            .word-definition h6 { font-size: 1.2rem !important; margin: 1.2em 0 0.4em 0; }
+            
+            /* Normal text remains consistent */
+            .word-definition p, 
+            .word-definition li,
+            .word-definition *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+                font-size: 16px !important;
+            }
+            
             .word-title { font-size: 2.4rem; }
         }
     </style>
@@ -1219,13 +1195,13 @@
                 if (toggleContent.children.length === 0) {
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
-
+                
                 // Add click event to toggle header
                 toggleHeader.addEventListener('click', function(e) {
                     // Prevent the click event from bubbling up
                     e.stopPropagation();
                     e.preventDefault();
-    
+                    
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
                 });
@@ -1253,7 +1229,7 @@
                     // Prevent the click event from bubbling up
                     e.stopPropagation();
                     e.preventDefault();
-    
+                    
                     this.classList.toggle('active');
                     const content = this.nextElementSibling;
                     content.classList.toggle('expanded');
