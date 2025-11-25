@@ -1085,16 +1085,13 @@
         }
 
         // NEW: Function to convert H2 elements to toggle elements
+        // NEW: Function to convert H2 elements to toggle elements
         function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
             const h2Elements = doc.querySelectorAll('h2');
-            
+    
             h2Elements.forEach(h2 => {
-                // Format the heading text if it's all caps
-                // Format the heading text if it's all caps
-                // Format the heading text if it's all caps
-                // Format the heading text if it's all caps
                 // Format the heading text if it's all caps
                 let headingText = h2.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
@@ -1103,14 +1100,11 @@
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1);
                     h2.textContent = headingText;
                 }
-    
-                    h2.textContent = headingText;
-                }
-                
-                // Create the toggle wrapper
+        
+            // Create the toggle wrapper
                 const toggleWrapper = document.createElement('div');
                 toggleWrapper.className = 'toggle-wrapper';
-                
+        
                 // Create the toggle header
                 const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
@@ -1118,11 +1112,11 @@
                     <span>${h2.innerHTML}</span>
                     <span class="toggle-icon">▶</span>
                 `;
-                
+        
                 // Create the toggle content
                 const toggleContent = document.createElement('div');
                 toggleContent.className = 'toggle-content';
-                
+        
                 // Move all next siblings until the next h2 into the toggle content
                 let nextSibling = h2.nextElementSibling;
                 while (nextSibling && nextSibling.tagName !== 'H2') {
@@ -1130,28 +1124,28 @@
                     nextSibling = nextSibling.nextElementSibling;
                     toggleContent.appendChild(temp);
                 }
-                
+        
                 // If no content was found, add a placeholder
                 if (toggleContent.children.length === 0) {
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
-                
+        
                 // Add click event to toggle header
                 toggleHeader.addEventListener('click', function(e) {
                     // FIX 1: Prevent the click event from bubbling up to the form
                     e.stopPropagation();
                     e.preventDefault();
-                    
+            
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
                 });
-                
+        
                 // Replace the h2 with the toggle structure
                 toggleWrapper.appendChild(toggleHeader);
                 toggleWrapper.appendChild(toggleContent);
                 h2.parentNode.replaceChild(toggleWrapper, h2);
             });
-            
+    
             return doc.body.innerHTML;
         }
 
