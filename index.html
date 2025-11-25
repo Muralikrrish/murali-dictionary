@@ -1152,6 +1152,24 @@
             return doc.body.innerHTML;
         }
 
+        // NEW: Function to activate toggle functionality in the main page
+        function activateTogglesInPage() {
+            const toggleHeaders = document.querySelectorAll('.toggle-header');
+            
+            toggleHeaders.forEach(header => {
+                // Remove any existing event listeners to prevent duplicates
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+                
+                // Add click event to the new header
+                newHeader.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('expanded');
+                });
+            });
+        }
+
         function toggleExplanationExpansion(button, explanationId) {
             const explanationBox = document.getElementById(explanationId);
             const preview = explanationBox.querySelector('.explanation-preview');
@@ -1568,6 +1586,9 @@
             
             const randomIndex = Math.floor(Math.random() * dictionary.length);
             ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
+            
+            // NEW: Activate toggle functionality after displaying
+            setTimeout(activateTogglesInPage, 0);
         }
 
         function showNewRandomWord() {
@@ -1575,6 +1596,10 @@
                 const ws = document.getElementById('wordSpotlightDisplay');
                 const randomIndex = Math.floor(Math.random() * dictionary.length);
                 ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
+                
+                // NEW: Activate toggle functionality after showing new word
+                setTimeout(activateTogglesInPage, 0);
+                
                 document.querySelector('.modern-section:nth-of-type(4)').scrollIntoView({behavior:'smooth',block:'start'});
             }
         }
@@ -1671,6 +1696,9 @@
                              </div>`;
                 });
                 wordsList.innerHTML = html;
+                
+                // NEW: Activate toggle functionality for search results
+                setTimeout(activateTogglesInPage, 0);
             }
             
             searchResultsSection.classList.add('show');
