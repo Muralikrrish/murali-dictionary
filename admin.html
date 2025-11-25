@@ -459,57 +459,58 @@
             text-decoration: underline;
         }
 
-        /* Toggle Styles for H2 Elements */
-        .toggle-item {
+        /* Toggle styles for H2 elements */
+        .toggle-wrapper {
             margin: 1em 0;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden;
-            background: var(--bg-secondary);
         }
 
         .toggle-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 12px 16px;
             background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .toggle-header:hover {
-            background: rgba(255, 107, 53, 0.1);
+            background: var(--accent-primary);
         }
 
-        .toggle-header h2 {
-            margin: 0 !important;
-            font-size: 18px !important;
-            color: var(--text-primary) !important;
+        .toggle-header:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.3);
         }
 
         .toggle-icon {
-            color: var(--accent-primary);
-            font-weight: bold;
-            font-size: 18px;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s;
+            font-size: 14px;
+        }
+
+        .toggle-header.active .toggle-icon {
+            transform: rotate(90deg);
         }
 
         .toggle-content {
-            padding: 0;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            background: var(--bg-primary);
+            transition: max-height 0.3s ease;
+            background: var(--bg-secondary);
+            padding: 0 16px;
         }
 
-        .toggle-item.active .toggle-content {
+        .toggle-content.expanded {
+            max-height: 1000px;
             padding: 16px;
-            max-height: 2000px;
-        }
-
-        .toggle-item.active .toggle-icon {
-            transform: rotate(45deg);
         }
 
         .btn {
@@ -1021,64 +1022,62 @@
             }
         }
 
-        // NEW: Function to convert all caps to proper case
-        function convertAllCapsToProperCase(text) {
-            // Check if text is all uppercase (ignoring spaces and punctuation)
-            if (text === text.toUpperCase() && /[A-Z]/.test(text)) {
-                return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-            }
-            return text;
-        }
-
-        // NEW: Function to convert H2 elements to toggle format
-        function convertH2ToToggle(html) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            
-            // Find all h2 elements
-            const h2Elements = tempDiv.querySelectorAll('h2');
+        // NEW: Function to convert H2 elements to toggle elements
+        function convertH2ToToggles(htmlString) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const h2Elements = doc.querySelectorAll('h2');
             
             h2Elements.forEach(h2 => {
-                // Convert all caps to proper case
-                h2.textContent = convertAllCapsToProperCase(h2.textContent);
+                // Format the heading text if it's all caps
+                let headingText = h2.textContent;
+                if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
+                    headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1).toLowerCase();
+                    h2.textContent = headingText;
+                }
                 
-                // Create toggle structure
-                const toggleItem = document.createElement('div');
-                toggleItem.className = 'toggle-item';
+                // Create the toggle wrapper
+                const toggleWrapper = document.createElement('div');
+                toggleWrapper.className = 'toggle-wrapper';
                 
-                const toggleHeader = document.createElement('div');
+                // Create the toggle header
+                const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
+                toggleHeader.innerHTML = `
+                    <span>${h2.innerHTML}</span>
+                    <span class="toggle-icon">▶</span>
+                `;
                 
-                const toggleIcon = document.createElement('span');
-                toggleIcon.className = 'toggle-icon';
-                toggleIcon.textContent = '+';
-                
+                // Create the toggle content
                 const toggleContent = document.createElement('div');
                 toggleContent.className = 'toggle-content';
                 
-                // Move all content after h2 until next h2 into toggle content
-                let nextElement = h2.nextElementSibling;
-                while (nextElement && nextElement.tagName !== 'H2') {
-                    toggleContent.appendChild(nextElement);
-                    nextElement = h2.nextElementSibling;
+                // Move all next siblings until the next h2 into the toggle content
+                let nextSibling = h2.nextElementSibling;
+                while (nextSibling && nextSibling.tagName !== 'H2') {
+                    const temp = nextSibling;
+                    nextSibling = nextSibling.nextElementSibling;
+                    toggleContent.appendChild(temp);
                 }
                 
-                // Build toggle structure
-                toggleHeader.appendChild(h2);
-                toggleHeader.appendChild(toggleIcon);
-                toggleItem.appendChild(toggleHeader);
-                toggleItem.appendChild(toggleContent);
+                // If no content was found, add a placeholder
+                if (toggleContent.children.length === 0) {
+                    toggleContent.innerHTML = '<p>No content available.</p>';
+                }
                 
-                // Replace h2 with toggle
-                h2.parentNode.replaceChild(toggleItem, h2);
-                
-                // Add click event to toggle
+                // Add click event to toggle header
                 toggleHeader.addEventListener('click', function() {
-                    toggleItem.classList.toggle('active');
+                    this.classList.toggle('active');
+                    toggleContent.classList.toggle('expanded');
                 });
+                
+                // Replace the h2 with the toggle structure
+                toggleWrapper.appendChild(toggleHeader);
+                toggleWrapper.appendChild(toggleContent);
+                h2.parentNode.replaceChild(toggleWrapper, h2);
             });
             
-            return tempDiv.innerHTML;
+            return doc.body.innerHTML;
         }
 
         // NEW: Enhanced function to convert markdown-style content to HTML when pasting
@@ -1138,10 +1137,7 @@
                     closeParagraph();
                     closeList();
                     // H2: Remove the '## ' and wrap in h2 tags
-                    let headingText = trimmedLine.substring(3);
-                    // Convert all caps to proper case
-                    headingText = convertAllCapsToProperCase(headingText);
-                    html += `<h2>${headingText}</h2>`;
+                    html += `<h2>${trimmedLine.substring(3)}</h2>`;
                 } else if (trimmedLine.startsWith('### ')) {
                     closeParagraph();
                     closeList();
@@ -1375,30 +1371,35 @@
             }
         }
 
-        // FIXED: Handle paste events properly - don't prevent default for regular text
+        // Handle paste events to preserve formatting and line breaks
         document.addEventListener('DOMContentLoaded', function() {
             const editor = document.getElementById('definitionInput');
             if (editor) {
                 editor.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    
                     // Get pasted text with formatting preserved
                     const html = (e.clipboardData || window.clipboardData).getData('text/html');
                     const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                     
-                    // Check if the content contains markdown-style elements that need processing
-                    if (text && (text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* '))) {
-                        // Process markdown content - prevent default and handle manually
-                        e.preventDefault();
-                        let processedHtml = processMarkdownContent(text);
-                        // Convert H2 elements to toggle format
-                        processedHtml = convertH2ToToggle(processedHtml);
-                        document.execCommand('insertHTML', false, processedHtml);
-                    } else if (html && html.includes('<h2')) {
-                        // If HTML contains H2 elements that need toggle conversion
-                        e.preventDefault();
-                        const processedHtml = convertH2ToToggle(html);
-                        document.execCommand('insertHTML', false, processedHtml);
+                    let processedHtml = '';
+                    
+                    // Check if the content contains markdown-style elements
+                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* '))) {
+                        // Process markdown content
+                        processedHtml = processMarkdownContent(text);
+                    } else if (html) {
+                        processedHtml = html;
+                    } else {
+                        // Fallback to plain text with line breaks preserved
+                        processedHtml = text.replace(/\n/g, '<br>');
                     }
-                    // For regular text/HTML without markdown or H2 elements, allow default paste behavior
+                    
+                    // Convert H2 elements to toggles
+                    processedHtml = convertH2ToToggles(processedHtml);
+                    
+                    // Insert the processed HTML
+                    document.execCommand('insertHTML', false, processedHtml);
                 });
                 
                 // Update format dropdown when selection changes
