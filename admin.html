@@ -1080,6 +1080,25 @@
             return doc.body.innerHTML;
         }
 
+        // NEW: Function to activate toggle functionality in the editor
+        function activateTogglesInEditor() {
+            const editor = document.getElementById('definitionInput');
+            const toggleHeaders = editor.querySelectorAll('.toggle-header');
+            
+            toggleHeaders.forEach(header => {
+                // Remove any existing event listeners to prevent duplicates
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+                
+                // Add click event to the new header
+                newHeader.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('expanded');
+                });
+            });
+        }
+
         // NEW: Enhanced function to convert markdown-style content to HTML when pasting
         function processMarkdownContent(text) {
             // Split the text into lines
@@ -1400,6 +1419,9 @@
                     
                     // Insert the processed HTML
                     document.execCommand('insertHTML', false, processedHtml);
+                    
+                    // Activate toggle functionality after pasting
+                    setTimeout(activateTogglesInEditor, 0);
                 });
                 
                 // Update format dropdown when selection changes
@@ -1479,6 +1501,9 @@
             document.getElementById('definitionInput').innerHTML = word.definition;
             document.getElementById('editSearchInput').value = '';
             document.getElementById('editSearchResults').innerHTML = '';
+            
+            // Activate toggle functionality for existing toggles
+            setTimeout(activateTogglesInEditor, 0);
             
             // Scroll to the top
             window.scrollTo({ top: 0, behavior: 'smooth' });
