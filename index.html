@@ -1198,10 +1198,28 @@
             
             h2Elements.forEach(h2 => {
                 // Format the heading text if it's all caps
+                // Format the heading text if it's all caps or title case
                 let headingText = h2.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
+                    // Convert from ALL CAPS to sentence case (only first letter of first word capitalized)
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1).toLowerCase();
                     h2.textContent = headingText;
+                } else {
+                    // For title case (each word capitalized), convert to sentence case
+                    // Check if it's in title case (each word starts with capital)
+                    const words = headingText.split(' ');
+                    const isTitleCase = words.length > 0 && words.every(word => 
+                        word.length > 0 && word[0] === word[0].toUpperCase()
+                    );
+    
+                    if (isTitleCase && words.length > 1) {
+                        // Convert to sentence case - only first word's first letter capitalized
+                        headingText = words[0].charAt(0).toUpperCase() + 
+                                     words[0].slice(1).toLowerCase() + 
+                                     ' ' + 
+                                     words.slice(1).join(' ').toLowerCase();
+                        h2.textContent = headingText;
+                    }
                 }
                 
                 // Create the toggle wrapper
