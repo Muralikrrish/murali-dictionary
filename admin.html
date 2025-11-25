@@ -968,43 +968,75 @@
             }
         }
 
-        // NEW: Function to convert markdown-style headings to HTML when pasting
-        function processMarkdownHeadings(text) {
+        // NEW: Enhanced function to convert markdown-style content to HTML when pasting
+        function processMarkdownContent(text) {
             // Split the text into lines
             const lines = text.split('\n');
             let html = '';
+            let inParagraph = false;
+            let paragraphContent = '';
+            
+            // Function to close a paragraph if one is open
+            const closeParagraph = () => {
+                if (inParagraph && paragraphContent.trim() !== '') {
+                    // Process bold formatting in paragraph content
+                    paragraphContent = paragraphContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    paragraphContent = paragraphContent.replace(/__(.*?)__/g, '<strong>$1</strong>');
+                    html += `<p>${paragraphContent}</p>`;
+                }
+                inParagraph = false;
+                paragraphContent = '';
+            };
             
             for (let line of lines) {
                 // Trim the line to remove extra whitespace
                 const trimmedLine = line.trim();
                 
+                // Skip empty lines
+                if (trimmedLine === '') {
+                    closeParagraph();
+                    continue;
+                }
+                
                 // Check for markdown-style headings
                 if (trimmedLine.startsWith('# ')) {
+                    closeParagraph();
                     // H1: Remove the '# ' and wrap in h1 tags
                     html += `<h1>${trimmedLine.substring(2)}</h1>`;
                 } else if (trimmedLine.startsWith('## ')) {
+                    closeParagraph();
                     // H2: Remove the '## ' and wrap in h2 tags
                     html += `<h2>${trimmedLine.substring(3)}</h2>`;
                 } else if (trimmedLine.startsWith('### ')) {
+                    closeParagraph();
                     // H3: Remove the '### ' and wrap in h3 tags
                     html += `<h3>${trimmedLine.substring(4)}</h3>`;
                 } else if (trimmedLine.startsWith('#### ')) {
+                    closeParagraph();
                     // H4: Remove the '#### ' and wrap in h4 tags
                     html += `<h4>${trimmedLine.substring(5)}</h4>`;
                 } else if (trimmedLine.startsWith('##### ')) {
+                    closeParagraph();
                     // H5: Remove the '##### ' and wrap in h5 tags
                     html += `<h5>${trimmedLine.substring(6)}</h5>`;
                 } else if (trimmedLine.startsWith('###### ')) {
+                    closeParagraph();
                     // H6: Remove the '###### ' and wrap in h6 tags
                     html += `<h6>${trimmedLine.substring(7)}</h6>`;
-                } else if (trimmedLine === '') {
-                    // Empty line - add a paragraph break
-                    html += '<p><br></p>';
                 } else {
-                    // Regular text - wrap in paragraph tags
-                    html += `<p>${trimmedLine}</p>`;
+                    // Regular text - add to current paragraph
+                    if (!inParagraph) {
+                        inParagraph = true;
+                        paragraphContent = trimmedLine;
+                    } else {
+                        // Add a space between lines in the same paragraph
+                        paragraphContent += ' ' + trimmedLine;
+                    }
                 }
             }
+            
+            // Close any remaining open paragraph
+            closeParagraph();
             
             return html;
         }
@@ -1206,10 +1238,10 @@
                     const html = (e.clipboardData || window.clipboardData).getData('text/html');
                     const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                     
-                    // Check if the content contains markdown-style headings
-                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### '))) {
-                        // Process markdown headings
-                        const processedHtml = processMarkdownHeadings(text);
+                    // Check if the content contains markdown-style elements
+                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**'))) {
+                        // Process markdown content
+                        const processedHtml = processMarkdownContent(text);
                         document.execCommand('insertHTML', false, processedHtml);
                     } else if (html) {
                         // Insert HTML content directly to preserve formatting and line breaks
