@@ -444,6 +444,7 @@
             margin: 0.25em 0;
             line-height: 1.45;
             color: var(--text-secondary);
+            font-size: 16px; /* Ensure consistent font size */
         }
 
         .editor-content strong, .editor-content b {
@@ -459,7 +460,7 @@
             text-decoration: underline;
         }
 
-        /* Toggle styles for H2 elements */
+        /* FIXED: Toggle styles for H2 elements - now adapts to content length */
         .toggle-wrapper {
             margin: 1em 0;
             border: 1px solid var(--border-color);
@@ -503,14 +504,21 @@
         .toggle-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: max-height 0.5s ease-out;
             background: var(--bg-secondary);
-            padding: 0 16px;
         }
 
         .toggle-content.expanded {
-            max-height: 1000px;
+            /* Use a very large max-height to accommodate any content */
+            max-height: 10000px;
             padding: 16px;
+            transition: max-height 0.8s ease-in;
+        }
+
+        .toggle-content > * {
+            font-size: 16px; /* Ensure consistent font size in toggle content */
+            line-height: 1.6;
+            color: var(--text-secondary);
         }
 
         .btn {
@@ -718,12 +726,20 @@
                 font-size: 1.1rem;
             }
 
-            .editor-content h1 { font-size: 25px; }
+            /* FIXED: Improved mobile font sizes for headings */
+            .editor-content h1 { font-size: 24px; }
             .editor-content h2 { font-size: 22px; }
-            .editor-content h3 { font-size: 20px; }
+            .editor-content h3 { font-size: 20px; } /* Fixed: Proper heading size on mobile */
             .editor-content h4 { font-size: 18px; }
-            .editor-content h5 { font-size: 16px; }
-            .editor-content h6 { font-size: 14px; }
+            .editor-content h5 { font-size: 17px; } /* Slightly larger than normal text */
+            .editor-content h6 { font-size: 16px; } /* Same as normal text but bold */
+            
+            /* Ensure all normal text is consistent */
+            .editor-content, 
+            .editor-content p, 
+            .editor-content li {
+                font-size: 16px; /* Consistent normal font size */
+            }
         }
 
         @media (max-width: 480px) {
@@ -746,6 +762,11 @@
             .modern-section {
                 margin-bottom: 40px;
             }
+
+            /* Further adjustments for very small screens */
+            .editor-content h1 { font-size: 23px; }
+            .editor-content h2 { font-size: 21px; }
+            .editor-content h3 { font-size: 19px; }
         }
 
         .main-content {
@@ -770,6 +791,12 @@
             .editor-content h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
             .editor-content h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
             .editor-content h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
+            
+            /* Ensure desktop consistency */
+            .editor-content p, 
+            .editor-content li {
+                font-size: 1.3rem; /* Match the base editor content size */
+            }
         }
     </style>
 </head>
