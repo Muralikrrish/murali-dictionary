@@ -351,7 +351,7 @@
             word-spacing: -0.05em;
         }
 
-        /* Force consistent font sizes for all content */
+        /* Force consistent font sizes for all content except headings */
         .editor-content,
         .editor-content *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
             font-size: 16px !important;
@@ -1119,8 +1119,9 @@
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
                 
-                // Add click event to toggle header
-                toggleHeader.addEventListener('click', function() {
+                // Add click event to toggle header - FIXED: Prevent event propagation
+                toggleHeader.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent the click from bubbling up to the form
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
                 });
@@ -1144,8 +1145,9 @@
                 const newHeader = header.cloneNode(true);
                 header.parentNode.replaceChild(newHeader, header);
                 
-                // Add click event to the new header
-                newHeader.addEventListener('click', function() {
+                // Add click event to the new header - FIXED: Prevent event propagation
+                newHeader.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent the click from bubbling up to the form
                     this.classList.toggle('active');
                     const content = this.nextElementSibling;
                     content.classList.toggle('expanded');
@@ -1195,7 +1197,7 @@
                 // Trim the line to remove extra whitespace
                 const trimmedLine = line.trim();
                 
-                // Skip empty lines and lines that are only "---"
+                // Skip empty lines and lines that are only "---" (divider lines)
                 if (trimmedLine === '' || /^---+$/.test(trimmedLine)) {
                     continue;
                 }
@@ -1268,6 +1270,11 @@
             allElements.forEach(el => {
                 el.removeAttribute('style');
                 el.removeAttribute('class');
+                
+                // Remove divider lines (hr elements)
+                if (el.tagName === 'HR') {
+                    el.remove();
+                }
                 
                 // Force consistent font size for all text elements except headings
                 if (!['H1','H2','H3','H4','H5','H6'].includes(el.tagName)) {
