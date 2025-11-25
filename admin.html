@@ -495,15 +495,16 @@
             padding: 12px 16px;
             background: var(--bg-tertiary);
             border: none;
-            color: var(--text-primary);
-            font-size: 18px;
-            font-weight: 600;
+            color: var(--text-secondary); /* Changed to match normal text */
+            font-size: 16px; /* Changed to match normal text */
+            font-weight: 500; /* Changed to match normal text weight */
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .toggle-header:hover {
-            background: var(--accent-primary);
+            background: var(--bg-secondary); /* More subtle hover effect */
+            color: var(--text-primary); /* Slight color change on hover for visibility */
         }
 
         .toggle-header:focus {
@@ -514,6 +515,7 @@
         .toggle-icon {
             transition: transform 0.3s;
             font-size: 14px;
+            color: var(--text-secondary); /* Make icon match text color */
         }
 
         .toggle-header.active .toggle-icon {
