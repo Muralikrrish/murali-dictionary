@@ -22,15 +22,6 @@
             --error-color: #f44336;
             --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
             --section-spacing: 60px;
-            
-            /* Highlighter Colors */
-            --highlighter-yellow: rgba(255, 255, 0, 0.4);
-            --highlighter-pink: rgba(255, 105, 180, 0.4);
-            --highlighter-blue: rgba(135, 206, 250, 0.4);
-            --highlighter-green: rgba(144, 238, 144, 0.4);
-            --highlighter-orange: rgba(255, 165, 0, 0.4);
-            --highlighter-purple: rgba(216, 191, 216, 0.4);
-            --highlighter-radium: rgba(102, 255, 102, 0.5);
         }
 
         * {
@@ -622,7 +613,7 @@
             padding: 10px 20px;
             border-radius: 6px;
             font-size: 14px;
-            font-weight: 600;
+            fontWeight: 600;
             cursor: pointer;
             transition: all 0.3s;
             flex: 1;
@@ -644,716 +635,18 @@
             color: white;
         }
 
-        /* NEW: Read & Annotate Section Styles */
-        .search-container {
-            max-width: 700px;
-            margin: 0 auto 30px;
-            position: relative;
-            z-index: 100;
-        }
-
-        .search-box {
-            position: relative;
-            background: var(--bg-secondary);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 8px;
-        }
-
-        .search-box:focus-within {
-            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.25);
-            border-color: var(--accent-primary);
-            transform: translateY(-5px);
-            background: var(--bg-tertiary);
-        }
-
-        .search-input-wrapper {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-            padding: 4px;
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 20px 20px 20px 24px;
-            font-size: 1.1rem;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .search-box input::placeholder {
-            color: var(--text-muted);
-            font-weight: 400;
-        }
-
-        .search-icon {
-            padding: 16px 20px;
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-box:focus-within .search-icon {
-            color: var(--accent-primary);
-        }
-
-        .search-icon i {
-            font-size: 1.2rem;
-        }
-
-        .autocomplete-dropdown {
-            position: absolute;
-            top: calc(100% + 12px);
-            left: 0;
-            right: 0;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            max-height: 350px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1100; /* Increased z-index to appear above toolbar */
-            backdrop-filter: blur(20px);
-            animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 12px;
-        }
-
-        .autocomplete-dropdown.show {
-            display: block;
-        }
-
-        .autocomplete-item {
-            padding: 16px 20px;
-            cursor: pointer;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            margin-bottom: 4px;
-            border: 1px solid transparent;
-            display: flex;
-            align-items: center;
-        }
-
-        .autocomplete-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .autocomplete-item:hover {
-            background: var(--bg-tertiary);
-            transform: translateY(-2px);
-            border-color: var(--accent-primary);
-            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.15);
-        }
-
-        .autocomplete-item::before {
-            content: '📖';
-            margin-right: 12px;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        .autocomplete-word {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 1rem;
-            letter-spacing: -0.01em;
-        }
-
-        .autocomplete-hint {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-left: auto;
-            padding: 4px 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        /* Highlighter Toolbar - Sticky with keyboard support */
-        .sticky-toolbar-container {
-            position: sticky;
-            top: 10px;
-            z-index: 100; /* Lower than search dropdown */
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-
-        /* Mobile keyboard open state */
-        @media (max-width: 768px) {
-            body.keyboard-open .sticky-toolbar-container {
-                position: fixed;
-                top: auto;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                z-index: 100;
-                margin: 0;
-                border-radius: 0;
-                padding: 10px;
-                background: var(--bg-tertiary);
-                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.8);
-            }
-            
-            body.keyboard-open .sticky-toolbar-container .highlighter-toolbar {
-                border-radius: 0;
-                margin: 0;
-                padding: 10px;
-            }
-            
-            /* Add padding to main content when keyboard is open to prevent content from being hidden */
-            body.keyboard-open .main-content {
-                padding-bottom: 80px;
-            }
-        }
-
-        .highlighter-toolbar {
-            display: flex;
-            gap: 8px;
-            padding: 15px;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        .toolbar-section {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .toolbar-divider {
-            width: 1px;
-            height: 30px;
-            background: var(--border-color);
-            margin: 0 10px;
-        }
-
-        .toolbar-label {
-            color: var(--text-muted);
-            font-size: 12px;
-            font-weight: 600;
-            margin-right: 5px;
-        }
-
-        .highlighter-btn {
-            width: 40px;
-            height: 40px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            position: relative;
-            overflow: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .highlighter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .highlighter-btn.active {
-            transform: scale(1.1);
-            box-shadow: 0 0 0 2px var(--accent-primary), 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .highlighter-btn.yellow { background: var(--highlighter-yellow); }
-        .highlighter-btn.pink { background: var(--highlighter-pink); }
-        .highlighter-btn.blue { background: var(--highlighter-blue); }
-        .highlighter-btn.green { background: var(--highlighter-green); }
-        .highlighter-btn.orange { background: var(--highlighter-orange); }
-        .highlighter-btn.purple { background: var(--highlighter-purple); }
-
-        .highlighter-btn.radium {
-            background: var(--highlighter-radium);
-            box-shadow: 0 0 10px rgba(102, 255, 102, 0.5);
-        }
-
-        .highlighter-btn.radium:hover {
-            box-shadow: 0 0 15px rgba(102, 255, 102, 0.7);
-        }
-
-        .highlighter-btn.underline {
-            background: transparent;
-            border: 2px solid var(--text-secondary);
-            color: var(--text-secondary);
-        }
-
-        .highlighter-btn.bold {
-            background: transparent;
-            border: 2px solid var(--text-secondary);
-            color: var(--text-secondary);
-            font-weight: bold;
-        }
-
-        .highlighter-btn.remove {
-            background: var(--error-color);
-            color: white;
-        }
-
-        .highlighter-btn.undo, .highlighter-btn.redo {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 2px solid var(--border-color);
-        }
-
-        .highlighter-btn.undo:hover, .highlighter-btn.redo:hover {
-            background: var(--accent-primary);
-            color: white;
-            border-color: var(--accent-primary);
-        }
-
-        .highlighter-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .highlighter-btn:disabled:hover {
-            transform: none;
-            box-shadow: none;
-        }
-
-        .highlighter-btn::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
-            top: 0;
-            left: -100%;
-            transition: left 0.5s ease;
-        }
-
-        .highlighter-btn:hover::after {
-            left: 100%;
-        }
-
-        /* Annotation Styles - EXACTLY matching index.html Word Spotlight */
-        .annotated-content {
-            line-height: 1.6;
-            min-height: 400px;
-            padding: 25px;
-            background: var(--bg-primary);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-size: 16px;
-            font-weight: 500;
-            word-spacing: -0.05em;
-            white-space: normal;
-            word-wrap: break-word;
-        }
-
-        /* EXACT font sizes from index.html word-definition */
-        .annotated-content h1 {
-            font-size: 25px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 0.15em 0;
-            line-height: 1.3;
-        }
-
-        .annotated-content h2 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-        }
-
-        .annotated-content h3 {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-        }
-
-        .annotated-content h4 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-        }
-
-        .annotated-content h5 {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.4em 0;
-            line-height: 1.3;
-        }
-
-        .annotated-content h6 {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.4em 0;
-            line-height: 1.3;
-        }
-
-        .annotated-content p {
-            font-size: 16px;
-            margin: 0.75em 0;
-            line-height: 1.6;
-            color: var(--text-secondary);
-        }
-
-        .annotated-content ul, .annotated-content ol {
-            margin: 0.5em 0;
-            padding-left: 1.2em;
-        }
-
-        .annotated-content li {
-            margin: 0.25em 0;
-            line-height: 1.45;
-            color: var(--text-secondary);
-        }
-
-        .annotated-content strong, .annotated-content b {
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
-        .highlight-yellow {
-            background-color: var(--highlighter-yellow);
-            padding: 0 2px;
-            border-radius: 2px;
-        }
-
-        .highlight-pink {
-            background-color: var(--highlighter-pink);
-            padding: 0 2px;
-            border-radius: 2px;
-        }
-
-        .highlight-blue {
-            background-color: var(--highlighter-blue);
-            padding: 0 2px;
-            border-radius: 2px;
-        }
-
-        .highlight-green {
-            background-color: var(--highlighter-green);
-            padding: 0 2px;
-            border-radius: 2px;
-        }
-
-        .highlight-orange {
-            background-color: var(--highlighter-orange);
-            padding: 0 2px;
-            border-radius: 2px;
-        }
-
-        .highlight-purple {
-            background-color: var(--highlighter-purple);
-            padding: 0 2px;
-            border-radius: 2px;
-        }
-
-        .highlight-radium {
-            background-color: var(--highlighter-radium);
-            padding: 0 2px;
-            border-radius: 2px;
-            box-shadow: 0 0 5px rgba(102, 255, 102, 0.3);
-        }
-
-        .annotation-underline {
-            text-decoration: underline;
-            text-decoration-color: var(--accent-primary);
-            text-decoration-thickness: 2px;
-            text-underline-offset: 3px;
-        }
-
-        .annotation-controls {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            justify-content: center;
-        }
-
-        .annotation-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .annotation-save {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-        }
-
-        .annotation-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
-        }
-
-        .annotation-clear {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .annotation-clear:hover {
-            background: var(--bg-tertiary);
-            transform: translateY(-2px);
-        }
-
-        .annotation-message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: center;
-            font-weight: 600;
-            display: none;
-        }
-
-        .annotation-success {
-            background: rgba(76, 175, 80, 0.1);
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
-        }
-
-        .annotation-error {
-            background: rgba(244, 67, 54, 0.1);
-            color: var(--error-color);
-            border: 1px solid var(--error-color);
-        }
-
-        /* Word Spotlight Styles - EXACTLY matching index.html */
-        .word-entry {
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .word-entry:first-child {
-            padding-top: 0;
-        }
-
-        .word-entry:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .word-title {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .word-definition {
-            font-size: 16px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 15px;
-            white-space: normal;
-            word-wrap: break-word;
-            font-weight: 500;
-            word-spacing: -0.05em;
-        }
-
-        .word-definition p {
-            margin: 0.75em 0;
-        }
-
-        .word-definition ul, .word-definition ol {
-            margin: 0.5em 0;
-            padding-left: 1.2em;
-        }
-
-        .word-definition li {
-            margin: 0.25em 0;
-            line-height: 1.45;
-        }
-
-        .word-definition h1, .word-definition h2, .word-definition h3, 
-        .word-definition h4, .word-definition h5, .word-definition h6,
-        .word-definition strong, .word-definition b {
-            color: var(--text-secondary);
-            line-height: 1.3;
-        }
-
-        .word-definition h1 { font-size: 25px; margin: 0.15em 0; }
-        .word-definition h2 { font-size: 22px; margin: 1em 0 0.15em 0; }
-        .word-definition h3 { font-size: 20px; margin: 1em 0 0.15em 0; }
-        .word-definition h4 { font-size: 18px; margin: 1em 0 0.15em 0; }
-        .word-definition h5 { font-size: 16px; margin: 1em 0 0.4em 0; }
-        .word-definition h6 { font-size: 14px; margin: 1em 0 0.4em 0; }
-
-        .word-definition-preview {
-            position: relative;
-            max-height: 500px;
-            overflow: hidden;
-            transition: max-height 0.4s ease-in-out;
-        }
-
-        .word-definition-preview.expanded {
-            max-height: none;
-        }
-
-        .definition-fade {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(transparent, var(--bg-secondary));
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .word-definition-preview.expanded .definition-fade {
-            opacity: 0;
-        }
-
-        .read-more-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        .read-more-btn {
-            background: linear-gradient(135deg, #d15a3f, #e07554);
-            color: white;
-            border: 2px solid transparent;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(209, 90, 63, 0.3);
-            text-align: center;
-            justify-content: center;
-            width: auto;
-            min-width: 140px;
-        }
-
-        .read-more-btn:hover {
-            background: linear-gradient(135deg, #b84a30, #d15a3f);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(209, 90, 63, 0.5);
-        }
-
-        .btn-show-word {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--accent-primary);
-            border-radius: 50px;
-            padding: 12px 24px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-            width: auto;
-            display: block;
-            margin: 20px auto 0 auto;
-        }
-
-        .btn-show-word:hover {
-            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .skeleton-loading {
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            padding: 30px;
-            border: 1px solid var(--border-color);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .skeleton-line {
-            height: 16px;
-            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
-            background-size: 200% 100%;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            animation: shimmer 1.5s infinite;
-        }
-
-        .skeleton-line.short { width: 60%; }
-        .skeleton-line.medium { width: 80%; }
-        .skeleton-line.long { width: 95%; }
-        .skeleton-line.extra-long { width: 100%; height: 24px; margin-bottom: 16px; }
-
-        .skeleton-title {
-            height: 28px;
-            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
-            background-size: 200% 100%;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            width: 40%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        .skeleton-word {
-            height: 32px;
-            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
-            background-size: 200% 100%;
-            border-radius: 6px;
-            margin-bottom: 24px;
-            width: 50%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Enhanced Mobile Responsiveness */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 768px) {
             .login-container {
                 padding: 30px 20px;
@@ -1371,66 +664,12 @@
                 font-size: 1.1rem;
             }
 
-            /* Mobile search adjustments - EXACTLY matching index.html */
-            .search-container {
-                margin: 0 auto 20px;
-            }
-
-            .search-box input { 
-                padding: 16px 16px 16px 20px; 
-                font-size: 1rem; 
-            }
-
-            .search-icon { 
-                padding: 14px 16px; 
-            }
-
-            /* Mobile highlighter toolbar */
-            .sticky-toolbar-container {
-                top: 5px;
-            }
-
-            .highlighter-toolbar {
-                gap: 6px;
-                padding: 12px;
-                flex-direction: column;
-            }
-
-            .toolbar-section {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .toolbar-divider {
-                display: none;
-            }
-
-            .highlighter-btn {
-                width: 35px;
-                height: 35px;
-                font-size: 14px;
-            }
-
-            .toolbar-label {
-                display: none;
-            }
-
-            /* Mobile annotated content */
-            .annotated-content {
-                padding: 20px;
-                min-height: 300px;
-            }
-
-            /* Mobile annotation controls */
-            .annotation-controls {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .annotation-btn {
-                width: 100%;
-                justify-content: center;
-            }
+            .editor-content h1 { font-size: 25px; }
+            .editor-content h2 { font-size: 22px; }
+            .editor-content h3 { font-size: 20px; }
+            .editor-content h4 { font-size: 18px; }
+            .editor-content h5 { font-size: 16px; }
+            .editor-content h6 { font-size: 14px; }
         }
 
         @media (max-width: 480px) {
@@ -1453,83 +692,30 @@
             .modern-section {
                 margin-bottom: 40px;
             }
-
-            /* Mobile search adjustments - EXACTLY matching index.html */
-            .search-box input { 
-                padding: 14px 14px 14px 18px; 
-                font-size: 0.95rem; 
-            }
-
-            .search-icon { 
-                padding: 12px 14px; 
-            }
-
-            /* Mobile highlighter toolbar */
-            .sticky-toolbar-container {
-                top: 5px;
-            }
-
-            .highlighter-toolbar {
-                gap: 4px;
-                padding: 10px;
-            }
-
-            .toolbar-section {
-                gap: 4px;
-            }
-
-            .highlighter-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 12px;
-            }
-
-            /* Mobile annotated content - EXACTLY matching index.html */
-            .annotated-content {
-                padding: 15px;
-                font-size: 15px;
-            }
-
-            .word-title { 
-                font-size: 22px; 
-            }
-
-            .btn-show-word, .read-more-btn { 
-                padding: 10px 18px; 
-                font-size: 15px; 
-                width: auto; 
-                max-width: 280px; 
-                margin-left: auto; 
-                margin-right: auto; 
-            }
-
-            /* Mobile card adjustments - EXACTLY matching index.html */
-            .modern-section:nth-of-type(1) .interactive-card {
-                margin-left: -5px;
-                margin-right: -5px;
-                width: calc(100% + 10px);
-                border-radius: 5px;
-                padding-left: 5%;
-                padding-right: 5%;
-            }
         }
 
         .main-content {
             padding: 40px 0 60px;
         }
 
-        /* Desktop font size adjustments - EXACTLY matching index.html */
-        @media (min-width: 769px) {
-            .word-definition, .annotated-content { 
+        @media (min-width: 768px) {
+            .main-content {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 32px;
+                align-items: start;
+            }
+
+            .editor-content { 
                 font-size: 1.3rem; 
                 line-height: 1.6; 
             }
-            .word-definition h1, .annotated-content h1 { font-size: 2.2rem; margin: 0.2em 0; }
-            .word-definition h2, .annotated-content h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
-            .word-definition h3, .annotated-content h3 { font-size: 1.7rem; margin: 1.2em 0 0.2em 0; }
-            .word-definition h4, .annotated-content h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
-            .word-definition h5, .annotated-content h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
-            .word-definition h6, .annotated-content h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
+            .editor-content h1 { font-size: 2.2rem; margin: 0.2em 0; }
+            .editor-content h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
+            .editor-content h3 { font-size: 1.7rem; margin: 1.2em 0 0.2em 0; }
+            .editor-content h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
+            .editor-content h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
+            .editor-content h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
         }
     </style>
 </head>
@@ -1570,88 +756,7 @@
     <div class="admin-content" id="adminContent">
         <div class="container">
             <div class="main-content" id="mainContent">
-                <!-- NEW: Read & Annotate Section -->
-                <section class="modern-section">
-                    <h2 class="modern-section-title">Read & Annotate</h2>
-                    <div class="interactive-card">
-                        <div class="search-container">
-                            <div class="search-box">
-                                <div class="search-input-wrapper">
-                                    <input type="text" id="adminSearchInput" placeholder="Search vocabulary..." autocomplete="off">
-                                    <span class="search-icon"><i class="fas fa-search"></i></span>
-                                </div>
-                            </div>
-                            <div class="autocomplete-dropdown" id="adminAutocompleteDropdown"></div>
-                        </div>
-
-                        <div class="sticky-toolbar-container">
-                            <div class="highlighter-toolbar">
-                                <div class="toolbar-section">
-                                    <span class="toolbar-label">Highlight:</span>
-                                    <button class="highlighter-btn yellow" title="Yellow Highlighter" onclick="toggleHighlighter('yellow')">Y</button>
-                                    <button class="highlighter-btn pink" title="Pink Highlighter" onclick="toggleHighlighter('pink')">P</button>
-                                    <button class="highlighter-btn blue" title="Blue Highlighter" onclick="toggleHighlighter('blue')">B</button>
-                                    <button class="highlighter-btn green" title="Green Highlighter" onclick="toggleHighlighter('green')">G</button>
-                                    <button class="highlighter-btn orange" title="Orange Highlighter" onclick="toggleHighlighter('orange')">O</button>
-                                    <button class="highlighter-btn purple" title="Purple Highlighter" onclick="toggleHighlighter('purple')">P</button>
-                                    <button class="highlighter-btn radium" title="Radium Highlighter" onclick="toggleHighlighter('radium')">R</button>
-                                </div>
-                                
-                                <div class="toolbar-divider"></div>
-                                
-                                <div class="toolbar-section">
-                                    <span class="toolbar-label">Format:</span>
-                                    <button class="highlighter-btn underline" title="Underline" onclick="toggleUnderline()">
-                                        <i class="fas fa-underline"></i>
-                                    </button>
-                                    <button class="highlighter-btn bold" title="Bold" onclick="toggleBold()">
-                                        <i class="fas fa-bold"></i>
-                                    </button>
-                                    <button class="highlighter-btn remove" title="Remove Formatting" onclick="removeFormatting()">
-                                        <i class="fas fa-eraser"></i>
-                                    </button>
-                                </div>
-
-                                <div class="toolbar-divider"></div>
-
-                                <div class="toolbar-section">
-                                    <span class="toolbar-label">History:</span>
-                                    <button class="highlighter-btn undo" title="Undo" onclick="undoAnnotation()" id="undoBtn" disabled>
-                                        <i class="fas fa-undo"></i>
-                                    </button>
-                                    <button class="highlighter-btn redo" title="Redo" onclick="redoAnnotation()" id="redoBtn" disabled>
-                                        <i class="fas fa-redo"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="adminWordSpotlightDisplay">
-                            <div class="skeleton-loading">
-                                <div class="skeleton-word"></div>
-                                <div class="skeleton-line extra-long"></div>
-                                <div class="skeleton-line long"></div>
-                                <div class="skeleton-line medium"></div>
-                                <div class="skeleton-line short"></div>
-                                <div class="skeleton-line long"></div>
-                                <div class="skeleton-line short"></div>
-                            </div>
-                        </div>
-
-                        <div class="annotation-controls">
-                            <button class="annotation-btn annotation-save" onclick="saveAnnotations()">
-                                <i class="fas fa-save"></i> Save Annotations
-                            </button>
-                            <button class="annotation-btn annotation-clear" onclick="clearAnnotations()">
-                                <i class="fas fa-broom"></i> Clear All
-                            </button>
-                        </div>
-
-                        <div id="annotationMessage" class="annotation-message"></div>
-                    </div>
-                </section>
-
-                <section class="modern-section">
+                <div class="modern-section">
                     <h2 class="modern-section-title">Add New Word <span class="word-count" id="dictionaryCount">(0)</span></h2>
                     <div class="interactive-card">
                         <form id="addWordForm">
@@ -1682,9 +787,9 @@
                             <button type="submit" class="btn">Add to Dictionary</button>
                         </form>
                     </div>
-                </section>
+                </div>
 
-                <section class="modern-section">
+                <div class="modern-section">
                     <h2 class="modern-section-title">Quick Add <span id="quickAddCount">(0)</span></h2>
                     <div class="interactive-card">
                         <div class="form-group">
@@ -1699,9 +804,9 @@
                         <div id="quickAddSearchResults"></div>
                         <div id="quickAddList"><div class="quick-add-empty">No words yet</div></div>
                     </div>
-                </section>
+                </div>
 
-                <section class="modern-section">
+                <div class="modern-section">
                     <h2 class="modern-section-title">Edit Word</h2>
                     <div class="interactive-card">
                         <div class="form-group">
@@ -1710,9 +815,9 @@
                         </div>
                         <div id="editSearchResults"></div>
                     </div>
-                </section>
+                </div>
 
-                <section class="modern-section">
+                <div class="modern-section">
                     <h2 class="modern-section-title">Utilities</h2>
                     <div class="interactive-card">
                         <div class="utility-buttons">
@@ -1723,7 +828,7 @@
                         <div id="syncStatus" class="success-box"><strong>✓ Supabase Connected!</strong> Dictionary syncing across devices.</div>
                         <div class="info-box"><strong>💡 Tip:</strong> Auto-saves to cloud!</div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
     </div>
@@ -1732,26 +837,13 @@
     <script>
         // Supabase Configuration
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OU0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
 
         let supabaseClient;
         const SESSION_DURATION = 24 * 60 * 60 * 1000;
         const CORRECT_PASSWORD = "murali";
         let dictionary = [], quickAddList = [], editingWordId = null, searchIndex = null;
         let isSupabaseConfigured = false, supabaseInitialized = false;
-        
-        // NEW: Annotation variables
-        let currentEditingWordId = null;
-        let selectedText = null;
-        let annotationHistory = [];
-        let historyIndex = -1;
-        let currentActiveHighlighter = null;
-        let currentActiveUnderline = false;
-        let currentActiveBold = false;
-
-        // Mobile keyboard detection
-        let isMobileKeyboardOpen = false;
-        let originalViewportHeight = window.innerHeight;
 
         // Safe Storage
         const SafeStorage = {
@@ -1874,6 +966,47 @@
                 h1.textContent = capitalizedWord;
                 editor.insertBefore(h1, editor.firstChild);
             }
+        }
+
+        // NEW: Function to convert markdown-style headings to HTML when pasting
+        function processMarkdownHeadings(text) {
+            // Split the text into lines
+            const lines = text.split('\n');
+            let html = '';
+            
+            for (let line of lines) {
+                // Trim the line to remove extra whitespace
+                const trimmedLine = line.trim();
+                
+                // Check for markdown-style headings
+                if (trimmedLine.startsWith('# ')) {
+                    // H1: Remove the '# ' and wrap in h1 tags
+                    html += `<h1>${trimmedLine.substring(2)}</h1>`;
+                } else if (trimmedLine.startsWith('## ')) {
+                    // H2: Remove the '## ' and wrap in h2 tags
+                    html += `<h2>${trimmedLine.substring(3)}</h2>`;
+                } else if (trimmedLine.startsWith('### ')) {
+                    // H3: Remove the '### ' and wrap in h3 tags
+                    html += `<h3>${trimmedLine.substring(4)}</h3>`;
+                } else if (trimmedLine.startsWith('#### ')) {
+                    // H4: Remove the '#### ' and wrap in h4 tags
+                    html += `<h4>${trimmedLine.substring(5)}</h4>`;
+                } else if (trimmedLine.startsWith('##### ')) {
+                    // H5: Remove the '##### ' and wrap in h5 tags
+                    html += `<h5>${trimmedLine.substring(6)}</h5>`;
+                } else if (trimmedLine.startsWith('###### ')) {
+                    // H6: Remove the '###### ' and wrap in h6 tags
+                    html += `<h6>${trimmedLine.substring(7)}</h6>`;
+                } else if (trimmedLine === '') {
+                    // Empty line - add a paragraph break
+                    html += '<p><br></p>';
+                } else {
+                    // Regular text - wrap in paragraph tags
+                    html += `<p>${trimmedLine}</p>`;
+                }
+            }
+            
+            return html;
         }
 
         // Dictionary Management Functions
@@ -2073,8 +1206,12 @@
                     const html = (e.clipboardData || window.clipboardData).getData('text/html');
                     const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                     
-                    // If HTML content is available, use it to preserve formatting and line breaks
-                    if (html) {
+                    // Check if the content contains markdown-style headings
+                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### '))) {
+                        // Process markdown headings
+                        const processedHtml = processMarkdownHeadings(text);
+                        document.execCommand('insertHTML', false, processedHtml);
+                    } else if (html) {
                         // Insert HTML content directly to preserve formatting and line breaks
                         document.execCommand('insertHTML', false, html);
                     } else {
@@ -2381,474 +1518,10 @@
             event.target.value = '';
         }
 
-        // NEW: Read & Annotate Functions
-        function setupAdminSearch() {
-            const searchInput = document.getElementById('adminSearchInput');
-            const autocompleteDropdown = document.getElementById('adminAutocompleteDropdown');
-            let typingTimer;
-            
-            searchInput.addEventListener('input', function() {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(() => {
-                    const query = this.value.trim().toLowerCase();
-                    
-                    if (query.length === 0) {
-                        autocompleteDropdown.classList.remove('show');
-                        return;
-                    }
-                    
-                    showAdminAutocomplete(query);
-                }, 300);
-            });
-            
-            searchInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') autocompleteDropdown.classList.remove('show');
-            });
-            
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.search-container')) {
-                    autocompleteDropdown.classList.remove('show');
-                }
-            });
-        }
-
-        function showAdminAutocomplete(query) {
-            const autocompleteDropdown = document.getElementById('adminAutocompleteDropdown');
-            
-            if (query.length === 0) {
-                autocompleteDropdown.classList.remove('show');
-                return;
-            }
-            
-            const matches = dictionary.filter(item => 
-                item.word.toLowerCase().includes(query)
-            ).slice(0, 5);
-            
-            if (matches.length === 0) {
-                autocompleteDropdown.classList.remove('show');
-                return;
-            }
-            
-            let html = '';
-            matches.forEach(item => {
-                html += `<div class="autocomplete-item" onclick="selectAdminAutocompleteItem('${item.word}', ${item.id})">
-                            <div class="autocomplete-word">${item.word}</div>
-                            <div class="autocomplete-hint">Click to view</div>
-                         </div>`;
-            });
-            
-            autocompleteDropdown.innerHTML = html;
-            autocompleteDropdown.classList.add('show');
-        }
-
-        function selectAdminAutocompleteItem(word, id) {
-            document.getElementById('adminSearchInput').value = word;
-            document.getElementById('adminAutocompleteDropdown').classList.remove('show');
-            displayWordForAnnotation(id);
-        }
-
-        function displayWordForAnnotation(id) {
-            const word = dictionary.find(item => item.id === id);
-            if (!word) return;
-            
-            currentEditingWordId = id;
-            
-            const displayDiv = document.getElementById('adminWordSpotlightDisplay');
-            displayDiv.innerHTML = `
-                <div class="word-entry">
-                    <div class="word-title">${word.word}</div>
-                    <div class="annotated-content" id="annotatedDefinition" contenteditable="true">
-                        ${word.definition}
-                    </div>
-                </div>
-            `;
-            
-            // Set up text selection tracking for both desktop and mobile
-            const annotatedContent = document.getElementById('annotatedDefinition');
-            annotatedContent.addEventListener('mouseup', trackTextSelection);
-            annotatedContent.addEventListener('touchend', trackTextSelection);
-            
-            // Set up keyboard detection for mobile
-            setupMobileKeyboardDetection(annotatedContent);
-            
-            // Reset annotation history
-            annotationHistory = [annotatedContent.innerHTML];
-            historyIndex = 0;
-            updateUndoRedoButtons();
-        }
-
-        // NEW: Mobile keyboard detection
-        function setupMobileKeyboardDetection(element) {
-            if (!element) return;
-            
-            // Store original viewport height
-            originalViewportHeight = window.innerHeight;
-            
-            // Add focus and blur events
-            element.addEventListener('focus', handleMobileKeyboardOpen);
-            element.addEventListener('blur', handleMobileKeyboardClose);
-            
-            // Also listen for window resize (keyboard triggers this on mobile)
-            window.addEventListener('resize', handleMobileResize);
-            
-            // Setup for search inputs too
-            const searchInputs = document.querySelectorAll('#adminSearchInput, #quickAddSearch, #editSearchInput');
-            searchInputs.forEach(input => {
-                input.addEventListener('focus', handleMobileKeyboardOpen);
-                input.addEventListener('blur', handleMobileKeyboardClose);
-            });
-        }
-
-        function handleMobileKeyboardOpen() {
-            if (window.innerWidth <= 768) {
-                isMobileKeyboardOpen = true;
-                document.body.classList.add('keyboard-open');
-            }
-        }
-
-        function handleMobileKeyboardClose() {
-            if (window.innerWidth <= 768) {
-                isMobileKeyboardOpen = false;
-                document.body.classList.remove('keyboard-open');
-            }
-        }
-
-        function handleMobileResize() {
-            if (window.innerWidth <= 768) {
-                // Check if viewport height changed significantly (keyboard opened/closed)
-                const viewportChange = Math.abs(originalViewportHeight - window.innerHeight);
-                
-                if (viewportChange > 100) { // Keyboard likely opened
-                    isMobileKeyboardOpen = true;
-                    document.body.classList.add('keyboard-open');
-                } else if (isMobileKeyboardOpen && viewportChange < 50) { // Keyboard likely closed
-                    isMobileKeyboardOpen = false;
-                    document.body.classList.remove('keyboard-open');
-                }
-                
-                // Update original height for next comparison
-                originalViewportHeight = window.innerHeight;
-            }
-        }
-
-        function trackTextSelection() {
-            const selection = window.getSelection();
-            if (selection.rangeCount > 0 && selection.toString().length > 0) {
-                selectedText = {
-                    text: selection.toString(),
-                    range: selection.getRangeAt(0)
-                };
-            } else {
-                selectedText = null;
-            }
-        }
-
-        function toggleHighlighter(color) {
-            const btn = event.target;
-            
-            if (currentActiveHighlighter === color) {
-                // Deselect if already active
-                currentActiveHighlighter = null;
-                btn.classList.remove('active');
-            } else {
-                // Deselect all other highlighters and select this one
-                document.querySelectorAll('.highlighter-btn').forEach(b => {
-                    if (b !== btn && !b.classList.contains('undo') && !b.classList.contains('redo') && 
-                        !b.classList.contains('underline') && !b.classList.contains('bold') && !b.classList.contains('remove')) {
-                        b.classList.remove('active');
-                    }
-                });
-                currentActiveHighlighter = color;
-                btn.classList.add('active');
-                
-                // Apply highlight to selected text if any
-                if (selectedText) {
-                    applyHighlight(color);
-                }
-            }
-        }
-
-        function toggleUnderline() {
-            const btn = event.target.closest('.highlighter-btn');
-            
-            if (currentActiveUnderline) {
-                currentActiveUnderline = false;
-                btn.classList.remove('active');
-            } else {
-                currentActiveUnderline = true;
-                btn.classList.add('active');
-                
-                // Apply underline to selected text if any
-                if (selectedText) {
-                    applyUnderline();
-                }
-            }
-        }
-
-        function toggleBold() {
-            const btn = event.target.closest('.highlighter-btn');
-            
-            if (currentActiveBold) {
-                currentActiveBold = false;
-                btn.classList.remove('active');
-            } else {
-                currentActiveBold = true;
-                btn.classList.add('active');
-                
-                // Apply bold to selected text if any
-                if (selectedText) {
-                    applyBold();
-                }
-            }
-        }
-
-        function applyHighlight(color) {
-            if (!selectedText) {
-                showAnnotationMessage('Please select some text first', 'error');
-                return;
-            }
-            
-            saveToHistory();
-            
-            const range = selectedText.range;
-            const selectedContent = range.extractContents();
-            const span = document.createElement('span');
-            span.className = `highlight-${color}`;
-            
-            // Handle multiple words by preserving the entire selection
-            span.appendChild(selectedContent);
-            range.insertNode(span);
-            
-            // Clear selection
-            window.getSelection().removeAllRanges();
-            selectedText = null;
-            
-            // Deselect the highlighter after application
-            currentActiveHighlighter = null;
-            document.querySelectorAll('.highlighter-btn').forEach(b => b.classList.remove('active'));
-        }
-
-        function applyUnderline() {
-            if (!selectedText) {
-                showAnnotationMessage('Please select some text first', 'error');
-                return;
-            }
-            
-            saveToHistory();
-            
-            const range = selectedText.range;
-            const selectedContent = range.extractContents();
-            const span = document.createElement('span');
-            span.className = 'annotation-underline';
-            span.appendChild(selectedContent);
-            range.insertNode(span);
-            
-            // Clear selection
-            window.getSelection().removeAllRanges();
-            selectedText = null;
-            
-            // Deselect the underline after application
-            currentActiveUnderline = false;
-            document.querySelectorAll('.highlighter-btn.underline').forEach(b => b.classList.remove('active'));
-        }
-
-        function applyBold() {
-            if (!selectedText) {
-                showAnnotationMessage('Please select some text first', 'error');
-                return;
-            }
-            
-            saveToHistory();
-            
-            const range = selectedText.range;
-            const selectedContent = range.extractContents();
-            const strong = document.createElement('strong');
-            strong.appendChild(selectedContent);
-            range.insertNode(strong);
-            
-            // Clear selection
-            window.getSelection().removeAllRanges();
-            selectedText = null;
-            
-            // Deselect the bold after application
-            currentActiveBold = false;
-            document.querySelectorAll('.highlighter-btn.bold').forEach(b => b.classList.remove('active'));
-        }
-
-        function removeFormatting() {
-            if (!selectedText) {
-                showAnnotationMessage('Please select some text first', 'error');
-                return;
-            }
-            
-            saveToHistory();
-            
-            const range = selectedText.range;
-            const selectedContent = range.extractContents();
-            
-            // Create a new text node with just the text content (removes formatting)
-            const textNode = document.createTextNode(selectedContent.textContent);
-            range.insertNode(textNode);
-            
-            // Clear selection
-            window.getSelection().removeAllRanges();
-            selectedText = null;
-        }
-
-        function saveToHistory() {
-            const annotatedContent = document.getElementById('annotatedDefinition');
-            if (!annotatedContent) return;
-            
-            // Remove any future history if we're not at the end
-            if (historyIndex < annotationHistory.length - 1) {
-                annotationHistory = annotationHistory.slice(0, historyIndex + 1);
-            }
-            
-            // Add current state to history
-            annotationHistory.push(annotatedContent.innerHTML);
-            historyIndex++;
-            
-            updateUndoRedoButtons();
-        }
-
-        function undoAnnotation() {
-            if (historyIndex > 0) {
-                historyIndex--;
-                const annotatedContent = document.getElementById('annotatedDefinition');
-                if (annotatedContent) {
-                    annotatedContent.innerHTML = annotationHistory[historyIndex];
-                }
-                updateUndoRedoButtons();
-            }
-        }
-
-        function redoAnnotation() {
-            if (historyIndex < annotationHistory.length - 1) {
-                historyIndex++;
-                const annotatedContent = document.getElementById('annotatedDefinition');
-                if (annotatedContent) {
-                    annotatedContent.innerHTML = annotationHistory[historyIndex];
-                }
-                updateUndoRedoButtons();
-            }
-        }
-
-        function updateUndoRedoButtons() {
-            const undoBtn = document.getElementById('undoBtn');
-            const redoBtn = document.getElementById('redoBtn');
-            
-            undoBtn.disabled = historyIndex <= 0;
-            redoBtn.disabled = historyIndex >= annotationHistory.length - 1;
-        }
-
-        async function saveAnnotations() {
-            if (!currentEditingWordId) {
-                showAnnotationMessage('Please select a word first', 'error');
-                return;
-            }
-            
-            const annotatedContent = document.getElementById('annotatedDefinition');
-            if (!annotatedContent) {
-                showAnnotationMessage('No content to save', 'error');
-                return;
-            }
-            
-            const updatedDefinition = annotatedContent.innerHTML;
-            const wordIndex = dictionary.findIndex(item => item.id === currentEditingWordId);
-            
-            if (wordIndex === -1) {
-                showAnnotationMessage('Word not found', 'error');
-                return;
-            }
-            
-            // Update the dictionary
-            dictionary[wordIndex].definition = updatedDefinition;
-            dictionary[wordIndex].dateModified = new Date().toISOString();
-            
-            // Save to local storage
-            SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
-            
-            // Update in Supabase
-            if (isSupabaseConfigured && supabaseInitialized) {
-                try {
-                    await updateWordInSupabase(dictionary[wordIndex]);
-                    showAnnotationMessage('Annotations saved successfully!', 'success');
-                } catch(error) {
-                    console.error('Error saving annotations to cloud:', error);
-                    showAnnotationMessage('Saved locally but cloud sync failed', 'error');
-                }
-            } else {
-                showAnnotationMessage('Annotations saved locally', 'success');
-            }
-            
-            // Rebuild search index
-            buildSearchIndex();
-        }
-
-        function clearAnnotations() {
-            if (!currentEditingWordId) {
-                showAnnotationMessage('Please select a word first', 'error');
-                return;
-            }
-            
-            if (!confirm('Are you sure you want to clear all annotations for this word?')) {
-                return;
-            }
-            
-            const word = dictionary.find(item => item.id === currentEditingWordId);
-            if (!word) return;
-            
-            // Remove all annotation classes but keep the content
-            const annotatedContent = document.getElementById('annotatedDefinition');
-            let cleanDefinition = word.definition;
-            
-            // Remove highlight classes
-            cleanDefinition = cleanDefinition.replace(/<span class="highlight-[^"]*">/g, '');
-            cleanDefinition = cleanDefinition.replace(/<span class="annotation-underline">/g, '');
-            cleanDefinition = cleanDefinition.replace(/<\/span>/g, '');
-            // Remove bold tags
-            cleanDefinition = cleanDefinition.replace(/<strong>/g, '');
-            cleanDefinition = cleanDefinition.replace(/<\/strong>/g, '');
-            
-            annotatedContent.innerHTML = cleanDefinition;
-            
-            // Reset history
-            annotationHistory = [cleanDefinition];
-            historyIndex = 0;
-            updateUndoRedoButtons();
-            
-            showAnnotationMessage('All annotations cleared', 'success');
-        }
-
-        function showAnnotationMessage(message, type) {
-            const messageDiv = document.getElementById('annotationMessage');
-            messageDiv.textContent = message;
-            messageDiv.className = `annotation-message annotation-${type}`;
-            messageDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, 3000);
-        }
-
-        function showNewRandomWordForAnnotation() {
-            if (dictionary.length > 0) {
-                const randomIndex = Math.floor(Math.random() * dictionary.length);
-                displayWordForAnnotation(dictionary[randomIndex].id);
-            }
-        }
-
         function initializeAdmin() {
             loadFromLocalStorage();
             displayQuickAddList();
             initializeSupabase();
-            setupAdminSearch();
-            
-            // Load a random word for annotation on startup
-            if (dictionary.length > 0) {
-                const randomIndex = Math.floor(Math.random() * dictionary.length);
-                displayWordForAnnotation(dictionary[randomIndex].id);
-            }
         }
 
         // Check authentication on page load
