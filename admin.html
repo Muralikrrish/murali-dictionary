@@ -1204,6 +1204,30 @@
             return html;
         }
 
+        // NEW: Function to clean and normalize pasted HTML content
+        function cleanPastedHtml(html) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Remove all style and class attributes to ensure our CSS applies
+            const allElements = doc.querySelectorAll('*');
+            allElements.forEach(el => {
+                el.removeAttribute('style');
+                el.removeAttribute('class');
+                
+                // Ensure text has proper color and styling
+                if (el.tagName === 'P' || el.tagName === 'SPAN' || el.tagName === 'DIV') {
+                    if (!el.hasAttribute('style')) {
+                        el.style.color = 'var(--text-secondary)';
+                        el.style.fontSize = '16px';
+                        el.style.lineHeight = '1.6';
+                    }
+                }
+            });
+            
+            return doc.body.innerHTML;
+        }
+
         // Dictionary Management Functions
         function buildSearchIndex() {
             searchIndex = dictionary.map(item => ({
@@ -1408,10 +1432,11 @@
                         // Process markdown content
                         processedHtml = processMarkdownContent(text);
                     } else if (html) {
-                        processedHtml = html;
+                        // Clean the HTML to remove external styles and ensure our CSS applies
+                        processedHtml = cleanPastedHtml(html);
                     } else {
-                        // Fallback to plain text with line breaks preserved
-                        processedHtml = text.replace(/\n/g, '<br>');
+                        // Fallback to plain text with line breaks preserved and proper styling
+                        processedHtml = `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${text.replace(/\n/g, '<br>')}</p>`;
                     }
                     
                     // Convert H2 elements to toggles
