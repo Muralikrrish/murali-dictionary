@@ -1092,9 +1092,21 @@
             
             h2Elements.forEach(h2 => {
                 // Format the heading text if it's all caps
+                // Format the heading text if it's all caps
                 let headingText = h2.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
+                    // Only capitalize the first letter of the first word, keep the rest as is
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1).toLowerCase();
+    
+                    // Further process to ensure only first word's first letter is capitalized
+                    const words = headingText.split(' ');
+                    if (words.length > 1) {
+                        // Keep first word with first letter capitalized, make the rest lowercase
+                        const firstWord = words[0];
+                        const remainingWords = words.slice(1).map(word => word.toLowerCase());
+                        headingText = [firstWord, ...remainingWords].join(' ');
+                    }
+    
                     h2.textContent = headingText;
                 }
                 
