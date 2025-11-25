@@ -682,27 +682,37 @@
             animation: shimmer 1.5s infinite;
         }
 
-        /* Toggle styles for H2 elements */
+        /* MODERN TOGGLE STYLES */
         .toggle-wrapper {
-            margin: 1em 0;
+            margin: 1.5em 0;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
+            background: var(--bg-secondary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .toggle-wrapper:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.15);
         }
 
         .toggle-header {
             width: 100%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
+            justify-content: flex-start; /* Changed to left align */
+            padding: 16px 20px;
             background: var(--bg-tertiary);
             border: none;
             color: var(--text-secondary);
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            text-align: left; /* Ensure text is left aligned */
+            position: relative;
         }
 
         .toggle-header:hover {
@@ -715,9 +725,16 @@
             box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.3);
         }
 
+        .toggle-header.active {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
         .toggle-icon {
-            transition: transform 0.3s;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 14px;
+            margin-left: auto; /* Push icon to the right */
+            color: var(--accent-primary);
         }
 
         .toggle-header.active .toggle-icon {
@@ -727,14 +744,14 @@
         .toggle-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-out;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--bg-secondary);
         }
 
         .toggle-content.expanded {
             max-height: 10000px;
-            padding: 16px;
-            transition: max-height 0.8s ease-in;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
         }
 
         /* NEW: Reduced margin for h3 elements inside toggle content */
@@ -746,6 +763,11 @@
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         @keyframes pulse {
@@ -856,6 +878,15 @@
             .word-definition p, 
             .word-definition li {
                 font-size: 16px !important;
+            }
+
+            /* Mobile toggle adjustments */
+            .toggle-header {
+                padding: 14px 16px;
+            }
+            
+            .toggle-content.expanded {
+                padding: 16px;
             }
         }
 
