@@ -663,6 +663,60 @@
             animation: shimmer 1.5s infinite;
         }
 
+        /* Toggle styles for H2 elements */
+        .toggle-wrapper {
+            margin: 1em 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .toggle-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-header:hover {
+            background: var(--accent-primary);
+        }
+
+        .toggle-header:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.3);
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s;
+            font-size: 14px;
+        }
+
+        .toggle-header.active .toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .toggle-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: var(--bg-secondary);
+            padding: 0 16px;
+        }
+
+        .toggle-content.expanded {
+            max-height: 1000px;
+            padding: 16px;
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -1040,23 +1094,67 @@
         let gkQuizQuestions = [], currentGkQuizQuestion = null, selectedGkQuizAnswer = null;
         let gkQuizAnswered = false, gkQuestionDisplayed = false;
 
+        // NEW: Function to convert H2 elements to toggle elements
+        function convertH2ToToggles(htmlString) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const h2Elements = doc.querySelectorAll('h2');
+            
+            h2Elements.forEach(h2 => {
+                // Format the heading text if it's all caps
+                let headingText = h2.textContent;
+                if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
+                    headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1).toLowerCase();
+                    h2.textContent = headingText;
+                }
+                
+                // Create the toggle wrapper
+                const toggleWrapper = document.createElement('div');
+                toggleWrapper.className = 'toggle-wrapper';
+                
+                // Create the toggle header
+                const toggleHeader = document.createElement('button');
+                toggleHeader.className = 'toggle-header';
+                toggleHeader.innerHTML = `
+                    <span>${h2.innerHTML}</span>
+                    <span class="toggle-icon">▶</span>
+                `;
+                
+                // Create the toggle content
+                const toggleContent = document.createElement('div');
+                toggleContent.className = 'toggle-content';
+                
+                // Move all next siblings until the next h2 into the toggle content
+                let nextSibling = h2.nextElementSibling;
+                while (nextSibling && nextSibling.tagName !== 'H2') {
+                    const temp = nextSibling;
+                    nextSibling = nextSibling.nextElementSibling;
+                    toggleContent.appendChild(temp);
+                }
+                
+                // If no content was found, add a placeholder
+                if (toggleContent.children.length === 0) {
+                    toggleContent.innerHTML = '<p>No content available.</p>';
+                }
+                
+                // Add click event to toggle header
+                toggleHeader.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    toggleContent.classList.toggle('expanded');
+                });
+                
+                // Replace the h2 with the toggle structure
+                toggleWrapper.appendChild(toggleHeader);
+                toggleWrapper.appendChild(toggleContent);
+                h2.parentNode.replaceChild(toggleWrapper, h2);
+            });
+            
+            return doc.body.innerHTML;
+        }
+
         function toggleExplanationExpansion(button, explanationId) {
             const explanationBox = document.getElementById(explanationId);
             const preview = explanationBox.querySelector('.explanation-preview');
-            const isExpanded = preview.classList.contains('expanded');
-            
-            if (isExpanded) {
-                preview.classList.remove('expanded');
-                button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
-            } else {
-                preview.classList.add('expanded');
-                button.innerHTML = '<span>Read less</span><span class="icon">▲</span>';
-                setTimeout(() => preview.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
-            }
-        }
-
-        function toggleDefinitionExpansion(button) {
-            const preview = button.closest('.word-entry').querySelector('.word-definition-preview');
             const isExpanded = preview.classList.contains('expanded');
             
             if (isExpanded) {
@@ -1407,18 +1505,21 @@
         }
 
         function createExpandableDefinition(definitionHTML) {
+            // NEW: Convert H2 elements to toggles
+            const convertedDefinition = convertH2ToToggles(definitionHTML);
+            
             const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = definitionHTML;
+            tempDiv.innerHTML = convertedDefinition;
             const textContent = tempDiv.textContent || tempDiv.innerText || '';
             
-            const isLongDefinition = textContent.length > 800 || definitionHTML.includes('<h1') || 
-                definitionHTML.includes('<h2') || definitionHTML.includes('<h3') || 
-                definitionHTML.includes('<ul') || definitionHTML.includes('<ol');
+            const isLongDefinition = textContent.length > 800 || convertedDefinition.includes('<h1') || 
+                convertedDefinition.includes('<h2') || convertedDefinition.includes('<h3') || 
+                convertedDefinition.includes('<ul') || convertedDefinition.includes('<ol');
             
             if (!isLongDefinition) {
                 return `
                     <div class="word-entry">
-                        <div class="word-definition">${definitionHTML}</div>
+                        <div class="word-definition">${convertedDefinition}</div>
                         <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
                     </div>
                 `;
@@ -1428,7 +1529,7 @@
                 <div class="word-entry">
                     <div class="word-definition-preview">
                         <div class="word-definition">
-                            ${definitionHTML}
+                            ${convertedDefinition}
                             <button class="btn-show-word" onclick="showNewRandomWord()">Show another word</button>
                         </div>
                         <div class="definition-fade"></div>
@@ -1441,6 +1542,20 @@
                     </div>
                 </div>
             `;
+        }
+
+        function toggleDefinitionExpansion(button) {
+            const preview = button.closest('.word-entry').querySelector('.word-definition-preview');
+            const isExpanded = preview.classList.contains('expanded');
+            
+            if (isExpanded) {
+                preview.classList.remove('expanded');
+                button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
+            } else {
+                preview.classList.add('expanded');
+                button.innerHTML = '<span>Read less</span><span class="icon">▲</span>';
+                setTimeout(() => preview.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+            }
         }
 
         function displayWordSpotlight() {
@@ -1549,8 +1664,10 @@
             } else {
                 let html = '';
                 matches.forEach(item => {
+                    // NEW: Convert H2 elements to toggles for search results
+                    const convertedDefinition = convertH2ToToggles(item.definition);
                     html += `<div class="interactive-card">
-                                <div class="word-definition">${item.definition}</div>
+                                <div class="word-definition">${convertedDefinition}</div>
                              </div>`;
                 });
                 wordsList.innerHTML = html;
