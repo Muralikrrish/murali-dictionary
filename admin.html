@@ -351,7 +351,7 @@
             word-spacing: -0.05em;
         }
 
-        /* Force consistent font sizes for all content except headings */
+        /* Force consistent font sizes for all content */
         .editor-content,
         .editor-content *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
             font-size: 16px !important;
@@ -400,7 +400,7 @@
         }
 
         .editor-content h3 {
-            font-size: 20px;
+            font-size: 20px !important;
             font-weight: 700;
             color: var(--text-secondary);
             margin: 1em 0 0.15em 0;
@@ -408,7 +408,7 @@
         }
 
         .editor-content h4 {
-            font-size: 18px;
+            font-size: 18px !important;
             font-weight: 700;
             color: var(--text-secondary);
             margin: 1em 0 0.15em 0;
@@ -416,7 +416,7 @@
         }
 
         .editor-content h5 {
-            font-size: 16px;
+            font-size: 16px !important;
             font-weight: 700;
             color: var(--text-secondary);
             margin: 1em 0 0.4em 0;
@@ -424,7 +424,7 @@
         }
 
         .editor-content h6 {
-            font-size: 14px;
+            font-size: 14px !important;
             font-weight: 700;
             color: var(--text-secondary);
             margin: 1em 0 0.4em 0;
@@ -753,10 +753,10 @@
             
             .editor-content h1 { font-size: 24px; }
             .editor-content h2 { font-size: 22px; }
-            .editor-content h3 { font-size: 20px; }
-            .editor-content h4 { font-size: 18px; }
-            .editor-content h5 { font-size: 17px; }
-            .editor-content h6 { font-size: 16px; }
+            .editor-content h3 { font-size: 20px !important; }
+            .editor-content h4 { font-size: 18px !important; }
+            .editor-content h5 { font-size: 17px !important; }
+            .editor-content h6 { font-size: 16px !important; }
             
             /* Ensure all normal text is consistent */
             .editor-content, 
@@ -790,7 +790,7 @@
             /* Further adjustments for very small screens */
             .editor-content h1 { font-size: 23px; }
             .editor-content h2 { font-size: 21px; }
-            .editor-content h3 { font-size: 19px; }
+            .editor-content h3 { font-size: 19px !important; }
         }
 
         .main-content {
@@ -813,10 +813,10 @@
             /* Only headings get larger on desktop */
             .editor-content h1 { font-size: 2.2rem; margin: 0.2em 0; }
             .editor-content h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
-            .editor-content h3 { font-size: 1.7rem; margin: 1.2em 0 0.2em 0; }
-            .editor-content h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
-            .editor-content h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
-            .editor-content h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
+            .editor-content h3 { font-size: 1.7rem !important; margin: 1.2em 0 0.2em 0; }
+            .editor-content h4 { font-size: 1.5rem !important; margin: 1.2em 0 0.2em 0; }
+            .editor-content h5 { font-size: 1.3rem !important; margin: 1.2em 0 0.4em 0; }
+            .editor-content h6 { font-size: 1.2rem !important; margin: 1.2em 0 0.4em 0; }
             
             /* Normal text remains consistent */
             .editor-content p, 
@@ -1119,9 +1119,12 @@
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
                 
-                // Add click event to toggle header - FIXED: Prevent event propagation
+                // Add click event to toggle header
                 toggleHeader.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent the click from bubbling up to the form
+                    // FIX 1: Prevent the click event from bubbling up to the form
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
                 });
@@ -1145,9 +1148,12 @@
                 const newHeader = header.cloneNode(true);
                 header.parentNode.replaceChild(newHeader, header);
                 
-                // Add click event to the new header - FIXED: Prevent event propagation
+                // Add click event to the new header
                 newHeader.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Prevent the click from bubbling up to the form
+                    // FIX 1: Prevent the click event from bubbling up to the form
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
                     this.classList.toggle('active');
                     const content = this.nextElementSibling;
                     content.classList.toggle('expanded');
@@ -1197,8 +1203,8 @@
                 // Trim the line to remove extra whitespace
                 const trimmedLine = line.trim();
                 
-                // Skip empty lines and lines that are only "---" (divider lines)
-                if (trimmedLine === '' || /^---+$/.test(trimmedLine)) {
+                // FIX 3: Skip empty lines, divider lines (---), and horizontal rules
+                if (trimmedLine === '' || /^---+$/.test(trimmedLine) || trimmedLine === '***' || trimmedLine === '___') {
                     continue;
                 }
                 
@@ -1265,16 +1271,15 @@
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
+            // FIX 3: Remove all horizontal divider elements
+            const hrElements = doc.querySelectorAll('hr');
+            hrElements.forEach(hr => hr.remove());
+            
             // Remove all style and class attributes to ensure our CSS applies
             const allElements = doc.querySelectorAll('*');
             allElements.forEach(el => {
                 el.removeAttribute('style');
                 el.removeAttribute('class');
-                
-                // Remove divider lines (hr elements)
-                if (el.tagName === 'HR') {
-                    el.remove();
-                }
                 
                 // Force consistent font size for all text elements except headings
                 if (!['H1','H2','H3','H4','H5','H6'].includes(el.tagName)) {
