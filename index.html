@@ -722,15 +722,16 @@
             padding: 12px 16px;
             background: var(--bg-tertiary);
             border: none;
-            color: var(--text-primary);
-            font-size: 18px;
-            font-weight: 600;
+            color: var(--text-secondary); /* Changed to match normal text */
+            font-size: 16px; /* Changed to match normal text */
+            font-weight: 500; /* Changed to match normal text weight */
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .toggle-header:hover {
-            background: var(--accent-primary);
+            background: var(--bg-secondary); /* More subtle hover effect */
+            color: var(--text-primary); /* Slight color change on hover for visibility */
         }
 
         .toggle-header:focus {
@@ -750,14 +751,21 @@
         .toggle-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: max-height 0.5s ease-out;
             background: var(--bg-secondary);
-            padding: 0 16px;
         }
 
         .toggle-content.expanded {
-            max-height: 1000px;
+            /* Use a very large max-height to accommodate any content */
+            max-height: 10000px;
             padding: 16px;
+            transition: max-height 0.8s ease-in;
+        }
+
+        /* NEW: Reduced margin for h3 elements inside toggle content */
+        .toggle-content h3 {
+            margin-top: 0.33em !important;
+            margin-bottom: 0.15em !important;
         }
 
         /* RESTORED: Blue color for text inside toggle content */
@@ -934,7 +942,7 @@
             }
             .word-definition h1 { font-size: 2.2rem; margin: 0.2em 0; }
             .word-definition h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
-            .word-definition h3 { font-size: 1.7rem; margin: 1.2em 0 0.2em 0; }
+            .word-definition h3 { font-size: 20px !important; margin: 1em 0 0.15em 0; }
             .word-definition h4 { font-size: 1.5rem; margin: 1.2em 0 0.2em 0; }
             .word-definition h5 { font-size: 1.3rem; margin: 1.2em 0 0.4em 0; }
             .word-definition h6 { font-size: 1.2rem; margin: 1.2em 0 0.4em 0; }
@@ -1211,9 +1219,13 @@
                 if (toggleContent.children.length === 0) {
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
-                
+
                 // Add click event to toggle header
-                toggleHeader.addEventListener('click', function() {
+                toggleHeader.addEventListener('click', function(e) {
+                    // Prevent the click event from bubbling up
+                    e.stopPropagation();
+                    e.preventDefault();
+    
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
                 });
@@ -1237,7 +1249,11 @@
                 header.parentNode.replaceChild(newHeader, header);
                 
                 // Add click event to the new header
-                newHeader.addEventListener('click', function() {
+                newHeader.addEventListener('click', function(e) {
+                    // Prevent the click event from bubbling up
+                    e.stopPropagation();
+                    e.preventDefault();
+    
                     this.classList.toggle('active');
                     const content = this.nextElementSibling;
                     content.classList.toggle('expanded');
