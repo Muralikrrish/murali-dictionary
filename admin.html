@@ -1382,31 +1382,6 @@
             return doc.body.innerHTML;
         }
 
-        // NEW: Improved paste handler for ordered lists
-        function handleOrderedListPaste(html) {
-            // Create a temporary div to parse the HTML
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            
-            // Find all ordered lists
-            const orderedLists = tempDiv.querySelectorAll('ol');
-            
-            // Process each ordered list to ensure proper numbering
-            orderedLists.forEach(ol => {
-                // Remove any existing numbering attributes
-                ol.removeAttribute('start');
-                
-                // Reset all list items to ensure proper numbering
-                const listItems = ol.querySelectorAll('li');
-                listItems.forEach((li, index) => {
-                    // Clear any existing value attribute
-                    li.removeAttribute('value');
-                });
-            });
-            
-            return tempDiv.innerHTML;
-        }
-
         // Dictionary Management Functions
         function buildSearchIndex() {
             searchIndex = dictionary.map(item => ({
@@ -1593,6 +1568,59 @@
             }
         }
 
+        // NEW: Improved paste handler for numbered lists
+        function handleNumberedListPaste(text) {
+            // Check if the text contains numbered list items
+            const numberedListRegex = /^\d+\.\s.+$/gm;
+            if (numberedListRegex.test(text)) {
+                // Process as a numbered list
+                const lines = text.split('\n');
+                let inOrderedList = false;
+                let listItems = [];
+                let html = '';
+                
+                for (let line of lines) {
+                    const trimmedLine = line.trim();
+                    
+                    // Check if it's a numbered list item
+                    if (/^\d+\.\s/.test(trimmedLine)) {
+                        if (!inOrderedList) {
+                            // Start a new ordered list
+                            html += '<ol>';
+                            inOrderedList = true;
+                        }
+                        // Extract the content after the number
+                        const content = trimmedLine.replace(/^\d+\.\s/, '');
+                        // Process bold formatting
+                        const processedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        html += `<li>${processedContent}</li>`;
+                    } else {
+                        // Not a numbered list item
+                        if (inOrderedList) {
+                            // Close the current list
+                            html += '</ol>';
+                            inOrderedList = false;
+                        }
+                        
+                        // Add the line as a paragraph if it's not empty
+                        if (trimmedLine) {
+                            const processedLine = trimmedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            html += `<p>${processedLine}</p>`;
+                        }
+                    }
+                }
+                
+                // Close any open list
+                if (inOrderedList) {
+                    html += '</ol>';
+                }
+                
+                return html;
+            }
+            
+            return null;
+        }
+
         // Handle paste events to preserve formatting and line breaks
         document.addEventListener('DOMContentLoaded', function() {
             const editor = document.getElementById('definitionInput');
@@ -1606,16 +1634,18 @@
                     
                     let processedHtml = '';
                     
+                    // First, try to handle numbered lists specifically
+                    const numberedListHtml = handleNumberedListPaste(text);
+                    if (numberedListHtml) {
+                        processedHtml = numberedListHtml;
+                    }
                     // Check if the content contains markdown-style elements
-                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
+                    else if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
                         // Process markdown content
                         processedHtml = processMarkdownContent(text);
                     } else if (html) {
                         // Clean the HTML to remove external styles and ensure our CSS applies
                         processedHtml = cleanPastedHtml(html);
-                        
-                        // FIX: Handle ordered lists to ensure proper numbering
-                        processedHtml = handleOrderedListPaste(processedHtml);
                     } else {
                         // Fallback to plain text with proper line break handling
                         // Split by newlines and process each line
