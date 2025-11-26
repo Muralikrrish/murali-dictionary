@@ -1191,6 +1191,8 @@
             let paragraphContent = '';
             let inList = false;
             let listItems = [];
+            let inOrderedList = false;
+            let orderedListItems = [];
             
             // Function to close a paragraph if one is open
             const closeParagraph = () => {
@@ -1220,80 +1222,103 @@
                 inList = false;
             };
             
+            // Function to close an ordered list if one is open
+            const closeOrderedList = () => {
+                if (inOrderedList && orderedListItems.length > 0) {
+                    html += '<ol>';
+                    orderedListItems.forEach(item => {
+                        // Process bold formatting in list items
+                        item = item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        item = item.replace(/__(.*?)__/g, '<strong>$1</strong>');
+                        html += `<li>${item}</li>`;
+                    });
+                    html += '</ol>';
+                    orderedListItems = [];
+                }
+                inOrderedList = false;
+            };
+            
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i];
                 // Trim the line to remove extra whitespace, but preserve empty lines for paragraph breaks
                 const trimmedLine = line.trim();
                 
-                // FIX 3: Skip empty lines, divider lines (---), and horizontal rules
+                // Skip empty lines, divider lines (---), and horizontal rules
                 if (trimmedLine === '' || /^---+$/.test(trimmedLine) || trimmedLine === '***' || trimmedLine === '___') {
                     // If we're in a paragraph and hit an empty line, close the paragraph
                     if (inParagraph && paragraphContent.trim() !== '') {
                         closeParagraph();
                     } else if (inList) {
                         closeList();
+                    } else if (inOrderedList) {
+                        closeOrderedList();
                     }
                     continue;
                 }
                 
-                // Check for markdown-style headings
+                // Check for markdown-style headings (only actual markdown headings with #)
                 if (trimmedLine.startsWith('# ')) {
                     closeParagraph();
                     closeList();
+                    closeOrderedList();
                     // H1: Remove the '# ' and wrap in h1 tags
                     html += `<h1>${trimmedLine.substring(2)}</h1>`;
                 } else if (trimmedLine.startsWith('## ')) {
                     closeParagraph();
                     closeList();
+                    closeOrderedList();
                     // H2: Remove the '## ' and wrap in h2 tags
                     html += `<h2>${trimmedLine.substring(3)}</h2>`;
                 } else if (trimmedLine.startsWith('### ')) {
                     closeParagraph();
                     closeList();
+                    closeOrderedList();
                     // H3: Remove the '### ' and wrap in h3 tags
                     html += `<h3>${trimmedLine.substring(4)}</h3>`;
                 } else if (trimmedLine.startsWith('#### ')) {
                     closeParagraph();
                     closeList();
+                    closeOrderedList();
                     // H4: Remove the '#### ' and wrap in h4 tags
                     html += `<h4>${trimmedLine.substring(5)}</h4>`;
                 } else if (trimmedLine.startsWith('##### ')) {
                     closeParagraph();
                     closeList();
+                    closeOrderedList();
                     // H5: Remove the '##### ' and wrap in h5 tags
                     html += `<h5>${trimmedLine.substring(6)}</h5>`;
                 } else if (trimmedLine.startsWith('###### ')) {
                     closeParagraph();
                     closeList();
+                    closeOrderedList();
                     // H6: Remove the '###### ' and wrap in h6 tags
                     html += `<h6>${trimmedLine.substring(7)}</h6>`;
                 } else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
-                    // List item
+                    // Unordered list item
                     closeParagraph();
+                    closeOrderedList();
                     inList = true;
                     // Remove the bullet and trim
                     let listItem = trimmedLine.substring(2).trim();
                     listItems.push(listItem);
+                } else if (/^\d+\.\s/.test(trimmedLine)) {
+                    // Ordered list item (starts with number followed by period and space)
+                    closeParagraph();
+                    closeList();
+                    inOrderedList = true;
+                    // Remove the number and period, then trim
+                    let listItem = trimmedLine.replace(/^\d+\.\s/, '').trim();
+                    orderedListItems.push(listItem);
                 } else {
-                    // Regular text - check if this looks like a numbered list item (e.g., "Mistake 1:")
-                    const numberedItemMatch = trimmedLine.match(/^(\d+\.\s|[\w\s]+\d+:\s)/);
-                    
-                    if (numberedItemMatch) {
-                        // This looks like a numbered list item or a heading-like pattern
-                        closeParagraph();
-                        closeList();
-                        // Treat it as a heading (h3) for better structure
-                        html += `<h3>${trimmedLine}</h3>`;
+                    // Regular text - treat everything else as normal paragraph text
+                    closeList();
+                    closeOrderedList();
+                    if (!inParagraph) {
+                        inParagraph = true;
+                        paragraphContent = line; // Use original line to preserve spacing
                     } else {
-                        // Regular paragraph text
-                        closeList();
-                        if (!inParagraph) {
-                            inParagraph = true;
-                            paragraphContent = line; // Use original line to preserve spacing
-                        } else {
-                            // Add a line break between lines in the same paragraph
-                            paragraphContent += '<br>' + line;
-                        }
+                        // Add a line break between lines in the same paragraph
+                        paragraphContent += '<br>' + line;
                     }
                 }
             }
@@ -1301,6 +1326,7 @@
             // Close any remaining open paragraph or list
             closeParagraph();
             closeList();
+            closeOrderedList();
             
             return html;
         }
@@ -1310,7 +1336,7 @@
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
-            // FIX 3: Remove all horizontal divider elements
+            // Remove all horizontal divider elements
             const hrElements = doc.querySelectorAll('hr');
             hrElements.forEach(hr => hr.remove());
             
@@ -1540,7 +1566,7 @@
                     let processedHtml = '';
                     
                     // Check if the content contains markdown-style elements
-                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* '))) {
+                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
                         // Process markdown content
                         processedHtml = processMarkdownContent(text);
                     } else if (html) {
