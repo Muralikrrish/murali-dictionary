@@ -372,7 +372,7 @@
         .editor-content ul, 
         .editor-content ol {
             margin: 0.5em 0;
-            padding-left: 1.2em;
+            padding-left: 1.5em;
         }
 
         .editor-content li {
@@ -380,6 +380,22 @@
             line-height: 1.45 !important;
             color: var(--text-secondary) !important;
             font-size: 16px !important;
+        }
+
+        /* Ensure ordered lists display proper numbering */
+        .editor-content ol {
+            list-style-type: decimal;
+            margin: 0.5em 0;
+            padding-left: 1.5em;
+        }
+
+        .editor-content ol li {
+            margin: 0.25em 0;
+            line-height: 1.45 !important;
+            color: var(--text-secondary) !important;
+            font-size: 16px !important;
+            list-style-type: decimal;
+            display: list-item;
         }
 
         /* Heading styles remain as they are but ensure they're not overridden */
@@ -1306,7 +1322,7 @@
                     closeParagraph();
                     closeList();
                     inOrderedList = true;
-                    // Remove the number and period, then trim
+                    // Remove the number and period, then trim - the browser will handle the numbering automatically
                     let listItem = trimmedLine.replace(/^\d+\.\s/, '').trim();
                     orderedListItems.push(listItem);
                 } else {
@@ -1695,7 +1711,7 @@
                     word: word,
                     definition: definition,
                     dateAdded: new Date().toISOString(),
-                    dateModified: new Date().toISOString()
+                    dateModified = new Date().toISOString()
                 };
                 dictionary.push(newWord);
                 
