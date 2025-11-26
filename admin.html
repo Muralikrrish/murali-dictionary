@@ -1382,6 +1382,31 @@
             return doc.body.innerHTML;
         }
 
+        // NEW: Improved paste handler for ordered lists
+        function handleOrderedListPaste(html) {
+            // Create a temporary div to parse the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            
+            // Find all ordered lists
+            const orderedLists = tempDiv.querySelectorAll('ol');
+            
+            // Process each ordered list to ensure proper numbering
+            orderedLists.forEach(ol => {
+                // Remove any existing numbering attributes
+                ol.removeAttribute('start');
+                
+                // Reset all list items to ensure proper numbering
+                const listItems = ol.querySelectorAll('li');
+                listItems.forEach((li, index) => {
+                    // Clear any existing value attribute
+                    li.removeAttribute('value');
+                });
+            });
+            
+            return tempDiv.innerHTML;
+        }
+
         // Dictionary Management Functions
         function buildSearchIndex() {
             searchIndex = dictionary.map(item => ({
@@ -1588,6 +1613,9 @@
                     } else if (html) {
                         // Clean the HTML to remove external styles and ensure our CSS applies
                         processedHtml = cleanPastedHtml(html);
+                        
+                        // FIX: Handle ordered lists to ensure proper numbering
+                        processedHtml = handleOrderedListPaste(processedHtml);
                     } else {
                         // Fallback to plain text with proper line break handling
                         // Split by newlines and process each line
