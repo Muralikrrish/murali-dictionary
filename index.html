@@ -741,7 +741,7 @@
             transform: rotate(90deg);
         }
 
-        /* IMPROVED: Using transform for smoother toggle animation */
+        /* IMPROVED: Using transform for smoother toggle animation - REMOVED INNER CONTAINER */
         .toggle-content {
             overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -755,7 +755,6 @@
             max-height: 1000px;
             opacity: 1;
             transform: translateY(0);
-            padding: 20px;
         }
 
         /* NEW: Special styling for h3 at the top of toggle content */
@@ -893,10 +892,6 @@
             /* Mobile toggle adjustments */
             .toggle-header {
                 padding: 14px 16px;
-            }
-            
-            .toggle-content.expanded {
-                padding: 16px;
             }
         }
 
