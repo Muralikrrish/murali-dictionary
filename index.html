@@ -716,7 +716,8 @@
             overflow: hidden;
         }
 
-        .toggle-header::before {
+        /* REMOVED: The ::before element that created the vertical orange line */
+        /* .toggle-header::before {
             content: '';
             position: absolute;
             top: 0;
@@ -726,19 +727,21 @@
             background: var(--accent-gradient);
             transform: scaleY(0);
             transition: transform 0.3s ease;
-        }
+        } */
 
         .toggle-header:hover {
             background: rgba(255, 255, 255, 0.03);
         }
 
-        .toggle-header:hover::before {
+        /* REMOVED: Hover effect for the vertical line */
+        /* .toggle-header:hover::before {
             transform: scaleY(1);
-        }
+        } */
 
-        .toggle-header.active::before {
+        /* REMOVED: Active state for the vertical line */
+        /* .toggle-header.active::before {
             transform: scaleY(1);
-        }
+        } */
 
         .toggle-title {
             flex: 1;
