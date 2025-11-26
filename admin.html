@@ -1220,12 +1220,19 @@
                 inList = false;
             };
             
-            for (let line of lines) {
-                // Trim the line to remove extra whitespace
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i];
+                // Trim the line to remove extra whitespace, but preserve empty lines for paragraph breaks
                 const trimmedLine = line.trim();
                 
                 // FIX 3: Skip empty lines, divider lines (---), and horizontal rules
                 if (trimmedLine === '' || /^---+$/.test(trimmedLine) || trimmedLine === '***' || trimmedLine === '___') {
+                    // If we're in a paragraph and hit an empty line, close the paragraph
+                    if (inParagraph && paragraphContent.trim() !== '') {
+                        closeParagraph();
+                    } else if (inList) {
+                        closeList();
+                    }
                     continue;
                 }
                 
@@ -1268,14 +1275,25 @@
                     let listItem = trimmedLine.substring(2).trim();
                     listItems.push(listItem);
                 } else {
-                    // Regular text
-                    closeList();
-                    if (!inParagraph) {
-                        inParagraph = true;
-                        paragraphContent = trimmedLine;
+                    // Regular text - check if this looks like a numbered list item (e.g., "Mistake 1:")
+                    const numberedItemMatch = trimmedLine.match(/^(\d+\.\s|[\w\s]+\d+:\s)/);
+                    
+                    if (numberedItemMatch) {
+                        // This looks like a numbered list item or a heading-like pattern
+                        closeParagraph();
+                        closeList();
+                        // Treat it as a heading (h3) for better structure
+                        html += `<h3>${trimmedLine}</h3>`;
                     } else {
-                        // Add a space between lines in the same paragraph
-                        paragraphContent += ' ' + trimmedLine;
+                        // Regular paragraph text
+                        closeList();
+                        if (!inParagraph) {
+                            inParagraph = true;
+                            paragraphContent = line; // Use original line to preserve spacing
+                        } else {
+                            // Add a line break between lines in the same paragraph
+                            paragraphContent += '<br>' + line;
+                        }
                     }
                 }
             }
@@ -1529,8 +1547,40 @@
                         // Clean the HTML to remove external styles and ensure our CSS applies
                         processedHtml = cleanPastedHtml(html);
                     } else {
-                        // Fallback to plain text with line breaks preserved and proper styling
-                        processedHtml = `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${text.replace(/\n/g, '<br>')}</p>`;
+                        // Fallback to plain text with proper line break handling
+                        // Split by newlines and process each line
+                        const lines = text.split('\n');
+                        let paragraphs = [];
+                        let currentParagraph = [];
+                        
+                        for (let line of lines) {
+                            const trimmedLine = line.trim();
+                            if (trimmedLine === '') {
+                                // Empty line indicates paragraph break
+                                if (currentParagraph.length > 0) {
+                                    paragraphs.push(currentParagraph.join('<br>'));
+                                    currentParagraph = [];
+                                }
+                            } else {
+                                currentParagraph.push(trimmedLine);
+                            }
+                        }
+                        
+                        // Add the last paragraph if it exists
+                        if (currentParagraph.length > 0) {
+                            paragraphs.push(currentParagraph.join('<br>'));
+                        }
+                        
+                        // If we have multiple paragraphs, wrap each in <p> tags
+                        if (paragraphs.length > 1) {
+                            processedHtml = paragraphs.map(p => `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${p}</p>`).join('');
+                        } else if (paragraphs.length === 1) {
+                            // Single paragraph
+                            processedHtml = `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${paragraphs[0]}</p>`;
+                        } else {
+                            // Empty content
+                            processedHtml = '';
+                        }
                     }
                     
                     // Convert H2 elements to toggles
