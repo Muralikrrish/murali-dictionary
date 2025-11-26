@@ -682,6 +682,69 @@
             animation: shimmer 1.5s infinite;
         }
 
+        /* UPDATED: Modern toggle styles without inner containers */
+        .toggle-section {
+            margin: 1.5em 0;
+        }
+
+        .toggle-header {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 12px 0;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 22px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .toggle-header:hover {
+            color: var(--text-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .toggle-icon {
+            margin-right: 12px;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            color: var(--accent-primary);
+            min-width: 16px;
+        }
+
+        .toggle-header.active .toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .toggle-content {
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .toggle-content.expanded {
+            max-height: 5000px;
+            opacity: 1;
+            padding-top: 16px;
+        }
+
+        /* Special styling for h3 at the top of toggle content */
+        .toggle-content > h3:first-child {
+            margin-top: 0.15em !important;
+            margin-bottom: 0.15em !important;
+        }
+
+        /* Increased top margin for h3 that are not at the top */
+        .toggle-content h3:not(:first-child) {
+            margin-top: 1em !important;
+            margin-bottom: 0.15em !important;
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -781,6 +844,7 @@
             .definition-fade { height: 100px; }
             .explanation-preview { max-height: 250px; }
             .explanation-fade { height: 70px; }
+            .toggle-header { font-size: 20px; }
 
             /* Ensure all normal text is consistent on mobile */
             .word-definition, 
@@ -800,6 +864,15 @@
             .word-definition p, 
             .word-definition li {
                 font-size: 16px !important;
+            }
+
+            /* Mobile toggle adjustments */
+            .toggle-header {
+                padding: 10px 0;
+            }
+            
+            .toggle-content.expanded {
+                padding-top: 12px;
             }
         }
 
@@ -843,6 +916,7 @@
             }
             .interactive-card { padding: 20px 15px; }
             .container { padding: 0 15px; }
+            .toggle-header { font-size: 18px; padding: 8px 0; }
         }
 
         @media (min-width: 769px) {
@@ -1097,8 +1171,8 @@
         let gkQuizQuestions = [], currentGkQuizQuestion = null, selectedGkQuizAnswer = null;
         let gkQuizAnswered = false, gkQuestionDisplayed = false;
 
-        // MODIFIED: Function to convert H2 elements to simple headings (no toggles)
-        function convertH2ToHeadings(htmlString) {
+        // UPDATED: Function to convert H2 elements to toggle elements without inner containers
+        function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
             const h2Elements = doc.querySelectorAll('h2');
@@ -1110,9 +1184,75 @@
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1).toLowerCase();
                     h2.textContent = headingText;
                 }
+                
+                // Create the toggle section
+                const toggleSection = document.createElement('div');
+                toggleSection.className = 'toggle-section';
+                
+                // Create the toggle header
+                const toggleHeader = document.createElement('button');
+                toggleHeader.className = 'toggle-header';
+                toggleHeader.innerHTML = `
+                    <span class="toggle-icon">▶</span>
+                    <span class="toggle-title">${h2.innerHTML}</span>
+                `;
+                
+                // Create the toggle content
+                const toggleContent = document.createElement('div');
+                toggleContent.className = 'toggle-content';
+                
+                // Move all next siblings until the next h2 into the toggle content
+                let nextSibling = h2.nextElementSibling;
+                while (nextSibling && nextSibling.tagName !== 'H2') {
+                    const temp = nextSibling;
+                    nextSibling = nextSibling.nextElementSibling;
+                    toggleContent.appendChild(temp);
+                }
+                
+                // If no content was found, add a placeholder
+                if (toggleContent.children.length === 0) {
+                    toggleContent.innerHTML = '<p>No content available.</p>';
+                }
+                
+                // Add click event to toggle header
+                toggleHeader.addEventListener('click', function(e) {
+                    // Prevent the click event from bubbling up
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    this.classList.toggle('active');
+                    toggleContent.classList.toggle('expanded');
+                });
+                
+                // Replace the h2 with the toggle structure
+                toggleSection.appendChild(toggleHeader);
+                toggleSection.appendChild(toggleContent);
+                h2.parentNode.replaceChild(toggleSection, h2);
             });
             
             return doc.body.innerHTML;
+        }
+
+        // UPDATED: Function to activate toggle functionality in the main page
+        function activateTogglesInPage() {
+            const toggleHeaders = document.querySelectorAll('.toggle-header');
+            
+            toggleHeaders.forEach(header => {
+                // Remove any existing event listeners to prevent duplicates
+                const newHeader = header.cloneNode(true);
+                header.parentNode.replaceChild(newHeader, header);
+                
+                // Add click event to the new header
+                newHeader.addEventListener('click', function(e) {
+                    // Prevent the click event from bubbling up
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('expanded');
+                });
+            });
         }
 
         function toggleExplanationExpansion(button, explanationId) {
@@ -1468,8 +1608,8 @@
         }
 
         function createExpandableDefinition(definitionHTML) {
-            // MODIFIED: Convert H2 elements to simple headings (no toggles)
-            const convertedDefinition = convertH2ToHeadings(definitionHTML);
+            // UPDATED: Convert H2 elements to toggles without inner containers
+            const convertedDefinition = convertH2ToToggles(definitionHTML);
             
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = convertedDefinition;
@@ -1531,6 +1671,9 @@
             
             const randomIndex = Math.floor(Math.random() * dictionary.length);
             ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
+            
+            // UPDATED: Activate toggle functionality after displaying
+            setTimeout(activateTogglesInPage, 0);
         }
 
         function showNewRandomWord() {
@@ -1538,6 +1681,9 @@
                 const ws = document.getElementById('wordSpotlightDisplay');
                 const randomIndex = Math.floor(Math.random() * dictionary.length);
                 ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
+                
+                // UPDATED: Activate toggle functionality after showing new word
+                setTimeout(activateTogglesInPage, 0);
                 
                 document.querySelector('.modern-section:nth-of-type(4)').scrollIntoView({behavior:'smooth',block:'start'});
             }
@@ -1628,13 +1774,16 @@
             } else {
                 let html = '';
                 matches.forEach(item => {
-                    // MODIFIED: Convert H2 elements to simple headings for search results
-                    const convertedDefinition = convertH2ToHeadings(item.definition);
+                    // UPDATED: Convert H2 elements to toggles without inner containers for search results
+                    const convertedDefinition = convertH2ToToggles(item.definition);
                     html += `<div class="interactive-card">
                                 <div class="word-definition">${convertedDefinition}</div>
                              </div>`;
                 });
                 wordsList.innerHTML = html;
+                
+                // UPDATED: Activate toggle functionality for search results
+                setTimeout(activateTogglesInPage, 0);
             }
             
             searchResultsSection.classList.add('show');
