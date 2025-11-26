@@ -690,6 +690,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            width: 100%;
         }
 
         .toggle-section:hover {
@@ -702,7 +703,7 @@
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            padding: 18px 20px;
+            padding: 18px 0;
             border: none;
             background: none;
             width: 100%;
@@ -793,12 +794,39 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             max-height: 0;
             opacity: 0;
+            width: 100%;
         }
 
         .toggle-content.expanded {
             max-height: 5000px;
             opacity: 1;
-            padding: 0 20px 20px;
+            padding: 0 0 20px;
+        }
+
+        /* Ensure content inside toggles has same width as regular content */
+        .toggle-content .word-definition {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        .toggle-content .word-definition > * {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        /* Remove any extra padding/margin from content inside toggles */
+        .toggle-content p,
+        .toggle-content ul,
+        .toggle-content ol,
+        .toggle-content li,
+        .toggle-content div:not(.toggle-section) {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            max-width: 100% !important;
+            width: 100% !important;
         }
 
         /* Special styling for h3 at the top of toggle content */
@@ -912,7 +940,7 @@
             .definition-fade { height: 100px; }
             .explanation-preview { max-height: 250px; }
             .explanation-fade { height: 70px; }
-            .toggle-header { font-size: 16px; padding: 15px; }
+            .toggle-header { font-size: 16px; padding: 15px 0; }
 
             /* Ensure all normal text is consistent on mobile */
             .word-definition, 
@@ -936,11 +964,11 @@
 
             /* Mobile toggle adjustments */
             .toggle-header {
-                padding: 15px;
+                padding: 15px 0;
             }
             
             .toggle-content.expanded {
-                padding: 0 15px 15px;
+                padding: 0 0 15px;
             }
         }
 
@@ -984,8 +1012,8 @@
             }
             .interactive-card { padding: 20px 15px; }
             .container { padding: 0 15px; }
-            .toggle-header { font-size: 16px; padding: 12px; }
-            .toggle-content.expanded { padding: 0 12px 12px; }
+            .toggle-header { font-size: 16px; padding: 12px 0; }
+            .toggle-content.expanded { padding: 0 0 12px; }
         }
 
         @media (min-width: 769px) {
@@ -1240,35 +1268,50 @@
         let gkQuizQuestions = [], currentGkQuizQuestion = null, selectedGkQuizAnswer = null;
         let gkQuizAnswered = false, gkQuestionDisplayed = false;
 
-        // NEW: Sound effects for toggle interactions
-        const toggleSounds = {
-            expand: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA=="),
-            collapse: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==")
-        };
+        // NEW: Improved sound effects for toggle interactions
+        let audioContext = null;
+        let currentOscillator = null;
 
-        // NEW: Function to play toggle sound
+        // NEW: Function to play toggle sound with proper cleanup
         function playToggleSound(expand) {
-            // Simple beep sounds using Web Audio API
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.value = expand ? 600 : 400;
-                gainNode.gain.value = 0.1;
-                
-                oscillator.start();
-                setTimeout(() => {
-                    oscillator.stop();
-                    audioContext.close();
-                }, 100);
-            } catch(e) {
-                console.log("Audio not supported");
+            // Create audio context if it doesn't exist
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
+            
+            // Resume audio context if it's suspended (required by some browsers)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            // Stop any currently playing sound
+            if (currentOscillator) {
+                currentOscillator.stop();
+                currentOscillator.disconnect();
+                currentOscillator = null;
+            }
+            
+            // Create new oscillator
+            currentOscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            currentOscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            currentOscillator.type = 'sine';
+            currentOscillator.frequency.value = expand ? 600 : 400;
+            gainNode.gain.value = 0.1;
+            
+            currentOscillator.start();
+            
+            // Stop after 100ms
+            setTimeout(() => {
+                if (currentOscillator) {
+                    currentOscillator.stop();
+                    currentOscillator.disconnect();
+                    currentOscillator = null;
+                }
+            }, 100);
         }
 
         // UPDATED: Function to convert H2 elements to toggle elements with modern design
