@@ -682,66 +682,110 @@
             animation: shimmer 1.5s infinite;
         }
 
-        /* MODERN TOGGLE STYLES - CLEAN DESIGN */
+        /* UPDATED: Modern toggle styles with improved design and animation */
         .toggle-section {
             margin: 1.5em 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .toggle-section:hover {
+            border-color: rgba(255, 107, 53, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .toggle-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             cursor: pointer;
-            padding: 16px 0;
+            padding: 18px 20px;
             border: none;
             background: none;
             width: 100%;
             text-align: left;
             color: var(--text-primary);
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 600;
             transition: all 0.3s ease;
             position: relative;
-        }
-
-        .toggle-header:hover {
-            color: var(--accent-primary);
+            overflow: hidden;
         }
 
         .toggle-header::before {
             content: '';
             position: absolute;
+            top: 0;
             left: 0;
-            bottom: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent-primary);
-            transition: width 0.3s ease;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-gradient);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-header:hover {
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .toggle-header:hover::before {
-            width: 100%;
+            transform: scaleY(1);
         }
 
-        .toggle-indicator {
-            margin-right: 16px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 16px;
-            color: var(--accent-primary);
-            min-width: 20px;
+        .toggle-header.active::before {
+            transform: scaleY(1);
+        }
+
+        .toggle-title {
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .toggle-icon {
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
-        .toggle-indicator::before {
-            content: '+';
-            font-weight: 300;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .toggle-icon::before, .toggle-icon::after {
+            content: '';
+            position: absolute;
+            background-color: var(--accent-primary);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
         }
 
-        .toggle-header.active .toggle-indicator::before {
-            content: '−';
-            transform: rotate(0deg);
+        .toggle-icon::before {
+            width: 12px;
+            height: 2px;
+        }
+
+        .toggle-icon::after {
+            width: 2px;
+            height: 12px;
+        }
+
+        .toggle-header.active .toggle-icon {
+            background: var(--accent-primary);
+            transform: rotate(180deg);
+        }
+
+        .toggle-header.active .toggle-icon::before {
+            background-color: white;
+        }
+
+        .toggle-header.active .toggle-icon::after {
+            transform: rotate(90deg);
+            opacity: 0;
         }
 
         .toggle-content {
@@ -749,14 +793,12 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             max-height: 0;
             opacity: 0;
-            transform: translateY(-10px);
         }
 
         .toggle-content.expanded {
             max-height: 5000px;
             opacity: 1;
-            transform: translateY(0);
-            padding-top: 16px;
+            padding: 0 20px 20px;
         }
 
         /* Special styling for h3 at the top of toggle content */
@@ -870,7 +912,7 @@
             .definition-fade { height: 100px; }
             .explanation-preview { max-height: 250px; }
             .explanation-fade { height: 70px; }
-            .toggle-header { font-size: 20px; }
+            .toggle-header { font-size: 16px; padding: 15px; }
 
             /* Ensure all normal text is consistent on mobile */
             .word-definition, 
@@ -894,11 +936,11 @@
 
             /* Mobile toggle adjustments */
             .toggle-header {
-                padding: 12px 0;
+                padding: 15px;
             }
             
             .toggle-content.expanded {
-                padding-top: 12px;
+                padding: 0 15px 15px;
             }
         }
 
@@ -942,8 +984,8 @@
             }
             .interactive-card { padding: 20px 15px; }
             .container { padding: 0 15px; }
-            .toggle-header { font-size: 18px; padding: 10px 0; }
-            .toggle-indicator { margin-right: 12px; font-size: 14px; }
+            .toggle-header { font-size: 16px; padding: 12px; }
+            .toggle-content.expanded { padding: 0 12px 12px; }
         }
 
         @media (min-width: 769px) {
@@ -1198,7 +1240,38 @@
         let gkQuizQuestions = [], currentGkQuizQuestion = null, selectedGkQuizAnswer = null;
         let gkQuizAnswered = false, gkQuestionDisplayed = false;
 
-        // UPDATED: Function to convert H2 elements to modern toggle elements
+        // NEW: Sound effects for toggle interactions
+        const toggleSounds = {
+            expand: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA=="),
+            collapse: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==")
+        };
+
+        // NEW: Function to play toggle sound
+        function playToggleSound(expand) {
+            // Simple beep sounds using Web Audio API
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.value = expand ? 600 : 400;
+                gainNode.gain.value = 0.1;
+                
+                oscillator.start();
+                setTimeout(() => {
+                    oscillator.stop();
+                    audioContext.close();
+                }, 100);
+            } catch(e) {
+                console.log("Audio not supported");
+            }
+        }
+
+        // UPDATED: Function to convert H2 elements to toggle elements with modern design
         function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
@@ -1220,8 +1293,8 @@
                 const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
                 toggleHeader.innerHTML = `
-                    <span class="toggle-indicator"></span>
                     <span class="toggle-title">${h2.innerHTML}</span>
+                    <span class="toggle-icon"></span>
                 `;
                 
                 // Create the toggle content
@@ -1241,14 +1314,30 @@
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
                 
-                // Add click event to toggle header
+                // Add click event to toggle header with accordion behavior
                 toggleHeader.addEventListener('click', function(e) {
                     // Prevent the click event from bubbling up
                     e.stopPropagation();
                     e.preventDefault();
                     
+                    const isActive = this.classList.contains('active');
+                    
+                    // NEW: Close all other toggles in the same container
+                    const allToggleHeaders = document.querySelectorAll('.toggle-header');
+                    allToggleHeaders.forEach(header => {
+                        if (header !== this && header.classList.contains('active')) {
+                            header.classList.remove('active');
+                            header.nextElementSibling.classList.remove('expanded');
+                            playToggleSound(false); // Play collapse sound
+                        }
+                    });
+                    
+                    // Toggle current toggle
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
+                    
+                    // NEW: Play appropriate sound
+                    playToggleSound(!isActive);
                 });
                 
                 // Replace the h2 with the toggle structure
@@ -1269,15 +1358,31 @@
                 const newHeader = header.cloneNode(true);
                 header.parentNode.replaceChild(newHeader, header);
                 
-                // Add click event to the new header
+                // Add click event to the new header with accordion behavior
                 newHeader.addEventListener('click', function(e) {
                     // Prevent the click event from bubbling up
                     e.stopPropagation();
                     e.preventDefault();
                     
+                    const isActive = this.classList.contains('active');
+                    
+                    // NEW: Close all other toggles in the same container
+                    const allToggleHeaders = document.querySelectorAll('.toggle-header');
+                    allToggleHeaders.forEach(header => {
+                        if (header !== this && header.classList.contains('active')) {
+                            header.classList.remove('active');
+                            header.nextElementSibling.classList.remove('expanded');
+                            playToggleSound(false); // Play collapse sound
+                        }
+                    });
+                    
+                    // Toggle current toggle
                     this.classList.toggle('active');
                     const content = this.nextElementSibling;
                     content.classList.toggle('expanded');
+                    
+                    // NEW: Play appropriate sound
+                    playToggleSound(!isActive);
                 });
             });
         }
@@ -1635,7 +1740,7 @@
         }
 
         function createExpandableDefinition(definitionHTML) {
-            // UPDATED: Convert H2 elements to modern toggles
+            // UPDATED: Convert H2 elements to toggles with modern design
             const convertedDefinition = convertH2ToToggles(definitionHTML);
             
             const tempDiv = document.createElement('div');
@@ -1801,7 +1906,7 @@
             } else {
                 let html = '';
                 matches.forEach(item => {
-                    // UPDATED: Convert H2 elements to modern toggles for search results
+                    // UPDATED: Convert H2 elements to toggles with modern design for search results
                     const convertedDefinition = convertH2ToToggles(item.definition);
                     html += `<div class="interactive-card">
                                 <div class="word-definition">${convertedDefinition}</div>
