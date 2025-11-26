@@ -682,7 +682,7 @@
             animation: shimmer 1.5s infinite;
         }
 
-        /* MODERN TOGGLE STYLES - FIXED VERSION */
+        /* MODERN TOGGLE STYLES - IMPROVED VERSION */
         .toggle-wrapper {
             margin: 1.5em 0;
             border: 1px solid var(--border-color);
@@ -741,16 +741,20 @@
             transform: rotate(90deg);
         }
 
-        /* FIXED: Using height and transform for smoother toggle animation */
+        /* IMPROVED: Using transform for smoother toggle animation */
         .toggle-content {
-            height: 0;
             overflow: hidden;
-            transition: height 0.4s cubic-bezier(0.2, 0.6, 0.3, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--bg-secondary);
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
         }
 
         .toggle-content.expanded {
-            height: auto;
+            max-height: 1000px;
+            opacity: 1;
+            transform: translateY(0);
             padding: 20px;
         }
 
@@ -1198,28 +1202,10 @@
             
             h2Elements.forEach(h2 => {
                 // Format the heading text if it's all caps
-                // Format the heading text if it's all caps or title case
                 let headingText = h2.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
-                    // Convert from ALL CAPS to sentence case (only first letter of first word capitalized)
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1).toLowerCase();
                     h2.textContent = headingText;
-                } else {
-                    // For title case (each word capitalized), convert to sentence case
-                    // Check if it's in title case (each word starts with capital)
-                    const words = headingText.split(' ');
-                    const isTitleCase = words.length > 0 && words.every(word => 
-                        word.length > 0 && word[0] === word[0].toUpperCase()
-                    );
-    
-                    if (isTitleCase && words.length > 1) {
-                        // Convert to sentence case - only first word's first letter capitalized
-                        headingText = words[0].charAt(0).toUpperCase() + 
-                                     words[0].slice(1).toLowerCase() + 
-                                     ' ' + 
-                                     words.slice(1).join(' ').toLowerCase();
-                        h2.textContent = headingText;
-                    }
                 }
                 
                 // Create the toggle wrapper
@@ -1259,13 +1245,6 @@
                     
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
-                    
-                    // NEW: Fix for smooth toggle animation
-                    if (toggleContent.classList.contains('expanded')) {
-                        toggleContent.style.height = toggleContent.scrollHeight + 'px';
-                    } else {
-                        toggleContent.style.height = '0';
-                    }
                 });
                 
                 // Replace the h2 with the toggle structure
@@ -1295,13 +1274,6 @@
                     this.classList.toggle('active');
                     const content = this.nextElementSibling;
                     content.classList.toggle('expanded');
-                    
-                    // NEW: Fix for smooth toggle animation
-                    if (content.classList.contains('expanded')) {
-                        content.style.height = content.scrollHeight + 'px';
-                    } else {
-                        content.style.height = '0';
-                    }
                 });
             });
         }
