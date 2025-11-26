@@ -479,12 +479,20 @@
             color: var(--text-muted);
         }
 
-        /* FIXED: Toggle styles for H2 elements - now adapts to content length */
+        /* IMPROVED: Modern toggle styles with better animations */
         .toggle-wrapper {
             margin: 1em 0;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden;
+            background: var(--bg-secondary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .toggle-wrapper:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.15);
         }
 
         .toggle-header {
@@ -495,16 +503,16 @@
             padding: 12px 16px;
             background: var(--bg-tertiary);
             border: none;
-            color: var(--text-secondary); /* Changed to match normal text */
-            font-size: 16px; /* Changed to match normal text */
-            font-weight: 500; /* Changed to match normal text weight */
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .toggle-header:hover {
-            background: var(--bg-secondary); /* More subtle hover effect */
-            color: var(--text-primary); /* Slight color change on hover for visibility */
+            background: var(--bg-secondary);
+            color: var(--text-primary);
         }
 
         .toggle-header:focus {
@@ -513,27 +521,30 @@
         }
 
         .toggle-icon {
-            transition: transform 0.3s;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 14px;
-            color: var(--text-secondary); /* Make icon match text color */
+            color: var(--text-secondary);
         }
 
         .toggle-header.active .toggle-icon {
             transform: rotate(90deg);
         }
 
+        /* IMPROVED: Using transform for smoother toggle animation */
         .toggle-content {
-            max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-out;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             background: var(--bg-secondary);
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
         }
 
         .toggle-content.expanded {
-            /* Use a very large max-height to accommodate any content */
-            max-height: 10000px;
+            max-height: 1000px;
+            opacity: 1;
+            transform: translateY(0);
             padding: 16px;
-            transition: max-height 0.8s ease-in;
         }
 
         .toggle-content > * {
@@ -1084,7 +1095,6 @@
             }
         }
 
-        // NEW: Function to convert H2 elements to toggle elements
         // NEW: Function to convert H2 elements to toggle elements
         function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
