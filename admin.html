@@ -1711,7 +1711,7 @@
                     word: word,
                     definition: definition,
                     dateAdded: new Date().toISOString(),
-                    dateModified = new Date().toISOString()
+                    dateModified: new Date().toISOString()  // FIXED: This was using = instead of :
                 };
                 dictionary.push(newWord);
                 
