@@ -31,7 +31,7 @@
 
             /* Text Colors */
             --text-main: #f8fafc;
-            --text-bright-dim: #cbd5e1; /* Dimmed slightly (Slate 300) for Bold/H3 */
+            --text-bright-dim: #cbd5e1;
             --text-muted: #94a3b8;
             --text-header: #64748b;
 
@@ -89,7 +89,7 @@
             66% { transform: translate(-30px, 30px) scale(0.9); }
         }
 
-        /* --- Background Icons (Modern & Colorful) --- */
+        /* --- Background Icons --- */
         .bg-decoration {
             position: fixed;
             top: 0;
@@ -99,6 +99,7 @@
             z-index: -1;
             pointer-events: none;
             overflow: hidden;
+            transition: top 0.3s ease;
         }
 
         .bg-icon {
@@ -339,12 +340,12 @@
             scroll-margin-top: 80px;
         }
         
-        /* Desktop Hover: Only applies on devices that support hover */
+        /* HOVER: Only for devices that support it, preventing sticky hover on mobile */
         @media (hover: hover) {
             .toggle-header:hover { color: var(--primary); }
         }
         
-        /* Active State (Open) - Always Gold */
+        /* ACTIVE: Gold color only when open */
         .toggle-header.active { color: var(--primary); }
 
         .toggle-icon {
@@ -566,8 +567,11 @@
         @media (max-width: 768px) {
             .hero-title { font-size: 3rem; }
             
-            /* Mobile Optimization: Reduce top padding for hero title */
+            /* Mobile: Reduce top padding */
             .hero-section { padding-top: 60px; }
+            
+            /* Mobile: Pan background icons up */
+            .bg-decoration { top: -15%; }
             
             .container { padding: 0 16px; }
             .interactive-card { padding: 24px; }
@@ -578,21 +582,23 @@
                 justify-content: center;
             }
             
-            /* Mobile Optimization: Expand height for toggles to show full text */
+            /* Mobile: Larger height for full text in toggles */
             .toggle-content.expanded { max-height: 8000px; } 
             
-            /* Mobile Optimization: Heading 1 font size reduction */
+            /* Mobile: Smaller & Tighter Line Height */
+            .word-definition { line-height: 1.5; }
+            .word-definition p { margin-bottom: 1em; }
             .word-definition h1 { font-size: 2rem; }
             
-            /* Mobile Optimization: Quiz Questions smaller and dimmer */
+            /* Mobile: Quiz Questions smaller and dimmer */
             .question-text {
                 font-size: 1.15rem;
                 color: var(--text-muted);
             }
             
-            /* Mobile Optimization: Search Box Padding */
-            .search-input-wrapper { padding: 0 10px; }
-            .search-box input { padding: 16px 8px; }
+            /* Mobile: Search Box Padding Fix */
+            .search-input-wrapper { padding: 0 12px; }
+            .search-box input { padding: 14px 8px; }
         }
     </style>
 </head>
@@ -935,11 +941,13 @@
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
 
-                    // Immediate clean scroll to top
                     if (!isActive) {
-                        requestAnimationFrame(() => {
-                            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        });
+                        // Improved Scroll for Mobile
+                        setTimeout(() => {
+                            const yOffset = -80; 
+                            const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                            window.scrollTo({top: y, behavior: 'smooth'});
+                        }, 300);
                     }
                 });
                 
@@ -973,9 +981,11 @@
                     content.classList.toggle('expanded');
 
                     if (!isActive) {
-                        requestAnimationFrame(() => {
-                            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        });
+                        setTimeout(() => {
+                            const yOffset = -80; 
+                            const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                            window.scrollTo({top: y, behavior: 'smooth'});
+                        }, 300);
                     }
                 });
             });
