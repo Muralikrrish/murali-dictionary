@@ -340,12 +340,10 @@
             scroll-margin-top: 80px;
         }
         
-        /* HOVER: Only for devices that support it, preventing sticky hover on mobile */
         @media (hover: hover) {
             .toggle-header:hover { color: var(--primary); }
         }
         
-        /* ACTIVE: Gold color only when open */
         .toggle-header.active { color: var(--primary); }
 
         .toggle-icon {
@@ -366,7 +364,7 @@
         .toggle-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
             padding: 0;
             opacity: 0.7;
             position: relative;
@@ -566,13 +564,8 @@
         /* --- Mobile Responsive --- */
         @media (max-width: 768px) {
             .hero-title { font-size: 3rem; }
-            
-            /* Mobile: Reduce top padding */
             .hero-section { padding-top: 60px; }
-            
-            /* Mobile: Pan background icons up */
             .bg-decoration { top: -15%; }
-            
             .container { padding: 0 16px; }
             .interactive-card { padding: 24px; }
             .modern-section-title { font-size: 1.5rem; }
@@ -581,22 +574,11 @@
             .quiz-action-buttons, .explanation-read-more-container, .read-more-container {
                 justify-content: center;
             }
-            
-            /* Mobile: Larger height for full text in toggles */
             .toggle-content.expanded { max-height: 8000px; } 
-            
-            /* Mobile: Smaller & Tighter Line Height */
             .word-definition { line-height: 1.5; }
             .word-definition p { margin-bottom: 1em; }
             .word-definition h1 { font-size: 2rem; }
-            
-            /* Mobile: Quiz Questions smaller and dimmer */
-            .question-text {
-                font-size: 1.15rem;
-                color: var(--text-muted);
-            }
-            
-            /* Mobile: Search Box Padding Fix */
+            .question-text { font-size: 1.15rem; color: var(--text-muted); }
             .search-input-wrapper { padding: 0 12px; }
             .search-box input { padding: 14px 8px; }
         }
@@ -865,15 +847,15 @@
                 osc.start(now);
                 osc.stop(now + 0.4);
             } else if (type === 'wrong') {
-                // Low, dissonant thud (Sawtooth)
-                osc.type = 'sawtooth';
+                // Low, descended Sine (Thud)
+                osc.type = 'sine';
                 osc.frequency.setValueAtTime(150, now);
-                osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+                osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
                 gainNode.gain.setValueAtTime(0, now);
-                gainNode.gain.linearRampToValueAtTime(0.08, now + 0.02);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                gainNode.gain.linearRampToValueAtTime(0.15, now + 0.02);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
                 osc.start(now);
-                osc.stop(now + 0.3);
+                osc.stop(now + 0.2);
             }
         }
 
@@ -942,12 +924,12 @@
                     toggleContent.classList.toggle('expanded');
 
                     if (!isActive) {
-                        // Improved Scroll for Mobile (only if opening)
+                        // Improved Scroll for Mobile & Desktop - Delayed just enough to let layout settle
                         setTimeout(() => {
                             const yOffset = -80; 
                             const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
                             window.scrollTo({top: y, behavior: 'smooth'});
-                        }, 50); // Short delay to allow browser to register opening
+                        }, 400); 
                     }
                 });
                 
@@ -985,7 +967,7 @@
                             const yOffset = -80; 
                             const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
                             window.scrollTo({top: y, behavior: 'smooth'});
-                        }, 50);
+                        }, 400);
                     }
                 });
             });
