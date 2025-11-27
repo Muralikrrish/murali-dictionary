@@ -4,90 +4,152 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Pearls of Knowledge</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #0f1117;
-            --bg-secondary: #1a1d28;
-            --bg-tertiary: #232838;
-            --accent-primary: #ff6b35;
-            --accent-secondary: #ff8e35;
-            --accent-gradient: linear-gradient(135deg, #ff6b35, #ff8e35);
-            --text-primary: #f0f2fc;
-            --text-secondary: #b8c0e0;
-            --text-muted: #6b728c;
-            --border-color: #2a3042;
-            --success-color: #4caf50;
-            --error-color: #f44336;
-            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            --section-spacing: 60px;
+            /* Theme: Deep Navy & Saffron (Matching index.html) */
+            --bg-deep: #0f172a;
+            --bg-surface: rgba(30, 41, 59, 0.75);
+            
+            /* Glass Effects */
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.05);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --backdrop-blur: blur(16px);
+
+            /* Accents */
+            --primary: #fbbf24; /* Amber-400 */
+            --primary-dim: #d97706;
+            --primary-glow: rgba(251, 191, 36, 0.25);
+            
+            --secondary: #38bdf8; /* Sky-400 */
+            --accent-gradient: linear-gradient(135deg, #fbbf24, #f59e0b);
+            
+            --success: #34d399;
+            --error: #f87171;
+            --warning: #fbbf24;
+
+            /* Text Colors */
+            --text-main: #f8fafc;
+            --text-bright-dim: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-header: #64748b;
+
+            /* Spacing */
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+            position: relative;
             overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        /* --- Ambient Background --- */
+        .ambient-light {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+            pointer-events: none;
         }
 
-        /* Login Screen Styles */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .orb-1 { top: -20%; left: -10%; width: 70vw; height: 70vw; background: radial-gradient(circle, #1e293b 0%, transparent 70%); animation-delay: 0s; }
+        .orb-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #334155 0%, transparent 70%); animation-delay: -5s; }
+        .orb-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%); animation-delay: -10s; opacity: 0.3; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -60px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+
+        /* --- Background Icons --- */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-icon {
+            position: absolute;
+            opacity: 0.08;
+            font-size: 2rem;
+        }
+
+        .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; }
+        .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; }
+        .icon-3 { bottom: 25%; left: 10%; font-size: 6rem; transform: rotate(5deg); color: #34d399; }
+        .icon-4 { bottom: 15%; right: 8%; font-size: 4.5rem; transform: rotate(-20deg); color: #f472b6; }
+        .icon-5 { top: 45%; left: 3%; font-size: 3rem; transform: rotate(30deg); color: #a78bfa; }
+        .icon-6 { top: 55%; right: 5%; font-size: 3.5rem; transform: rotate(-10deg); color: #fb7185; }
+        .icon-7 { top: 8%; left: 45%; font-size: 2.5rem; transform: rotate(45deg); color: #94a3b8; opacity: 0.06; }
+        .icon-8 { bottom: 40%; right: 40%; font-size: 8rem; transform: rotate(0deg); color: #1e293b; opacity: 0.3; z-index: -2; }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Login Screen --- */
         .login-wrapper {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-            position: relative;
-        }
-
-        .login-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 70% 20%, rgba(224, 117, 84, 0.08) 0%, transparent 60%);
-            z-index: 0;
         }
 
         .login-container {
-            background: var(--bg-secondary);
+            background: var(--bg-surface);
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
             width: 100%;
             max-width: 400px;
             animation: slideUp 0.4s ease;
-            position: relative;
-            z-index: 1;
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-header {
@@ -100,8 +162,10 @@
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 8px;
-            color: var(--text-primary);
-            letter-spacing: 0.02em;
+            background: linear-gradient(to bottom, #f8fafc 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
         }
 
         .login-header p {
@@ -112,7 +176,8 @@
         .lock-icon {
             font-size: 48px;
             margin-bottom: 20px;
-            color: var(--accent-primary);
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary-glow);
         }
 
         .login-form-group {
@@ -121,7 +186,7 @@
 
         .login-form-group label {
             display: block;
-            color: var(--text-primary);
+            color: var(--text-bright-dim);
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 14px;
@@ -129,740 +194,482 @@
 
         .login-form-group input {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
+            padding: 14px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
             font-size: 16px;
             transition: all 0.3s ease;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
         }
 
         .login-form-group input:focus {
             outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            background: rgba(255, 255, 255, 0.06);
         }
 
         .login-button {
             width: 100%;
             padding: 14px;
-            background: var(--accent-gradient);
-            color: white;
+            background: var(--text-main);
+            color: var(--bg-deep);
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .login-button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.5);
-        }
-
-        .login-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+            background: white;
         }
 
         .error-message {
-            background: rgba(244, 67, 54, 0.1);
-            color: var(--error-color);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
             padding: 12px;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             margin-bottom: 20px;
             font-size: 14px;
             text-align: center;
             display: none;
             animation: shake 0.4s ease;
-            border: 1px solid var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
-        .error-message.show {
-            display: block;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
+        .error-message.show { display: block; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
         /* Hide login when authenticated */
-        body.authenticated .login-wrapper {
-            display: none;
-        }
-
-        body.authenticated {
-            background: var(--bg-primary);
-        }
+        body.authenticated .login-wrapper { display: none; }
 
         /* Admin Content Styles */
-        .admin-content {
-            display: none;
-        }
-
-        .admin-content.unlocked {
-            display: block;
-        }
+        .admin-content { display: none; padding: 40px 0 80px; }
+        .admin-content.unlocked { display: block; }
 
         /* Modern Section Styling */
         .modern-section {
-            margin-bottom: var(--section-spacing);
+            margin-bottom: 40px;
             position: relative;
         }
 
         .modern-section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 15px;
-            position: relative;
-            display: inline-block;
-            padding: 3px 16px 3px 8px;
-            background: var(--accent-gradient);
-            clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
-            box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .modern-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--glass-border), transparent);
         }
 
         .modern-section-title .word-count {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            font-weight: 500;
-            margin-left: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            opacity: 0.7;
+            color: var(--primary);
         }
 
         .interactive-card {
-            background: var(--bg-secondary);
-            border-radius: 20px;
+            background: var(--bg-surface);
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
             padding: 30px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .interactive-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.3s ease;
         }
 
         /* Form Styling */
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .form-group { margin-bottom: 24px; }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--text-bright-dim);
             font-size: 14px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 15px;
+            padding: 14px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            font-size: 16px;
             transition: border-color 0.3s;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
         }
 
-        .form-group input::placeholder {
-            color: var(--text-muted);
-        }
-
+        .form-group input::placeholder { color: var(--text-muted); }
+        
         .form-group input:focus {
             outline: none;
-            border-color: var(--accent-primary);
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 15px var(--primary-glow);
         }
 
+        /* Editor Toolbar */
         .editor-toolbar {
             display: flex;
-            gap: 5px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 0;
             flex-wrap: wrap;
-            padding: 10px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px 6px 0 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
             align-items: center;
         }
 
         .editor-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
             padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
             transition: all 0.2s;
-            color: var(--text-primary);
+            color: var(--text-main);
         }
 
         .editor-btn:hover {
-            background: var(--accent-primary);
-            color: var(--bg-primary);
-            border-color: var(--accent-primary);
+            background: var(--primary);
+            color: var(--bg-deep);
+            border-color: var(--primary);
         }
 
         .font-size-dropdown {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
             padding: 8px 12px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--text-main);
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .font-size-dropdown:focus {
-            outline: none;
-            border-color: var(--accent-primary);
+        .font-size-dropdown option {
+            background: var(--bg-deep);
+            color: var(--text-main);
         }
 
-        /* Updated Editor Content Styles with consistent font sizing */
+        /* Editor Content */
         .editor-content {
             width: 100%;
             min-height: 400px;
             max-height: 500px;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 0 0 6px 6px;
-            border-top: none;
+            padding: 20px;
+            border: 1px solid var(--glass-border);
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
             font-size: 16px;
             overflow-y: auto;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-weight: 500;
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-muted);
+            line-height: 1.7;
             white-space: normal;
             word-wrap: break-word;
-            word-spacing: -0.05em;
         }
 
-        /* Force consistent font sizes for all content */
-        .editor-content,
-        .editor-content *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
-            font-size: 16px !important;
-            line-height: 1.6 !important;
-            color: var(--text-secondary) !important;
-        }
-
-        /* Reset any nested elements to inherit proper styling */
-        .editor-content div,
-        .editor-content span,
-        .editor-content p {
-            font-size: 16px !important;
-            line-height: 1.6 !important;
-            color: var(--text-secondary) !important;
-        }
-
-        /* Ensure list items maintain consistent styling */
-        .editor-content ul, 
-        .editor-content ol {
-            margin: 0.5em 0;
-            padding-left: 1.5em;
-        }
-
-        .editor-content li {
-            margin: 0.25em 0;
-            line-height: 1.45 !important;
-            color: var(--text-secondary) !important;
-            font-size: 16px !important;
-        }
-
-        /* Ensure ordered lists display proper numbering */
-        .editor-content ol {
-            list-style-type: decimal;
-            margin: 0.5em 0;
-            padding-left: 1.5em;
-        }
-
-        .editor-content ol li {
-            margin: 0.25em 0;
-            line-height: 1.45 !important;
-            color: var(--text-secondary) !important;
-            font-size: 16px !important;
-            list-style-type: decimal;
-            display: list-item;
-        }
-
-        /* Heading styles remain as they are but ensure they're not overridden */
-        .editor-content h1 {
-            font-size: 25px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 0.15em 0;
-            line-height: 1.3;
-        }
-
-        .editor-content h2 {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-        }
-
-        .editor-content h3 {
-            font-size: 20px !important;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-        }
-
-        .editor-content h4 {
-            font-size: 18px !important;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.15em 0;
-            line-height: 1.3;
-        }
-
-        .editor-content h5 {
-            font-size: 16px !important;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.4em 0;
-            line-height: 1.3;
-        }
-
-        .editor-content h6 {
-            font-size: 14px !important;
-            font-weight: 700;
-            color: var(--text-secondary);
-            margin: 1em 0 0.4em 0;
-            line-height: 1.3;
-        }
-
-        .editor-content p {
-            font-size: 16px;
-            margin: 0.75em 0;
-            line-height: 1.6;
-            color: var(--text-secondary);
-        }
-
-        .editor-content strong, .editor-content b {
-            font-weight: 700;
-            color: var(--text-secondary);
-        }
-
-        .editor-content em, .editor-content i {
-            font-style: italic;
-        }
-
-        .editor-content u {
-            text-decoration: underline;
-        }
-
-        /* Custom scrollbar styling */
-        .editor-content::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .editor-content::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-            border-radius: 4px;
-        }
-
-        .editor-content::-webkit-scrollbar-thumb {
-            background: var(--accent-primary);
-            border-radius: 4px;
-        }
-
-        .editor-content::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-secondary);
-        }
-
-        .editor-content:focus {
-            outline: none;
-        }
+        /* Force consistent editor typography */
+        .editor-content h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--text-main); margin: 0.2em 0; }
+        .editor-content h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text-main); margin: 1.5em 0 0.8em; }
+        .editor-content h3 { font-weight: 700; color: var(--text-bright-dim); font-size: 1.3rem; margin: 1.2em 0 0.6em; }
+        .editor-content p { margin-bottom: 1.5em; }
+        .editor-content strong, .editor-content b { color: var(--text-bright-dim); font-weight: 700; }
+        .editor-content ul, .editor-content ol { padding-left: 20px; margin: 16px 0; }
+        .editor-content li { margin-bottom: 8px; }
 
         .editor-content[contenteditable="true"]:empty:before {
             content: attr(placeholder);
             color: var(--text-muted);
+            font-style: italic;
         }
 
-        /* IMPROVED: Modern toggle styles with better animations */
+        /* Modern Toggle Styles (Matching Index) */
         .toggle-wrapper {
-            margin: 1em 0;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            background: var(--bg-secondary);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .toggle-wrapper:hover {
-            border-color: var(--accent-primary);
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.15);
+            border: none;
+            background: transparent;
+            margin: 16px 0;
+            border-radius: 0;
+            width: 100%;
         }
 
         .toggle-header {
             width: 100%;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            background: var(--bg-tertiary);
+            justify-content: flex-start;
+            padding: 16px 0;
+            background: transparent;
             border: none;
-            color: var(--text-secondary);
-            font-size: 16px;
-            font-weight: 500;
+            color: var(--text-header);
+            font-size: 1.2rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-align: left;
+            transition: color 0.3s ease;
+            gap: 16px;
         }
 
-        .toggle-header:hover {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-
-        .toggle-header:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.3);
-        }
+        .toggle-header:hover, .toggle-header.active { color: var(--primary); }
 
         .toggle-icon {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 14px;
-            color: var(--text-secondary);
+            font-size: 0.9rem;
+            color: inherit;
+            transition: transform 0.3s ease;
+            margin-right: 4px;
+            flex-shrink: 0;
         }
 
-        .toggle-header.active .toggle-icon {
-            transform: rotate(90deg);
-        }
+        .toggle-header.active .toggle-icon { transform: rotate(90deg); }
 
-        /* IMPROVED: Using transform for smoother toggle animation */
         .toggle-content {
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: var(--bg-secondary);
-            max-height: 0;
-            opacity: 0;
-            transform: translateY(-10px);
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+            padding: 0;
+            opacity: 0.7;
         }
 
         .toggle-content.expanded {
-            max-height: 1000px;
+            max-height: 2000px;
             opacity: 1;
-            transform: translateY(0);
-            padding: 16px;
+            padding-bottom: 24px;
+        }
+        
+        .toggle-content.expanded::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: var(--primary);
+            margin-top: 24px;
+            margin-bottom: 8px;
+            opacity: 0.2;
         }
 
-        .toggle-content > * {
-            font-size: 16px !important;
-            line-height: 1.6 !important;
-            color: var(--text-secondary) !important;
-        }
-
-        /* NEW: Reduced margin for h3 elements inside toggle content */
-        .toggle-content h3 {
-            margin-top: 0.33em !important;
-            margin-bottom: 0.15em !important;
-        }
-
+        /* Main Add Button */
         .btn {
-            background: var(--accent-gradient);
-            color: white;
+            background: var(--text-main);
+            color: var(--bg-deep);
             border: none;
             padding: 14px 28px;
-            border-radius: 6px;
+            border-radius: 50px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 16px;
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+            background: white;
         }
 
         .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--accent-primary);
-            border: 2px solid var(--accent-primary);
-            margin-top: 10px;
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: none;
         }
 
-        .info-box {
-            background: var(--bg-tertiary);
-            padding: 20px;
-            border-radius: 6px;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--text-muted);
-            border-left: 3px solid var(--accent-primary);
-            animation: fadeIn 0.6s ease;
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(251, 191, 36, 0.1);
         }
 
-        .success-box {
-            background: rgba(76, 175, 80, 0.1);
-            padding: 20px;
-            border-radius: 6px;
-            margin-top: 20px;
-            font-size: 14px;
-            color: var(--success-color);
-            border-left: 3px solid var(--success-color);
-            animation: fadeIn 0.6s ease;
-            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-        }
-
+        /* Quick Add & Edit Lists */
         .edit-result-item, .quick-add-result-item {
-            background: var(--bg-tertiary);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 16px;
             margin-bottom: 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
         .edit-result-item:hover, .quick-add-result-item:hover {
-            background: var(--bg-secondary);
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary);
+            transform: translateX(4px);
         }
 
         .edit-result-word, .quick-add-result-word {
             font-weight: 700;
-            color: var(--text-primary);
+            color: var(--text-main);
             margin-bottom: 5px;
             font-size: 16px;
         }
-
-        #editSearchResults, #quickAddSearchResults {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 10px;
+        
+        .edit-result-definition {
+            color: var(--text-muted);
+            font-size: 14px;
         }
 
-        #quickAddList {
+        #editSearchResults, #quickAddSearchResults, #quickAddList {
             max-height: 300px;
             overflow-y: auto;
             margin-top: 15px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
+        }
+
+        #quickAddList {
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-md);
             padding: 10px;
-            min-height: 60px;
         }
 
         .quick-add-item {
-            background: var(--bg-secondary);
+            background: rgba(255, 255, 255, 0.03);
             padding: 12px 15px;
             margin-bottom: 8px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             gap: 10px;
         }
 
         .quick-add-word {
-            color: var(--text-primary);
+            color: var(--text-main);
             font-weight: 600;
-            font-size: 15px;
-            word-break: break-word;
-            flex: 1;
         }
 
         .quick-add-remove {
-            background: var(--error-color);
-            color: white;
-            border: none;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+            border: 1px solid var(--error);
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
 
         .quick-add-remove:hover {
-            background: #d32f2f;
-            transform: translateY(-1px);
+            background: var(--error);
+            color: white;
         }
-
-        .quick-add-warning {
-            color: var(--warning-color);
-            font-size: 13px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .quick-add-empty {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
+        
+        /* Quick Add Controls */
         .quick-add-controls {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 16px;
         }
-
+        
         .quick-add-btn {
-            background: var(--accent-primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            fontWeight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
             flex: 1;
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
         }
-
+        
         .quick-add-btn:hover {
-            background: var(--accent-secondary);
+            background: white;
             transform: translateY(-2px);
         }
-
+        
         .quick-add-refresh {
-            background: var(--bg-secondary);
-            color: var(--accent-primary);
-            border: 2px solid var(--accent-primary);
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.2);
         }
-
+        
         .quick-add-refresh:hover {
-            background: var(--accent-primary);
-            color: white;
+            background: rgba(255,255,255,0.05);
+            border-color: var(--text-main);
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .info-box, .success-box {
+            padding: 16px;
+            border-radius: var(--radius-md);
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .info-box {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive adjustments */
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            .login-container {
-                padding: 30px 20px;
-            }
+            .container { padding: 0 16px; }
+            .interactive-card { padding: 24px; }
+            .modern-section-title { font-size: 1.5rem; }
+            .orb { opacity: 0.25; }
+            .main-content { padding-top: 20px; }
+            .login-container { padding: 30px 20px; }
             
-            .login-header h1 {
-                font-size: 2rem;
-            }
-            
-            .interactive-card {
-                padding: 20px;
-            }
-            
-            .modern-section-title {
-                font-size: 1.1rem;
-            }
-
-            /* Ensure all normal text is consistent on mobile */
-            .editor-content, 
-            .editor-content *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
-                font-size: 16px !important;
-            }
-            
-            .editor-content h1 { font-size: 24px; }
-            .editor-content h2 { font-size: 22px; }
-            .editor-content h3 { font-size: 20px !important; }
-            .editor-content h4 { font-size: 18px !important; }
-            .editor-content h5 { font-size: 17px !important; }
-            .editor-content h6 { font-size: 16px !important; }
-            
-            /* Ensure all normal text is consistent */
-            .editor-content, 
-            .editor-content p, 
-            .editor-content li {
-                font-size: 16px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 25px 15px;
-            }
-            
-            .login-header h1 {
-                font-size: 1.8rem;
-            }
-            
-            .interactive-card {
-                padding: 20px 15px;
-            }
-            
-            .container {
-                padding: 0 15px;
-            }
-            
-            .modern-section {
-                margin-bottom: 40px;
-            }
-
-            /* Further adjustments for very small screens */
-            .editor-content h1 { font-size: 23px; }
-            .editor-content h2 { font-size: 21px; }
-            .editor-content h3 { font-size: 19px !important; }
-        }
-
-        .main-content {
-            padding: 40px 0 60px;
-        }
-
-        @media (min-width: 768px) {
-            .main-content {
-                display: grid;
-                grid-template-columns: 1fr;
-                gap: 32px;
-                align-items: start;
-            }
-
-            .editor-content { 
-                font-size: 16px; /* Keep consistent on desktop too */
-                line-height: 1.6; 
-            }
-            
-            /* Only headings get larger on desktop */
-            .editor-content h1 { font-size: 2.2rem; margin: 0.2em 0; }
-            .editor-content h2 { font-size: 1.9rem; margin: 1.2em 0 0.2em 0; }
-            .editor-content h3 { font-size: 1.7rem !important; margin: 1.2em 0 0.2em 0; }
-            .editor-content h4 { font-size: 1.5rem !important; margin: 1.2em 0 0.2em 0; }
-            .editor-content h5 { font-size: 1.3rem !important; margin: 1.2em 0 0.4em 0; }
-            .editor-content h6 { font-size: 1.2rem !important; margin: 1.2em 0 0.4em 0; }
-            
-            /* Normal text remains consistent */
-            .editor-content p, 
-            .editor-content li,
-            .editor-content *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
-                font-size: 16px !important;
-            }
+            .editor-content h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
+    <!-- Ambient Background -->
+    <div class="ambient-light">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Background Icons -->
+    <div class="bg-decoration">
+        <i class="fas fa-book-open bg-icon icon-1"></i>
+        <i class="fas fa-lightbulb bg-icon icon-2"></i>
+        <i class="fas fa-brain bg-icon icon-3"></i>
+        <i class="fas fa-pen-nib bg-icon icon-4"></i>
+        <i class="fas fa-atom bg-icon icon-5"></i>
+        <i class="fas fa-globe-americas bg-icon icon-6"></i>
+        <i class="fas fa-dna bg-icon icon-7"></i>
+        <i class="fas fa-quote-left bg-icon icon-8"></i>
+    </div>
+
     <!-- Login Screen -->
     <div class="login-wrapper">
         <div class="login-container">
@@ -906,7 +713,7 @@
                             <div class="form-group">
                                 <label for="wordInput">Word</label>
                                 <input type="text" id="wordInput" required placeholder="Enter word" oninput="updateDefinitionHeader(); checkExistingWord()" onkeyup="autoLowerCase(this)" onpaste="handlePaste(event)">
-                                <div id="wordWarning" style="color:#f39c12;font-size:13px;margin-top:5px;display:none">⚠️ This word already exists</div>
+                                <div id="wordWarning" style="color:var(--warning);font-size:13px;margin-top:8px;display:none">⚠️ This word already exists</div>
                             </div>
                             <div class="form-group">
                                 <label for="definitionInput">Definition</label>
@@ -932,23 +739,7 @@
                     </div>
                 </div>
 
-                <div class="modern-section">
-                    <h2 class="modern-section-title">Quick Add <span id="quickAddCount">(0)</span></h2>
-                    <div class="interactive-card">
-                        <div class="form-group">
-                            <label for="quickAddSearch">Search Word</label>
-                            <input type="text" id="quickAddSearch" placeholder="Type a word..." oninput="searchWordsForQuickAdd()">
-                            <div id="quickAddWarning" class="quick-add-warning">⚠️ Word exists</div>
-                        </div>
-                        <div class="quick-add-controls">
-                            <button class="quick-add-btn" onclick="addToQuickList()">Add to List</button>
-                            <button class="quick-add-btn quick-add-refresh" onclick="refreshQuickList()">Refresh</button>
-                        </div>
-                        <div id="quickAddSearchResults"></div>
-                        <div id="quickAddList"><div class="quick-add-empty">No words yet</div></div>
-                    </div>
-                </div>
-
+                <!-- Edit Word Section -->
                 <div class="modern-section">
                     <h2 class="modern-section-title">Edit Word</h2>
                     <div class="interactive-card">
@@ -957,6 +748,24 @@
                             <input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()">
                         </div>
                         <div id="editSearchResults"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Add Section -->
+                <div class="modern-section">
+                    <h2 class="modern-section-title">Quick Add <span id="quickAddCount">(0)</span></h2>
+                    <div class="interactive-card">
+                        <div class="form-group">
+                            <label for="quickAddSearch">Search Word</label>
+                            <input type="text" id="quickAddSearch" placeholder="Type a word..." oninput="searchWordsForQuickAdd()">
+                            <div id="quickAddWarning" style="color:var(--warning);font-size:13px;margin-top:8px;display:none">⚠️ Word exists</div>
+                        </div>
+                        <div class="quick-add-controls">
+                            <button class="quick-add-btn" onclick="addToQuickList()">Add to List</button>
+                            <button class="quick-add-btn quick-add-refresh" onclick="refreshQuickList()">Refresh</button>
+                        </div>
+                        <div id="quickAddSearchResults"></div>
+                        <div id="quickAddList"><div class="quick-add-empty" style="color:var(--text-muted);text-align:center;">No words yet</div></div>
                     </div>
                 </div>
 
@@ -1070,22 +879,19 @@
             initializeAdmin();
         }
 
-        // NEW: Auto lowercase functions for word input
         function autoLowerCase(input) {
             input.value = input.value.toLowerCase();
         }
 
         function handlePaste(event) {
-            // Allow the paste to happen first
             setTimeout(() => {
                 const input = event.target;
                 input.value = input.value.toLowerCase();
-                updateDefinitionHeader(); // Update the definition header after paste
-                checkExistingWord(); // Check if word exists after paste
+                updateDefinitionHeader(); 
+                checkExistingWord(); 
             }, 0);
         }
 
-        // NEW: Update definition header with word in h1 style
         function updateDefinitionHeader() {
             const wordInput = document.getElementById('wordInput');
             const editor = document.getElementById('definitionInput');
@@ -1095,55 +901,60 @@
                 return;
             }
 
-            // Capitalize first letter
             let capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
             
-            // Check if the editor's first child is an h1
             let firstChild = editor.firstChild;
             if (firstChild && firstChild.nodeType === Node.ELEMENT_NODE && firstChild.tagName === 'H1') {
-                // Update the existing h1
                 firstChild.textContent = capitalizedWord;
             } else {
-                // Create a new h1 and insert it at the beginning
                 let h1 = document.createElement('h1');
                 h1.textContent = capitalizedWord;
                 editor.insertBefore(h1, editor.firstChild);
             }
         }
 
-        // NEW: Function to convert H2 elements to toggle elements
+        // UPDATED Toggle Logic: Remove all H1s, Remove FIRST H2, convert others to COLLAPSED toggles
         function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
+            
+            // 1. Remove all H1s
+            const h1Elements = doc.querySelectorAll('h1');
+            h1Elements.forEach(h1 => h1.remove());
+
+            // 2. Remove the FIRST H2 found in the pasted text
+            const firstH2 = doc.querySelector('h2');
+            if (firstH2) {
+                firstH2.remove();
+            }
+
+            // 3. Convert remaining H2s to toggles (Collapsed by default)
             const h2Elements = doc.querySelectorAll('h2');
     
             h2Elements.forEach(h2 => {
-                // Format the heading text if it's all caps
+                // Format heading text
                 let headingText = h2.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
-                    // Convert to lowercase first, then only capitalize the first letter of the entire string
                     headingText = headingText.toLowerCase();
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1);
                     h2.textContent = headingText;
                 }
         
-            // Create the toggle wrapper
                 const toggleWrapper = document.createElement('div');
                 toggleWrapper.className = 'toggle-wrapper';
         
-                // Create the toggle header
                 const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
+                // Modern Chevron Icon (Not active by default)
                 toggleHeader.innerHTML = `
-                    <span>${h2.innerHTML}</span>
-                    <span class="toggle-icon">▶</span>
+                    <i class="fas fa-chevron-right toggle-icon"></i>
+                    <span class="toggle-title">${h2.innerHTML}</span>
                 `;
         
-                // Create the toggle content
                 const toggleContent = document.createElement('div');
                 toggleContent.className = 'toggle-content';
+                // Note: No 'expanded' class added here -> Collapsed by default
         
-                // Move all next siblings until the next h2 into the toggle content
                 let nextSibling = h2.nextElementSibling;
                 while (nextSibling && nextSibling.tagName !== 'H2') {
                     const temp = nextSibling;
@@ -1151,14 +962,11 @@
                     toggleContent.appendChild(temp);
                 }
         
-                // If no content was found, add a placeholder
                 if (toggleContent.children.length === 0) {
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
         
-                // Add click event to toggle header
                 toggleHeader.addEventListener('click', function(e) {
-                    // FIX 1: Prevent the click event from bubbling up to the form
                     e.stopPropagation();
                     e.preventDefault();
             
@@ -1166,7 +974,6 @@
                     toggleContent.classList.toggle('expanded');
                 });
         
-                // Replace the h2 with the toggle structure
                 toggleWrapper.appendChild(toggleHeader);
                 toggleWrapper.appendChild(toggleContent);
                 h2.parentNode.replaceChild(toggleWrapper, h2);
@@ -1175,19 +982,15 @@
             return doc.body.innerHTML;
         }
 
-        // NEW: Function to activate toggle functionality in the editor
         function activateTogglesInEditor() {
             const editor = document.getElementById('definitionInput');
             const toggleHeaders = editor.querySelectorAll('.toggle-header');
             
             toggleHeaders.forEach(header => {
-                // Remove any existing event listeners to prevent duplicates
                 const newHeader = header.cloneNode(true);
                 header.parentNode.replaceChild(newHeader, header);
                 
-                // Add click event to the new header
                 newHeader.addEventListener('click', function(e) {
-                    // FIX 1: Prevent the click event from bubbling up to the form
                     e.stopPropagation();
                     e.preventDefault();
                     
@@ -1198,9 +1001,7 @@
             });
         }
 
-        // NEW: Enhanced function to convert markdown-style content to HTML when pasting
         function processMarkdownContent(text) {
-            // Split the text into lines
             const lines = text.split('\n');
             let html = '';
             let inParagraph = false;
@@ -1210,10 +1011,8 @@
             let inOrderedList = false;
             let orderedListItems = [];
             
-            // Function to close a paragraph if one is open
             const closeParagraph = () => {
                 if (inParagraph && paragraphContent.trim() !== '') {
-                    // Process bold formatting in paragraph content
                     paragraphContent = paragraphContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                     paragraphContent = paragraphContent.replace(/__(.*?)__/g, '<strong>$1</strong>');
                     html += `<p>${paragraphContent}</p>`;
@@ -1222,12 +1021,10 @@
                 paragraphContent = '';
             };
             
-            // Function to close a list if one is open
             const closeList = () => {
                 if (inList && listItems.length > 0) {
                     html += '<ul>';
                     listItems.forEach(item => {
-                        // Process bold formatting in list items
                         item = item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                         item = item.replace(/__(.*?)__/g, '<strong>$1</strong>');
                         html += `<li>${item}</li>`;
@@ -1238,12 +1035,10 @@
                 inList = false;
             };
             
-            // Function to close an ordered list if one is open
             const closeOrderedList = () => {
                 if (inOrderedList && orderedListItems.length > 0) {
                     html += '<ol>';
                     orderedListItems.forEach(item => {
-                        // Process bold formatting in list items
                         item = item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                         item = item.replace(/__(.*?)__/g, '<strong>$1</strong>');
                         html += `<li>${item}</li>`;
@@ -1256,93 +1051,52 @@
             
             for (let i = 0; i < lines.length; i++) {
                 let line = lines[i];
-                // Trim the line to remove extra whitespace, but preserve empty lines for paragraph breaks
                 const trimmedLine = line.trim();
                 
-                // Skip empty lines, divider lines (---), and horizontal rules
-                // ... inside processMarkdownContent function ...
-
-                // Skip empty lines, divider lines (---), and horizontal rules
                 if (trimmedLine === '' || /^---+$/.test(trimmedLine) || trimmedLine === '***' || trimmedLine === '___') {
-                    // If we're in a paragraph and hit an empty line, close the paragraph
                     if (inParagraph && paragraphContent.trim() !== '') {
                         closeParagraph();
                     } 
-                    // FIX: Removed the checks that close lists (inList/inOrderedList) here.
-                    // Now, empty lines simply keep the list open until a non-list line appears.
                     continue;
                 }
-
-// ... rest of the function ...
                 
-                // Check for markdown-style headings (only actual markdown headings with #)
                 if (trimmedLine.startsWith('# ')) {
-                    closeParagraph();
-                    closeList();
-                    closeOrderedList();
-                    // H1: Remove the '# ' and wrap in h1 tags
+                    closeParagraph(); closeList(); closeOrderedList();
                     html += `<h1>${trimmedLine.substring(2)}</h1>`;
                 } else if (trimmedLine.startsWith('## ')) {
-                    closeParagraph();
-                    closeList();
-                    closeOrderedList();
-                    // H2: Remove the '## ' and wrap in h2 tags
+                    closeParagraph(); closeList(); closeOrderedList();
                     html += `<h2>${trimmedLine.substring(3)}</h2>`;
                 } else if (trimmedLine.startsWith('### ')) {
-                    closeParagraph();
-                    closeList();
-                    closeOrderedList();
-                    // H3: Remove the '### ' and wrap in h3 tags
+                    closeParagraph(); closeList(); closeOrderedList();
                     html += `<h3>${trimmedLine.substring(4)}</h3>`;
                 } else if (trimmedLine.startsWith('#### ')) {
-                    closeParagraph();
-                    closeList();
-                    closeOrderedList();
-                    // H4: Remove the '#### ' and wrap in h4 tags
+                    closeParagraph(); closeList(); closeOrderedList();
                     html += `<h4>${trimmedLine.substring(5)}</h4>`;
                 } else if (trimmedLine.startsWith('##### ')) {
-                    closeParagraph();
-                    closeList();
-                    closeOrderedList();
-                    // H5: Remove the '##### ' and wrap in h5 tags
+                    closeParagraph(); closeList(); closeOrderedList();
                     html += `<h5>${trimmedLine.substring(6)}</h5>`;
                 } else if (trimmedLine.startsWith('###### ')) {
-                    closeParagraph();
-                    closeList();
-                    closeOrderedList();
-                    // H6: Remove the '###### ' and wrap in h6 tags
+                    closeParagraph(); closeList(); closeOrderedList();
                     html += `<h6>${trimmedLine.substring(7)}</h6>`;
                 } else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
-                    // Unordered list item
-                    closeParagraph();
-                    closeOrderedList();
+                    closeParagraph(); closeOrderedList();
                     inList = true;
-                    // Remove the bullet and trim
-                    let listItem = trimmedLine.substring(2).trim();
-                    listItems.push(listItem);
+                    listItems.push(trimmedLine.substring(2).trim());
                 } else if (/^\d+\.\s/.test(trimmedLine)) {
-                    // Ordered list item (starts with number followed by period and space)
-                    closeParagraph();
-                    closeList();
+                    closeParagraph(); closeList();
                     inOrderedList = true;
-                    // Remove the number and period, then trim - the browser will handle the numbering automatically
-                    let listItem = trimmedLine.replace(/^\d+\.\s/, '').trim();
-                    orderedListItems.push(listItem);
+                    orderedListItems.push(trimmedLine.replace(/^\d+\.\s/, '').trim());
                 } else {
-                    // Regular text - treat everything else as normal paragraph text
-                    closeList();
-                    closeOrderedList();
+                    closeList(); closeOrderedList();
                     if (!inParagraph) {
                         inParagraph = true;
-                        paragraphContent = line; // Use original line to preserve spacing
+                        paragraphContent = line; 
                     } else {
-                        // Add a line break between lines in the same paragraph
                         paragraphContent += '<br>' + line;
                     }
                 }
             }
             
-            // Close any remaining open paragraph or list
             closeParagraph();
             closeList();
             closeOrderedList();
@@ -1350,29 +1104,23 @@
             return html;
         }
 
-        // NEW: Function to clean and normalize pasted HTML content
         function cleanPastedHtml(html) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-            
-            // Remove all horizontal divider elements
             const hrElements = doc.querySelectorAll('hr');
             hrElements.forEach(hr => hr.remove());
             
-            // Remove all style and class attributes to ensure our CSS applies
             const allElements = doc.querySelectorAll('*');
             allElements.forEach(el => {
                 el.removeAttribute('style');
                 el.removeAttribute('class');
                 
-                // Force consistent font size for all text elements except headings
                 if (!['H1','H2','H3','H4','H5','H6'].includes(el.tagName)) {
                     el.style.fontSize = '16px';
                     el.style.lineHeight = '1.6';
                     el.style.color = 'var(--text-secondary)';
                 }
                 
-                // Ensure text has proper color and styling
                 if (el.tagName === 'P' || el.tagName === 'SPAN' || el.tagName === 'DIV') {
                     if (!el.hasAttribute('style')) {
                         el.style.color = 'var(--text-secondary)';
@@ -1385,7 +1133,6 @@
             return doc.body.innerHTML;
         }
 
-        // Dictionary Management Functions
         function buildSearchIndex() {
             searchIndex = dictionary.map(item => ({
                 id: item.id,
@@ -1417,7 +1164,6 @@
                 const { createClient } = supabase;
                 supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 
-                // Test the connection
                 const { data, error } = await supabaseClient
                     .from('dictionary')
                     .select('id')
@@ -1472,7 +1218,6 @@
             
             if (isSupabaseConfigured && supabaseInitialized) {
                 try {
-                    // Get the latest word (assuming it's the last one in the array)
                     const latestWord = dictionary[dictionary.length - 1];
                     
                     const { error } = await supabaseClient
@@ -1488,8 +1233,6 @@
                         });
                     
                     if (error) throw error;
-                    
-                    console.log('Successfully saved to Supabase:', latestWord);
                 } catch(error) {
                     console.error('Save error:', error);
                     alert('Failed to save to cloud: ' + error.message);
@@ -1511,8 +1254,6 @@
                     .eq('id', word.id);
                 
                 if (error) throw error;
-                
-                console.log('Successfully updated in Supabase:', word);
             } catch(error) {
                 console.error('Update error:', error);
                 alert('Failed to update word in cloud: ' + error.message);
@@ -1533,7 +1274,6 @@
             warning.style.display = exists ? 'block' : 'none';
         }
 
-        // Fixed Text Formatting Functions
         function formatText(command, value = null) {
             document.execCommand(command, false, value);
             document.getElementById('definitionInput').focus();
@@ -1571,29 +1311,22 @@
             }
         }
 
-        // Handle paste events to preserve formatting and line breaks
         document.addEventListener('DOMContentLoaded', function() {
             const editor = document.getElementById('definitionInput');
             if (editor) {
                 editor.addEventListener('paste', function(e) {
                     e.preventDefault();
                     
-                    // Get pasted text with formatting preserved
                     const html = (e.clipboardData || window.clipboardData).getData('text/html');
                     const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                     
                     let processedHtml = '';
                     
-                    // Check if the content contains markdown-style elements
                     if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
-                        // Process markdown content
                         processedHtml = processMarkdownContent(text);
                     } else if (html) {
-                        // Clean the HTML to remove external styles and ensure our CSS applies
                         processedHtml = cleanPastedHtml(html);
                     } else {
-                        // Fallback to plain text with proper line break handling
-                        // Split by newlines and process each line
                         const lines = text.split('\n');
                         let paragraphs = [];
                         let currentParagraph = [];
@@ -1601,7 +1334,6 @@
                         for (let line of lines) {
                             const trimmedLine = line.trim();
                             if (trimmedLine === '') {
-                                // Empty line indicates paragraph break
                                 if (currentParagraph.length > 0) {
                                     paragraphs.push(currentParagraph.join('<br>'));
                                     currentParagraph = [];
@@ -1610,66 +1342,46 @@
                                 currentParagraph.push(trimmedLine);
                             }
                         }
-                        
-                        // Add the last paragraph if it exists
                         if (currentParagraph.length > 0) {
                             paragraphs.push(currentParagraph.join('<br>'));
                         }
                         
-                        // If we have multiple paragraphs, wrap each in <p> tags
                         if (paragraphs.length > 1) {
                             processedHtml = paragraphs.map(p => `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${p}</p>`).join('');
                         } else if (paragraphs.length === 1) {
-                            // Single paragraph
                             processedHtml = `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${paragraphs[0]}</p>`;
                         } else {
-                            // Empty content
                             processedHtml = '';
                         }
                     }
                     
-                    // Convert H2 elements to toggles
                     processedHtml = convertH2ToToggles(processedHtml);
-                    
-                    // Insert the processed HTML
                     document.execCommand('insertHTML', false, processedHtml);
-                    
-                    // Activate toggle functionality after pasting
                     setTimeout(activateTogglesInEditor, 0);
                 });
                 
-                // Update format dropdown when selection changes
                 editor.addEventListener('input', updateFormatDropdown);
                 editor.addEventListener('click', updateFormatDropdown);
                 editor.addEventListener('keyup', updateFormatDropdown);
             }
         });
 
-        // NEW: Improved event handling for text formatting within toggles
         function enhanceEditorFormatting() {
             const editor = document.getElementById('definitionInput');
-            
-            // Ensure formatting works within toggle content
             editor.addEventListener('click', function(e) {
-                // If clicking inside a toggle, ensure the editor maintains focus
                 if (e.target.closest('.toggle-content') || e.target.closest('.toggle-header')) {
-                    // Set focus back to editor to maintain formatting capability
                     setTimeout(() => {
                         editor.focus();
                     }, 0);
                 }
             });
             
-            // Monitor selection changes to ensure formatting works in all contexts
             document.addEventListener('selectionchange', function() {
                 const selection = window.getSelection();
                 if (selection.rangeCount > 0) {
                     const range = selection.getRangeAt(0);
                     const selectedNode = range.startContainer;
-                    
-                    // If selection is inside a toggle, ensure we can still format
                     if (selectedNode && editor.contains(selectedNode)) {
-                        // The selection is within our editor, formatting should work
                         updateFormatDropdown();
                     }
                 }
@@ -1682,7 +1394,7 @@
             const wordInput = document.getElementById('wordInput');
             const definitionInput = document.getElementById('definitionInput');
             
-            const word = wordInput.value.trim().toLowerCase(); // Ensure lowercase on submit
+            const word = wordInput.value.trim().toLowerCase(); 
             let definition = definitionInput.innerHTML.trim();
             
             if (!word || !definition) {
@@ -1690,51 +1402,37 @@
                 return;
             }
             
-            let successMessage = '';
-            
             if (editingWordId !== null) {
-                // Update existing word
                 const index = dictionary.findIndex(item => item.id === editingWordId);
                 if (index !== -1) {
                     dictionary[index].word = word;
                     dictionary[index].definition = definition;
                     dictionary[index].dateModified = new Date().toISOString();
-                    
-                    // Update in Supabase
                     if (isSupabaseConfigured && supabaseInitialized) {
                         await updateWordInSupabase(dictionary[index]);
                     }
                 }
                 editingWordId = null;
-                successMessage = 'Word updated successfully!';
             } else {
-                // Add new word
                 const newWord = {
                     id: Date.now(),
                     word: word,
                     definition: definition,
                     dateAdded: new Date().toISOString(),
-                    dateModified: new Date().toISOString()  // FIXED: This was using = instead of :
+                    dateModified: new Date().toISOString()
                 };
                 dictionary.push(newWord);
-                
-                // Save to local storage and Supabase
                 await saveDictionary();
-                successMessage = 'Word added successfully!';
             }
             
-            // Sort dictionary and update
             dictionary.sort((a, b) => a.word.localeCompare(b.word));
             buildSearchIndex();
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
             updateWordCount();
             
-            // Clear form
             wordInput.value = '';
             definitionInput.innerHTML = '';
             document.getElementById('wordWarning').style.display = 'none';
-            
-            // Success message removed - no popup confirmation
         });
 
         function editWord(id) {
@@ -1746,11 +1444,7 @@
             document.getElementById('definitionInput').innerHTML = word.definition;
             document.getElementById('editSearchInput').value = '';
             document.getElementById('editSearchResults').innerHTML = '';
-            
-            // Activate toggle functionality for existing toggles
             setTimeout(activateTogglesInEditor, 0);
-            
-            // Scroll to the top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1760,7 +1454,6 @@
             const wordIndex = dictionary.findIndex(item => item.id === id);
             if (wordIndex === -1) return;
             
-            // Delete from Supabase first
             if (isSupabaseConfigured && supabaseInitialized) {
                 try {
                     const { error } = await supabaseClient
@@ -1776,12 +1469,10 @@
                 }
             }
             
-            // Delete from local dictionary
             dictionary.splice(wordIndex, 1);
             buildSearchIndex();
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
             updateWordCount();
-            
             alert('Word deleted successfully!');
         }
 
@@ -1799,7 +1490,7 @@
             ).slice(0, 5);
             
             if (matches.length === 0) {
-                resultsDiv.innerHTML = '<div class="no-results">No matches found</div>';
+                resultsDiv.innerHTML = '<div class="no-results" style="padding:10px;color:var(--text-muted);">No matches found</div>';
                 return;
             }
             
@@ -1812,7 +1503,7 @@
                         <div class="edit-result-definition">${preview}</div>
                         <div style="margin-top: 10px; display: flex; gap: 10px;">
                             <button class="editor-btn" onclick="editWord(${item.id})" style="font-size: 12px; padding: 5px 10px;">Edit</button>
-                            <button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: var(--error-color);">Delete</button>
+                            <button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: rgba(239, 68, 68, 0.2); color: var(--error);">Delete</button>
                         </div>
                     </div>
                 `;
@@ -1840,7 +1531,7 @@
 
         function addToQuickList() {
             const input = document.getElementById('quickAddSearch');
-            const word = input.value.trim().toLowerCase(); // Ensure lowercase
+            const word = input.value.trim().toLowerCase();
             
             if (!word) return;
             
@@ -1870,7 +1561,7 @@
             countSpan.textContent = `(${quickAddList.length})`;
             
             if (quickAddList.length === 0) {
-                listDiv.innerHTML = '<div class="quick-add-empty">No words yet</div>';
+                listDiv.innerHTML = '<div class="quick-add-empty" style="color:var(--text-muted);text-align:center;">No words yet</div>';
                 return;
             }
             
@@ -1927,18 +1618,15 @@
                     dictionary = imported;
                     buildSearchIndex();
                     
-                    // Save to Supabase
                     if (isSupabaseConfigured && supabaseInitialized) {
                         try {
-                            // Clear existing data
                             const { error: deleteError } = await supabaseClient
                                 .from('dictionary')
                                 .delete()
-                                .neq('id', 0); // Delete all records
+                                .neq('id', 0);
                             
                             if (deleteError) throw deleteError;
                             
-                            // Insert imported data
                             const supabaseData = dictionary.map(item => ({
                                 id: item.id,
                                 word: item.word,
@@ -1973,11 +1661,9 @@
             loadFromLocalStorage();
             displayQuickAddList();
             initializeSupabase();
-            // NEW: Initialize enhanced editor formatting
             enhanceEditorFormatting();
         }
 
-        // Check authentication on page load
         if (checkAuth()) {
             // Already authenticated
         }
