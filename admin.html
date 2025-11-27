@@ -1260,20 +1260,17 @@
                 const trimmedLine = line.trim();
                 
                 // Skip empty lines, divider lines (---), and horizontal rules
-                // ... inside processMarkdownContent function ...
-
-            // Skip empty lines, divider lines (---), and horizontal rules
                 if (trimmedLine === '' || /^---+$/.test(trimmedLine) || trimmedLine === '***' || trimmedLine === '___') {
                     // If we're in a paragraph and hit an empty line, close the paragraph
                     if (inParagraph && paragraphContent.trim() !== '') {
                         closeParagraph();
-                    } 
-                    // FIX: Removed the checks that close lists (inList/inOrderedList) here.
-                    // Now, empty lines simply keep the list open until a non-list line appears.
+                    } else if (inList) {
+                        closeList();
+                    } else if (inOrderedList) {
+                        closeOrderedList();
+                    }
                     continue;
                 }
-
-// ... rest of the function ...
                 
                 // Check for markdown-style headings (only actual markdown headings with #)
                 if (trimmedLine.startsWith('# ')) {
@@ -1571,59 +1568,6 @@
             }
         }
 
-        // NEW: Improved paste handler for numbered lists
-        function handleNumberedListPaste(text) {
-            // Check if the text contains numbered list items
-            const numberedListRegex = /^\d+\.\s.+$/gm;
-            if (numberedListRegex.test(text)) {
-                // Process as a numbered list
-                const lines = text.split('\n');
-                let inOrderedList = false;
-                let listItems = [];
-                let html = '';
-                
-                for (let line of lines) {
-                    const trimmedLine = line.trim();
-                    
-                    // Check if it's a numbered list item
-                    if (/^\d+\.\s/.test(trimmedLine)) {
-                        if (!inOrderedList) {
-                            // Start a new ordered list
-                            html += '<ol>';
-                            inOrderedList = true;
-                        }
-                        // Extract the content after the number
-                        const content = trimmedLine.replace(/^\d+\.\s/, '');
-                        // Process bold formatting
-                        const processedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                        html += `<li>${processedContent}</li>`;
-                    } else {
-                        // Not a numbered list item
-                        if (inOrderedList) {
-                            // Close the current list
-                            html += '</ol>';
-                            inOrderedList = false;
-                        }
-                        
-                        // Add the line as a paragraph if it's not empty
-                        if (trimmedLine) {
-                            const processedLine = trimmedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                            html += `<p>${processedLine}</p>`;
-                        }
-                    }
-                }
-                
-                // Close any open list
-                if (inOrderedList) {
-                    html += '</ol>';
-                }
-                
-                return html;
-            }
-            
-            return null;
-        }
-
         // Handle paste events to preserve formatting and line breaks
         document.addEventListener('DOMContentLoaded', function() {
             const editor = document.getElementById('definitionInput');
@@ -1637,13 +1581,8 @@
                     
                     let processedHtml = '';
                     
-                    // First, try to handle numbered lists specifically
-                    const numberedListHtml = handleNumberedListPaste(text);
-                    if (numberedListHtml) {
-                        processedHtml = numberedListHtml;
-                    }
                     // Check if the content contains markdown-style elements
-                    else if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
+                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
                         // Process markdown content
                         processedHtml = processMarkdownContent(text);
                     } else if (html) {
