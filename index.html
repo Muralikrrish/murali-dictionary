@@ -346,18 +346,16 @@
         
         .toggle-header.active { color: var(--primary); }
 
+        /* Updated Modern Chevron Icon */
         .toggle-icon {
-            width: 12px;
-            height: 12px;
-            border-right: 2px solid currentColor;
-            border-bottom: 2px solid currentColor;
-            transform: rotate(-45deg);
+            font-size: 0.9rem;
+            color: inherit;
             transition: transform 0.3s ease;
             margin-right: 4px;
             flex-shrink: 0;
         }
         
-        .toggle-header.active .toggle-icon { transform: rotate(45deg); }
+        .toggle-header.active .toggle-icon { transform: rotate(90deg); }
 
         .toggle-title { flex: 1; }
 
@@ -806,7 +804,7 @@
         let gkQuizAnswered = false, gkQuestionDisplayed = false;
         let audioContext = null;
 
-        // Improved Audio Engine (Click, Correct, Incorrect)
+        // Consistent Audio Engine from quiz.html
         function initAudio() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -817,47 +815,24 @@
             return audioContext;
         }
 
-        function playSound(type) {
+        function playSound(frequency, duration, type = 'sine', volume = 0.3) {
             const ctx = initAudio();
             const osc = ctx.createOscillator();
             const gainNode = ctx.createGain();
             osc.connect(gainNode);
             gainNode.connect(ctx.destination);
-
-            const now = ctx.currentTime;
-
-            if (type === 'click') {
-                // Short, soft click (Triangle wave)
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(50, now + 0.1);
-                gainNode.gain.setValueAtTime(0, now);
-                gainNode.gain.linearRampToValueAtTime(0.1, now + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-                osc.start(now);
-                osc.stop(now + 0.1);
-            } else if (type === 'correct') {
-                // Pleasant major third arpeggio (Sine waves)
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, now); // C5
-                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
-                gainNode.gain.setValueAtTime(0, now);
-                gainNode.gain.linearRampToValueAtTime(0.1, now + 0.05);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-                osc.start(now);
-                osc.stop(now + 0.4);
-            } else if (type === 'wrong') {
-                // Low, descended Sine (Thud)
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(150, now);
-                osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
-                gainNode.gain.setValueAtTime(0, now);
-                gainNode.gain.linearRampToValueAtTime(0.15, now + 0.02);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-                osc.start(now);
-                osc.stop(now + 0.2);
-            }
+            osc.frequency.value = frequency;
+            osc.type = type;
+            gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + duration);
         }
+        
+        function playCorrectSound() { playSound(800, 0.1, 'sine', 0.2); }
+        function playIncorrectSound() { playSound(400, 0.15, 'sine', 0.2); }
+        function playSelectSound() { playSound(600, 0.05, 'sine', 0.1); }
+        function playNextSound() { playSound(700, 0.08, 'sine', 0.15); }
 
         function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
@@ -876,9 +851,9 @@
                 
                 const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
-                // Icon moved to LEFT - explicit order
+                // Updated Modern Chevron
                 toggleHeader.innerHTML = `
-                    <span class="toggle-icon"></span>
+                    <i class="fas fa-chevron-right toggle-icon"></i>
                     <span class="toggle-title">${h2.innerHTML}</span>
                 `;
                 
@@ -890,7 +865,6 @@
                     const temp = nextSibling;
                     nextSibling = nextSibling.nextElementSibling;
                     
-                    // Logic to detect totally quoted lines and apply class for line-height spacing
                     if (temp.tagName === 'P') {
                         const text = temp.textContent.trim();
                         if ((text.startsWith('"') && text.endsWith('"')) || 
@@ -909,7 +883,7 @@
                 toggleHeader.addEventListener('click', function(e) {
                     e.stopPropagation();
                     e.preventDefault();
-                    playSound('click'); 
+                    playSelectSound(); 
                     
                     const isActive = this.classList.contains('active');
                     const allToggleHeaders = document.querySelectorAll('.toggle-header');
@@ -924,7 +898,6 @@
                     toggleContent.classList.toggle('expanded');
 
                     if (!isActive) {
-                        // Improved Scroll for Mobile & Desktop - Delayed just enough to let layout settle
                         setTimeout(() => {
                             const yOffset = -80; 
                             const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
@@ -948,7 +921,7 @@
                 newHeader.addEventListener('click', function(e) {
                     e.stopPropagation();
                     e.preventDefault();
-                    playSound('click');
+                    playSelectSound();
                     
                     const isActive = this.classList.contains('active');
                     const allToggleHeaders = document.querySelectorAll('.toggle-header');
@@ -1197,7 +1170,7 @@
         }
 
         function selectQuizAnswer(index) {
-            playSound('click'); 
+            playSelectSound(); 
             if (quizAnswered) return;
             selectedQuizAnswer = index;
             quizAnswered = true;
@@ -1208,7 +1181,7 @@
         }
 
         function selectGkQuizAnswer(index) {
-            playSound('click'); 
+            playSelectSound(); 
             if (gkQuizAnswered) return;
             selectedGkQuizAnswer = index;
             gkQuizAnswered = true;
@@ -1220,10 +1193,8 @@
 
         function checkQuizAnswer() {
             const isCorrect = selectedQuizAnswer === currentQuizQuestion.currentCorrectAnswer;
-            
-            // Play Correct/Wrong Sound
-            if (isCorrect) playSound('correct');
-            else playSound('wrong');
+            if (isCorrect) playCorrectSound();
+            else playIncorrectSound();
 
             document.getElementById('quizExplanationText').textContent = currentQuizQuestion.explanation;
             document.getElementById('quizExplanation').classList.add('show');
@@ -1236,10 +1207,8 @@
 
         function checkGkQuizAnswer() {
             const isCorrect = selectedGkQuizAnswer === currentGkQuizQuestion.currentCorrectAnswer;
-            
-            // Play Correct/Wrong Sound
-            if (isCorrect) playSound('correct');
-            else playSound('wrong');
+            if (isCorrect) playCorrectSound();
+            else playIncorrectSound();
 
             document.getElementById('gkQuizExplanationText').textContent = currentGkQuizQuestion.explanation;
             document.getElementById('gkQuizExplanation').classList.add('show');
@@ -1255,7 +1224,6 @@
 
         function createExpandableDefinition(definitionHTML) {
             const convertedDefinition = convertH2ToToggles(definitionHTML);
-            // Return full content with the centered button
             return `
                 <div class="word-entry">
                     <div class="word-definition">${convertedDefinition}</div>
@@ -1304,7 +1272,6 @@
             searchInput.addEventListener('keydown', function(e) { if (e.key === 'Escape') autocompleteDropdown.classList.remove('show'); });
             document.addEventListener('click', function(e) { if (!e.target.closest('.search-container')) autocompleteDropdown.classList.remove('show'); });
             
-            // Mobile Auto-Scroll on Focus
             searchInput.addEventListener('focus', function() {
                 if (window.innerWidth <= 768) {
                     setTimeout(() => {
@@ -1335,7 +1302,6 @@
             displaySearchResults(word.toLowerCase());
         }
 
-        // Updated Search Result Logic: Move Search Section Above Spotlight
         function displaySearchResults(query) {
             const searchResultsSection = document.getElementById('searchResultsSection');
             const wordsList = document.getElementById('wordsList');
@@ -1348,7 +1314,6 @@
                 return; 
             }
             
-            // Move Search Results ABOVE Spotlight when active
             if (mainContent && wordSpotlightSection && searchResultsSection) {
                 mainContent.insertBefore(searchResultsSection, wordSpotlightSection);
             }
