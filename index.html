@@ -109,6 +109,13 @@
             transition: transform 0.5s ease;
         }
 
+        /* Desktop Brightness Boost (Updated to 0.20) */
+        @media (min-width: 769px) {
+            .bg-icon {
+                opacity: 0.20; 
+            }
+        }
+
         .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; } 
         .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; } 
         .icon-3 { bottom: 25%; left: 10%; font-size: 6rem; transform: rotate(5deg); color: #34d399; } 
@@ -337,6 +344,7 @@
             text-align: left;
             transition: color 0.3s ease;
             gap: 16px;
+            /* Important for scroll alignment */
             scroll-margin-top: 80px;
         }
         
@@ -346,7 +354,6 @@
         
         .toggle-header.active { color: var(--primary); }
 
-        /* Updated Modern Chevron Icon */
         .toggle-icon {
             font-size: 0.9rem;
             color: inherit;
@@ -362,7 +369,7 @@
         .toggle-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1); /* Slightly faster for snappier feel */
             padding: 0;
             opacity: 0.7;
             position: relative;
@@ -886,6 +893,8 @@
                     playSelectSound(); 
                     
                     const isActive = this.classList.contains('active');
+                    
+                    // 1. Close ALL other toggles first
                     const allToggleHeaders = document.querySelectorAll('.toggle-header');
                     allToggleHeaders.forEach(header => {
                         if (header !== this && header.classList.contains('active')) {
@@ -893,16 +902,20 @@
                             header.nextElementSibling.classList.remove('expanded');
                         }
                     });
-                    
-                    this.classList.toggle('active');
-                    toggleContent.classList.toggle('expanded');
 
                     if (!isActive) {
+                        // 2. Open THIS toggle
+                        this.classList.add('active');
+                        toggleContent.classList.add('expanded');
+                        
+                        // 3. Scroll to it after a specific delay (300ms) to let previous closes settle
                         setTimeout(() => {
-                            const yOffset = -80; 
-                            const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                            window.scrollTo({top: y, behavior: 'smooth'});
-                        }, 400); 
+                            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 300); 
+                    } else {
+                        // Closing current
+                        this.classList.remove('active');
+                        toggleContent.classList.remove('expanded');
                     }
                 });
                 
@@ -924,23 +937,28 @@
                     playSelectSound();
                     
                     const isActive = this.classList.contains('active');
+                    const content = this.nextElementSibling;
+
+                    // Close others first
                     const allToggleHeaders = document.querySelectorAll('.toggle-header');
-                    allToggleHeaders.forEach(header => {
-                        if (header !== this && header.classList.contains('active')) {
-                            header.classList.remove('active');
-                            header.nextElementSibling.classList.remove('expanded');
+                    allToggleHeaders.forEach(otherHeader => {
+                        if (otherHeader !== this && otherHeader.classList.contains('active')) {
+                            otherHeader.classList.remove('active');
+                            otherHeader.nextElementSibling.classList.remove('expanded');
                         }
                     });
-                    this.classList.toggle('active');
-                    const content = this.nextElementSibling;
-                    content.classList.toggle('expanded');
 
                     if (!isActive) {
+                        this.classList.add('active');
+                        content.classList.add('expanded');
+                        
+                        // Scroll after delay
                         setTimeout(() => {
-                            const yOffset = -80; 
-                            const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                            window.scrollTo({top: y, behavior: 'smooth'});
-                        }, 400);
+                            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 300);
+                    } else {
+                        this.classList.remove('active');
+                        content.classList.remove('expanded');
                     }
                 });
             });
