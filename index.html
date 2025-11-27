@@ -89,7 +89,7 @@
             66% { transform: translate(-30px, 30px) scale(0.9); }
         }
 
-        /* --- Background Icons --- */
+        /* --- Background Icons (Modern & Colorful) --- */
         .bg-decoration {
             position: fixed;
             top: 0;
@@ -103,18 +103,19 @@
 
         .bg-icon {
             position: absolute;
-            color: var(--primary);
-            opacity: 0.03;
+            opacity: 0.08; 
             font-size: 2rem;
+            transition: transform 0.5s ease;
         }
 
-        .icon-1 { top: 15%; left: 10%; font-size: 4rem; transform: rotate(-15deg); }
-        .icon-2 { top: 25%; right: 15%; font-size: 3rem; transform: rotate(10deg); }
-        .icon-3 { bottom: 20%; left: 15%; font-size: 5rem; transform: rotate(5deg); }
-        .icon-4 { bottom: 10%; right: 10%; font-size: 3.5rem; transform: rotate(-20deg); }
-        .icon-5 { top: 50%; left: 5%; font-size: 2.5rem; transform: rotate(30deg); }
-        .icon-6 { top: 60%; right: 5%; font-size: 3rem; transform: rotate(-10deg); }
-        .icon-7 { top: 5%; left: 50%; font-size: 2rem; transform: rotate(45deg); opacity: 0.02; }
+        .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; } 
+        .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; } 
+        .icon-3 { bottom: 25%; left: 10%; font-size: 6rem; transform: rotate(5deg); color: #34d399; } 
+        .icon-4 { bottom: 15%; right: 8%; font-size: 4.5rem; transform: rotate(-20deg); color: #f472b6; } 
+        .icon-5 { top: 45%; left: 3%; font-size: 3rem; transform: rotate(30deg); color: #a78bfa; } 
+        .icon-6 { top: 55%; right: 5%; font-size: 3.5rem; transform: rotate(-10deg); color: #fb7185; } 
+        .icon-7 { top: 8%; left: 45%; font-size: 2.5rem; transform: rotate(45deg); color: #94a3b8; opacity: 0.06; } 
+        .icon-8 { bottom: 40%; right: 40%; font-size: 8rem; transform: rotate(0deg); color: #1e293b; opacity: 0.3; z-index: -2; } 
 
         /* --- Layout --- */
         .container {
@@ -269,16 +270,12 @@
         .word-definition { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; }
         .word-definition p { margin-bottom: 1.5em; margin-top: 0; }
         
-        /* Reduce padding for paragraphs containing only bold words */
         .word-definition p:has(> strong:only-child),
         .word-definition p:has(> b:only-child) {
             margin-bottom: 0.80em; 
         }
 
-        /* Class applied via JS to quoted lines */
-        .quote-line {
-            line-height: 1.2 !important; /* 2/3 of standard 1.8 spacing */
-        }
+        .quote-line { line-height: 1.2 !important; }
 
         .word-definition p:last-child { margin-bottom: 0; }
         .word-definition strong, .word-definition b { color: var(--text-bright-dim); font-weight: 700; }
@@ -342,9 +339,14 @@
             scroll-margin-top: 80px;
         }
         
-        .toggle-header:hover, .toggle-header.active { color: var(--primary); }
+        /* Desktop Hover: Only applies on devices that support hover */
+        @media (hover: hover) {
+            .toggle-header:hover { color: var(--primary); }
+        }
+        
+        /* Active State (Open) - Always Gold */
+        .toggle-header.active { color: var(--primary); }
 
-        /* Modern Chevron Icon */
         .toggle-icon {
             width: 12px;
             height: 12px;
@@ -356,9 +358,7 @@
             flex-shrink: 0;
         }
         
-        .toggle-header.active .toggle-icon {
-            transform: rotate(45deg); 
-        }
+        .toggle-header.active .toggle-icon { transform: rotate(45deg); }
 
         .toggle-title { flex: 1; }
 
@@ -513,7 +513,6 @@
         
         .btn-show-word { margin: 30px auto 0 auto; display: flex; }
 
-        /* Left aligned buttons */
         .quiz-action-buttons, .explanation-read-more-container, .read-more-container {
             display: flex;
             justify-content: flex-start;
@@ -566,18 +565,34 @@
         /* --- Mobile Responsive --- */
         @media (max-width: 768px) {
             .hero-title { font-size: 3rem; }
+            
+            /* Mobile Optimization: Reduce top padding for hero title */
+            .hero-section { padding-top: 60px; }
+            
             .container { padding: 0 16px; }
             .interactive-card { padding: 24px; }
             .modern-section-title { font-size: 1.5rem; }
             .orb { opacity: 0.25; }
-            
-            /* Hide 'View' in autocomplete only on mobile */
             .autocomplete-hint { display: none; }
-            
-            /* Ensure alignment is good on small screens */
             .quiz-action-buttons, .explanation-read-more-container, .read-more-container {
-                justify-content: center; /* Center on mobile for better touch access */
+                justify-content: center;
             }
+            
+            /* Mobile Optimization: Expand height for toggles to show full text */
+            .toggle-content.expanded { max-height: 8000px; } 
+            
+            /* Mobile Optimization: Heading 1 font size reduction */
+            .word-definition h1 { font-size: 2rem; }
+            
+            /* Mobile Optimization: Quiz Questions smaller and dimmer */
+            .question-text {
+                font-size: 1.15rem;
+                color: var(--text-muted);
+            }
+            
+            /* Mobile Optimization: Search Box Padding */
+            .search-input-wrapper { padding: 0 10px; }
+            .search-box input { padding: 16px 8px; }
         }
     </style>
 </head>
@@ -595,10 +610,11 @@
         <i class="fas fa-book-open bg-icon icon-1"></i>
         <i class="fas fa-lightbulb bg-icon icon-2"></i>
         <i class="fas fa-brain bg-icon icon-3"></i>
-        <i class="fas fa-feather-alt bg-icon icon-4"></i>
-        <i class="fas fa-graduation-cap bg-icon icon-5"></i>
-        <i class="fas fa-quote-right bg-icon icon-6"></i>
-        <i class="fas fa-shapes bg-icon icon-7"></i>
+        <i class="fas fa-pen-nib bg-icon icon-4"></i>
+        <i class="fas fa-atom bg-icon icon-5"></i>
+        <i class="fas fa-globe-americas bg-icon icon-6"></i>
+        <i class="fas fa-dna bg-icon icon-7"></i>
+        <i class="fas fa-quote-left bg-icon icon-8"></i>
     </div>
 
     <section class="hero-section">
@@ -889,7 +905,6 @@
                     // Logic to detect totally quoted lines and apply class for line-height spacing
                     if (temp.tagName === 'P') {
                         const text = temp.textContent.trim();
-                        // Check for standard quotes and curly quotes
                         if ((text.startsWith('"') && text.endsWith('"')) || 
                             (text.startsWith('“') && text.endsWith('”'))) {
                             temp.classList.add('quote-line');
@@ -903,8 +918,30 @@
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
                 
-                // Note: Listeners are lost here when returning innerHTML, but structure is prepped.
-                // activateTogglesInPage() handles the logic.
+                toggleHeader.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    playSound('click'); 
+                    
+                    const isActive = this.classList.contains('active');
+                    const allToggleHeaders = document.querySelectorAll('.toggle-header');
+                    allToggleHeaders.forEach(header => {
+                        if (header !== this && header.classList.contains('active')) {
+                            header.classList.remove('active');
+                            header.nextElementSibling.classList.remove('expanded');
+                        }
+                    });
+                    
+                    this.classList.toggle('active');
+                    toggleContent.classList.toggle('expanded');
+
+                    // Immediate clean scroll to top
+                    if (!isActive) {
+                        requestAnimationFrame(() => {
+                            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        });
+                    }
+                });
                 
                 toggleSection.appendChild(toggleHeader);
                 toggleSection.appendChild(toggleContent);
@@ -936,10 +973,9 @@
                     content.classList.toggle('expanded');
 
                     if (!isActive) {
-                        // Delay scroll to allow closing transitions to settle
-                        setTimeout(() => {
+                        requestAnimationFrame(() => {
                             this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 250); 
+                        });
                     }
                 });
             });
