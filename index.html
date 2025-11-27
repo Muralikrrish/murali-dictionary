@@ -109,10 +109,10 @@
             transition: transform 0.5s ease;
         }
 
-        /* Desktop Brightness Boost (Updated to 0.20) */
+        /* Desktop Brightness Boost (Increased to 0.35) */
         @media (min-width: 769px) {
             .bg-icon {
-                opacity: 0.20; 
+                opacity: 0.35; 
             }
         }
 
@@ -344,7 +344,6 @@
             text-align: left;
             transition: color 0.3s ease;
             gap: 16px;
-            /* Important for scroll alignment */
             scroll-margin-top: 80px;
         }
         
@@ -369,7 +368,8 @@
         .toggle-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1); /* Slightly faster for snappier feel */
+            /* Faster transition for snappier feel */
+            transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); 
             padding: 0;
             opacity: 0.7;
             position: relative;
@@ -379,7 +379,7 @@
             max-height: 2000px;
             padding-bottom: 24px;
             opacity: 1;
-            transition: max-height 0.5s ease-in-out, opacity 0.3s ease;
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease;
         }
 
         .toggle-content.expanded::after {
@@ -858,7 +858,6 @@
                 
                 const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
-                // Updated Modern Chevron
                 toggleHeader.innerHTML = `
                     <i class="fas fa-chevron-right toggle-icon"></i>
                     <span class="toggle-title">${h2.innerHTML}</span>
@@ -894,7 +893,7 @@
                     
                     const isActive = this.classList.contains('active');
                     
-                    // 1. Close ALL other toggles first
+                    // Collapse other toggles immediately
                     const allToggleHeaders = document.querySelectorAll('.toggle-header');
                     allToggleHeaders.forEach(header => {
                         if (header !== this && header.classList.contains('active')) {
@@ -904,16 +903,14 @@
                     });
 
                     if (!isActive) {
-                        // 2. Open THIS toggle
                         this.classList.add('active');
                         toggleContent.classList.add('expanded');
                         
-                        // 3. Scroll to it after a specific delay (300ms) to let previous closes settle
+                        // Wait for collapse to finish before scrolling
                         setTimeout(() => {
-                            this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 300); 
+                             this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 350); 
                     } else {
-                        // Closing current
                         this.classList.remove('active');
                         toggleContent.classList.remove('expanded');
                     }
@@ -939,7 +936,7 @@
                     const isActive = this.classList.contains('active');
                     const content = this.nextElementSibling;
 
-                    // Close others first
+                    // Collapse others immediately
                     const allToggleHeaders = document.querySelectorAll('.toggle-header');
                     allToggleHeaders.forEach(otherHeader => {
                         if (otherHeader !== this && otherHeader.classList.contains('active')) {
@@ -952,10 +949,10 @@
                         this.classList.add('active');
                         content.classList.add('expanded');
                         
-                        // Scroll after delay
+                        // Wait for collapse to finish before scrolling
                         setTimeout(() => {
                             this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 300);
+                        }, 350);
                     } else {
                         this.classList.remove('active');
                         content.classList.remove('expanded');
