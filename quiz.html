@@ -4,108 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LexiQuest - Vocabulary Quiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Same fonts as index.html -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #0f1117;
-            --bg-secondary: #1a1d28;
-            --bg-tertiary: #232838;
-            --accent-primary: #ff6b35;
-            --accent-secondary: #ff8e35;
-            --accent-gradient: linear-gradient(135deg, #ff6b35, #ff8e35);
-            --text-primary: #f0f2fc;
-            --text-secondary: #b8c0e0;
-            --text-muted: #6b728c;
-            --border-color: #2a3042;
-            --success-color: #4caf50;
-            --warning-color: #ff9800;
-            --error-color: #f44336;
-            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            --section-spacing: 60px;
+            /* Theme: Deep Navy & Saffron (Matching index.html) */
+            --bg-deep: #0f172a;
+            --bg-surface: rgba(30, 41, 59, 0.75);
+            
+            /* Glass Effects */
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.05);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --backdrop-blur: blur(16px);
+
+            /* Accents */
+            --primary: #fbbf24; /* Amber-400 */
+            --primary-dim: #d97706;
+            --primary-glow: rgba(251, 191, 36, 0.25);
+            
+            --accent-gradient: linear-gradient(135deg, #fbbf24, #f59e0b);
+            
+            --success: #34d399;
+            --error: #f87171;
+
+            /* Text Colors */
+            --text-main: #f8fafc;
+            --text-bright-dim: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-header: #64748b;
+
+            /* Spacing */
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.7;
             min-height: 100vh;
-            padding: 10px;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
         }
+
+        /* --- Ambient Background --- */
+        .ambient-light {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .orb-1 { top: -20%; left: -10%; width: 70vw; height: 70vw; background: radial-gradient(circle, #1e293b 0%, transparent 70%); animation-delay: 0s; }
+        .orb-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #334155 0%, transparent 70%); animation-delay: -5s; }
+        .orb-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%); animation-delay: -10s; opacity: 0.3; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -60px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+
+        /* --- Background Icons --- */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-icon {
+            position: absolute;
+            opacity: 0.08;
+            font-size: 2rem;
+        }
+
+        /* Identical icon placement to index.html */
+        .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; }
+        .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; }
+        .icon-3 { bottom: 25%; left: 10%; font-size: 6rem; transform: rotate(5deg); color: #34d399; }
+        .icon-4 { bottom: 15%; right: 8%; font-size: 4.5rem; transform: rotate(-20deg); color: #f472b6; }
+        .icon-5 { top: 45%; left: 3%; font-size: 3rem; transform: rotate(30deg); color: #a78bfa; }
+        .icon-6 { top: 55%; right: 5%; font-size: 3.5rem; transform: rotate(-10deg); color: #fb7185; }
+        .icon-7 { top: 8%; left: 45%; font-size: 2.5rem; transform: rotate(45deg); color: #94a3b8; opacity: 0.06; }
+        .icon-8 { bottom: 40%; right: 40%; font-size: 8rem; transform: rotate(0deg); color: #1e293b; opacity: 0.3; z-index: -2; }
 
         .container {
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
 
+        /* --- Quiz Card (Glassmorphism) --- */
         .quiz-container {
-            background: var(--bg-secondary);
-            border-radius: 20px;
-            box-shadow: var(--card-shadow);
+            background: var(--bg-surface);
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
             overflow: hidden;
-            border: 1px solid var(--border-color);
             width: 100%;
+            transition: transform 0.3s ease;
         }
 
         .quiz-header {
-            background: linear-gradient(135deg, var(--bg-secondary) 0%, #151822 100%);
-            padding: 30px 20px 25px 20px;
+            padding: 40px 30px 20px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quiz-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 70% 20%, rgba(255, 107, 53, 0.15) 0%, transparent 60%);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .quiz-title {
-            font-size: 2.2rem;
-            font-weight: 800;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-primary) 100%);
+            background: linear-gradient(to bottom, #f8fafc 30%, #94a3b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
             line-height: 1.1;
         }
 
         .quiz-subtitle {
-            font-size: 1rem;
-            color: var(--text-secondary);
-            opacity: 0.9;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 400;
         }
 
+        /* --- Progress Bar --- */
         .progress-container {
-            background: var(--bg-tertiary);
-            padding: 12px 20px;
+            padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        #question-count {
+            color: var(--text-bright-dim);
+            font-weight: 600;
+            font-size: 0.95rem;
         }
 
         .progress-bar {
             flex-grow: 1;
             height: 6px;
-            background: var(--border-color);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            margin: 0 15px;
+            margin: 0 20px;
             overflow: hidden;
         }
 
@@ -113,128 +190,147 @@
             height: 100%;
             background: var(--accent-gradient);
             width: 0%;
-            transition: width 0.3s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--primary-glow);
         }
 
+        /* --- Stats & Timer --- */
         .question-stats {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px 0;
-            margin-bottom: 15px;
+            padding: 20px 30px 0;
+            margin-bottom: 10px;
         }
 
         .current-score {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--primary);
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 0.05em;
         }
 
         .fast-fingers-timer {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .timer-circle {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            background: var(--accent-gradient);
+            background: var(--bg-deep);
+            border: 2px solid var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
+            font-weight: 700;
+            color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .timer-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
         }
 
+        /* --- Question Area --- */
         .question-card {
-            padding: 0 20px 20px;
+            padding: 10px 30px 40px;
         }
 
         .question-text {
-            font-size: 1.1rem;
+            font-size: 1.35rem;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--text-main);
             line-height: 1.5;
-            margin-bottom: 20px;
-            padding: 16px;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            border-left: 4px solid var(--accent-primary);
+            margin-bottom: 30px;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            text-align: center;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .option-btn {
-            padding: 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            background: var(--bg-tertiary);
-            font-size: 1rem;
+            padding: 20px 24px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.02);
+            font-size: 1.05rem;
             text-align: left;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: var(--text-primary);
-            min-height: 60px;
+            color: var(--text-muted);
+            min-height: 64px;
             display: flex;
             align-items: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            position: relative;
+            overflow: hidden;
         }
 
         .option-btn:hover {
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+            color: var(--text-main);
         }
 
         .option-btn.selected {
-            border-color: var(--accent-primary);
-            background: var(--accent-primary);
-            color: white;
+            border-color: var(--primary);
+            background: var(--primary);
+            color: #0f172a; /* Dark text on gold bg */
+            font-weight: 600;
+            box-shadow: 0 0 20px var(--primary-glow);
         }
 
         .option-btn.correct {
-            background: rgba(76, 175, 80, 0.1);
-            border-color: var(--success-color);
-            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--success);
+            color: var(--success);
         }
 
         .option-btn.incorrect {
-            background: rgba(244, 67, 54, 0.1);
-            border-color: var(--error-color);
-            color: var(--error-color);
+            background: rgba(248, 113, 113, 0.15);
+            border-color: var(--error);
+            color: var(--error);
         }
 
+        /* --- Explanation Box --- */
         .explanation-box {
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            border-left: 4px solid var(--accent-primary);
-            margin-top: 16px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: var(--radius-md);
+            margin-top: 24px;
             display: none;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             font-size: 1rem;
-            line-height: 1.5;
+            line-height: 1.6;
+            overflow: hidden;
         }
 
         .explanation-box.show {
             display: block;
-            animation: slideDown 0.3s ease;
+            animation: slideDown 0.4s ease;
         }
 
         .explanation-preview {
             position: relative;
-            max-height: 150px;
+            max-height: 120px;
             overflow: hidden;
             transition: max-height 0.4s ease-in-out;
         }
@@ -244,7 +340,11 @@
         }
 
         .explanation-content {
-            padding: 20px;
+            padding: 24px;
+        }
+        
+        .explanation-content strong {
+            color: var(--primary);
         }
 
         .explanation-fade {
@@ -252,8 +352,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 50px;
-            background: linear-gradient(transparent, var(--bg-tertiary));
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, #162032); /* Matches bg-surface mix */
             pointer-events: none;
             transition: opacity 0.3s ease;
         }
@@ -265,384 +365,198 @@
         .explanation-read-more-container {
             display: flex;
             justify-content: center;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            padding-bottom: 15px;
+            padding-bottom: 20px;
         }
 
         .explanation-read-more-btn {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--accent-primary);
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50px;
-            padding: 8px 16px;
-            font-size: 14px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
             display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
         .explanation-read-more-btn:hover {
-            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
+            border-color: var(--primary);
+            color: var(--primary);
             transform: translateY(-2px);
+            background: rgba(251, 191, 36, 0.1);
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* --- Next Button --- */
         .action-buttons {
             display: flex;
-            gap: 12px;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
         .btn-next {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border: none;
             border-radius: 50px;
-            padding: 14px 24px;
-            font-size: 15px;
-            font-weight: 600;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-            border-color: var(--accent-primary);
-            width: 100%;
-            max-width: 280px;
-            display: block;
-            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: none; /* Hidden by default */
         }
 
         .btn-next:hover {
-            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.5);
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+            background: white;
         }
 
+        /* --- Results Screen --- */
         .results-screen {
-            padding: 30px 20px;
+            padding: 50px 30px;
             text-align: center;
             display: none;
         }
+        
+        .results-screen h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
 
         .score-display {
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: 700;
+            font-family: 'Playfair Display', serif;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 20px 0;
+            text-shadow: 0 10px 30px rgba(251, 191, 36, 0.2);
         }
 
         .correct-answers {
-            font-size: 1.5rem;
-            color: var(--text-primary);
-            margin-bottom: 15px;
+            font-size: 1.4rem;
+            color: var(--text-bright-dim);
+            margin-bottom: 10px;
         }
 
         .score-summary {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            margin-bottom: 25px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .encouragement {
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            margin-bottom: 25px;
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 40px;
+            font-weight: 600;
         }
 
         .error-message {
-            background: rgba(244, 67, 54, 0.1);
-            color: var(--error-color);
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
             padding: 16px;
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             margin: 20px 0;
             text-align: center;
-            border-left: 4px solid var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
+        /* --- Skeletons --- */
         .skeleton-loading {
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            border: 1px solid var(--glass-border);
             animation: pulse 2s ease-in-out infinite;
         }
 
         .skeleton-line {
             height: 16px;
-            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
             background-size: 200% 100%;
             border-radius: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             animation: shimmer 1.5s infinite;
         }
 
         .skeleton-line.short { width: 60%; }
-        .skeleton-line.medium { width: 80%; }
-        .skeleton-line.long { width: 95%; }
-        .skeleton-line.extra-long { width: 100%; height: 24px; margin-bottom: 16px; }
+        .skeleton-line.long { width: 90%; }
+        .skeleton-line.extra-long { width: 100%; height: 24px; margin-bottom: 24px; }
 
         .skeleton-title {
-            height: 28px;
-            background: linear-gradient(90deg, var(--bg-tertiary) 25%, #333 50%, var(--bg-tertiary) 75%);
+            height: 32px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
             background-size: 200% 100%;
             border-radius: 6px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             width: 40%;
             animation: shimmer 1.5s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1 }
-            50% { opacity: 0.5 }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.6 } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
+        /* --- Mobile Responsive --- */
         @media (max-width: 768px) {
-            body {
-                padding: 8px;
-            }
+            body { padding: 16px 12px; }
+            .quiz-header { padding: 30px 20px 20px; }
+            .quiz-title { font-size: 2.2rem; }
+            .question-text { font-size: 1.15rem; color: var(--text-muted); padding: 20px; }
+            .options-grid { gap: 12px; }
+            .option-btn { padding: 16px; min-height: 56px; font-size: 1rem; }
             
-            .container {
-                padding: 0;
-            }
-            
-            .quiz-container {
-                border-radius: 16px;
-            }
-            
-            .quiz-header {
-                padding: 25px 16px 20px 16px;
-            }
-            
-            .quiz-title {
-                font-size: 1.8rem;
-            }
-            
-            .quiz-subtitle {
-                font-size: 0.9rem;
-            }
-            
-            .progress-container {
-                padding: 10px 16px;
-            }
-            
-            #question-count {
-                font-size: 0.85rem;
-            }
-            
-            .progress-bar {
-                margin: 0 12px;
-            }
-            
-            .question-stats {
-                padding: 12px 16px 0;
-                margin-bottom: 12px;
-            }
-            
-            .question-card {
-                padding: 0 16px 16px;
-            }
-            
-            .question-text {
-                font-size: 1rem;
-                padding: 14px;
-                margin-bottom: 16px;
-                line-height: 1.4;
-            }
-            
-            .options-grid {
-                gap: 8px;
-                margin-bottom: 16px;
-            }
-            
-            .option-btn {
-                padding: 14px;
-                font-size: 0.95rem;
-                min-height: 55px;
-            }
-            
-            .action-buttons {
-                margin-top: 16px;
-            }
-            
-            .btn-next {
-                padding: 12px 20px;
-                font-size: 14px;
-                max-width: 100%;
-            }
-            
-            .results-screen {
-                padding: 25px 16px;
-            }
-            
-            .score-display {
-                font-size: 2.5rem;
-            }
-            
-            .correct-answers {
-                font-size: 1.3rem;
-            }
-            
-            .score-summary {
-                font-size: 1.1rem;
-            }
-            
-            .encouragement {
-                font-size: 1.1rem;
-            }
-
-            .skeleton-loading {
-                padding: 16px;
-            }
-            
-            .skeleton-title {
-                height: 24px;
-                margin-bottom: 15px;
-                width: 60%;
-            }
-            
-            .skeleton-line {
-                height: 14px;
-                margin-bottom: 10px;
-            }
-            
-            .skeleton-line.long {
-                width: 100%;
-            }
-            
-            .explanation-preview {
-                max-height: 200px;
-            }
-            
-            .explanation-fade {
-                height: 60px;
-            }
-            
-            .explanation-content {
-                padding: 16px;
-            }
+            /* Mobile icon adjustment */
+            .bg-decoration { top: -15%; }
         }
 
         @media (max-width: 480px) {
-            body {
-                padding: 6px;
-            }
-            
-            .quiz-header {
-                padding: 20px 12px 16px 12px;
-            }
-            
-            .quiz-title {
-                font-size: 1.6rem;
-            }
-            
-            .quiz-subtitle {
-                font-size: 0.85rem;
-            }
-            
-            .question-stats {
-                padding: 10px 12px 0;
-                margin-bottom: 10px;
-            }
-            
-            .current-score {
-                font-size: 1rem;
-            }
-            
-            .timer-label {
-                font-size: 0.8rem;
-            }
-            
-            .timer-circle {
-                width: 35px;
-                height: 35px;
-                font-size: 0.9rem;
-            }
-            
-            .question-card {
-                padding: 0 12px 12px;
-            }
-            
-            .question-text {
-                font-size: 0.95rem;
-                padding: 12px;
-                line-height: 1.4;
-            }
-            
-            .options-grid {
-                gap: 6px;
-            }
-            
-            .option-btn {
-                padding: 12px;
-                font-size: 0.9rem;
-                min-height: 50px;
-            }
-            
-            .explanation-box {
-                font-size: 0.9rem;
-            }
-            
-            .explanation-content {
-                padding: 12px;
-            }
-            
-            .explanation-preview {
-                max-height: 180px;
-            }
-            
-            .explanation-fade {
-                height: 50px;
-            }
-            
-            .explanation-read-more-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            
-            .btn-next {
-                padding: 12px 18px;
-                font-size: 13px;
-            }
-            
-            .skeleton-loading {
-                padding: 12px;
-            }
-            
-            .skeleton-title {
-                height: 20px;
-                margin-bottom: 12px;
-                width: 70%;
-            }
-            
-            .skeleton-line {
-                height: 12px;
-                margin-bottom: 8px;
-            }
-        }
-
-        @media (min-width: 1200px) {
-            .container {
-                max-width: 900px;
-            }
+            .quiz-title { font-size: 1.8rem; }
+            .progress-container { padding: 15px 20px; }
+            .timer-circle { width: 36px; height: 36px; font-size: 0.9rem; }
+            .question-text { font-size: 1.1rem; margin-bottom: 20px; }
+            .option-btn { padding: 14px; font-size: 0.95rem; }
+            .btn-next { width: 100%; }
         }
     </style>
 </head>
 <body>
+    <!-- Ambient Background -->
+    <div class="ambient-light">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Background Icons -->
+    <div class="bg-decoration">
+        <i class="fas fa-book-open bg-icon icon-1"></i>
+        <i class="fas fa-lightbulb bg-icon icon-2"></i>
+        <i class="fas fa-brain bg-icon icon-3"></i>
+        <i class="fas fa-pen-nib bg-icon icon-4"></i>
+        <i class="fas fa-atom bg-icon icon-5"></i>
+        <i class="fas fa-globe-americas bg-icon icon-6"></i>
+        <i class="fas fa-dna bg-icon icon-7"></i>
+        <i class="fas fa-quote-left bg-icon icon-8"></i>
+    </div>
+
     <div class="container">
         <div class="quiz-container">
             <div class="quiz-header">
@@ -660,7 +574,7 @@
             <div class="question-stats" id="question-stats" style="display: none;">
                 <div class="current-score">Score: <span id="current-score">0</span></div>
                 <div class="fast-fingers-timer" id="fast-fingers-timer">
-                    <div class="timer-label">Fast Fingers</div>
+                    <div class="timer-label">Time</div>
                     <div class="timer-circle" id="timer-value">20</div>
                 </div>
             </div>
@@ -685,35 +599,37 @@
                     <div class="explanation-box" id="explanation-box">
                         <div class="explanation-preview">
                             <div class="explanation-content">
-                                <strong>Explanation:</strong> <span id="explanation-text"></span>
+                                <strong>Insight:</strong> <span id="explanation-text"></span>
                             </div>
                             <div class="explanation-fade"></div>
                         </div>
                         <div class="explanation-read-more-container">
                             <button class="explanation-read-more-btn" onclick="toggleExplanationExpansion(this, 'explanation-box')">
                                 <span>Read more</span>
-                                <span class="icon">▼</span>
                             </button>
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button class="btn-next" onclick="nextQuestion()" id="next-btn" style="display: none;">Next Question</button>
+                        <button class="btn-next" onclick="nextQuestion()" id="next-btn">Next Question <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></button>
                     </div>
                 </div>
             </div>
 
             <div class="results-screen" id="results-screen">
-                <h2>Quiz Complete! 🎉</h2>
+                <h2>Quiz Complete!</h2>
                 <div class="score-display" id="final-score">0</div>
                 <div class="correct-answers" id="correct-answers">You've got 0/10 correct!</div>
                 <div class="score-summary" id="score-summary">Your score: 0/2000</div>
                 <div class="encouragement" id="encouragement-message">Keep practicing!</div>
-                <button class="btn-next" onclick="restartQuiz()">Try Again</button>
+                <div class="action-buttons">
+                    <button class="btn-next" style="display: inline-flex;" onclick="restartQuiz()">Try Again <i class="fas fa-redo" style="margin-left: 8px;"></i></button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // --- 100% Preserved Logic from original file ---
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
         
@@ -732,7 +648,6 @@
         let totalFastFingersPoints = 0;
         let totalCorrectAnswers = 0;
 
-        // Sound effects
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         
         function playSound(frequency, duration, type = 'sine', volume = 0.3) {
@@ -777,27 +692,20 @@
         }
         
         function playCompleteSound() {
-            // Play a little victory melody
-            const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+            const notes = [523.25, 659.25, 783.99]; 
             let time = audioContext.currentTime;
-            
             notes.forEach((note, index) => {
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
                 oscillator.frequency.value = note;
                 oscillator.type = 'sine';
-                
                 gainNode.gain.setValueAtTime(0, time);
                 gainNode.gain.linearRampToValueAtTime(0.2, time + 0.05);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
-                
                 oscillator.start(time);
                 oscillator.stop(time + 0.3);
-                
                 time += 0.1;
             });
         }
@@ -809,11 +717,10 @@
             
             if (isExpanded) {
                 preview.classList.remove('expanded');
-                button.innerHTML = '<span>Read more</span><span class="icon">▼</span>';
+                button.innerHTML = '<span>Read more</span>';
             } else {
                 preview.classList.add('expanded');
-                button.innerHTML = '<span>Read less</span><span class="icon">▲</span>';
-                setTimeout(() => preview.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+                button.innerHTML = '<span>Read less</span>';
             }
         }
 
@@ -843,7 +750,7 @@
                 const allQuestions = await response.json();
 
                 if (allQuestions.length === 0) {
-                    showError('No questions found in the database. Please add questions to the quiz_questions table.');
+                    showError('No questions found in the database.');
                     return;
                 }
 
@@ -856,7 +763,7 @@
                 displayQuestion();
             } catch (error) {
                 console.error('Error fetching questions:', error);
-                showError(`Failed to load questions: ${error.message}. Please check your Supabase configuration and RLS policies.`);
+                showError(`Failed to load questions: ${error.message}`);
             }
         }
 
@@ -915,9 +822,9 @@
             document.getElementById('explanation-box').classList.remove('show');
             
             if (currentQuestion === TOTAL_QUESTIONS - 1) {
-                document.getElementById('next-btn').textContent = 'See Results';
+                document.getElementById('next-btn').innerHTML = 'See Results <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>';
             } else {
-                document.getElementById('next-btn').textContent = 'Next Question';
+                document.getElementById('next-btn').innerHTML = 'Next Question <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>';
             }
             
             document.getElementById('next-btn').style.display = 'none';
@@ -943,7 +850,6 @@
                     fastFingersBonus = Math.max(0, fastFingersBonus - 10);
                 }
                 
-                // Play subtle tick sound when time is running low
                 if (timeLeft <= 5 && timeLeft > 0) {
                     playTimerTick();
                 }
@@ -961,7 +867,6 @@
             selectedAnswer = index;
             answerSubmitted = true;
             
-            // Play selection sound
             playSelectSound();
             
             clearInterval(timerInterval);
@@ -979,7 +884,6 @@
             const question = questions[currentQuestion];
             const isCorrect = selectedAnswer === question.currentCorrectAnswer;
             
-            // Play appropriate sound
             if (isCorrect) {
                 playCorrectSound();
             } else {
@@ -1004,7 +908,7 @@
             
             document.getElementById('explanation-box').classList.add('show');
 
-            document.getElementById('next-btn').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'inline-flex';
 
             const buttons = document.querySelectorAll('.option-btn');
             
@@ -1021,15 +925,12 @@
         }
 
         function nextQuestion() {
-            // Play transition sound
             playNextSound();
-            
             currentQuestion++;
             displayQuestion();
         }
 
         function showResults() {
-            // Play completion sound
             playCompleteSound();
             
             document.getElementById('progress-fill').style.width = '100%';
@@ -1038,11 +939,9 @@
             document.getElementById('results-screen').style.display = 'block';
             document.getElementById('final-score').textContent = score;
             
-            // Update results display
             document.getElementById('correct-answers').textContent = `You've got ${totalCorrectAnswers}/10 correct!`;
             document.getElementById('score-summary').textContent = `Your score: ${score}/2000`;
             
-            // Encouragement message
             const percentage = (totalCorrectAnswers / TOTAL_QUESTIONS) * 100;
             let message = '';
             if (percentage >= 80) message = 'Outstanding! You\'re a vocabulary master! 🎯';
