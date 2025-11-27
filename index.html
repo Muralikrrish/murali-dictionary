@@ -518,16 +518,32 @@
             margin: 0.75em 0;
         }
 
-        .word-definition ul, .word-definition ol {
-            margin: 0.5em 0;
-            padding-left: 1.2em;
+        .word-definition ul {
+            list-style-type: disc !important;
+            padding-left: 24px !important; /* Provides space for the bullet */
+            margin: 12px 0 !important;
+        }
+
+        .word-definition ol {
+            list-style-type: decimal !important;
+            padding-left: 24px !important;
+            margin: 12px 0 !important;
         }
 
         .word-definition li {
-            margin: 0.25em 0;
-            line-height: 1.45 !important;
+            margin: 6px 0 !important;
+            padding-left: 5px !important; /* Space between bullet and text */
+            line-height: 1.5 !important;
             color: var(--text-secondary) !important;
             font-size: 16px !important;
+            display: list-item !important; /* Ensures browser treats it as a list item */
+        }
+
+        /* Ensure nested lists look correct */
+        .word-definition ul ul, 
+        .word-definition ol ul, 
+        .word-definition ul ol {
+            margin: 5px 0 !important;
         }
 
         .word-definition h1, .word-definition h2, .word-definition h3, 
@@ -819,10 +835,8 @@
         }
 
         /* Remove any extra padding/margin from content inside toggles */
+        /* FIXED CODE */
         .toggle-content p,
-        .toggle-content ul,
-        .toggle-content ol,
-        .toggle-content li,
         .toggle-content div:not(.toggle-section) {
             padding-left: 0 !important;
             padding-right: 0 !important;
