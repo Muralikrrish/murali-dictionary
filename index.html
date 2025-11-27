@@ -942,12 +942,12 @@
                     toggleContent.classList.toggle('expanded');
 
                     if (!isActive) {
-                        // Improved Scroll for Mobile
+                        // Improved Scroll for Mobile (only if opening)
                         setTimeout(() => {
                             const yOffset = -80; 
                             const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
                             window.scrollTo({top: y, behavior: 'smooth'});
-                        }, 300);
+                        }, 50); // Short delay to allow browser to register opening
                     }
                 });
                 
@@ -985,7 +985,7 @@
                             const yOffset = -80; 
                             const y = this.getBoundingClientRect().top + window.pageYOffset + yOffset;
                             window.scrollTo({top: y, behavior: 'smooth'});
-                        }, 300);
+                        }, 50);
                     }
                 });
             });
@@ -1321,6 +1321,17 @@
             });
             searchInput.addEventListener('keydown', function(e) { if (e.key === 'Escape') autocompleteDropdown.classList.remove('show'); });
             document.addEventListener('click', function(e) { if (!e.target.closest('.search-container')) autocompleteDropdown.classList.remove('show'); });
+            
+            // Mobile Auto-Scroll on Focus
+            searchInput.addEventListener('focus', function() {
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        const container = document.querySelector('.search-container');
+                        const y = container.getBoundingClientRect().top + window.scrollY - 20; 
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                    }, 300);
+                }
+            });
         }
 
         function showAutocomplete(query) {
