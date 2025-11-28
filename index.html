@@ -42,6 +42,10 @@
             --radius-sm: 12px;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -109,8 +113,15 @@
             transition: transform 0.5s ease;
         }
 
-        /* Desktop Brightness Boost (Increased to 0.35) */
-        @media (min-width: 769px) {
+        /* Tablet Specific: Pan icons slightly upper */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .bg-decoration {
+                top: -10%;
+            }
+        }
+
+        /* Desktop/Tablet Brightness Boost (Modified to include tablets starting at 768px) */
+        @media (min-width: 768px) {
             .bg-icon {
                 opacity: 0.25; 
             }
@@ -124,6 +135,41 @@
         .icon-6 { top: 55%; right: 5%; font-size: 3.5rem; transform: rotate(-10deg); color: #fb7185; } 
         .icon-7 { top: 8%; left: 45%; font-size: 2.5rem; transform: rotate(45deg); color: #94a3b8; opacity: 0.06; } 
         .icon-8 { bottom: 40%; right: 40%; font-size: 8rem; transform: rotate(0deg); color: #1e293b; opacity: 0.3; z-index: -2; } 
+
+        /* --- Desktop & Tablet Navigation --- */
+        .desktop-nav {
+            display: none;
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 6px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            gap: 4px;
+        }
+
+        .nav-link {
+            color: var(--text-bright-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: #0f172a;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
 
         /* --- Layout --- */
         .container {
@@ -277,8 +323,26 @@
         /* --- Typography --- */
         .word-definition { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; }
         
-        /* Updated paragraph margin */
+        /* Default mobile spacing */
         .word-definition p { margin-bottom: 1.2em; margin-top: 0; }
+        
+        /* Desktop & Tablet spacing adjustments (Triggered at 768px now) */
+        @media (min-width: 768px) {
+            /* Show Nav */
+            .desktop-nav { display: flex; }
+
+            /* Standard p spacing on desktop/tablet */
+            .word-definition p { margin-bottom: 0.9em; }
+
+            /* Reduced bottom margin for H3 on desktop/tablet */
+            .word-definition h3 { margin-bottom: 0.4em; }
+
+            /* Reduced spacing for bold-only lines to 2/3 of original (approx 0.53em) */
+            .word-definition p:has(> strong:only-child),
+            .word-definition p:has(> b:only-child) {
+                margin-bottom: 0.53em; 
+            }
+        }
         
         .word-definition p:has(> strong:only-child),
         .word-definition p:has(> b:only-child) {
@@ -392,7 +456,7 @@
             background: var(--primary);
             margin-top: 24px;
             margin-bottom: 8px;
-            opacity: 0.2;
+            opacity: 0.5; /* Increased opacity for better visibility */
         }
 
         .toggle-content > h3:first-child { margin-top: 0.6em; }
@@ -568,8 +632,8 @@
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Mobile Responsive --- */
-        @media (max-width: 768px) {
+        /* --- Mobile Responsive (Strictly below 768px now) --- */
+        @media (max-width: 767px) {
             .hero-title { font-size: 3rem; }
             .hero-section { padding-top: 60px; }
             .bg-decoration { top: -15%; }
@@ -592,6 +656,13 @@
     </style>
 </head>
 <body>
+
+    <!-- Desktop Navigation -->
+    <nav class="desktop-nav">
+        <a href="#wordSpotlightSection" class="nav-link">Word Spotlight</a>
+        <a href="#vocabularyQuizSection" class="nav-link">Vocabulary Quiz</a>
+        <a href="#gkQuizSection" class="nav-link">General Knowledge</a>
+    </nav>
 
     <!-- Ambient Background -->
     <div class="ambient-light">
@@ -656,7 +727,7 @@
             </section>
 
             <!-- Quiz Section -->
-            <section class="modern-section">
+            <section class="modern-section" id="vocabularyQuizSection">
                 <h2 class="modern-section-title"><span>Vocabulary Quiz</span></h2>
                 <div class="interactive-card">
                     <div class="quiz-container">
@@ -696,7 +767,7 @@
             </section>
 
              <!-- General Knowledge Quiz Section -->
-            <section class="modern-section">
+            <section class="modern-section" id="gkQuizSection">
                 <h2 class="modern-section-title"><span>General Knowledge</span></h2>
                 <div class="interactive-card">
                     <div class="quiz-container">
@@ -895,14 +966,7 @@
                     
                     const isActive = this.classList.contains('active');
                     
-                    // Collapse other toggles immediately
-                    const allToggleHeaders = document.querySelectorAll('.toggle-header');
-                    allToggleHeaders.forEach(header => {
-                        if (header !== this && header.classList.contains('active')) {
-                            header.classList.remove('active');
-                            header.nextElementSibling.classList.remove('expanded');
-                        }
-                    });
+                    // Logic to auto-close other toggles has been removed here to allow multiple open toggles
 
                     if (!isActive) {
                         this.classList.add('active');
@@ -938,14 +1002,7 @@
                     const isActive = this.classList.contains('active');
                     const content = this.nextElementSibling;
 
-                    // Collapse others immediately
-                    const allToggleHeaders = document.querySelectorAll('.toggle-header');
-                    allToggleHeaders.forEach(otherHeader => {
-                        if (otherHeader !== this && otherHeader.classList.contains('active')) {
-                            otherHeader.classList.remove('active');
-                            otherHeader.nextElementSibling.classList.remove('expanded');
-                        }
-                    });
+                    // Logic to auto-close other toggles has been removed here as well
 
                     if (!isActive) {
                         this.classList.add('active');
