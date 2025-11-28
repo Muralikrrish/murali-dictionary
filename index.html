@@ -18,9 +18,10 @@
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
             --backdrop-blur: blur(16px);
 
-            /* Accents */
-            --primary: #fbbf24; /* Amber-400 */
-            --primary-dim: #d97706; /* Amber-600 */
+            /* Accents - Restored Golden Theme */
+            --primary: #fbbf24; /* Amber-400 - Main bright gold */
+            --primary-dim: #d97706; /* Amber-600 - Darker gold */
+            --primary-soft: #f59e0b; /* Amber-500 - Slightly softer gold for text */
             --primary-glow: rgba(251, 191, 36, 0.25);
             
             --secondary: #38bdf8; /* Sky-400 */
@@ -85,6 +86,7 @@
 
         .orb-1 { top: -20%; left: -10%; width: 70vw; height: 70vw; background: radial-gradient(circle, #1e293b 0%, transparent 70%); animation-delay: 0s; }
         .orb-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #334155 0%, transparent 70%); animation-delay: -5s; }
+        /* Restored Golden Orb */
         .orb-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%); animation-delay: -10s; opacity: 0.3; }
 
         @keyframes float {
@@ -127,6 +129,7 @@
             }
         }
 
+        /* Restored Golden Icon Colors */
         .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; } 
         .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; } 
         .icon-3 { bottom: 25%; left: 10%; font-size: 6rem; transform: rotate(5deg); color: #34d399; } 
@@ -352,7 +355,13 @@
         .quote-line { line-height: 1.2 !important; }
 
         .word-definition p:last-child { margin-bottom: 0; }
-        .word-definition strong, .word-definition b { color: var(--text-bright-dim); font-weight: 700; }
+        
+        /* UPDATED: Bold Text - White but dimmed with opacity 0.7 */
+        .word-definition strong, .word-definition b { 
+            color: var(--text-main); 
+            opacity: 0.7; 
+            font-weight: 700; 
+        }
         
         .word-definition h1 {
             font-family: 'Playfair Display', serif;
@@ -371,10 +380,12 @@
             font-size: 1.8rem;
         }
 
+        /* UPDATED: H3 - White but dimmed with opacity 0.7 */
         .word-definition h3 {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
-            color: var(--text-bright-dim);
+            color: var(--text-main);
+            opacity: 0.7;
             font-size: 1.3rem;
             margin-top: 1.2em;
             margin-bottom: 0.6em;
@@ -414,10 +425,10 @@
         }
         
         @media (hover: hover) {
-            .toggle-header:hover { color: var(--primary); }
+            .toggle-header:hover { color: var(--primary-soft); } /* Used softer gold */
         }
         
-        .toggle-header.active { color: var(--primary); }
+        .toggle-header.active { color: var(--primary-soft); } /* Used softer gold */
 
         .toggle-icon {
             font-size: 0.9rem;
