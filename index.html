@@ -19,9 +19,9 @@
             --backdrop-blur: blur(16px);
 
             /* Accents - Restored Golden Theme */
-            --primary: #fbbf24; /* Amber-400 - Main bright gold */
-            --primary-dim: #d97706; /* Amber-600 - Darker gold */
-            --primary-soft: #f59e0b; /* Amber-500 - Slightly softer gold for text */
+            --primary: #fbbf24; /* Amber-400 */
+            --primary-dim: #d97706; /* Amber-600 */
+            --primary-soft: #f59e0b; /* Amber-500 */
             --primary-glow: rgba(251, 191, 36, 0.25);
             
             --secondary: #38bdf8; /* Sky-400 */
@@ -86,7 +86,6 @@
 
         .orb-1 { top: -20%; left: -10%; width: 70vw; height: 70vw; background: radial-gradient(circle, #1e293b 0%, transparent 70%); animation-delay: 0s; }
         .orb-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #334155 0%, transparent 70%); animation-delay: -5s; }
-        /* Restored Golden Orb */
         .orb-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%); animation-delay: -10s; opacity: 0.3; }
 
         @keyframes float {
@@ -115,21 +114,14 @@
             transition: transform 0.5s ease;
         }
 
-        /* Tablet Specific: Pan icons slightly upper */
         @media (min-width: 768px) and (max-width: 1024px) {
-            .bg-decoration {
-                top: -10%;
-            }
+            .bg-decoration { top: -10%; }
         }
 
-        /* Desktop/Tablet Brightness Boost (Modified to include tablets starting at 768px) */
         @media (min-width: 768px) {
-            .bg-icon {
-                opacity: 0.25; 
-            }
+            .bg-icon { opacity: 0.25; }
         }
 
-        /* Restored Golden Icon Colors */
         .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; } 
         .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; } 
         .icon-3 { bottom: 25%; left: 10%; font-size: 6rem; transform: rotate(5deg); color: #34d399; } 
@@ -139,7 +131,7 @@
         .icon-7 { top: 8%; left: 45%; font-size: 2.5rem; transform: rotate(45deg); color: #94a3b8; opacity: 0.06; } 
         .icon-8 { bottom: 40%; right: 40%; font-size: 8rem; transform: rotate(0deg); color: #1e293b; opacity: 0.3; z-index: -2; } 
 
-        /* --- Desktop & Tablet Navigation --- */
+        /* --- Desktop Navigation --- */
         .desktop-nav {
             display: none;
             position: absolute;
@@ -181,7 +173,6 @@
             padding: 0 24px;
         }
 
-        /* --- Hero Section --- */
         .hero-section {
             padding: 120px 0 80px;
             text-align: center;
@@ -326,21 +317,12 @@
         /* --- Typography --- */
         .word-definition { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; }
         
-        /* Default mobile spacing */
         .word-definition p { margin-bottom: 1.2em; margin-top: 0; }
         
-        /* Desktop & Tablet spacing adjustments (Triggered at 768px now) */
         @media (min-width: 768px) {
-            /* Show Nav */
             .desktop-nav { display: flex; }
-
-            /* Standard p spacing on desktop/tablet */
             .word-definition p { margin-bottom: 0.9em; }
-
-            /* Reduced bottom margin for H3 on desktop/tablet */
             .word-definition h3 { margin-bottom: 0.4em; }
-
-            /* Reduced spacing for bold-only lines to 2/3 of original (approx 0.53em) */
             .word-definition p:has(> strong:only-child),
             .word-definition p:has(> b:only-child) {
                 margin-bottom: 0.53em; 
@@ -352,11 +334,8 @@
             margin-bottom: 0.80em; 
         }
 
-        .quote-line { line-height: 1.2 !important; }
-
         .word-definition p:last-child { margin-bottom: 0; }
         
-        /* UPDATED: Bold Text - White but dimmed with opacity 0.7 */
         .word-definition strong, .word-definition b { 
             color: var(--text-main); 
             opacity: 0.7; 
@@ -380,7 +359,6 @@
             font-size: 1.8rem;
         }
 
-        /* UPDATED: H3 - White but dimmed with opacity 0.7 */
         .word-definition h3 {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
@@ -393,6 +371,140 @@
 
         .word-definition ul, .word-definition ol { padding-left: 20px; margin: 16px 0 24px 0; color: var(--text-muted); }
         .word-definition li { margin-bottom: 8px; padding-left: 8px; }
+
+        /* --- Audio Button --- */
+        .audio-btn {
+            background: none;
+            border: 2px solid var(--primary-dim);
+            color: var(--primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            vertical-align: middle;
+            font-size: 1rem;
+        }
+
+        .audio-btn:hover {
+            background: var(--primary);
+            color: var(--bg-deep);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* --- Definition Layout Structure --- */
+        .entry-block {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .entry-block:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .sense-block {
+            margin-bottom: 1.2em;
+            position: relative;
+            padding-left: 1em;
+            border-left: 2px solid transparent; 
+        }
+        
+        .sense-block:hover {
+            border-left-color: rgba(251, 191, 36, 0.2); 
+        }
+
+        .sense-bullet {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            margin-right: 12px;
+            vertical-align: middle;
+            opacity: 0.6;
+        }
+
+        .sense-content {
+            display: inline;
+        }
+
+        .sub-sense-block {
+            margin-left: 1.5em;
+            margin-top: 0.8em;
+            margin-bottom: 0.8em;
+            display: block;
+            border-left: 1px solid rgba(255,255,255,0.05);
+            padding-left: 1em;
+        }
+
+        .sense-header {
+            margin-bottom: 0.5em;
+            margin-top: 1.2em;
+            font-weight: 600;
+            color: var(--text-bright-dim);
+        }
+
+        /* Proper spacing for broken lines */
+        .def-break {
+            display: block;
+            margin-top: 0.5em;
+            content: "";
+        }
+
+        .gram-label {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-right: 8px;
+            opacity: 0.9;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .usage-note {
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.95em;
+            margin-right: 6px;
+        }
+
+        .inflections {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5em;
+            font-style: italic;
+        }
+        
+        .additional-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .additional-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-bright-dim);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .run-on-item {
+            margin-bottom: 1rem;
+        }
+        
+        .run-on-word {
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
         /* --- Toggles --- */
         .toggle-section {
@@ -425,10 +537,10 @@
         }
         
         @media (hover: hover) {
-            .toggle-header:hover { color: var(--primary-soft); } /* Used softer gold */
+            .toggle-header:hover { color: var(--primary-soft); } 
         }
         
-        .toggle-header.active { color: var(--primary-soft); } /* Used softer gold */
+        .toggle-header.active { color: var(--primary-soft); } 
 
         .toggle-icon {
             font-size: 0.9rem;
@@ -445,7 +557,6 @@
         .toggle-content {
             max-height: 0;
             overflow: hidden;
-            /* Faster transition for snappier feel */
             transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); 
             padding: 0;
             opacity: 0.7;
@@ -467,7 +578,7 @@
             background: var(--primary);
             margin-top: 24px;
             margin-bottom: 8px;
-            opacity: 0.5; /* Increased opacity for better visibility */
+            opacity: 0.5; 
         }
 
         .toggle-content > h3:first-child { margin-top: 0.6em; }
@@ -643,7 +754,6 @@
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Mobile Responsive (Strictly below 768px now) --- */
         @media (max-width: 767px) {
             .hero-title { font-size: 3rem; }
             .hero-section { padding-top: 60px; }
@@ -882,6 +992,8 @@
             }
         };
 
+        const MW_API_KEY = '3bb3615c-eca5-4cb3-8e0f-eece50d1037e'; 
+
         SafeStorage.init();
 
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
@@ -895,7 +1007,6 @@
         let gkQuizAnswered = false, gkQuestionDisplayed = false;
         let audioContext = null;
 
-        // Consistent Audio Engine from quiz.html
         function initAudio() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -977,13 +1088,10 @@
                     
                     const isActive = this.classList.contains('active');
                     
-                    // Logic to auto-close other toggles has been removed here to allow multiple open toggles
-
                     if (!isActive) {
                         this.classList.add('active');
                         toggleContent.classList.add('expanded');
                         
-                        // Wait for collapse to finish before scrolling
                         setTimeout(() => {
                              this.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 350); 
@@ -1013,13 +1121,10 @@
                     const isActive = this.classList.contains('active');
                     const content = this.nextElementSibling;
 
-                    // Logic to auto-close other toggles has been removed here as well
-
                     if (!isActive) {
                         this.classList.add('active');
                         content.classList.add('expanded');
                         
-                        // Wait for collapse to finish before scrolling
                         setTimeout(() => {
                             this.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 350);
@@ -1354,7 +1459,16 @@
                     showAutocomplete(query);
                 }, 300);
             });
-            searchInput.addEventListener('keydown', function(e) { if (e.key === 'Escape') autocompleteDropdown.classList.remove('show'); });
+            searchInput.addEventListener('keydown', function(e) { 
+                if (e.key === 'Escape') autocompleteDropdown.classList.remove('show'); 
+                if (e.key === 'Enter') {
+                    const query = this.value.trim().toLowerCase();
+                    if (query) {
+                        autocompleteDropdown.classList.remove('show');
+                        displaySearchResults(query);
+                    }
+                }
+            });
             document.addEventListener('click', function(e) { if (!e.target.closest('.search-container')) autocompleteDropdown.classList.remove('show'); });
             
             searchInput.addEventListener('focus', function() {
@@ -1371,12 +1485,53 @@
         function showAutocomplete(query) {
             const autocompleteDropdown = document.getElementById('autocompleteDropdown');
             if (query.length === 0) { autocompleteDropdown.classList.remove('show'); return; }
-            const matches = dictionary.filter(item => item.word.toLowerCase().includes(query)).slice(0, 5);
-            if (matches.length === 0) { autocompleteDropdown.classList.remove('show'); return; }
-            let html = '';
-            matches.forEach(item => {
-                html += `<div class="autocomplete-item" onclick="selectAutocompleteItem('${item.word}')"><div class="autocomplete-word">${item.word}</div><div class="autocomplete-hint">View</div></div>`;
+            
+            // 1. Find local matches
+            let matches = dictionary.filter(item => item.word.toLowerCase().includes(query));
+            
+            // 2. Check if exact query is in local dictionary
+            const exactMatchExists = matches.some(item => item.word.toLowerCase() === query);
+            
+            // 3. If not found locally, add it as a virtual item for API search
+            if (!exactMatchExists) {
+                matches.push({ word: query });
+            }
+            
+            // 4. Sort matches: Exact < StartsWith < Contains < Alphabetical
+            matches.sort((a, b) => {
+                const aWord = a.word.toLowerCase();
+                const bWord = b.word.toLowerCase();
+                const q = query.toLowerCase();
+                
+                const aExact = aWord === q;
+                const bExact = bWord === q;
+                if (aExact && !bExact) return -1;
+                if (!aExact && bExact) return 1;
+                
+                const aStarts = aWord.startsWith(q);
+                const bStarts = bWord.startsWith(q);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                
+                return aWord.localeCompare(bWord);
             });
+            
+            // 5. Slice top 5 results
+            const topMatches = matches.slice(0, 5);
+            
+            if (topMatches.length === 0) { 
+                autocompleteDropdown.classList.remove('show'); 
+                return; 
+            }
+            
+            let html = '';
+            topMatches.forEach(item => {
+                html += `<div class="autocomplete-item" onclick="selectAutocompleteItem('${item.word}')">
+                            <div class="autocomplete-word">${item.word}</div>
+                            <div class="autocomplete-hint">View</div>
+                         </div>`;
+            });
+
             autocompleteDropdown.innerHTML = html;
             autocompleteDropdown.classList.add('show');
         }
@@ -1387,7 +1542,172 @@
             displaySearchResults(word.toLowerCase());
         }
 
-        function displaySearchResults(query) {
+        function getAudioUrl(filename) {
+            let subdir = filename.charAt(0);
+            if (filename.startsWith('bix')) subdir = 'bix';
+            else if (filename.startsWith('gg')) subdir = 'gg';
+            else if (!isNaN(subdir) || !/^[a-zA-Z]/.test(subdir)) subdir = 'number';
+            return `https://media.merriam-webster.com/audio/prons/en/us/mp3/${subdir}/${filename}.mp3`;
+        }
+
+        function playAudio(url) {
+            const audio = new Audio(url);
+            audio.play().catch(e => console.error("Error playing audio:", e));
+        }
+
+        function cleanMWTags(text) {
+            if (!text) return '';
+            let t = text;
+            
+            t = t.replace(/{dxt\|([^|}]*)\|([^|}]*)\|([^|}]*)}/g, (match, target, sense, text) => {
+                const displayText = text || target.split(':')[0]; 
+                const query = target.split(':')[0]; 
+                return `<a href="#" style="color:var(--primary); text-decoration:none;" onclick="event.preventDefault(); selectAutocompleteItem('${query}')">${displayText}</a>`;
+            });
+            t = t.replace(/{dxt\|([^|}]*)\|?([^|}]*)}/g, (match, target, sense) => {
+                 const query = target.split(':')[0];
+                 return `<a href="#" style="color:var(--primary); text-decoration:none;" onclick="event.preventDefault(); selectAutocompleteItem('${query}')">${query}</a>`;
+            });
+
+            t = t.replace(/{dx}/g, ' <span style="opacity:0.6;">—</span> '); 
+            t = t.replace(/{\/dx}/g, '');
+
+            if (t.includes('{bc}')) {
+                t = t.replace(/{bc}/g, '<span class="def-break"></span><span class="sense-bullet"></span> ');
+                if (t.startsWith('<span class="def-break"></span>')) t = t.replace('<span class="def-break"></span>', ''); 
+            }
+
+            t = t.replace(/{it}/g, '<i>').replace(/{\/it}/g, '</i>');
+            t = t.replace(/{b}/g, '<b>').replace(/{\/b}/g, '</b>');
+            t = t.replace(/{inf}/g, '<sub>').replace(/{\/inf}/g, '</sub>');
+            t = t.replace(/{sup}/g, '<sup>').replace(/{\/sup}/g, '</sup>');
+            t = t.replace(/{sc}/g, '<span style="font-variant: small-caps;">').replace(/{\/sc}/g, '</span>');
+            t = t.replace(/{phrase}/g, '<span style="font-weight:500;">').replace(/{\/phrase}/g, '</span>'); 
+            t = t.replace(/{qword}/g, '<i>').replace(/{\/qword}/g, '</i>');
+            t = t.replace(/{wi}/g, '<i>').replace(/{\/wi}/g, '</i>');
+            t = t.replace(/{ldquo}/g, '“').replace(/{rdquo}/g, '”');
+            
+            t = t.replace(/{sx\|([^|]+)\|([^|]*)\|}/g, (match, target) => 
+                `<a href="#" style="color:var(--primary);" onclick="event.preventDefault(); selectAutocompleteItem('${target}')">${target}</a>`
+            );
+            t = t.replace(/{d_link\|([^|]+)\|([^|]*)}/g, (match, text, target) => 
+                `<a href="#" style="color:var(--primary);" onclick="event.preventDefault(); selectAutocompleteItem('${target}')">${text}</a>`
+            );
+            t = t.replace(/{a_link\|([^|]+)}/g, (match, target) => 
+                `<a href="#" style="color:var(--primary);" onclick="event.preventDefault(); selectAutocompleteItem('${target}')">${target}</a>`
+            );
+            
+            t = t.replace(/{dx_def}/g, ''); 
+            t = t.replace(/{dx_ety}/g, '');
+            t = t.replace(/{ma}/g, '');
+            
+            return t;
+        }
+
+        function renderSenseHeader(senseData) {
+            let header = '';
+            
+            let notes = [];
+            if (senseData.gram) notes.push(`[${senseData.gram}]`);
+            if (senseData.sls) notes.push(`[${senseData.sls.join(', ')}]`);
+            if (senseData.uns) {
+                senseData.uns.forEach(u => {
+                    u.forEach(item => { if(item[0] === 'text') notes.push(`[${cleanMWTags(item[1])}]`); });
+                });
+            }
+            
+            if (notes.length > 0) {
+                header += `<span class="gram-label">${notes.join(' ')}</span>`;
+            }
+            return header;
+        }
+
+        function renderPseq(pseqList) {
+            let html = '<div class="sense-block">';
+            
+            const bsItem = pseqList.find(i => i[0] === 'bs');
+            if (bsItem) {
+                const bsData = bsItem[1].sense;
+                const headerContent = renderSenseHeader(bsData);
+                if (headerContent) {
+                    html += `<div class="sense-header">${headerContent}</div>`;
+                }
+            }
+
+            pseqList.forEach(item => {
+                if (item[0] === 'sense') {
+                    html += renderSingleSense(item[1], true);
+                }
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        function renderSenses(sseq) {
+            let html = '';
+            sseq.forEach(senseBlock => {
+                senseBlock.forEach(item => {
+                    if (item[0] === 'sense') {
+                        html += renderSingleSense(item[1], false);
+                    } else if (item[0] === 'pseq') {
+                        html += renderPseq(item[1]);
+                    }
+                });
+            });
+            return html;
+        }
+
+        function renderSingleSense(senseData, isSubsense = false) {
+            let senseHtml = '';
+            // Note: senseData.sn (number) is deliberately ignored
+            
+            let usageNotes = [];
+            if (senseData.gram) usageNotes.push(`[${senseData.gram}]`);
+            if (senseData.uns) {
+                senseData.uns.forEach(u => {
+                    u.forEach(item => { if(item[0] === 'text') usageNotes.push(`[${cleanMWTags(item[1])}]`); });
+                });
+            }
+            
+            let defText = '';
+            let examples = [];
+            
+            if (senseData.dt) {
+                senseData.dt.forEach(dtItem => {
+                    if (dtItem[0] === 'text') {
+                        defText += cleanMWTags(dtItem[1]);
+                    } else if (dtItem[0] === 'vis') {
+                        examples = dtItem[1];
+                    }
+                });
+            }
+
+            if (!defText && usageNotes.length === 0 && examples.length === 0) return '';
+
+            let formattedUsage = usageNotes.length ? `<span class="gram-label">${usageNotes.join(' ')}</span>` : '';
+
+            let className = isSubsense ? 'sub-sense-block' : 'sense-block';
+
+            senseHtml += `<div class="${className}">`;
+            // Removed sense number logic completely
+            senseHtml += `<div class="sense-content">`;
+            senseHtml += formattedUsage + defText;
+            
+            if (examples.length > 0) {
+                senseHtml += `<ul style="list-style-type: none; padding-left: 1em; margin-top: 0.5em; opacity: 0.8; font-style: italic;">`;
+                examples.forEach(ex => {
+                    let formattedEx = cleanMWTags(ex.t);
+                    senseHtml += `<li style="margin-bottom: 0.4em;">"${formattedEx}"</li>`;
+                });
+                senseHtml += `</ul>`;
+            }
+            senseHtml += `</div></div>`;
+            
+            return senseHtml;
+        }
+
+        async function displaySearchResults(query) {
             const searchResultsSection = document.getElementById('searchResultsSection');
             const wordsList = document.getElementById('wordsList');
             const mainContent = document.getElementById('mainContentArea');
@@ -1403,18 +1723,120 @@
                 mainContent.insertBefore(searchResultsSection, wordSpotlightSection);
             }
 
-            const matches = dictionary.filter(item => item.word.toLowerCase().includes(query) || item.definition.toLowerCase().includes(query));
-            if (matches.length === 0) {
-                wordsList.innerHTML = '<p style="text-align:center; color: var(--text-muted);">No words found matching your search.</p>';
-            } else {
+            const localMatches = dictionary.filter(item => item.word.toLowerCase() === query);
+            
+            if (localMatches.length > 0) {
                 let html = '';
-                matches.forEach(item => {
+                localMatches.forEach(item => {
                     const convertedDefinition = convertH2ToToggles(item.definition);
                     html += `<div class="interactive-card"><div class="word-definition">${convertedDefinition}</div></div>`;
                 });
                 wordsList.innerHTML = html;
                 setTimeout(activateTogglesInPage, 0);
+            } else {
+                wordsList.innerHTML = `<div class="skeleton-loading"><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div>`;
+                
+                try {
+                    const response = await fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${query}?key=${MW_API_KEY}`);
+                    if (!response.ok) throw new Error('API Request Failed');
+                    const data = await response.json();
+                    
+                    if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'object') {
+                        let definitionHTML = '';
+                        
+                        let entriesToProcess = data.filter(entry => 
+                            entry.hwi && entry.hwi.hw.replace(/\*/g, '') === query
+                        );
+                        
+                        if (entriesToProcess.length === 0) entriesToProcess = data.slice(0, 3);
+
+                        entriesToProcess.forEach((entry, index) => {
+                            if (!entry.hwi) return;
+
+                            definitionHTML += `<div class="entry-block">`; 
+
+                            const word = entry.hwi.hw.replace(/\*/g, '·'); 
+                            const phonetics = entry.hwi.prs && entry.hwi.prs[0] ? `<span style="opacity:0.7; font-family:'JetBrains Mono', monospace; font-size: 0.8em; margin-left: 10px;">/${entry.hwi.prs[0].ipa || entry.hwi.prs[0].mw}/</span>` : '';
+                            
+                            let audioHtml = '';
+                            if (entry.hwi.prs && entry.hwi.prs[0].sound) {
+                                const audioUrl = getAudioUrl(entry.hwi.prs[0].sound.audio);
+                                audioHtml = `<button class="audio-btn" onclick="playAudio('${audioUrl}')"><i class="fas fa-volume-up"></i></button>`;
+                            }
+
+                            const partOfSpeech = entry.fl ? `<h3 style="margin-top: 0.5em;">${entry.fl}</h3>` : '';
+                            
+                            let inflectionsHtml = '';
+                            if (entry.ins) {
+                                const forms = entry.ins.map(i => i.if.replace(/\*/g, '·')).join('; ');
+                                inflectionsHtml = `<div class="inflections">[${forms}]${entry.lbs ? ' ' + entry.lbs.join(', ') : ''}</div>`;
+                            }
+
+                            definitionHTML += `<h1>${word} ${phonetics} ${audioHtml}</h1>`;
+                            definitionHTML += partOfSpeech;
+                            definitionHTML += inflectionsHtml;
+                            
+                            if (entry.def && entry.def.length > 0) {
+                                definitionHTML += renderSenses(entry.def[0].sseq);
+                            } else if (entry.shortdef.length > 0) {
+                                definitionHTML += `<ul>`;
+                                entry.shortdef.forEach(def => {
+                                    definitionHTML += `<li>${def}</li>`;
+                                });
+                                definitionHTML += `</ul>`;
+                            }
+
+                            if (entry.syns) {
+                                definitionHTML += `<div class="additional-section">`;
+                                definitionHTML += `<div class="additional-title">Synonyms</div>`;
+                                entry.syns.forEach(synBlock => {
+                                    if (synBlock.pt) {
+                                        definitionHTML += `<p><strong>${cleanMWTags(synBlock.pt)}</strong></p>`;
+                                    }
+                                    if (synBlock.pl) { 
+                                        definitionHTML += `<p><em>${synBlock.pl}:</em></p>`;
+                                    }
+                                });
+                            }
+
+                            if (entry.dros) {
+                                definitionHTML += `<div class="additional-section">`;
+                                definitionHTML += `<div class="additional-title">Derived Forms</div>`;
+                                entry.dros.forEach(dro => {
+                                    definitionHTML += `<div class="run-on-item">`;
+                                    definitionHTML += `<span class="run-on-word">${dro.drp.replace(/\*/g, '·')}</span>`;
+                                    if (dro.def && dro.def.length > 0) {
+                                        definitionHTML += renderSenses(dro.def[0].sseq);
+                                    }
+                                    definitionHTML += `</div>`;
+                                });
+                                definitionHTML += `</div>`;
+                            }
+                            
+                            if (entry.et) {
+                                definitionHTML += `<div class="additional-section">`;
+                                definitionHTML += `<div class="additional-title">Etymology</div>`;
+                                let etText = '';
+                                entry.et.forEach(item => {
+                                    if (item[0] === 'text') etText += cleanMWTags(item[1]);
+                                });
+                                definitionHTML += `<p style="opacity: 0.8;">${etText}</p>`;
+                                definitionHTML += `</div>`;
+                            }
+
+                            definitionHTML += `</div>`; 
+                        });
+
+                        wordsList.innerHTML = `<div class="interactive-card"><div class="word-definition">${definitionHTML}</div></div>`;
+                    } else {
+                        wordsList.innerHTML = '<p style="text-align:center; color: var(--text-muted);">No words found matching your search.</p>';
+                    }
+                } catch (error) {
+                    console.error("MW API Error:", error);
+                    wordsList.innerHTML = `<p style="text-align:center; color: var(--text-muted);">Could not find definition for "<strong>${query}</strong>".</p>`;
+                }
             }
+
             searchResultsSection.style.display = 'block';
             setTimeout(() => {
                 searchResultsSection.classList.add('show');
