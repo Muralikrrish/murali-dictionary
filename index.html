@@ -244,7 +244,14 @@
         }
 
         .search-box input::placeholder { color: var(--text-muted); }
-        .search-icon { color: var(--text-muted); font-size: 1.2rem; padding: 10px; transition: color 0.3s; cursor: pointer; }
+        .search-icon { 
+            color: var(--text-muted); 
+            font-size: 1.2rem; 
+            padding: 10px; 
+            transition: color 0.3s; 
+            cursor: pointer; 
+            flex-shrink: 0;
+        }
         .search-box:focus-within .search-icon { color: var(--primary); }
 
         /* --- Clear Button (New) --- */
@@ -257,6 +264,7 @@
             display: none; /* Hidden by default */
             opacity: 0.6;
             margin-right: 4px;
+            flex-shrink: 0;
         }
 
         .clear-btn:hover {
@@ -800,8 +808,12 @@
             .word-definition p { margin-bottom: 1em; }
             .word-definition h1 { font-size: 2rem; }
             .question-text { font-size: 1.15rem; color: var(--text-muted); }
-            .search-input-wrapper { padding: 0 12px; }
-            .search-box input { padding: 14px 8px; }
+            
+            /* Search Box Mobile Optimization */
+            .search-input-wrapper { padding: 0 10px; }
+            .search-box input { padding: 14px 6px; font-size: 16px; /* Prevent iOS zoom */ } 
+            .search-icon, .clear-btn { padding: 12px 8px; font-size: 1.1rem; }
+
             .desktop-nav { display: none !important; }
             
             /* Optimized Mobile Typography & Spacing */
@@ -1684,6 +1696,7 @@
 
             // Click listener for search icon
             searchBtn.addEventListener('click', function() {
+                playButtonSound();
                 const query = searchInput.value.trim().toLowerCase();
                 if (query) {
                     autocompleteDropdown.classList.remove('show');
@@ -1693,6 +1706,7 @@
 
             // Click listener for clear button
             clearBtn.addEventListener('click', function() {
+                playClearSound();
                 searchInput.value = '';
                 toggleClearBtn();
                 searchInput.focus();
