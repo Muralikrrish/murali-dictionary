@@ -627,41 +627,6 @@
         .option-btn.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: #34d399; }
         .option-btn.incorrect { background: rgba(248, 113, 113, 0.15); border-color: var(--error); color: #f87171; }
 
-        .explanation-box {
-            margin-top: 24px;
-            padding: 24px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            border-radius: var(--radius-md);
-            color: var(--text-muted);
-            display: none;
-        }
-
-        .explanation-box.show { display: block; animation: fadeIn 0.4s ease; }
-
-        .explanation-preview {
-            position: relative;
-            max-height: 80px;
-            overflow: hidden;
-            transition: max-height 0.4s ease;
-        }
-        
-        .explanation-preview.expanded { max-height: 1000px; }
-
-        .explanation-fade {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(to bottom, transparent, #162032);
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 5;
-        }
-
-        .explanation-preview.expanded .explanation-fade { opacity: 0; }
-
         /* --- Buttons --- */
         .quiz-take-btn, .read-more-btn, .btn-show-word, .explanation-read-more-btn {
             background: var(--text-main);
@@ -769,6 +734,13 @@
         }
         /* Increased max-height to prevent cutoff on mobile */
         .curiosity-detail.show { max-height: 2000px; opacity: 1; margin-bottom: 24px; }
+
+        /* --- QUIZ DETAIL STYLES (NEW) --- */
+        .quiz-detail {
+            color: var(--text-muted); font-size: 1.05rem; line-height: 1.8;
+            max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;
+        }
+        .quiz-detail.show { max-height: 2000px; opacity: 1; margin-bottom: 24px; }
 
         /* --- SHARED BUTTON STYLES --- */
         .action-btn {
@@ -901,23 +873,24 @@
                         <div id="quizQuestion" style="display: none;">
                             <div class="question-text" id="quizQuestionText">Loading question...</div>
                             <div class="options-grid" id="quizOptionsGrid"></div>
-                            <div class="explanation-box" id="quizExplanation">
-                                <div class="explanation-preview">
-                                    <div class="explanation-content">
-                                        <strong style="color: var(--primary);">Insight:</strong> <span id="quizExplanationText"></span>
-                                    </div>
-                                    <div class="explanation-fade"></div>
-                                </div>
-                                <div class="explanation-read-more-container">
-                                    <button class="explanation-read-more-btn" onclick="toggleExplanationExpansion(this, 'quizExplanation')">
-                                        <span>Read more</span>
+                            
+                            <!-- UPDATED RESULT AREA -->
+                            <div id="quizResultArea" style="display:none; margin-top: 24px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                                <div id="quizFeedback" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;"></div>
+                                
+                                <div class="quiz-detail" id="quizExplanationContent"></div>
+                                
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                    <button class="action-btn" id="quizTellMeMoreBtn" onclick="playButtonSound(); toggleQuizDetail('quizExplanationContent', this)">
+                                        <i class="fas fa-eye"></i> Explanation
+                                    </button>
+                                    <button class="action-btn" onclick="playButtonSound(); displayQuizQuestion(true)">
+                                        <i class="fas fa-arrow-right"></i> Next Question
+                                    </button>
+                                    <button class="action-btn" onclick="continueToFullQuiz()">
+                                        Take Full Quiz
                                     </button>
                                 </div>
-                            </div>
-                            <div class="quiz-action-buttons">
-                                <button class="quiz-take-btn" onclick="continueToFullQuiz()" id="quizContinueBtn" style="display: none;">
-                                    Take Full Quiz <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -940,23 +913,24 @@
                         <div id="gkQuizQuestion" style="display: none;">
                             <div class="question-text" id="gkQuizQuestionText">Loading question...</div>
                             <div class="options-grid" id="gkQuizOptionsGrid"></div>
-                            <div class="explanation-box" id="gkQuizExplanation">
-                                <div class="explanation-preview">
-                                    <div class="explanation-content">
-                                        <strong style="color: var(--primary);">Insight:</strong> <span id="gkQuizExplanationText"></span>
-                                    </div>
-                                    <div class="explanation-fade"></div>
-                                </div>
-                                <div class="explanation-read-more-container">
-                                    <button class="explanation-read-more-btn" onclick="toggleExplanationExpansion(this, 'gkQuizExplanation')">
-                                        <span>Read more</span>
+                            
+                            <!-- UPDATED RESULT AREA -->
+                            <div id="gkQuizResultArea" style="display:none; margin-top: 24px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                                <div id="gkQuizFeedback" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;"></div>
+                                
+                                <div class="quiz-detail" id="gkQuizExplanationContent"></div>
+                                
+                                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                                    <button class="action-btn" id="gkQuizTellMeMoreBtn" onclick="playButtonSound(); toggleQuizDetail('gkQuizExplanationContent', this)">
+                                        <i class="fas fa-eye"></i> Explanation
+                                    </button>
+                                    <button class="action-btn" onclick="playButtonSound(); displayGkQuizQuestion(true)">
+                                        <i class="fas fa-arrow-right"></i> Next Question
+                                    </button>
+                                    <button class="action-btn" onclick="continueToFullGkQuiz()">
+                                        Take Full Quiz
                                     </button>
                                 </div>
-                            </div>
-                            <div class="quiz-action-buttons">
-                                <button class="quiz-take-btn" onclick="continueToFullGkQuiz()" id="gkQuizContinueBtn" style="display: none;">
-                                    Take Full Quiz <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -1091,9 +1065,12 @@
         // --- Sound Effects ---
         function playTypeSound() { playSound(1000, 0.05, 'sine', 0.1); }
         function playButtonSound() { playSound(600, 0.08, 'sine', 0.1); }
+        
+        // RESTORED: This function was missing, causing the quiz click to fail
+        function playSelectSound() { playSound(600, 0.05, 'sine', 0.1); }
+
         function playCorrectSound() { playSound(800, 0.15, 'sine', 0.2); }
         function playIncorrectSound() { playSound(300, 0.2, 'sawtooth', 0.15); } 
-        function playSelectSound() { playSound(600, 0.05, 'sine', 0.1); }
         function playRevealSound() { playSound(1200, 0.1, 'triangle', 0.15); }
         function playRevealAllSound() { 
             let start = 800;
@@ -1139,16 +1116,16 @@
             osc.stop(ctx.currentTime + 0.3);
         }
 
-        function toggleExplanationExpansion(button, explanationId) {
-            const explanationBox = document.getElementById(explanationId);
-            const preview = explanationBox.querySelector('.explanation-preview');
-            const isExpanded = preview.classList.contains('expanded');
-            if (isExpanded) {
-                preview.classList.remove('expanded');
-                button.innerHTML = '<span>Read more</span>';
-            } else {
-                preview.classList.add('expanded');
-                button.innerHTML = '<span>Read less</span>';
+        function toggleQuizDetail(id, btn) {
+            const detail = document.getElementById(id);
+            const isHidden = !detail.classList.contains('show');
+            detail.classList.toggle('show');
+            if (btn) {
+                if (isHidden) {
+                    btn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Explanation';
+                } else {
+                    btn.innerHTML = '<i class="fas fa-eye"></i> Explanation';
+                }
             }
         }
 
@@ -1348,8 +1325,15 @@
             document.getElementById('gkQuizErrorMessage').textContent = message;
         }
 
-        function displayQuizQuestion() {
-            if (quizQuestions.length === 0 || questionDisplayed) return;
+        function displayQuizQuestion(scrollToTop = false) {
+            if (quizQuestions.length === 0) return;
+            
+            // Auto-Scroll logic (Applied to all devices for better flow)
+            if (scrollToTop) {
+                const section = document.getElementById('vocabularyQuizSection');
+                if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
             questionDisplayed = true;
             const randomIndex = Math.floor(Math.random() * quizQuestions.length);
             currentQuizQuestion = quizQuestions[randomIndex];
@@ -1369,14 +1353,31 @@
                 optionDiv.onclick = () => selectQuizAnswer(index);
                 optionsGrid.appendChild(optionDiv);
             });
-            document.getElementById('quizExplanation').classList.remove('show');
-            document.getElementById('quizContinueBtn').style.display = 'none';
+            
+            // Hide result area and show grid
+            document.getElementById('quizResultArea').style.display = 'none';
+            document.getElementById('quizOptionsGrid').style.display = 'grid';
+            
+            // Reset "Explanation" button text
+            const btn = document.getElementById('quizTellMeMoreBtn');
+            if (btn) btn.innerHTML = '<i class="fas fa-eye"></i> Explanation';
+            
+            // Collapse details
+            document.getElementById('quizExplanationContent').classList.remove('show');
+            
             quizAnswered = false;
             selectedQuizAnswer = null;
         }
 
-        function displayGkQuizQuestion() {
-            if (gkQuizQuestions.length === 0 || gkQuestionDisplayed) return;
+        function displayGkQuizQuestion(scrollToTop = false) {
+            if (gkQuizQuestions.length === 0) return;
+
+            // Auto-Scroll logic (Applied to all devices for better flow)
+            if (scrollToTop) {
+                const section = document.getElementById('gkQuizSection');
+                if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
             gkQuestionDisplayed = true;
             const randomIndex = Math.floor(Math.random() * gkQuizQuestions.length);
             currentGkQuizQuestion = gkQuizQuestions[randomIndex];
@@ -1396,8 +1397,18 @@
                 optionDiv.onclick = () => selectGkQuizAnswer(index);
                 optionsGrid.appendChild(optionDiv);
             });
-            document.getElementById('gkQuizExplanation').classList.remove('show');
-            document.getElementById('gkQuizContinueBtn').style.display = 'none';
+            
+            // Hide result area and show grid
+            document.getElementById('gkQuizResultArea').style.display = 'none';
+            document.getElementById('gkQuizOptionsGrid').style.display = 'grid';
+            
+            // Reset "Explanation" button text
+            const btn = document.getElementById('gkQuizTellMeMoreBtn');
+            if (btn) btn.innerHTML = '<i class="fas fa-eye"></i> Explanation';
+            
+            // Collapse details
+            document.getElementById('gkQuizExplanationContent').classList.remove('show');
+            
             gkQuizAnswered = false;
             selectedGkQuizAnswer = null;
         }
@@ -1426,12 +1437,25 @@
 
         function checkQuizAnswer() {
             const isCorrect = selectedQuizAnswer === currentQuizQuestion.currentCorrectAnswer;
-            if (isCorrect) playCorrectSound();
-            else playIncorrectSound();
+            const feedback = document.getElementById('quizFeedback');
+            
+            if (isCorrect) {
+                playCorrectSound();
+                feedback.textContent = ""; // Cleared as requested
+                // feedback.style.color = "var(--success)";
+            } else {
+                playIncorrectSound();
+                feedback.textContent = ""; // Cleared as requested
+                // feedback.style.color = "var(--error)";
+            }
 
-            document.getElementById('quizExplanationText').textContent = currentQuizQuestion.explanation;
-            document.getElementById('quizExplanation').classList.add('show');
-            document.getElementById('quizContinueBtn').style.display = 'inline-flex';
+            // Populate Explanation
+            document.getElementById('quizExplanationContent').innerHTML = currentQuizQuestion.explanation;
+            
+            // Show Result Area
+            document.getElementById('quizResultArea').style.display = 'block';
+            
+            // Disable options but keep them visible for context
             const options = document.querySelectorAll('#quizOptionsGrid .option-btn');
             options[currentQuizQuestion.currentCorrectAnswer].classList.add('correct');
             if (!isCorrect) options[selectedQuizAnswer].classList.add('incorrect');
@@ -1440,12 +1464,25 @@
 
         function checkGkQuizAnswer() {
             const isCorrect = selectedGkQuizAnswer === currentGkQuizQuestion.currentCorrectAnswer;
-            if (isCorrect) playCorrectSound();
-            else playIncorrectSound();
+            const feedback = document.getElementById('gkQuizFeedback');
+            
+            if (isCorrect) {
+                playCorrectSound();
+                feedback.textContent = ""; // Cleared as requested
+                // feedback.style.color = "var(--success)";
+            } else {
+                playIncorrectSound();
+                feedback.textContent = ""; // Cleared as requested
+                // feedback.style.color = "var(--error)";
+            }
 
-            document.getElementById('gkQuizExplanationText').textContent = currentGkQuizQuestion.explanation;
-            document.getElementById('gkQuizExplanation').classList.add('show');
-            document.getElementById('gkQuizContinueBtn').style.display = 'inline-flex';
+            // Populate Explanation
+            document.getElementById('gkQuizExplanationContent').innerHTML = currentGkQuizQuestion.explanation;
+            
+            // Show Result Area
+            document.getElementById('gkQuizResultArea').style.display = 'block';
+            
+            // Disable options
             const options = document.querySelectorAll('#gkQuizOptionsGrid .option-btn');
             options[currentGkQuizQuestion.currentCorrectAnswer].classList.add('correct');
             if (!isCorrect) options[selectedGkQuizAnswer].classList.add('incorrect');
