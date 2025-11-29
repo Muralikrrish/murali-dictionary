@@ -1377,7 +1377,7 @@
                     const isBlack = crosswordState.solution[r][c] === '.';
                     const cellNum = cellNumbers[`${r}-${c}`];
                     
-                    // UPDATED: Separated onkeydown and oninput handlers
+                    // UPDATED: Added attributes to block autocomplete, autocorrect, and password managers
                     gridHtml += `
                         <div class="cw-cell ${isBlack ? 'black' : ''}" 
                              id="cell-${r}-${c}" 
@@ -1386,10 +1386,14 @@
                             <span class="letter" id="letter-${r}-${c}"></span>
                             ${!isBlack ? `<input type="text" maxlength="1" 
                                 id="input-${r}-${c}" 
+                                name="cw_cell_${r}_${c}"
                                 onkeydown="handleKeyDown(event, ${r}, ${c})"
                                 oninput="handleInput(event, ${r}, ${c})"
                                 autocomplete="off"
-                                spellcheck="false">` : ''}
+                                autocorrect="off"
+                                autocapitalize="characters"
+                                spellcheck="false"
+                                data-lpignore="true">` : ''}
                         </div>
                     `;
                 }
