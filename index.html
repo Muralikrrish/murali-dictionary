@@ -899,100 +899,6 @@
             .cw-cell span.num { font-size: 0.55rem; left: 1px; top: 1px; }
             .action-btn { padding: 8px 16px; font-size: 0.85rem; }
             .cw-controls { gap: 8px; }
-
-            /* Mobile Keyboard Styles */
-            .virtual-keyboard {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background: #0f172a; /* Deep Navy background */
-                padding: 10px 4px 30px 4px; /* More bottom padding for safe area */
-                z-index: 9999;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
-                transform: translateY(100%); /* Hidden by default */
-                box-shadow: 0 -4px 25px rgba(0,0,0,0.4);
-            }
-            
-            .virtual-keyboard.open {
-                transform: translateY(0); /* Slide up */
-            }
-            
-            .kb-header {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding-bottom: 4px;
-                margin-bottom: 2px;
-            }
-            
-            .kb-dismiss-btn {
-                background: rgba(255,255,255,0.1);
-                border: none;
-                color: var(--text-muted);
-                font-size: 0.8rem;
-                padding: 4px 20px;
-                border-radius: 20px;
-                cursor: pointer;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-                font-weight: 600;
-            }
-
-            .kb-row {
-                display: flex;
-                justify-content: center;
-                gap: 5px; /* Slightly wider gap */
-                width: 100%;
-                max-width: 600px;
-                margin: 0 auto;
-            }
-            
-            .kb-key {
-                background: #334155; /* Slate 700 */
-                color: #f1f5f9; /* Slate 100 */
-                font-family: 'Plus Jakarta Sans', sans-serif;
-                font-weight: 700;
-                font-size: 1.35rem; 
-                height: 56px; /* Taller, more tappable */
-                flex: 1;
-                border-radius: 5px; /* NYT Style rounding */
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                text-transform: uppercase;
-                box-shadow: 0 1px 0 rgba(0,0,0,0.3); /* Subtle depth */
-                user-select: none;
-                -webkit-user-select: none;
-                touch-action: manipulation;
-            }
-            
-            .kb-key:active {
-                background: #475569; /* Lighter on press */
-                transform: translateY(1px);
-                box-shadow: none;
-            }
-            
-            /* Special keys (Backspace) */
-            .kb-key.wide { 
-                flex: 1.5; 
-                background: #1e293b; /* Darker for functional keys */
-                font-size: 1.1rem; 
-            }
-            
-            .kb-spacer { flex: 0.5; }
-            
-            /* Add padding to body on mobile so keyboard doesn't cover content when scrolled */
-            body { padding-bottom: 300px; } 
-        }
-
-        /* Hide keyboard on desktop */
-        @media (min-width: 768px) {
-            .virtual-keyboard { display: none; }
         }
     </style>
 </head>
@@ -1071,7 +977,6 @@
                         </div>
                         <!-- Grid and Clues injected by JS -->
                     </div>
-                    <!-- Note: Keyboard moved to body end for better positioning -->
                 </div>
             </section>
 
@@ -1198,9 +1103,6 @@
 
         </div>
     </div>
-    
-    <!-- Mobile Virtual Keyboard (Fixed Bottom) -->
-    <div id="mobileKeyboard" class="virtual-keyboard"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1440,74 +1342,9 @@
                 crosswordState.revealedCells = new Set(); // Reset revealed on new fetch
 
                 renderCrossword(cw.id);
-                renderVirtualKeyboard(); // Initialize keyboard
             } catch (err) {
                 console.error("Crossword fetch error:", err);
                 document.getElementById('cwLoading').style.display = 'none';
-            }
-        }
-
-        function renderVirtualKeyboard() {
-            const kbContainer = document.getElementById('mobileKeyboard');
-            // Modern Layout: Standard QWERTY with Backspace on the right of bottom row
-            const rows = [
-                ['Q','W','E','R','T','Y','U','I','O','P'],
-                ['A','S','D','F','G','H','J','K','L'],
-                ['Z','X','C','V','B','N','M', 'BACKSPACE']
-            ];
-            
-            // Add Dismiss Header
-            let html = `
-                <div class="kb-header" onclick="document.getElementById('mobileKeyboard').classList.remove('open')">
-                    <button class="kb-dismiss-btn"><i class="fas fa-chevron-down"></i></button>
-                </div>
-            `;
-            
-            rows.forEach((row, i) => {
-                html += `<div class="kb-row">`;
-                
-                // Indent 2nd row slightly like physical keyboards
-                if (i === 1) html += `<div class="kb-spacer"></div><div class="kb-spacer"></div>`;
-                
-                // Indent 3rd row (Z...M) to center it before Backspace
-                if (i === 2) html += `<div class="kb-spacer"></div><div class="kb-spacer"></div><div class="kb-spacer"></div>`;
-                
-                row.forEach(key => {
-                    let displayKey = key;
-                    let action = 'type';
-                    let extraClass = '';
-                    
-                    if (key === 'BACKSPACE') {
-                        displayKey = '<i class="fas fa-backspace"></i>';
-                        action = 'backspace';
-                        extraClass = 'wide';
-                    }
-                    
-                    // Added touchend event to prevent double firing and ensure fast response
-                    html += `<div class="kb-key ${extraClass}" 
-                        onmousedown="event.preventDefault(); handleVirtualKey('${key}', '${action}')">
-                        ${displayKey}
-                    </div>`;
-                });
-                
-                // Balance 2nd row
-                if (i === 1) html += `<div class="kb-spacer"></div><div class="kb-spacer"></div>`;
-                
-                html += `</div>`;
-            });
-            
-            kbContainer.innerHTML = html;
-        }
-
-        function handleVirtualKey(key, action) {
-            if (navigator.vibrate) navigator.vibrate(15);
-            
-            if (action === 'backspace') {
-                handleInput({ key: 'Backspace', preventDefault: () => {} }, crosswordState.currentCell.r, crosswordState.currentCell.c);
-            } else if (action === 'check') {
-                checkCrossword();
-            } else {
-                handleInput({ key: key, preventDefault: () => {} }, crosswordState.currentCell.r, crosswordState.currentCell.c);
             }
         }
 
@@ -1540,7 +1377,7 @@
                     const isBlack = crosswordState.solution[r][c] === '.';
                     const cellNum = cellNumbers[`${r}-${c}`];
                     
-                    // Added inputmode="none" to prevent native keyboard on mobile
+                    // Removed inputmode="none" to allow native keyboard
                     gridHtml += `
                         <div class="cw-cell ${isBlack ? 'black' : ''}" 
                              id="cell-${r}-${c}" 
@@ -1549,7 +1386,6 @@
                             <span class="letter" id="letter-${r}-${c}"></span>
                             ${!isBlack ? `<input type="text" maxlength="1" 
                                 id="input-${r}-${c}" 
-                                inputmode="none"
                                 onkeydown="handleInput(event, ${r}, ${c})"
                                 oninput="this.value=''" 
                                 autocomplete="off">` : ''}
@@ -1747,20 +1583,29 @@
             
             playButtonSound();
 
-            // Toggle direction if clicking the same active cell
+            // Mobile: Scroll to top of section to ensure keyboard doesn't hide grid
+            if (window.innerWidth <= 768) {
+                document.getElementById('crosswordSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // Direction Logic:
+            // 1. If clicking the SAME cell, toggle direction.
             if (crosswordState.currentCell.r === r && crosswordState.currentCell.c === c) {
                 crosswordState.direction = crosswordState.direction === 'across' ? 'down' : 'across';
+            } else {
+                // 2. If clicking a NEW cell, prioritize ACROSS if the cell is part of an Across word.
+                const cellKey = `${r}-${c}`;
+                const cellData = crosswordState.cellMap[cellKey];
+                
+                if (cellData && cellData.across) {
+                    crosswordState.direction = 'across';
+                } else if (cellData && cellData.down) {
+                    crosswordState.direction = 'down';
+                }
             }
             
             crosswordState.currentCell = { r, c };
             highlightCell(r, c);
-            
-            // Show Keyboard on Mobile
-            if (window.innerWidth <= 768) {
-                const kb = document.getElementById('mobileKeyboard');
-                if (kb) kb.classList.add('open');
-            }
-            
             document.getElementById(`input-${r}-${c}`).focus();
         }
 
@@ -1799,7 +1644,10 @@
                 const clueEl = document.getElementById(`clue-${activeDir}-${activeNum}`);
                 if (clueEl) {
                     clueEl.classList.add('active');
-                    clueEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    // Only scroll clue into view on desktop to avoid jumping on mobile
+                    if (window.innerWidth > 768) {
+                        clueEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
                 }
 
                 // Highlight Word in Grid
