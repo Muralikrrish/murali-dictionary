@@ -1207,6 +1207,38 @@
         function playCorrectSound() { playSound(800, 0.15, 'sine', 0.2); }
         function playIncorrectSound() { playSound(300, 0.2, 'sawtooth', 0.15); } 
         function playRevealSound() { playSound(1200, 0.1, 'triangle', 0.15); }
+        
+        function playClearSound() { 
+            // Swoosh sound
+            const ctx = initAudio();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.setValueAtTime(400, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.2, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.2);
+        }
+
+        function playNewPuzzleSound() {
+            // Cheerful Chime
+            const ctx = initAudio();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(440, ctx.currentTime);
+            osc.frequency.linearRampToValueAtTime(880, ctx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.3);
+        }
+
         function playRevealAllSound() { 
             let start = 800;
             for(let i=0; i<10; i++) {
@@ -1392,8 +1424,8 @@
                     <button class="action-btn primary-btn" onclick="checkCrossword()"><i class="fas fa-check"></i> Check Answers</button>
                     <button class="action-btn" onclick="revealLetter()"><i class="fas fa-eye"></i> Reveal Letter</button>
                     <button class="action-btn" onclick="revealAll()"><i class="fas fa-sun"></i> Reveal All</button>
-                    <button class="action-btn" onclick="resetCrossword()"><i class="fas fa-eraser"></i> Clear</button>
-                    <button class="action-btn" onclick="fetchCrossword(true)"><i class="fas fa-random"></i> New Puzzle</button>
+                    <button class="action-btn" onclick="playClearSound(); resetCrossword()"><i class="fas fa-eraser"></i> Clear</button>
+                    <button class="action-btn" onclick="playNewPuzzleSound(); fetchCrossword(true)"><i class="fas fa-random"></i> New Puzzle</button>
                 </div>
                 <div id="cw-message" style="margin-top:10px; font-weight:bold; color:var(--primary); height:24px;"></div>`;
 
@@ -1494,7 +1526,9 @@
             const cell = document.getElementById(`cell-${r}-${c}`);
             cell.classList.remove('correct', 'incorrect');
             cell.classList.add('revealed');
-            moveFocus(1);
+            
+            // Pass true to prevent focus (and keyboard opening) on mobile
+            moveFocus(1, true);
         }
 
         function revealAll() {
@@ -1626,7 +1660,7 @@
             e.target.value = '';
         }
 
-        function moveFocus(step) {
+        function moveFocus(step, preventFocus = false) {
             let { r, c } = crosswordState.currentCell;
             const size = crosswordState.solution.length;
             if (crosswordState.direction === 'across') c += step;
@@ -1636,7 +1670,12 @@
                 if (crosswordState.solution[r][c] !== '.') {
                     crosswordState.currentCell = { r, c };
                     highlightCell(r, c);
-                    document.getElementById(`input-${r}-${c}`).focus();
+                    
+                    // Only focus input if NOT preventing focus (mobile reveal) 
+                    // OR if on desktop (width > 768)
+                    if (!preventFocus || window.innerWidth > 768) {
+                        document.getElementById(`input-${r}-${c}`).focus();
+                    }
                 }
             }
         }
@@ -1749,16 +1788,18 @@
                 msg.style.color = "var(--primary)";
             } else if (wordsIncorrect > 0) {
                 playIncorrectSound();
-                msg.textContent = `${wordsFound} word${wordsFound !== 1 ? 's' : ''} found. ${wordsIncorrect} word${wordsIncorrect !== 1 ? 's' : ''} incorrect.`;
+                // SIMPLIFIED FEEDBACK
+                msg.textContent = "Incorrect cells marked.";
                 msg.style.color = "var(--error)";
             } else {
-                msg.textContent = `${wordsFound} word${wordsFound !== 1 ? 's' : ''} found. Keep going!`;
+                // SIMPLIFIED FEEDBACK
+                msg.textContent = "Keep going!";
                 msg.style.color = "var(--primary)";
             }
         }
         
         function resetCrossword() {
-             playButtonSound();
+             // Sound handled by onclick
              scrollToCrosswordTop();
              const size = crosswordState.solution.length;
              crosswordState.revealedCells.clear();
