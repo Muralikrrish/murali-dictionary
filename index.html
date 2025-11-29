@@ -1312,18 +1312,41 @@
                     <h3 class="curiosity-fact">${item.fact_text}</h3>
                     <div class="curiosity-detail" id="curiosityDetail">${item.detail_text || ''}</div>
                     <div style="margin-top: 24px; display: flex; gap: 12px;">
-                        <button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail()"><i class="fas fa-eye"></i> Tell me more</button>
-                        <button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)"><i class="fas fa-random"></i> Next Fact</button>
+                        <button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail(this)">
+                            <i class="fas fa-eye"></i> Tell me more
+                        </button>
+                        <button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)">
+                            <i class="fas fa-random"></i> Next Fact
+                        </button>
                     </div>`;
             } catch (err) {
                 console.error("Curiosity fetch error:", err);
-                display.innerHTML = `<span class="curiosity-category">Fallback Fact</span><h3 class="curiosity-fact">Octopuses have three hearts.</h3><div class="curiosity-detail" id="curiosityDetail">Two pump blood to the gills, one to the rest of the body.</div><div style="margin-top: 24px;"><button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail()">Tell me more</button></div>`;
+                display.innerHTML = `
+                    <span class="curiosity-category">Fallback Fact</span>
+                    <h3 class="curiosity-fact">Octopuses have three hearts.</h3>
+                    <div class="curiosity-detail" id="curiosityDetail">Two pump blood to the gills, one to the rest of the body.</div>
+                    <div style="margin-top: 24px;">
+                        <button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail(this)">
+                            <i class="fas fa-eye"></i> Tell me more
+                        </button>
+                    </div>`;
             }
         }
 
-        function toggleCuriosityDetail() {
+        function toggleCuriosityDetail(btn) {
             const detail = document.getElementById('curiosityDetail');
+            const isHidden = !detail.classList.contains('show');
+            
             detail.classList.toggle('show');
+            
+            // Toggle Button Text
+            if (btn) {
+                if (isHidden) {
+                    btn.innerHTML = '<i class="fas fa-eye-slash"></i> Show less';
+                } else {
+                    btn.innerHTML = '<i class="fas fa-eye"></i> Tell me more';
+                }
+            }
         }
 
         // --- 4. CROSSWORD LOGIC ---
