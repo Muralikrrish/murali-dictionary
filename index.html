@@ -1377,7 +1377,7 @@
                     const isBlack = crosswordState.solution[r][c] === '.';
                     const cellNum = cellNumbers[`${r}-${c}`];
                     
-                    // UPDATED: Added attributes to block autocomplete, autocorrect, and password managers
+                    // UPDATED: Aggressive attributes to block autofill bars and password managers
                     gridHtml += `
                         <div class="cw-cell ${isBlack ? 'black' : ''}" 
                              id="cell-${r}-${c}" 
@@ -1386,14 +1386,15 @@
                             <span class="letter" id="letter-${r}-${c}"></span>
                             ${!isBlack ? `<input type="text" maxlength="1" 
                                 id="input-${r}-${c}" 
-                                name="cw_cell_${r}_${c}"
+                                name="cw_cell_${r}_${c}_random_${Math.random()}"
                                 onkeydown="handleKeyDown(event, ${r}, ${c})"
                                 oninput="handleInput(event, ${r}, ${c})"
-                                autocomplete="off"
+                                autocomplete="new-password"
                                 autocorrect="off"
-                                autocapitalize="characters"
+                                autocapitalize="off"
                                 spellcheck="false"
-                                data-lpignore="true">` : ''}
+                                data-lpignore="true"
+                                data-form-type="other">` : ''}
                         </div>
                     `;
                 }
@@ -1563,40 +1564,40 @@
                     
                     // Move to next cell
                     moveFocus(1);
+        function onCellClick(r, c) {
+            if (crosswordState.solution[r][c] === '.') return;
+            
+            playButtonSound();
+
+            // Mobile: Scroll to top of section with delay to account for keyboard animation
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    const section = document.getElementById('crosswordSection');
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 300); // 300ms delay for keyboard slide-up
+            }
+
+            // Direction Logic:
+            // 1. If clicking the SAME cell, toggle direction.
+            if (crosswordState.currentCell.r === r && crosswordState.currentCell.c === c) {
+                crosswordState.direction = crosswordState.direction === 'across' ? 'down' : 'across';
+            } else {
+                // 2. If clicking a NEW cell, prioritize ACROSS if the cell is part of an Across word.
+                const cellKey = `${r}-${c}`;
+                const cellData = crosswordState.cellMap[cellKey];
+                
+                if (cellData && cellData.across) {
+                    crosswordState.direction = 'across';
+                } else if (cellData && cellData.down) {
+                    crosswordState.direction = 'down';
                 }
             }
             
-            // Always clear the input field so it's ready for the next character
-            e.target.value = '';
-        }
-
-        function moveFocus(step) {
-            let { r, c } = crosswordState.currentCell;
-            const size = crosswordState.solution.length;
-            if (crosswordState.direction === 'across') c += step;
-            else r += step;
-
-            if (r >= 0 && r < size && c >= 0 && c < size) {
-                if (crosswordState.solution[r][c] !== '.') {
-                    crosswordState.currentCell = { r, c };
-                    highlightCell(r, c);
-                    document.getElementById(`input-${r}-${c}`).focus();
-                }
-            }
-        }
-        
-        function moveWithArrows(key, r, c) {
-            const size = crosswordState.solution.length;
-            if (key === 'ArrowUp') r--;
-            if (key === 'ArrowDown') r++;
-            if (key === 'ArrowLeft') c--;
-            if (key === 'ArrowRight') c++;
-            
-            if (r >= 0 && r < size && c >= 0 && c < size && crosswordState.solution[r][c] !== '.') {
-                crosswordState.currentCell = { r, c };
-                highlightCell(r, c);
-                document.getElementById(`input-${r}-${c}`).focus();
-            }
+            crosswordState.currentCell = { r, c };
+            highlightCell(r, c);
+            document.getElementById(`input-${r}-${c}`).focus();
         }
 
         function highlightCell(r, c) {
