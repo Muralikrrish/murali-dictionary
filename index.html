@@ -767,7 +767,8 @@
             color: var(--text-muted); font-size: 1.05rem; line-height: 1.8;
             max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;
         }
-        .curiosity-detail.show { max-height: 500px; opacity: 1; margin-bottom: 24px; }
+        /* Increased max-height to prevent cutoff on mobile */
+        .curiosity-detail.show { max-height: 2000px; opacity: 1; margin-bottom: 24px; }
 
         /* --- NEW CROSSWORD STYLES --- */
         .crossword-container {
@@ -1264,8 +1265,18 @@
         }
 
         // --- 3. CURIOSITY LOGIC (NEW) ---
-        async function fetchCuriosity() {
+        async function fetchCuriosity(scrollToTop = false) {
             const display = document.getElementById('curiosityDisplay');
+            
+            // Mobile Optimization: Scroll to top of section on "Next Fact" click
+            if (scrollToTop && window.innerWidth <= 768) {
+                const section = document.getElementById('curiositySection');
+                if (section) {
+                    // Smooth scroll to align the top of the section with the viewport
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
             try {
                 const { data, error } = await supabaseClient.rpc('get_random_curiosity');
                 
@@ -1282,7 +1293,7 @@
                         <button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail()">
                             <i class="fas fa-eye"></i> Tell me more
                         </button>
-                        <button class="action-btn" onclick="playButtonSound(); fetchCuriosity()">
+                        <button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)">
                             <i class="fas fa-random"></i> Next Fact
                         </button>
                     </div>
@@ -1295,6 +1306,9 @@
                     <div class="curiosity-detail" id="curiosityDetail">Two pump blood to the gills, one to the rest of the body.</div>
                     <div style="margin-top: 24px;">
                         <button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail()">Tell me more</button>
+                        <button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)">
+                            <i class="fas fa-random"></i> Next Fact
+                        </button>
                     </div>
                 `;
             }
