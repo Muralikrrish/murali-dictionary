@@ -244,8 +244,26 @@
         }
 
         .search-box input::placeholder { color: var(--text-muted); }
-        .search-icon { color: var(--text-muted); font-size: 1.2rem; padding: 10px; transition: color 0.3s; }
+        .search-icon { color: var(--text-muted); font-size: 1.2rem; padding: 10px; transition: color 0.3s; cursor: pointer; }
         .search-box:focus-within .search-icon { color: var(--primary); }
+
+        /* --- Clear Button (New) --- */
+        .clear-btn {
+            color: var(--text-muted);
+            font-size: 1rem;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none; /* Hidden by default */
+            opacity: 0.6;
+            margin-right: 4px;
+        }
+
+        .clear-btn:hover {
+            color: var(--text-main);
+            opacity: 1;
+            transform: scale(1.1);
+        }
 
         .autocomplete-dropdown {
             position: absolute;
@@ -349,6 +367,10 @@
             margin-bottom: 0.5em;
             font-size: 2.5rem;
             line-height: 1.2;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .word-definition h2 {
@@ -383,7 +405,6 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-left: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             vertical-align: middle;
@@ -394,6 +415,35 @@
             background: var(--primary);
             color: var(--bg-deep);
             box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .pronunciation-text {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        /* --- Examples List --- */
+        .examples-list {
+            list-style-type: none;
+            padding-left: 16px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            border-left: 2px solid rgba(251, 191, 36, 0.3); /* Soft Amber */
+        }
+        
+        .example-item {
+            color: var(--text-bright-dim); 
+            font-style: italic;
+            margin-bottom: 6px;
+            font-size: 0.98em;
+            line-height: 1.6;
+        }
+        
+        .example-item:last-child {
+            margin-bottom: 0;
         }
 
         /* --- Definition Layout Structure --- */
@@ -820,7 +870,8 @@
                 <div class="search-box">
                     <div class="search-input-wrapper">
                         <input type="text" id="searchInput" placeholder="Search vocabulary..." autocomplete="off">
-                        <span class="search-icon"><i class="fas fa-search"></i></span>
+                        <span class="clear-btn" id="clearBtn"><i class="fas fa-times"></i></span>
+                        <span class="search-icon" id="searchBtn"><i class="fas fa-search"></i></span>
                     </div>
                 </div>
                 <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
@@ -831,7 +882,13 @@
     <div class="container">
         <div class="main-content" id="mainContentArea">
             
-            <!-- 1. CURIOSITIES SECTION (NEW) -->
+            <!-- Search Results (Moved Above Curiosities) -->
+            <section class="modern-section search-results-section" id="searchResultsSection" style="display: none;">
+                <h2 class="modern-section-title"><span>Search Results</span></h2>
+                <div class="words-list" id="wordsList"></div>
+            </section>
+            
+            <!-- 1. CURIOSITIES SECTION -->
             <section class="modern-section" id="curiositySection">
                 <h2 class="modern-section-title"><span>Curiosities</span></h2>
                 <div class="interactive-card">
@@ -844,12 +901,6 @@
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <!-- Search Results (Original) -->
-            <section class="modern-section search-results-section" id="searchResultsSection" style="display: none;">
-                <h2 class="modern-section-title"><span>Search Results</span></h2>
-                <div class="words-list" id="wordsList"></div>
             </section>
 
             <!-- 4. Vocabulary Quiz Section (Original) -->
@@ -1608,15 +1659,58 @@
 
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const clearBtn = document.getElementById('clearBtn');
             const autocompleteDropdown = document.getElementById('autocompleteDropdown');
             let typingTimer;
+
+            // Helper to toggle clear button
+            const toggleClearBtn = () => {
+                clearBtn.style.display = searchInput.value.trim().length > 0 ? 'block' : 'none';
+            };
+
+            // Mobile Scroll on Focus Logic
+            searchInput.addEventListener('focus', function() {
+                if (window.innerWidth <= 768) {
+                    // Slight delay to account for the virtual keyboard animation
+                    setTimeout(() => {
+                        const container = document.querySelector('.search-container');
+                        // Calculate position relative to document
+                        const y = container.getBoundingClientRect().top + window.pageYOffset - 24; // 24px top buffer
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                    }, 300);
+                }
+            });
+
+            // Click listener for search icon
+            searchBtn.addEventListener('click', function() {
+                const query = searchInput.value.trim().toLowerCase();
+                if (query) {
+                    autocompleteDropdown.classList.remove('show');
+                    displaySearchResults(query);
+                }
+            });
+
+            // Click listener for clear button
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                toggleClearBtn();
+                searchInput.focus();
+                
+                // Reset UI
+                autocompleteDropdown.classList.remove('show');
+                document.getElementById('searchResultsSection').style.display = 'none';
+            });
+
             searchInput.addEventListener('input', function() {
+                toggleClearBtn(); // Check visibility on every input
+                
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(() => {
                     const query = this.value.trim().toLowerCase();
                     if (query.length === 0) {
                         autocompleteDropdown.classList.remove('show');
-                        document.getElementById('searchResultsSection').classList.remove('show');
+                        document.getElementById('searchResultsSection').style.display = 'none';
                         return;
                     }
                     showAutocomplete(query);
@@ -1701,7 +1795,7 @@
             t = t.replace(/{bc}/g, ': ');
             t = t.replace(/{it}/g, '<i>').replace(/{\/it}/g, '</i>');
             t = t.replace(/{b}/g, '<b>').replace(/{\/b}/g, '</b>');
-            t = t.replace(/{wi}/g, '<i>').replace(/{\/wi}/g, '</i>');
+            t = t.replace(/{wi}/g, '<i>').replace(/{\/wi}/g, '</i>'); // Word in context -> Italics
             t = t.replace(/{ldquo}/g, '“').replace(/{rdquo}/g, '”');
             t = t.replace(/{sx\|([^|]+)\|([^|]*)\|}/g, '$1');
             return t;
@@ -1715,7 +1809,18 @@
                         const senseData = item[1];
                         if (senseData.dt) {
                              senseData.dt.forEach(dt => {
-                                 if (dt[0] === 'text') html += `<p>${cleanMWTags(dt[1])}</p>`;
+                                 if (dt[0] === 'text') {
+                                     html += `<p>${cleanMWTags(dt[1])}</p>`;
+                                 } else if (dt[0] === 'vis') {
+                                     // Verbal illustrations (examples)
+                                     html += '<ul class="examples-list">';
+                                     dt[1].forEach(visItem => {
+                                         if (visItem.t) {
+                                             html += `<li class="example-item">"${cleanMWTags(visItem.t)}"</li>`;
+                                         }
+                                     });
+                                     html += '</ul>';
+                                 }
                              });
                         }
                     }
@@ -1754,8 +1859,24 @@
                         data.slice(0, 1).forEach(entry => {
                             if (!entry.hwi) return;
                             const word = entry.hwi.hw.replace(/\*/g, '·');
-                            definitionHTML += `<h1>${word}</h1>`;
+                            
+                            // Pronunciation Logic
+                            let pronHtml = '';
+                            if (entry.hwi.prs && entry.hwi.prs.length > 0) {
+                                const prs = entry.hwi.prs[0];
+                                if (prs.mw) {
+                                    pronHtml += `<span class="pronunciation-text">/${prs.mw}/</span>`;
+                                }
+                                if (prs.sound && prs.sound.audio) {
+                                    const audioUrl = getAudioUrl(prs.sound.audio);
+                                    pronHtml += `<button class="audio-btn" onclick="playAudio('${audioUrl}')"><i class="fas fa-volume-up"></i></button>`;
+                                }
+                            }
+
+                            definitionHTML += `<h1>${word} ${pronHtml}</h1>`;
+                            
                             if (entry.fl) definitionHTML += `<h3>${entry.fl}</h3>`;
+                            
                             if (entry.def && entry.def.length > 0) {
                                 definitionHTML += renderSenses(entry.def[0].sseq);
                             } else if (entry.shortdef) {
