@@ -899,6 +899,61 @@
             .cw-cell span.num { font-size: 0.55rem; left: 1px; top: 1px; }
             .action-btn { padding: 8px 16px; font-size: 0.85rem; }
             .cw-controls { gap: 8px; }
+
+            /* Mobile Keyboard Styles */
+            .virtual-keyboard {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                margin-top: 20px;
+                width: 100%;
+                user-select: none;
+                padding-bottom: 20px;
+            }
+            
+            .kb-row {
+                display: flex;
+                justify-content: center;
+                gap: 4px;
+            }
+            
+            .kb-key {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid var(--glass-border);
+                color: var(--text-main);
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                font-weight: 600;
+                font-size: 1.1rem;
+                height: 48px;
+                min-width: 32px;
+                flex: 1;
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background 0.1s;
+                text-transform: uppercase;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+            
+            .kb-key:active {
+                background: var(--primary);
+                color: #0f172a;
+                transform: translateY(2px);
+            }
+            
+            .kb-key.wide {
+                flex: 1.5;
+                font-size: 0.9rem;
+            }
+            
+            .kb-spacer { flex: 0.5; }
+        }
+
+        /* Hide keyboard on desktop */
+        @media (min-width: 768px) {
+            .virtual-keyboard { display: none; }
         }
     </style>
 </head>
@@ -977,6 +1032,9 @@
                         </div>
                         <!-- Grid and Clues injected by JS -->
                     </div>
+                    
+                    <!-- Mobile Virtual Keyboard (Injected by JS) -->
+                    <div id="mobileKeyboard" class="virtual-keyboard"></div>
                 </div>
             </section>
 
@@ -1342,9 +1400,68 @@
                 crosswordState.revealedCells = new Set(); // Reset revealed on new fetch
 
                 renderCrossword(cw.id);
+                renderVirtualKeyboard(); // Initialize keyboard
             } catch (err) {
                 console.error("Crossword fetch error:", err);
                 document.getElementById('cwLoading').style.display = 'none';
+            }
+        }
+
+        function renderVirtualKeyboard() {
+            const kbContainer = document.getElementById('mobileKeyboard');
+            const rows = [
+                ['Q','W','E','R','T','Y','U','I','O','P'],
+                ['A','S','D','F','G','H','J','K','L'],
+                ['BACKSPACE', 'Z','X','C','V','B','N','M', 'ENTER']
+            ];
+            
+            let html = '';
+            
+            rows.forEach((row, i) => {
+                html += `<div class="kb-row">`;
+                // Add spacer for middle row indentation
+                if (i === 1) html += `<div class="kb-spacer"></div>`;
+                
+                row.forEach(key => {
+                    let displayKey = key;
+                    let action = 'type';
+                    let extraClass = '';
+                    
+                    if (key === 'BACKSPACE') {
+                        displayKey = '<i class="fas fa-backspace"></i>';
+                        action = 'backspace';
+                        extraClass = 'wide';
+                    } else if (key === 'ENTER') {
+                        displayKey = '<i class="fas fa-level-down-alt" style="transform: rotate(90deg);"></i>'; // Check
+                        action = 'check';
+                        extraClass = 'wide';
+                    }
+                    
+                    html += `<button class="kb-key ${extraClass}" 
+                        onclick="handleVirtualKey('${key}', '${action}')">
+                        ${displayKey}
+                    </button>`;
+                });
+                
+                if (i === 1) html += `<div class="kb-spacer"></div>`;
+                html += `</div>`;
+            });
+            
+            kbContainer.innerHTML = html;
+        }
+
+        function handleVirtualKey(key, action) {
+            // Vibrate on tap for tactile feedback
+            if (navigator.vibrate) navigator.vibrate(10);
+            
+            if (action === 'backspace') {
+                // Simulate Backspace event
+                handleInput({ key: 'Backspace', preventDefault: () => {} }, crosswordState.currentCell.r, crosswordState.currentCell.c);
+            } else if (action === 'check') {
+                checkCrossword();
+            } else {
+                // Simulate typing a letter
+                handleInput({ key: key, preventDefault: () => {} }, crosswordState.currentCell.r, crosswordState.currentCell.c);
             }
         }
 
@@ -1361,10 +1478,7 @@
                     if (crosswordState.solution[r][c] === '.') continue;
                     
                     let getsNumber = false;
-                    // Starts Across? (First col OR prev is black) AND (Has next cell AND next is not black)
                     const startsAcross = (c === 0 || crosswordState.solution[r][c-1] === '.') && (c + 1 < size && crosswordState.solution[r][c+1] !== '.');
-                    
-                    // Starts Down? (First row OR prev is black) AND (Has next cell AND next is not black)
                     const startsDown = (r === 0 || crosswordState.solution[r-1][c] === '.') && (r + 1 < size && crosswordState.solution[r+1][c] !== '.');
                     
                     if (startsAcross || startsDown) {
@@ -1380,6 +1494,7 @@
                     const isBlack = crosswordState.solution[r][c] === '.';
                     const cellNum = cellNumbers[`${r}-${c}`];
                     
+                    // Added inputmode="none" to prevent native keyboard on mobile
                     gridHtml += `
                         <div class="cw-cell ${isBlack ? 'black' : ''}" 
                              id="cell-${r}-${c}" 
@@ -1388,6 +1503,7 @@
                             <span class="letter" id="letter-${r}-${c}"></span>
                             ${!isBlack ? `<input type="text" maxlength="1" 
                                 id="input-${r}-${c}" 
+                                inputmode="none"
                                 onkeydown="handleInput(event, ${r}, ${c})"
                                 oninput="this.value=''" 
                                 autocomplete="off">` : ''}
