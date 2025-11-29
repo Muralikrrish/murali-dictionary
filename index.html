@@ -821,7 +821,8 @@
             .curiosity-category { font-size: 0.75rem; margin-bottom: 8px; }
             
             /* Action button specific spacing on mobile */
-            .action-btn { padding: 8px 16px; font-size: 0.85rem; }
+            /* Increased vertical padding from 8px to 12px for better touch targets */
+            .action-btn { padding: 12px 16px; font-size: 0.85rem; }
             
             /* Mobile Quiz Button Stack - Adaptive Width */
             .quiz-controls {
@@ -1782,6 +1783,7 @@
         }
 
         function selectAutocompleteItem(word) {
+            playSelectSound(); // Added sound here
             document.getElementById('searchInput').value = word;
             document.getElementById('autocompleteDropdown').classList.remove('show');
             displaySearchResults(word.toLowerCase());
