@@ -750,6 +750,14 @@
             margin-top: 16px;
         }
 
+        /* --- RESULT AREA STYLES (NEW) --- */
+        .result-area {
+            display: none; 
+            margin-top: 12px; /* Reduced from 24px */
+            border-top: 1px solid var(--glass-border); 
+            padding-top: 12px; /* Reduced padding */
+        }
+
         /* --- SHARED BUTTON STYLES --- */
         .action-btn {
             background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2);
@@ -793,21 +801,26 @@
             .curiosity-fact { font-size: 1.35rem; line-height: 1.4; }
             .curiosity-category { font-size: 0.75rem; margin-bottom: 8px; }
             
-            .action-btn { padding: 12px 16px; font-size: 0.95rem; } /* Slightly larger touch targets */
+            /* REVERTED: Removed the specific action-btn sizing rule here to undo mobile shrinkage */
             
-            /* Mobile Quiz Button Stack */
+            /* Mobile Quiz Button Stack - Modified to be adaptive width */
             .quiz-controls {
-                flex-direction: column;
+                flex-direction: row; /* Changed from column back to row */
                 width: 100%;
-                gap: 12px;
+                gap: 8px;
+                justify-content: flex-start; /* Align left or center as preferred */
             }
             .quiz-controls .action-btn {
-                width: 100%;
+                width: auto; /* Changed from 100% to auto */
                 justify-content: center;
+                flex-grow: 1; /* Allow them to grow if needed, but not forced full width */
             }
             
             /* Add breathing room after options */
             .options-grid { margin-bottom: 16px; }
+
+            /* Slightly reduce result padding on mobile too */
+            .result-area { padding-top: 16px; }
         }
     </style>
 </head>
