@@ -627,48 +627,43 @@
         .option-btn.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: #34d399; }
         .option-btn.incorrect { background: rgba(248, 113, 113, 0.15); border-color: var(--error); color: #f87171; }
 
-        /* --- Buttons --- */
-        .quiz-take-btn, .read-more-btn, .btn-show-word, .explanation-read-more-btn {
-            background: var(--text-main);
-            color: var(--bg-deep);
-            border: 1px solid transparent; 
-            padding: 12px 28px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        /* --- SHARED BUTTON STYLES --- */
+        .action-btn {
+            background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 24px; border-radius: 50px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;
+            white-space: nowrap; /* Prevent text wrapping on mobile */
         }
-        
-        .btn-show-word, .explanation-read-more-btn {
-            background: transparent;
-            color: var(--text-main);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: none;
+        .action-btn:hover {
+            border-color: var(--primary); color: var(--primary); background: rgba(251, 191, 36, 0.1);
+        }
+        .primary-btn {
+            background: var(--text-main); color: var(--bg-deep); border-color: var(--text-main);
+        }
+        .primary-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,255,255,0.15); }
+
+        /* --- QUIZ DETAIL STYLES (NEW) --- */
+        .quiz-detail {
+            color: var(--text-muted); font-size: 1.05rem; line-height: 1.8;
+            max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;
+        }
+        .quiz-detail.show { max-height: 2000px; opacity: 1; margin-bottom: 24px; }
+
+        /* --- QUIZ CONTROLS (NEW) --- */
+        .quiz-controls {
+            display: flex; 
+            gap: 12px; 
+            flex-wrap: wrap;
+            margin-top: 16px;
         }
 
-        .quiz-take-btn:hover, .read-more-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
-            background: white;
-            border-color: white;
+        /* --- RESULT AREA STYLES (NEW) --- */
+        .result-area {
+            display: none; 
+            margin-top: 12px; /* Reduced spacing (half of 24px) */
+            border-top: 1px solid var(--glass-border); 
+            padding-top: 12px; /* Reduced spacing (half of 24px) */
         }
-
-        .btn-show-word:hover, .explanation-read-more-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: rgba(251, 191, 36, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .btn-show-word { margin: 30px auto 0 auto; display: flex; }
 
         .quiz-action-buttons, .explanation-read-more-container, .read-more-container {
             display: flex;
@@ -735,44 +730,6 @@
         /* Increased max-height to prevent cutoff on mobile */
         .curiosity-detail.show { max-height: 2000px; opacity: 1; margin-bottom: 24px; }
 
-        /* --- QUIZ DETAIL STYLES (NEW) --- */
-        .quiz-detail {
-            color: var(--text-muted); font-size: 1.05rem; line-height: 1.8;
-            max-height: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.5s ease; opacity: 0;
-        }
-        .quiz-detail.show { max-height: 2000px; opacity: 1; margin-bottom: 24px; }
-
-        /* --- QUIZ CONTROLS (NEW) --- */
-        .quiz-controls {
-            display: flex; 
-            gap: 12px; 
-            flex-wrap: wrap;
-            margin-top: 16px;
-        }
-
-        /* --- RESULT AREA STYLES (NEW) --- */
-        .result-area {
-            display: none; 
-            margin-top: 12px; /* Reduced from 24px */
-            border-top: 1px solid var(--glass-border); 
-            padding-top: 12px; /* Reduced padding */
-        }
-
-        /* --- SHARED BUTTON STYLES --- */
-        .action-btn {
-            background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2);
-            padding: 10px 24px; border-radius: 50px; font-weight: 600; cursor: pointer;
-            transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;
-        }
-        .action-btn:hover {
-            border-color: var(--primary); color: var(--primary); background: rgba(251, 191, 36, 0.1);
-        }
-        .primary-btn {
-            background: var(--text-main); color: var(--bg-deep); border-color: var(--text-main);
-        }
-        .primary-btn:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,255,255,0.15); }
-
-
         @media (max-width: 767px) {
             .hero-title { font-size: 3rem; }
             .hero-section { padding-top: 60px; }
@@ -801,26 +758,27 @@
             .curiosity-fact { font-size: 1.35rem; line-height: 1.4; }
             .curiosity-category { font-size: 0.75rem; margin-bottom: 8px; }
             
-            /* REVERTED: Removed the specific action-btn sizing rule here to undo mobile shrinkage */
+            /* Action button specific spacing on mobile */
+            .action-btn { padding: 8px 16px; font-size: 0.85rem; }
             
-            /* Mobile Quiz Button Stack - Modified to be adaptive width */
+            /* Mobile Quiz Button Stack - Adaptive Width */
             .quiz-controls {
-                flex-direction: row; /* Changed from column back to row */
+                flex-direction: row; 
                 width: 100%;
                 gap: 8px;
-                justify-content: flex-start; /* Align left or center as preferred */
+                justify-content: flex-start; 
             }
             .quiz-controls .action-btn {
-                width: auto; /* Changed from 100% to auto */
+                width: auto; 
                 justify-content: center;
-                flex-grow: 1; /* Allow them to grow if needed, but not forced full width */
+                flex-grow: 1; 
             }
             
             /* Add breathing room after options */
             .options-grid { margin-bottom: 16px; }
 
-            /* Slightly reduce result padding on mobile too */
-            .result-area { padding-top: 16px; }
+            /* Slightly increase result padding on mobile if needed, but user asked for reduced distance */
+            /* Keeping default reduced distance from .result-area */
         }
     </style>
 </head>
@@ -913,7 +871,7 @@
                             <div class="options-grid" id="quizOptionsGrid"></div>
                             
                             <!-- UPDATED RESULT AREA -->
-                            <div id="quizResultArea" style="display:none; margin-top: 24px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                            <div id="quizResultArea" class="result-area">
                                 <div id="quizFeedback" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;"></div>
                                 
                                 <div class="quiz-detail" id="quizExplanationContent"></div>
@@ -953,7 +911,7 @@
                             <div class="options-grid" id="gkQuizOptionsGrid"></div>
                             
                             <!-- UPDATED RESULT AREA -->
-                            <div id="gkQuizResultArea" style="display:none; margin-top: 24px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                            <div id="gkQuizResultArea" class="result-area">
                                 <div id="gkQuizFeedback" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;"></div>
                                 
                                 <div class="quiz-detail" id="gkQuizExplanationContent"></div>
