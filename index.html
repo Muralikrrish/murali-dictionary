@@ -874,7 +874,7 @@
             .hero-section { padding-top: 60px; }
             .bg-decoration { top: -15%; }
             .container { padding: 0 16px; }
-            .interactive-card { padding: 24px; }
+            .interactive-card { padding: 24px; padding-bottom: 16px; } /* Reduced padding-bottom */
             .modern-section-title { font-size: 1.5rem; }
             .orb { opacity: 0.25; }
             .autocomplete-hint { display: none; }
@@ -898,7 +898,8 @@
             .cw-cell { font-size: 1.2rem; }
             .cw-cell span.num { font-size: 0.55rem; left: 1px; top: 1px; }
             .action-btn { padding: 8px 16px; font-size: 0.85rem; }
-            .cw-controls { gap: 8px; }
+            .cw-controls { gap: 8px; margin-top: 12px; }
+            .clue-item { margin-bottom: 4px; } /* Reduced clue spacing */
         }
     </style>
 </head>
@@ -907,7 +908,7 @@
     <!-- Desktop Navigation -->
     <nav class="desktop-nav">
         <a href="#curiositySection" class="nav-link">Curiosities</a>
-        <a href="#crosswordSection" class="nav-link">Daily Mini</a>
+        <a href="#crosswordSection" class="nav-link">Mini Crossword</a>
         <a href="#wordSpotlightSection" class="nav-link">Word Spotlight</a>
         <a href="#vocabularyQuizSection" class="nav-link">Vocabulary Quiz</a>
         <a href="#gkQuizSection" class="nav-link">General Knowledge</a>
@@ -969,7 +970,7 @@
 
             <!-- 2. CROSSWORD SECTION (NEW) -->
             <section class="modern-section" id="crosswordSection">
-                <h2 class="modern-section-title"><span>Daily Mini Crossword</span></h2>
+                <h2 class="modern-section-title"><span>Mini Crossword</span></h2>
                 <div class="interactive-card">
                     <div id="crosswordContainer" class="crossword-container">
                         <div id="cwLoading" class="skeleton-loading">
@@ -1294,16 +1295,29 @@
         }
 
         // --- 4. CROSSWORD LOGIC ---
-        async function fetchCrossword() {
+        async function fetchCrossword(isRandom = false) {
             const container = document.getElementById('crosswordContainer');
             try {
-                const { data, error } = await supabaseClient.from('crosswords').select('*').order('created_at', { ascending: false }).limit(1);
-                if (error) throw error;
-                if (!data || data.length === 0) {
+                let cw;
+                if (isRandom) {
+                    // Fetch a random crossword by grabbing a batch and picking one locally
+                    const { data, error } = await supabaseClient.from('crosswords').select('*').limit(50);
+                    if (error) throw error;
+                    if (data && data.length > 0) {
+                        cw = data[Math.floor(Math.random() * data.length)];
+                    }
+                } else {
+                    // Default to latest
+                    const { data, error } = await supabaseClient.from('crosswords').select('*').order('created_at', { ascending: false }).limit(1);
+                    if (error) throw error;
+                    if (data && data.length > 0) cw = data[0];
+                }
+
+                if (!cw) {
                     container.innerHTML = '<p>No crossword available today.</p>';
                     return;
                 }
-                const cw = data[0];
+                
                 crosswordState.solution = typeof cw.grid === 'string' ? JSON.parse(cw.grid) : cw.grid;
                 crosswordState.clues = typeof cw.clues === 'string' ? JSON.parse(cw.clues) : cw.clues;
                 crosswordState.grid = crosswordState.solution.map(row => row.map(cell => cell === '.' ? '.' : '')); 
@@ -1362,6 +1376,7 @@
             const controlsHtml = `
                 <div class="cw-controls">
                     <button class="action-btn primary-btn" onclick="checkCrossword()"><i class="fas fa-check"></i> Check Answers</button>
+                    <button class="action-btn" onclick="fetchCrossword(true)"><i class="fas fa-random"></i> New Puzzle</button>
                     <button class="action-btn" onclick="revealLetter()"><i class="fas fa-eye"></i> Reveal Letter</button>
                     <button class="action-btn" onclick="revealAll()"><i class="fas fa-sun"></i> Reveal All</button>
                     <button class="action-btn" onclick="resetCrossword()"><i class="fas fa-eraser"></i> Clear</button>
@@ -2216,3 +2231,5 @@
             requestAnimationFrame(() => { initializeSupabase(); setupSearch(); });
         });
     </script>
+</body>
+</html>
