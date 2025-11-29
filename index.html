@@ -906,16 +906,15 @@
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                background: rgba(15, 23, 42, 0.98); /* Solid dark background */
-                border-top: 1px solid var(--primary);
-                padding: 8px 4px 24px 4px;
+                background: #0f172a; /* Deep Navy background */
+                padding: 10px 4px 30px 4px; /* More bottom padding for safe area */
                 z-index: 9999;
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                gap: 8px;
+                transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
                 transform: translateY(100%); /* Hidden by default */
-                box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+                box-shadow: 0 -4px 25px rgba(0,0,0,0.4);
             }
             
             .virtual-keyboard.open {
@@ -926,54 +925,65 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                padding-bottom: 8px;
-                margin-bottom: 4px;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
+                padding-bottom: 4px;
+                margin-bottom: 2px;
             }
             
             .kb-dismiss-btn {
-                background: none;
+                background: rgba(255,255,255,0.1);
                 border: none;
                 color: var(--text-muted);
-                font-size: 1.2rem;
+                font-size: 0.8rem;
                 padding: 4px 20px;
+                border-radius: 20px;
                 cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                font-weight: 600;
             }
 
             .kb-row {
                 display: flex;
                 justify-content: center;
-                gap: 4px;
+                gap: 5px; /* Slightly wider gap */
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
             }
             
             .kb-key {
-                background: #334155;
-                color: var(--text-main);
+                background: #334155; /* Slate 700 */
+                color: #f1f5f9; /* Slate 100 */
                 font-family: 'Plus Jakarta Sans', sans-serif;
-                font-weight: 600;
-                font-size: 1.25rem; /* Larger text */
-                height: 52px; /* Taller keys */
+                font-weight: 700;
+                font-size: 1.35rem; 
+                height: 56px; /* Taller, more tappable */
                 flex: 1;
-                border-radius: 6px;
+                border-radius: 5px; /* NYT Style rounding */
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                transition: background 0.1s, transform 0.1s;
                 text-transform: uppercase;
-                box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+                box-shadow: 0 1px 0 rgba(0,0,0,0.3); /* Subtle depth */
                 user-select: none;
                 -webkit-user-select: none;
+                touch-action: manipulation;
             }
             
             .kb-key:active {
-                background: var(--primary);
-                color: #0f172a;
-                transform: translateY(2px);
+                background: #475569; /* Lighter on press */
+                transform: translateY(1px);
                 box-shadow: none;
             }
             
-            .kb-key.wide { flex: 1.5; font-size: 1rem; background: #475569; }
+            /* Special keys (Backspace) */
+            .kb-key.wide { 
+                flex: 1.5; 
+                background: #1e293b; /* Darker for functional keys */
+                font-size: 1.1rem; 
+            }
+            
             .kb-spacer { flex: 0.5; }
             
             /* Add padding to body on mobile so keyboard doesn't cover content when scrolled */
@@ -1439,22 +1449,28 @@
 
         function renderVirtualKeyboard() {
             const kbContainer = document.getElementById('mobileKeyboard');
+            // Modern Layout: Standard QWERTY with Backspace on the right of bottom row
             const rows = [
                 ['Q','W','E','R','T','Y','U','I','O','P'],
                 ['A','S','D','F','G','H','J','K','L'],
-                ['BACKSPACE', 'Z','X','C','V','B','N','M', 'ENTER']
+                ['Z','X','C','V','B','N','M', 'BACKSPACE']
             ];
             
             // Add Dismiss Header
             let html = `
                 <div class="kb-header" onclick="document.getElementById('mobileKeyboard').classList.remove('open')">
-                    <button class="kb-dismiss-btn"><i class="fas fa-chevron-down"></i> Hide Keyboard</button>
+                    <button class="kb-dismiss-btn"><i class="fas fa-chevron-down"></i></button>
                 </div>
             `;
             
             rows.forEach((row, i) => {
                 html += `<div class="kb-row">`;
-                if (i === 1) html += `<div class="kb-spacer"></div>`;
+                
+                // Indent 2nd row slightly like physical keyboards
+                if (i === 1) html += `<div class="kb-spacer"></div><div class="kb-spacer"></div>`;
+                
+                // Indent 3rd row (Z...M) to center it before Backspace
+                if (i === 2) html += `<div class="kb-spacer"></div><div class="kb-spacer"></div><div class="kb-spacer"></div>`;
                 
                 row.forEach(key => {
                     let displayKey = key;
@@ -1465,10 +1481,6 @@
                         displayKey = '<i class="fas fa-backspace"></i>';
                         action = 'backspace';
                         extraClass = 'wide';
-                    } else if (key === 'ENTER') {
-                        displayKey = 'Check'; 
-                        action = 'check';
-                        extraClass = 'wide';
                     }
                     
                     // Added touchend event to prevent double firing and ensure fast response
@@ -1478,7 +1490,9 @@
                     </div>`;
                 });
                 
-                if (i === 1) html += `<div class="kb-spacer"></div>`;
+                // Balance 2nd row
+                if (i === 1) html += `<div class="kb-spacer"></div><div class="kb-spacer"></div>`;
+                
                 html += `</div>`;
             });
             
