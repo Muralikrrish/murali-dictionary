@@ -902,15 +902,44 @@
 
             /* Mobile Keyboard Styles */
             .virtual-keyboard {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(15, 23, 42, 0.98); /* Solid dark background */
+                border-top: 1px solid var(--primary);
+                padding: 8px 4px 24px 4px;
+                z-index: 9999;
                 display: flex;
                 flex-direction: column;
                 gap: 6px;
-                margin-top: 20px;
-                width: 100%;
-                user-select: none;
-                padding-bottom: 20px;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                transform: translateY(100%); /* Hidden by default */
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
             }
             
+            .virtual-keyboard.open {
+                transform: translateY(0); /* Slide up */
+            }
+            
+            .kb-header {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-bottom: 8px;
+                margin-bottom: 4px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            
+            .kb-dismiss-btn {
+                background: none;
+                border: none;
+                color: var(--text-muted);
+                font-size: 1.2rem;
+                padding: 4px 20px;
+                cursor: pointer;
+            }
+
             .kb-row {
                 display: flex;
                 justify-content: center;
@@ -918,37 +947,37 @@
             }
             
             .kb-key {
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid var(--glass-border);
+                background: #334155;
                 color: var(--text-main);
                 font-family: 'Plus Jakarta Sans', sans-serif;
                 font-weight: 600;
-                font-size: 1.1rem;
-                height: 48px;
-                min-width: 32px;
+                font-size: 1.25rem; /* Larger text */
+                height: 52px; /* Taller keys */
                 flex: 1;
                 border-radius: 6px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
-                transition: background 0.1s;
+                transition: background 0.1s, transform 0.1s;
                 text-transform: uppercase;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+                user-select: none;
+                -webkit-user-select: none;
             }
             
             .kb-key:active {
                 background: var(--primary);
                 color: #0f172a;
                 transform: translateY(2px);
+                box-shadow: none;
             }
             
-            .kb-key.wide {
-                flex: 1.5;
-                font-size: 0.9rem;
-            }
-            
+            .kb-key.wide { flex: 1.5; font-size: 1rem; background: #475569; }
             .kb-spacer { flex: 0.5; }
+            
+            /* Add padding to body on mobile so keyboard doesn't cover content when scrolled */
+            body { padding-bottom: 300px; } 
         }
 
         /* Hide keyboard on desktop */
@@ -1032,9 +1061,7 @@
                         </div>
                         <!-- Grid and Clues injected by JS -->
                     </div>
-                    
-                    <!-- Mobile Virtual Keyboard (Injected by JS) -->
-                    <div id="mobileKeyboard" class="virtual-keyboard"></div>
+                    <!-- Note: Keyboard moved to body end for better positioning -->
                 </div>
             </section>
 
@@ -1161,6 +1188,9 @@
 
         </div>
     </div>
+    
+    <!-- Mobile Virtual Keyboard (Fixed Bottom) -->
+    <div id="mobileKeyboard" class="virtual-keyboard"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -1415,11 +1445,15 @@
                 ['BACKSPACE', 'Z','X','C','V','B','N','M', 'ENTER']
             ];
             
-            let html = '';
+            // Add Dismiss Header
+            let html = `
+                <div class="kb-header" onclick="document.getElementById('mobileKeyboard').classList.remove('open')">
+                    <button class="kb-dismiss-btn"><i class="fas fa-chevron-down"></i> Hide Keyboard</button>
+                </div>
+            `;
             
             rows.forEach((row, i) => {
                 html += `<div class="kb-row">`;
-                // Add spacer for middle row indentation
                 if (i === 1) html += `<div class="kb-spacer"></div>`;
                 
                 row.forEach(key => {
@@ -1432,15 +1466,16 @@
                         action = 'backspace';
                         extraClass = 'wide';
                     } else if (key === 'ENTER') {
-                        displayKey = '<i class="fas fa-level-down-alt" style="transform: rotate(90deg);"></i>'; // Check
+                        displayKey = 'Check'; 
                         action = 'check';
                         extraClass = 'wide';
                     }
                     
-                    html += `<button class="kb-key ${extraClass}" 
-                        onclick="handleVirtualKey('${key}', '${action}')">
+                    // Added touchend event to prevent double firing and ensure fast response
+                    html += `<div class="kb-key ${extraClass}" 
+                        onmousedown="event.preventDefault(); handleVirtualKey('${key}', '${action}')">
                         ${displayKey}
-                    </button>`;
+                    </div>`;
                 });
                 
                 if (i === 1) html += `<div class="kb-spacer"></div>`;
@@ -1451,16 +1486,13 @@
         }
 
         function handleVirtualKey(key, action) {
-            // Vibrate on tap for tactile feedback
-            if (navigator.vibrate) navigator.vibrate(10);
+            if (navigator.vibrate) navigator.vibrate(15);
             
             if (action === 'backspace') {
-                // Simulate Backspace event
                 handleInput({ key: 'Backspace', preventDefault: () => {} }, crosswordState.currentCell.r, crosswordState.currentCell.c);
             } else if (action === 'check') {
                 checkCrossword();
             } else {
-                // Simulate typing a letter
                 handleInput({ key: key, preventDefault: () => {} }, crosswordState.currentCell.r, crosswordState.currentCell.c);
             }
         }
@@ -1708,6 +1740,13 @@
             
             crosswordState.currentCell = { r, c };
             highlightCell(r, c);
+            
+            // Show Keyboard on Mobile
+            if (window.innerWidth <= 768) {
+                const kb = document.getElementById('mobileKeyboard');
+                if (kb) kb.classList.add('open');
+            }
+            
             document.getElementById(`input-${r}-${c}`).focus();
         }
 
