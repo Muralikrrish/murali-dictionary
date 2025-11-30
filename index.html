@@ -756,7 +756,8 @@
             min-height: 30px;
             margin-top: 16px;
             margin-bottom: 26px; /* Adjusted vertical spacing from keyboard */
-            font-style: italic;
+            font-style: normal !important; /* Force no italics */
+            text-align: left !important; /* Force left align */
             color: var(--text-muted);
         }
 
@@ -810,10 +811,55 @@
             .tool-input-group { flex-direction: column; }
             .tool-input { width: 100%; }
             
-            .mode-selector { justify-content: flex-start; padding-bottom: 12px; }
+            .mode-selector { 
+                justify-content: center; /* Center tabs */
+                padding-bottom: 12px; 
+                flex-wrap: wrap; /* Wrap tabs */
+                overflow-x: visible; /* Remove scroll */
+            }
+            .mode-chip {
+                flex: 0 0 auto; /* Allow sizing based on content */
+            }
             
             .key-btn { width: 30px; height: 38px; font-size: 0.9rem; }
-            .hangman-word { font-size: 1.5rem; letter-spacing: 0.3em; }
+            
+            /* Curiosity Optimization */
+            .curiosity-fact { font-size: 1.1rem; line-height: 1.4; }
+            .curiosity-controls { display: flex; gap: 12px; width: 100%; }
+            .curiosity-controls .action-btn { flex: 1; justify-content: center; padding: 10px 12px; font-size: 0.9rem; }
+
+            /* Quiz Optimization */
+            .question-text { color: rgba(248, 250, 252, 0.75); } /* Dimmer text */
+            .quiz-controls {
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* Side-by-side */
+                gap: 12px;
+            }
+            /* Target specific buttons by order: Explanation(1), Next(2), Take Full(3) */
+            .quiz-controls .action-btn:nth-child(1),
+            .quiz-controls .action-btn:nth-child(2) {
+                width: 100%;
+                justify-content: center;
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            .quiz-controls .action-btn:nth-child(3) {
+                grid-column: span 2; /* Full width for 'Take full quiz' */
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Toolkit & Reverse Dict Buttons */
+            .tool-input-group .action-btn { width: 100%; justify-content: center; }
+
+            /* Hangman Optimization */
+            .hangman-word {
+                white-space: nowrap;
+                font-size: 6vw; /* Adaptive sizing */
+                letter-spacing: 0.15em;
+                overflow: hidden;
+            }
+            .hangman-clue-area { font-style: normal; text-align: left; }
         }
     </style>
 </head>
@@ -1256,6 +1302,13 @@
 
         async function initHangmanGame() {
             playButtonSound();
+            
+            // Auto scroll on mobile
+            if (window.innerWidth < 768) {
+                const section = document.getElementById('hangmanSection');
+                if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
             hangmanGuessed.clear();
             hangmanMistakes = 0;
             hangmanWord = "";
@@ -1598,11 +1651,12 @@
                 if (!data || data.length === 0) throw new Error('No curiosities found');
 
                 const item = data[0];
+                // Added class curiosity-controls for better mobile targeting
                 display.innerHTML = `
                     <span class="curiosity-category">${item.category}</span>
                     <h3 class="curiosity-fact">${item.fact_text}</h3>
                     <div class="curiosity-detail" id="curiosityDetail">${item.detail_text || ''}</div>
-                    <div style="margin-top: 24px; display: flex; gap: 12px;">
+                    <div class="curiosity-controls" style="margin-top: 24px; display: flex; gap: 12px;">
                         <button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail(this)">
                             <i class="fas fa-eye"></i> Tell me more
                         </button>
@@ -1611,7 +1665,15 @@
                         </button>
                     </div>`;
             } catch (err) {
-                display.innerHTML = `<span class="curiosity-category">Fact</span><h3 class="curiosity-fact">Octopuses have three hearts.</h3>`;
+                // Added class curiosity-controls here too
+                display.innerHTML = `
+                <span class="curiosity-category">Fact</span>
+                <h3 class="curiosity-fact">Octopuses have three hearts.</h3>
+                <div class="curiosity-controls" style="margin-top: 24px; display: flex; gap: 12px;">
+                        <button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)">
+                            <i class="fas fa-random"></i> Next Fact
+                        </button>
+                </div>`;
             }
         }
 
