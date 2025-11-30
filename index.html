@@ -927,7 +927,7 @@
             .question-text { 
                 color: rgba(248, 250, 252, 0.75); 
                 /* 2. Increase font size (was 1.15rem) */
-                font-size: 1.3rem !important; 
+                font-size: 1.2rem !important; 
             } 
             .quiz-controls {
                 display: grid;
@@ -979,6 +979,21 @@
                 margin-bottom: 24px;
             }
             .hangman-clue-area { font-style: normal; text-align: left; }
+
+            /* Request: Reduce spacing in result area to 2/3 for mobile */
+            .result-area {
+                margin-top: 8px !important;  /* 12px * 2/3 */
+                padding-top: 8px !important; /* 12px * 2/3 */
+            }
+            
+            /* Target IDs to override inline styles */
+            #quizFeedback, #gkQuizFeedback {
+                margin-bottom: 10px !important; /* 16px * 2/3 approx */
+            }
+            
+            .quiz-controls {
+                margin-top: 10px !important; /* 16px * 2/3 approx */
+            }
         }
     </style>
 </head>
