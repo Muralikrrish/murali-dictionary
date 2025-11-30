@@ -1817,9 +1817,22 @@
 
         function toggleCuriosityDetail(btn) {
             const detail = document.getElementById('curiosityDetail');
-            const isHidden = !detail.classList.contains('show');
+            const isExpanding = !detail.classList.contains('show');
+            
             detail.classList.toggle('show');
-            if (btn) btn.innerHTML = isHidden ? '<i class="fas fa-eye-slash"></i> Show less' : '<i class="fas fa-eye"></i> Tell me more';
+            
+            if (btn) btn.innerHTML = isExpanding ? '<i class="fas fa-eye-slash"></i> Show less' : '<i class="fas fa-eye"></i> Tell me more';
+
+            // New logic: Scroll to top when collapsing on mobile
+            if (!isExpanding && window.innerWidth <= 768) {
+                const section = document.getElementById('curiositySection');
+                if (section) {
+                    // Slight delay to allow the collapse animation to register visually before scrolling
+                    setTimeout(() => {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 50);
+                }
+            }
         }
 
         // --- EXISTING FEATURES LOGIC ---
