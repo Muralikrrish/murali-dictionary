@@ -824,12 +824,18 @@
             .key-btn { width: 30px; height: 38px; font-size: 0.9rem; }
             
             /* Curiosity Optimization */
-            .curiosity-fact { font-size: 1.1rem; line-height: 1.4; }
+            .curiosity-fact { 
+                font-size: 1.65rem !important; /* Mobile request: Increase to 1.5x of previous (1.1rem -> 1.65rem) */
+                line-height: 1.4; 
+            }
             .curiosity-controls { display: flex; gap: 12px; width: 100%; }
             .curiosity-controls .action-btn { flex: 1; justify-content: center; padding: 10px 12px; font-size: 0.9rem; }
 
             /* Quiz Optimization */
-            .question-text { color: rgba(248, 250, 252, 0.75); } /* Dimmer text */
+            .question-text { 
+                color: rgba(248, 250, 252, 0.75); 
+                font-size: 1.15rem !important; /* Mobile request: Slightly bigger than options */
+            } 
             .quiz-controls {
                 display: grid;
                 grid-template-columns: 1fr 1fr; /* Side-by-side */
@@ -850,7 +856,20 @@
             }
 
             /* Toolkit & Reverse Dict Buttons */
-            .tool-input-group .action-btn { width: 100%; justify-content: center; }
+            .tool-input-group .action-btn, 
+            #reverseDictSection .action-btn,
+            #wordSpotlightSection .action-btn,
+            #wordToolkitSection .tool-input,
+            #reverseDictSection .tool-input { 
+                width: 100%; 
+                justify-content: center;
+                padding: 10px 16px !important; /* Mobile request: Reduce vertical length */
+            }
+
+            /* Spotlight Heading */
+            .word-definition h1 {
+                font-size: 1.7rem !important; /* Mobile request: 2/3 of desktop size */
+            }
 
             /* Hangman Optimization */
             .hangman-word {
@@ -858,6 +877,8 @@
                 font-size: 6vw; /* Adaptive sizing */
                 letter-spacing: 0.15em;
                 overflow: hidden;
+                margin-top: 36px !important; /* Mobile request: Increase vertical spacing */
+                margin-bottom: 24px;
             }
             .hangman-clue-area { font-style: normal; text-align: left; }
         }
@@ -1267,11 +1288,11 @@
                 loadGkQuizQuestions();
                 syncWithSupabase();
                 fetchCuriosity();
-                initHangmanGame(); // Init game on load
+                initHangmanGame(false); // Init game on load, no scroll
             } catch(error) {
                 console.error('Supabase init error:', error);
                 isSupabaseConfigured = false;
-                initHangmanGame(); // Fallback init
+                initHangmanGame(false); // Fallback init
             }
         }
 
@@ -1300,11 +1321,11 @@
         let hangmanMistakes = 0;
         const MAX_MISTAKES = 5; // Updated to 5
 
-        async function initHangmanGame() {
+        async function initHangmanGame(shouldScroll = true) {
             playButtonSound();
             
-            // Auto scroll on mobile
-            if (window.innerWidth < 768) {
+            // Auto scroll on mobile ONLY if explicitly requested (e.g. by button click), not on load
+            if (shouldScroll && window.innerWidth < 768) {
                 const section = document.getElementById('hangmanSection');
                 if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
@@ -1323,8 +1344,6 @@
             // 1. Try Fetch from Supabase
             try {
                 if (isSupabaseConfigured) {
-                    // Fetching from 'hangman_words' table. 
-                    // No difficulty column or filtering used.
                     const { data, error } = await supabaseClient.from('hangman_words').select('*');
                     
                     if (data && data.length > 0) {
@@ -1341,9 +1360,6 @@
                 hangmanWord = localEntry.word.toUpperCase();
                 hangmanClue = localEntry.clue;
             }
-
-            // REMOVED: API fetch for missing clues. 
-            // The game now relies strictly on the database or fallback list.
 
             renderHangmanGame();
         }
@@ -1383,7 +1399,7 @@
                 const isWin = hangmanWord.split('').every(l => hangmanGuessed.has(l));
                 if (isWin) {
                     playRevealSound();
-                    document.getElementById('hangmanClueDisplay').innerHTML = `<span style="color:var(--success)">Victory! A splendid vocabulary.</span>`;
+                    document.getElementById('hangmanClueDisplay').innerHTML = `<div style="text-align: center;"><span style="color:var(--success)">Victory! A splendid vocabulary.</span></div>`;
                 }
             } else {
                 playIncorrectSound();
@@ -1398,8 +1414,8 @@
 
         function endHangmanGame(isWin) {
              if (!isWin) {
-                // Updated Game Over Text
-                document.getElementById('hangmanClueDisplay').innerHTML = `<span style="color:var(--error)">Alas! The word has escaped you.</span>`;
+                // Updated Game Over Text with Centered alignment on mobile
+                document.getElementById('hangmanClueDisplay').innerHTML = `<div style="text-align: center;"><span style="color:var(--error)">Alas! The word has escaped you.</span></div>`;
                 // Reveal all letters on the board
                 hangmanWord.split('').forEach(l => hangmanGuessed.add(l));
                 renderHangmanGame();
@@ -1442,6 +1458,7 @@
             }
 
             if (hangmanClue) {
+                // Clue stays left aligned
                 display.textContent = `Hint: ${hangmanClue}`;
             } else {
                 display.textContent = "The archives hold no secrets for this word.";
@@ -1905,16 +1922,7 @@
                 
                 if (toggleContent.children.length === 0) toggleContent.innerHTML = '<p>No content available.</p>';
                 
-                toggleHeader.addEventListener('click', function(e) {
-                    e.stopPropagation(); e.preventDefault(); playSelectSound();
-                    const isActive = this.classList.contains('active');
-                    if (!isActive) {
-                        this.classList.add('active'); toggleContent.classList.add('expanded');
-                        setTimeout(() => this.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350); 
-                    } else {
-                        this.classList.remove('active'); toggleContent.classList.remove('expanded');
-                    }
-                });
+                // Note: Click listener removed here. Implemented via Global Delegation below.
                 
                 toggleSection.appendChild(toggleHeader);
                 toggleSection.appendChild(toggleContent);
@@ -1922,6 +1930,28 @@
             });
             return doc.body.innerHTML;
         }
+
+        // --- Toggle Event Delegation (Fixed for Mobile/Dynamic Content) ---
+        document.addEventListener('click', function(e) {
+            const header = e.target.closest('.toggle-header');
+            if (header) {
+                e.preventDefault();
+                e.stopPropagation();
+                playSelectSound();
+                
+                const content = header.nextElementSibling; // .toggle-content
+                const isActive = header.classList.contains('active');
+                
+                if (!isActive) {
+                    header.classList.add('active');
+                    content.classList.add('expanded');
+                    setTimeout(() => header.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
+                } else {
+                    header.classList.remove('active');
+                    content.classList.remove('expanded');
+                }
+            }
+        });
 
         function createExpandableDefinition(definitionHTML) {
             return `<div class="word-entry"><div class="word-definition">${convertH2ToToggles(definitionHTML)}</div><button class="action-btn" style="margin-top:20px" onclick="showNewRandomWord()">Show another word</button></div>`;
