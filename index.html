@@ -845,14 +845,12 @@
             .search-box input { padding: 10px 14px; font-size: 0.95rem; }
 
             /* Fix 2: Reduce font size specifically for Concept Search (Reverse Dict) Input */
+            /* REVERT: User asked to keep text size as before, so removing font-size override */
             #reverseInput {
-                font-size: 0.75rem !important; /* Reduced from 0.85rem */
                 letter-spacing: -0.02em;
                 padding-right: 30px;
             }
-            #reverseInput::placeholder {
-                font-size: 0.75rem !important; /* Reduced from 0.85rem */
-            }
+            /* Removed placeholder font-size override */
 
             /* 4. Fix Button Widths & Spacing */
             .tool-input-group { 
@@ -937,13 +935,14 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 12px;
             }
-            /* Button 1: Explanation -> Full width, single line */
+            /* Button 1: Explanation -> Full width of row, but width auto to fit text */
             .quiz-controls .action-btn:nth-child(1) {
-                grid-column: 1 / -1; /* Spans full width */
-                width: 100%;
+                grid-column: 1 / -1; /* Spans full width of grid */
+                width: auto; /* Fit to text size */
+                justify-self: center; /* Center horizontally in the row */
                 justify-content: center;
                 white-space: nowrap; /* Forces single line */
-                padding: 10px 16px;
+                padding: 10px 24px;
                 font-size: 0.85rem;
             }
             /* Button 2: Next Question -> Left column, single line */
@@ -2201,6 +2200,18 @@
              // Setup Reverse Dict
              setup('reverseInput', 'reverseClearBtn', 'reverseSearchBtn', handleReverseSearch);
         }
+        
+        // --- NEW: Handle Mobile Placeholders ---
+        function updateMobilePlaceholders() {
+            const reverseInput = document.getElementById('reverseInput');
+            if (reverseInput) {
+                if (window.innerWidth < 768) {
+                    reverseInput.placeholder = "e.g. smell of rain";
+                } else {
+                    reverseInput.placeholder = "e.g. the smell of rain on dry earth";
+                }
+            }
+        }
 
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
@@ -2211,6 +2222,10 @@
 
             // --- Initialize new tool inputs ---
             setupToolInputs();
+            
+            // --- Init Placeholder Check ---
+            updateMobilePlaceholders();
+            window.addEventListener('resize', updateMobilePlaceholders);
 
             const toggleClearBtn = () => { clearBtn.style.display = searchInput.value.trim().length > 0 ? 'block' : 'none'; };
 
