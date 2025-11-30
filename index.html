@@ -846,11 +846,12 @@
 
             /* Fix 2: Reduce font size specifically for Concept Search (Reverse Dict) Input */
             #reverseInput {
-                font-size: 0.85rem !important;
-                letter-spacing: -0.01em;
+                font-size: 0.75rem !important; /* Reduced from 0.85rem */
+                letter-spacing: -0.02em;
+                padding-right: 30px;
             }
             #reverseInput::placeholder {
-                font-size: 0.85rem !important;
+                font-size: 0.75rem !important; /* Reduced from 0.85rem */
             }
 
             /* 4. Fix Button Widths & Spacing */
@@ -932,27 +933,36 @@
             } 
             .quiz-controls {
                 display: grid;
-                /* Fix 1: Use minmax(0, 1fr) to prevent expansion beyond container width */
-                grid-template-columns: repeat(2, minmax(0, 1fr)); 
+                /* REVISED GRID: Two equal columns */
+                grid-template-columns: 1fr 1fr;
                 gap: 12px;
             }
-            /* Target specific buttons by order: Explanation(1), Next(2), Take Full(3) */
-            .quiz-controls .action-btn:nth-child(1),
-            .quiz-controls .action-btn:nth-child(2) {
+            /* Button 1: Explanation -> Full width, single line */
+            .quiz-controls .action-btn:nth-child(1) {
+                grid-column: 1 / -1; /* Spans full width */
                 width: 100%;
                 justify-content: center;
-                /* Fix 1: Adjust padding and allow wrapping so long text "Hide explanation" fits */
-                padding: 10px 4px;
+                white-space: nowrap; /* Forces single line */
+                padding: 10px 16px;
                 font-size: 0.85rem;
-                white-space: normal;
-                text-align: center;
-                line-height: 1.2;
-                height: 100%; /* Ensure both buttons same height if one wraps */
             }
-            .quiz-controls .action-btn:nth-child(3) {
-                grid-column: span 2; /* Full width for 'Take full quiz' */
+            /* Button 2: Next Question -> Left column, single line */
+            .quiz-controls .action-btn:nth-child(2) {
+                grid-column: 1 / 2;
                 width: 100%;
                 justify-content: center;
+                white-space: nowrap;
+                font-size: 0.8rem;
+                padding: 10px 4px;
+            }
+            /* Button 3: Take Full Quiz -> Right column, single line */
+            .quiz-controls .action-btn:nth-child(3) {
+                grid-column: 2 / 3;
+                width: 100%;
+                justify-content: center;
+                white-space: nowrap;
+                font-size: 0.8rem;
+                padding: 10px 4px;
             }
 
             /* Spotlight Heading */
