@@ -732,6 +732,8 @@
             color: var(--primary);
             font-weight: 700;
             min-height: 48px;
+            /* Added white-space to prevent wrapping on desktop */
+            white-space: nowrap;
         }
 
         .hangman-keyboard {
@@ -1418,6 +1420,24 @@
             const wordDisplay = document.getElementById('hangmanWordDisplay');
             wordDisplay.textContent = hangmanWord.split('').map(letter => hangmanGuessed.has(letter) ? letter : "_").join(" ");
 
+            // --- NEW: Adaptive Sizing for Desktop ---
+            if (window.innerWidth >= 768) {
+                const len = hangmanWord.length;
+                if (len > 14) {
+                    wordDisplay.style.fontSize = '1.2rem';
+                    wordDisplay.style.letterSpacing = '0.1em';
+                } else if (len > 10) {
+                    wordDisplay.style.fontSize = '1.5rem';
+                    wordDisplay.style.letterSpacing = '0.2em';
+                } else {
+                    wordDisplay.style.fontSize = '2rem';
+                    wordDisplay.style.letterSpacing = '0.5em';
+                }
+            } else {
+                 wordDisplay.style.fontSize = ''; // Clear inline for mobile CSS to take over
+                 wordDisplay.style.letterSpacing = '';
+            }
+
             // Render Keyboard
             const keyboard = document.getElementById('hangmanKeyboard');
             keyboard.innerHTML = '';
@@ -2067,6 +2087,23 @@
             });
             document.getElementById('reverseInput').addEventListener('keydown', function(e) {
                 if(e.key === 'Enter') handleReverseSearch();
+            });
+
+            // --- NEW: Mobile Focus Scroll for Tools ---
+            const focusScrollInputs = ['wordToolkitInput', 'reverseInput'];
+            focusScrollInputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('focus', function() {
+                        if (window.innerWidth <= 768) {
+                            setTimeout(() => {
+                                // Scroll to ensure the input is well-positioned (centered-ish)
+                                // Using scrollIntoView with 'center' is usually best for keyboards
+                                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }, 300);
+                        }
+                    });
+                }
             });
 
             const toggleClearBtn = () => { clearBtn.style.display = searchInput.value.trim().length > 0 ? 'block' : 'none'; };
