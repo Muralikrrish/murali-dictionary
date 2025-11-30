@@ -844,6 +844,15 @@
             /* 5. Reduce padding and font size slightly to show text fully */
             .search-box input { padding: 10px 14px; font-size: 0.95rem; }
 
+            /* Fix 2: Reduce font size specifically for Concept Search (Reverse Dict) Input */
+            #reverseInput {
+                font-size: 0.85rem !important;
+                letter-spacing: -0.01em;
+            }
+            #reverseInput::placeholder {
+                font-size: 0.85rem !important;
+            }
+
             /* 4. Fix Button Widths & Spacing */
             .tool-input-group { 
                 flex-direction: column; 
@@ -923,7 +932,8 @@
             } 
             .quiz-controls {
                 display: grid;
-                grid-template-columns: 1fr 1fr; /* Side-by-side */
+                /* Fix 1: Use minmax(0, 1fr) to prevent expansion beyond container width */
+                grid-template-columns: repeat(2, minmax(0, 1fr)); 
                 gap: 12px;
             }
             /* Target specific buttons by order: Explanation(1), Next(2), Take Full(3) */
@@ -931,8 +941,13 @@
             .quiz-controls .action-btn:nth-child(2) {
                 width: 100%;
                 justify-content: center;
-                padding: 10px 12px;
-                font-size: 0.9rem;
+                /* Fix 1: Adjust padding and allow wrapping so long text "Hide explanation" fits */
+                padding: 10px 4px;
+                font-size: 0.85rem;
+                white-space: normal;
+                text-align: center;
+                line-height: 1.2;
+                height: 100%; /* Ensure both buttons same height if one wraps */
             }
             .quiz-controls .action-btn:nth-child(3) {
                 grid-column: span 2; /* Full width for 'Take full quiz' */
