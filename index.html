@@ -244,6 +244,7 @@
             padding: 16px 12px;
             font-weight: 500;
             outline: none;
+            min-width: 0; /* Fix flex issue */
         }
 
         .search-box input::placeholder { color: var(--text-muted); }
@@ -346,6 +347,12 @@
         .word-definition { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; }
         .word-definition p { margin-bottom: 1.2em; margin-top: 0; }
         
+        /* New Rule: Reduce bottom padding for lines with only bold words (Headers) - Mobile & Desktop */
+        .word-definition p:has(> b:only-child),
+        .word-definition p:has(> strong:only-child) {
+            margin-bottom: 0.8em; 
+        }
+
         @media (min-width: 768px) {
             .desktop-nav { display: flex; }
             .word-definition p { margin-bottom: 0.9em; }
@@ -797,7 +804,8 @@
 
         @media (max-width: 767px) {
             .hero-title { font-size: 3rem; }
-            .hero-section { padding-top: 100px; }
+            /* 1. Decrease top padding to half (50px) */
+            .hero-section { padding-top: 50px; }
             .bg-decoration { top: -15%; }
             .container { padding: 0 16px; }
             
@@ -808,9 +816,49 @@
             
             .desktop-nav { display: none !important; }
             
-            .tool-input-group { flex-direction: column; }
-            .tool-input { width: 100%; }
+            /* 3. Optimize Search Icon */
+            .search-box input { padding: 12px 16px; }
+            .search-icon { padding: 8px 16px 8px 8px; }
+
+            /* 4. Fix Button Widths & Spacing */
+            .tool-input-group { 
+                flex-direction: column; 
+                gap: 20px; /* Increased vertical space */
+            }
+            .tool-input { 
+                width: 100%; 
+                padding: 12px 16px; /* 5. Fix visibility: Reduce padding */
+            }
             
+            /* Toolkit & Reverse Dict Buttons */
+            .tool-input-group .action-btn { 
+                width: auto !important; /* Adaptable width */
+                align-self: center; 
+                display: inline-flex !important;
+                padding: 10px 24px !important;
+            }
+
+            /* Reverse Dict Section Specifics */
+            #reverseDictSection .action-btn {
+                 width: auto !important;
+                 display: inline-flex !important;
+                 justify-content: center;
+                 /* Inherits gap from tool-input-group above */
+            }
+            
+            /* Word Spotlight Button */
+            #wordSpotlightSection .action-btn {
+                width: auto !important;
+                display: inline-flex !important;
+                margin-top: 24px; /* More vertical space */
+                padding: 10px 24px !important;
+            }
+            
+            /* 6 & 8 & 9. Spotlight Typography adjustments */
+            .word-definition { line-height: 1.6; } /* Reduced from 1.8 */
+            .word-definition p { margin-bottom: 0.8em; } /* Reduced from 1.2em */
+            .word-definition h3 { line-height: 1.3; margin-top: 1em; } 
+
             .mode-selector { 
                 justify-content: center; /* Center tabs */
                 padding-bottom: 12px; 
@@ -825,7 +873,7 @@
             
             /* Curiosity Optimization */
             .curiosity-fact { 
-                font-size: 1.65rem !important; /* Mobile request: Increase to 1.5x of previous (1.1rem -> 1.65rem) */
+                font-size: 1.65rem !important; 
                 line-height: 1.4; 
             }
             .curiosity-controls { display: flex; gap: 12px; width: 100%; }
@@ -834,7 +882,8 @@
             /* Quiz Optimization */
             .question-text { 
                 color: rgba(248, 250, 252, 0.75); 
-                font-size: 1.15rem !important; /* Mobile request: Slightly bigger than options */
+                /* 2. Increase font size (was 1.15rem) */
+                font-size: 1.3rem !important; 
             } 
             .quiz-controls {
                 display: grid;
@@ -853,17 +902,6 @@
                 grid-column: span 2; /* Full width for 'Take full quiz' */
                 width: 100%;
                 justify-content: center;
-            }
-
-            /* Toolkit & Reverse Dict Buttons */
-            .tool-input-group .action-btn, 
-            #reverseDictSection .action-btn,
-            #wordSpotlightSection .action-btn,
-            #wordToolkitSection .tool-input,
-            #reverseDictSection .tool-input { 
-                width: 100%; 
-                justify-content: center;
-                padding: 10px 16px !important; /* Mobile request: Reduce vertical length */
             }
 
             /* Spotlight Heading */
