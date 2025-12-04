@@ -618,11 +618,21 @@
             border-color: var(--text-main);
         }
 
-        .info-box, .success-box {
-            padding: 16px;
-            border-radius: var(--radius-md);
+        /* Status Boxes */
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             margin-top: 20px;
+        }
+
+        .info-box, .success-box, .sync-box {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .success-box {
@@ -635,6 +645,13 @@
             background: rgba(59, 130, 246, 0.15);
             color: #60a5fa;
             border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .sync-box {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            display: none; /* Hidden by default */
         }
 
         /* Mobile Adjustments */
@@ -777,8 +794,14 @@
                             <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="margin-top: 15px;">Import Dictionary</button>
                             <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
                         </div>
-                        <div id="syncStatus" class="success-box"><strong>✓ Supabase Connected!</strong> Dictionary syncing across devices.</div>
-                        <div class="info-box"><strong>💡 Tip:</strong> Auto-saves to cloud!</div>
+                        
+                        <div class="status-container">
+                            <div id="connectionStatus" class="success-box"><strong>✓ Supabase Connected!</strong> Ready to sync.</div>
+                            <div id="syncIndicator" class="sync-box">
+                                <i class="fas fa-sync fa-spin"></i> <span>Syncing to cloud...</span>
+                            </div>
+                            <div class="info-box"><strong>💡 Tip:</strong> Updates are saved locally first, then synced to cloud.</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1172,19 +1195,20 @@
                 if (error) throw error;
                 
                 isSupabaseConfigured = supabaseInitialized = true;
-                document.getElementById('syncStatus').innerHTML = '<strong>✓ Supabase Connected!</strong> Dictionary syncing across devices.';
+                document.getElementById('connectionStatus').innerHTML = '<strong>✓ Supabase Connected!</strong> Dictionary syncing across devices.';
                 await syncWithSupabase();
             } catch(error) {
                 console.error('Supabase init error:', error);
-                document.getElementById('syncStatus').innerHTML = `<strong>⚠ Supabase Connection Failed:</strong> ${error.message}`;
-                document.getElementById('syncStatus').style.background = 'rgba(244, 67, 54, 0.1)';
-                document.getElementById('syncStatus').style.borderLeftColor = 'var(--error-color)';
-                document.getElementById('syncStatus').style.color = 'var(--error-color)';
+                document.getElementById('connectionStatus').innerHTML = `<strong>⚠ Supabase Connection Failed:</strong> ${error.message}`;
+                document.getElementById('connectionStatus').style.background = 'rgba(244, 67, 54, 0.1)';
+                document.getElementById('connectionStatus').style.borderLeftColor = 'var(--error-color)';
+                document.getElementById('connectionStatus').style.color = 'var(--error-color)';
             }
         }
 
         async function syncWithSupabase() {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
+            showSyncStatus(true);
             
             try {
                 const { data, error } = await supabaseClient
@@ -1209,54 +1233,68 @@
                 }
             } catch(error) {
                 console.error('Sync error:', error);
+            } finally {
+                showSyncStatus(false);
             }
         }
 
-        async function saveDictionary() {
-            SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
-            updateWordCount();
-            
-            if (isSupabaseConfigured && supabaseInitialized) {
-                try {
-                    const latestWord = dictionary[dictionary.length - 1];
-                    
-                    const { error } = await supabaseClient
-                        .from('dictionary')
-                        .upsert([{
-                            id: latestWord.id,
-                            word: latestWord.word,
-                            definition: latestWord.definition,
-                            date_added: latestWord.dateAdded,
-                            date_modified: latestWord.dateModified
-                        }], {
-                            onConflict: 'id'
-                        });
-                    
-                    if (error) throw error;
-                } catch(error) {
-                    console.error('Save error:', error);
-                    alert('Failed to save to cloud: ' + error.message);
-                }
+        // --- NEW OPTIMIZED SYNC LOGIC ---
+        
+        // 1. Sync Indicator Logic
+        function showSyncStatus(isSyncing) {
+            const indicator = document.getElementById('syncIndicator');
+            if (isSyncing) {
+                indicator.style.display = 'flex';
+            } else {
+                indicator.style.display = 'none';
             }
         }
 
-        async function updateWordInSupabase(word) {
+        // 2. Pure Cloud Save (Background Task)
+        async function saveToSupabase(wordItem) {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
+            
+            showSyncStatus(true); // Show spinner
             
             try {
                 const { error } = await supabaseClient
                     .from('dictionary')
-                    .update({
-                        word: word.word,
-                        definition: word.definition,
-                        date_modified: word.dateModified
-                    })
-                    .eq('id', word.id);
+                    .upsert([{
+                        id: wordItem.id,
+                        word: wordItem.word,
+                        definition: wordItem.definition,
+                        date_added: wordItem.dateAdded,
+                        date_modified: wordItem.dateModified
+                    }], {
+                        onConflict: 'id'
+                    });
+                
+                if (error) throw error;
+                
+            } catch(error) {
+                console.error('Background Save error:', error);
+                // Optional: You could show a small toast here if it fails
+            } finally {
+                showSyncStatus(false); // Hide spinner
+            }
+        }
+        
+        // 3. Pure Cloud Delete (Background Task)
+        async function deleteFromSupabase(id) {
+            if (!isSupabaseConfigured || !supabaseInitialized) return;
+            
+            showSyncStatus(true);
+            try {
+                const { error } = await supabaseClient
+                    .from('dictionary')
+                    .delete()
+                    .eq('id', id);
                 
                 if (error) throw error;
             } catch(error) {
-                console.error('Update error:', error);
-                alert('Failed to update word in cloud: ' + error.message);
+                console.error('Background Delete error:', error);
+            } finally {
+                showSyncStatus(false);
             }
         }
 
@@ -1388,7 +1426,8 @@
             });
         }
 
-        document.getElementById('addWordForm').addEventListener('submit', async function(e) {
+        // --- UPDATED SUBMIT HANDLER ---
+        document.getElementById('addWordForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const wordInput = document.getElementById('wordInput');
@@ -1402,15 +1441,18 @@
                 return;
             }
             
+            let wordObjectToSync;
+
+            // 1. Update LOCAL Data First (Optimistic Update)
             if (editingWordId !== null) {
                 const index = dictionary.findIndex(item => item.id === editingWordId);
                 if (index !== -1) {
+                    // Update object in place
                     dictionary[index].word = word;
                     dictionary[index].definition = definition;
                     dictionary[index].dateModified = new Date().toISOString();
-                    if (isSupabaseConfigured && supabaseInitialized) {
-                        await updateWordInSupabase(dictionary[index]);
-                    }
+                    
+                    wordObjectToSync = dictionary[index];
                 }
                 editingWordId = null;
             } else {
@@ -1422,17 +1464,25 @@
                     dateModified: new Date().toISOString()
                 };
                 dictionary.push(newWord);
-                await saveDictionary();
+                
+                wordObjectToSync = newWord;
             }
             
+            // 2. Sort and Save Local Storage immediately
             dictionary.sort((a, b) => a.word.localeCompare(b.word));
             buildSearchIndex();
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
             updateWordCount();
             
+            // 3. Clear UI immediately (User feels "Done!")
             wordInput.value = '';
             definitionInput.innerHTML = '';
             document.getElementById('wordWarning').style.display = 'none';
+
+            // 4. Trigger Cloud Sync in Background (Do not await this!)
+            if (wordObjectToSync) {
+                saveToSupabase(wordObjectToSync); // This runs separately
+            }
         });
 
         function editWord(id) {
@@ -1448,32 +1498,26 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function deleteWord(id) {
+        function deleteWord(id) {
             if (!confirm('Are you sure you want to delete this word?')) return;
             
             const wordIndex = dictionary.findIndex(item => item.id === id);
             if (wordIndex === -1) return;
             
-            if (isSupabaseConfigured && supabaseInitialized) {
-                try {
-                    const { error } = await supabaseClient
-                        .from('dictionary')
-                        .delete()
-                        .eq('id', id);
-                    
-                    if (error) throw error;
-                } catch(error) {
-                    console.error('Delete error:', error);
-                    alert('Failed to delete word from cloud: ' + error.message);
-                    return;
-                }
-            }
-            
+            // 1. Remove from Local Data immediately
             dictionary.splice(wordIndex, 1);
             buildSearchIndex();
             SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
             updateWordCount();
-            alert('Word deleted successfully!');
+            
+            // Update search results immediately if open
+            searchWordsToEdit(); 
+            
+            // 2. Trigger Cloud Delete in Background (No await)
+            deleteFromSupabase(id);
+            
+            // 3. Show instant feedback
+            // (We could show a toast here, but the list update is usually enough feedback)
         }
 
         function searchWordsToEdit() {
