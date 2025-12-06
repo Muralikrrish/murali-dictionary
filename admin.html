@@ -6,6 +6,8 @@
     <title>Admin - Pearls of Knowledge</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- NEW: Import Marked.js library for perfect text formatting -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
             /* Theme: Deep Navy & Saffron (Matching index.html) */
@@ -399,8 +401,24 @@
         .editor-content h3 { font-weight: 700; color: var(--text-bright-dim); font-size: 1.3rem; margin: 1.2em 0 0.6em; }
         .editor-content p { margin-bottom: 1.5em; }
         .editor-content strong, .editor-content b { color: var(--text-bright-dim); font-weight: 700; }
-        .editor-content ul, .editor-content ol { padding-left: 20px; margin: 16px 0; }
-        .editor-content li { margin-bottom: 8px; }
+        
+        /* List Styling Updates */
+        .editor-content ul, .editor-content ol { 
+            padding-left: 20px; 
+            margin: 16px 0; 
+        }
+        
+        .editor-content li { 
+            margin-bottom: 8px; 
+        }
+
+        /* Nested List Styling */
+        .editor-content ul ul, 
+        .editor-content ol ol, 
+        .editor-content ul ol, 
+        .editor-content ol ul {
+            margin: 8px 0 8px 20px;
+        }
 
         .editor-content[contenteditable="true"]:empty:before {
             content: attr(placeholder);
@@ -810,6 +828,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Initialize Marked.js options for handling breaks and standard GitHub flavor
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true, // Converts line breaks to <br>
+                gfm: true     // Enables GitHub Flavored Markdown
+            });
+        }
+
         // Supabase Configuration
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
@@ -936,7 +962,7 @@
             }
         }
 
-        // UPDATED Toggle Logic
+        // UPDATED Toggle Logic: Remove all H1s, Remove FIRST H2, convert others to COLLAPSED toggles
         function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
@@ -951,10 +977,11 @@
                 firstH2.remove();
             }
 
-            // 3. Convert remaining H2s to toggles
+            // 3. Convert remaining H2s to toggles (Collapsed by default)
             const h2Elements = doc.querySelectorAll('h2');
     
             h2Elements.forEach(h2 => {
+                // Format heading text
                 let headingText = h2.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
                     headingText = headingText.toLowerCase();
@@ -967,6 +994,7 @@
         
                 const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
+                // Modern Chevron Icon (Not active by default)
                 toggleHeader.innerHTML = `
                     <i class="fas fa-chevron-right toggle-icon"></i>
                     <span class="toggle-title">${h2.innerHTML}</span>
@@ -974,6 +1002,7 @@
         
                 const toggleContent = document.createElement('div');
                 toggleContent.className = 'toggle-content';
+                // Note: No 'expanded' class added here -> Collapsed by default
         
                 let nextSibling = h2.nextElementSibling;
                 while (nextSibling && nextSibling.tagName !== 'H2') {
@@ -1019,158 +1048,6 @@
                     content.classList.toggle('expanded');
                 });
             });
-        }
-
-        function processMarkdownContent(text) {
-            const lines = text.split('\n');
-            let html = '';
-            let inParagraph = false;
-            let paragraphContent = '';
-            
-            // Replaced logic: Store list items as objects with indentation level
-            let inList = false;
-            let listItems = []; // Stores { text: string, indent: number }
-            let inOrderedList = false;
-            let orderedListItems = [];
-
-            // Helper for formatting Bold AND Italics
-            const formatInline = (text) => {
-                // Bold (** or __)
-                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                text = text.replace(/__(.*?)__/g, '<strong>$1</strong>');
-                // Italic (* or _) - Added this to fix italics issue
-                text = text.replace(/\*([^\*]+)\*/g, '<em>$1</em>');
-                text = text.replace(/_([^_]+)_/g, '<em>$1</em>');
-                return text;
-            };
-            
-            const closeParagraph = () => {
-                if (inParagraph && paragraphContent.trim() !== '') {
-                    html += `<p>${formatInline(paragraphContent)}</p>`;
-                }
-                inParagraph = false;
-                paragraphContent = '';
-            };
-            
-            // New Close List Logic with nesting support
-            const closeList = () => {
-                if (inList && listItems.length > 0) {
-                    const baseIndent = listItems[0].indent;
-                    let currentLevel = 0;
-                    
-                    html += '<ul>';
-                    
-                    listItems.forEach(item => {
-                        // Calculate level relative to base indentation.
-                        // Assuming 2 spaces is roughly one indent level, but being flexible.
-                        let level = 0;
-                        if (item.indent > baseIndent) {
-                            // If it's indented more than the first item, it's a sub-item
-                            level = Math.floor((item.indent - baseIndent) / 2);
-                            if (level < 1) level = 1; // Ensure at least level 1 if indented
-                        }
-                        
-                        // Increase depth
-                        while (currentLevel < level) {
-                            html += '<ul>';
-                            currentLevel++;
-                        }
-                        // Decrease depth
-                        while (currentLevel > level) {
-                            html += '</ul>';
-                            currentLevel--;
-                        }
-                        
-                        html += `<li>${formatInline(item.text)}</li>`;
-                    });
-                    
-                    // Close any remaining open lists
-                    while (currentLevel > 0) {
-                        html += '</ul>';
-                        currentLevel--;
-                    }
-                    html += '</ul>';
-                    listItems = [];
-                }
-                inList = false;
-            };
-            
-            const closeOrderedList = () => {
-                if (inOrderedList && orderedListItems.length > 0) {
-                    html += '<ol>';
-                    orderedListItems.forEach(item => {
-                        html += `<li>${formatInline(item)}</li>`;
-                    });
-                    html += '</ol>';
-                    orderedListItems = [];
-                }
-                inOrderedList = false;
-            };
-            
-            for (let i = 0; i < lines.length; i++) {
-                let line = lines[i];
-                const trimmedLine = line.trim();
-                
-                if (trimmedLine === '' || /^---+$/.test(trimmedLine) || trimmedLine === '***' || trimmedLine === '___') {
-                    if (inParagraph && paragraphContent.trim() !== '') {
-                        closeParagraph();
-                    } 
-                    continue;
-                }
-                
-                // Headers
-                if (trimmedLine.startsWith('# ')) {
-                    closeParagraph(); closeList(); closeOrderedList();
-                    html += `<h1>${trimmedLine.substring(2)}</h1>`;
-                } else if (trimmedLine.startsWith('## ')) {
-                    closeParagraph(); closeList(); closeOrderedList();
-                    html += `<h2>${trimmedLine.substring(3)}</h2>`;
-                } else if (trimmedLine.startsWith('### ')) {
-                    closeParagraph(); closeList(); closeOrderedList();
-                    html += `<h3>${trimmedLine.substring(4)}</h3>`;
-                } else if (trimmedLine.startsWith('#### ')) {
-                    closeParagraph(); closeList(); closeOrderedList();
-                    html += `<h4>${trimmedLine.substring(5)}</h4>`;
-                } 
-                // Unordered Lists (Bullets) with Indentation Detection
-                // Regex checks for: Start of line -> (Capture Spaces) -> (Dash or Star) -> Space -> Content
-                else if (line.match(/^(\s*)([-*])\s+(.*)/)) {
-                    const match = line.match(/^(\s*)([-*])\s+(.*)/);
-                    if (!trimmedLine.startsWith('***') && !trimmedLine.startsWith('---')) {
-                        closeParagraph(); closeOrderedList();
-                        inList = true;
-                        
-                        // Capture indentation length (number of spaces)
-                        const indentLevel = match[1].length; 
-                        const content = match[3];
-                        
-                        listItems.push({ text: content, indent: indentLevel });
-                    } else {
-                        // Horizontal rules handled above usually, but fallback here
-                        closeList(); closeOrderedList();
-                    }
-                } 
-                // Ordered Lists
-                else if (/^\d+\.\s/.test(trimmedLine)) {
-                    closeParagraph(); closeList();
-                    inOrderedList = true;
-                    orderedListItems.push(trimmedLine.replace(/^\d+\.\s/, '').trim());
-                } else {
-                    closeList(); closeOrderedList();
-                    if (!inParagraph) {
-                        inParagraph = true;
-                        paragraphContent = line; 
-                    } else {
-                        paragraphContent += '<br>' + line;
-                    }
-                }
-            }
-            
-            closeParagraph();
-            closeList();
-            closeOrderedList();
-            
-            return html;
         }
 
         function cleanPastedHtml(html) {
@@ -1405,11 +1282,16 @@
                     
                     let processedHtml = '';
                     
+                    // --- NEW LOGIC: Prefer Marked.js for text/markdown content ---
                     if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
-                        processedHtml = processMarkdownContent(text);
+                        // Use Marked.js to parse the markdown text into HTML
+                        // This handles nested bullets and numbered lists automatically
+                        processedHtml = marked.parse(text);
                     } else if (html) {
+                        // If it's not markdown but has HTML (copy from website/word), clean it
                         processedHtml = cleanPastedHtml(html);
                     } else {
+                        // Plain text fallback
                         const lines = text.split('\n');
                         let paragraphs = [];
                         let currentParagraph = [];
