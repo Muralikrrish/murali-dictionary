@@ -936,7 +936,7 @@
             }
         }
 
-        // UPDATED Toggle Logic: Remove all H1s, Remove FIRST H2, convert others to COLLAPSED toggles
+        // UPDATED Toggle Logic
         function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
@@ -951,11 +951,10 @@
                 firstH2.remove();
             }
 
-            // 3. Convert remaining H2s to toggles (Collapsed by default)
+            // 3. Convert remaining H2s to toggles
             const h2Elements = doc.querySelectorAll('h2');
     
             h2Elements.forEach(h2 => {
-                // Format heading text
                 let headingText = h2.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
                     headingText = headingText.toLowerCase();
@@ -968,7 +967,6 @@
         
                 const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
-                // Modern Chevron Icon (Not active by default)
                 toggleHeader.innerHTML = `
                     <i class="fas fa-chevron-right toggle-icon"></i>
                     <span class="toggle-title">${h2.innerHTML}</span>
@@ -976,7 +974,6 @@
         
                 const toggleContent = document.createElement('div');
                 toggleContent.className = 'toggle-content';
-                // Note: No 'expanded' class added here -> Collapsed by default
         
                 let nextSibling = h2.nextElementSibling;
                 while (nextSibling && nextSibling.tagName !== 'H2') {
@@ -1029,29 +1026,69 @@
             let html = '';
             let inParagraph = false;
             let paragraphContent = '';
+            
+            // Replaced logic: Store list items as objects with indentation level
             let inList = false;
-            let listItems = [];
+            let listItems = []; // Stores { text: string, indent: number }
             let inOrderedList = false;
             let orderedListItems = [];
+
+            // Helper for formatting Bold AND Italics
+            const formatInline = (text) => {
+                // Bold (** or __)
+                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                text = text.replace(/__(.*?)__/g, '<strong>$1</strong>');
+                // Italic (* or _) - Added this to fix italics issue
+                text = text.replace(/\*([^\*]+)\*/g, '<em>$1</em>');
+                text = text.replace(/_([^_]+)_/g, '<em>$1</em>');
+                return text;
+            };
             
             const closeParagraph = () => {
                 if (inParagraph && paragraphContent.trim() !== '') {
-                    paragraphContent = paragraphContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    paragraphContent = paragraphContent.replace(/__(.*?)__/g, '<strong>$1</strong>');
-                    html += `<p>${paragraphContent}</p>`;
+                    html += `<p>${formatInline(paragraphContent)}</p>`;
                 }
                 inParagraph = false;
                 paragraphContent = '';
             };
             
+            // New Close List Logic with nesting support
             const closeList = () => {
                 if (inList && listItems.length > 0) {
+                    const baseIndent = listItems[0].indent;
+                    let currentLevel = 0;
+                    
                     html += '<ul>';
+                    
                     listItems.forEach(item => {
-                        item = item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                        item = item.replace(/__(.*?)__/g, '<strong>$1</strong>');
-                        html += `<li>${item}</li>`;
+                        // Calculate level relative to base indentation.
+                        // Assuming 2 spaces is roughly one indent level, but being flexible.
+                        let level = 0;
+                        if (item.indent > baseIndent) {
+                            // If it's indented more than the first item, it's a sub-item
+                            level = Math.floor((item.indent - baseIndent) / 2);
+                            if (level < 1) level = 1; // Ensure at least level 1 if indented
+                        }
+                        
+                        // Increase depth
+                        while (currentLevel < level) {
+                            html += '<ul>';
+                            currentLevel++;
+                        }
+                        // Decrease depth
+                        while (currentLevel > level) {
+                            html += '</ul>';
+                            currentLevel--;
+                        }
+                        
+                        html += `<li>${formatInline(item.text)}</li>`;
                     });
+                    
+                    // Close any remaining open lists
+                    while (currentLevel > 0) {
+                        html += '</ul>';
+                        currentLevel--;
+                    }
                     html += '</ul>';
                     listItems = [];
                 }
@@ -1062,9 +1099,7 @@
                 if (inOrderedList && orderedListItems.length > 0) {
                     html += '<ol>';
                     orderedListItems.forEach(item => {
-                        item = item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                        item = item.replace(/__(.*?)__/g, '<strong>$1</strong>');
-                        html += `<li>${item}</li>`;
+                        html += `<li>${formatInline(item)}</li>`;
                     });
                     html += '</ol>';
                     orderedListItems = [];
@@ -1083,6 +1118,7 @@
                     continue;
                 }
                 
+                // Headers
                 if (trimmedLine.startsWith('# ')) {
                     closeParagraph(); closeList(); closeOrderedList();
                     html += `<h1>${trimmedLine.substring(2)}</h1>`;
@@ -1095,17 +1131,27 @@
                 } else if (trimmedLine.startsWith('#### ')) {
                     closeParagraph(); closeList(); closeOrderedList();
                     html += `<h4>${trimmedLine.substring(5)}</h4>`;
-                } else if (trimmedLine.startsWith('##### ')) {
-                    closeParagraph(); closeList(); closeOrderedList();
-                    html += `<h5>${trimmedLine.substring(6)}</h5>`;
-                } else if (trimmedLine.startsWith('###### ')) {
-                    closeParagraph(); closeList(); closeOrderedList();
-                    html += `<h6>${trimmedLine.substring(7)}</h6>`;
-                } else if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
-                    closeParagraph(); closeOrderedList();
-                    inList = true;
-                    listItems.push(trimmedLine.substring(2).trim());
-                } else if (/^\d+\.\s/.test(trimmedLine)) {
+                } 
+                // Unordered Lists (Bullets) with Indentation Detection
+                // Regex checks for: Start of line -> (Capture Spaces) -> (Dash or Star) -> Space -> Content
+                else if (line.match(/^(\s*)([-*])\s+(.*)/)) {
+                    const match = line.match(/^(\s*)([-*])\s+(.*)/);
+                    if (!trimmedLine.startsWith('***') && !trimmedLine.startsWith('---')) {
+                        closeParagraph(); closeOrderedList();
+                        inList = true;
+                        
+                        // Capture indentation length (number of spaces)
+                        const indentLevel = match[1].length; 
+                        const content = match[3];
+                        
+                        listItems.push({ text: content, indent: indentLevel });
+                    } else {
+                        // Horizontal rules handled above usually, but fallback here
+                        closeList(); closeOrderedList();
+                    }
+                } 
+                // Ordered Lists
+                else if (/^\d+\.\s/.test(trimmedLine)) {
                     closeParagraph(); closeList();
                     inOrderedList = true;
                     orderedListItems.push(trimmedLine.replace(/^\d+\.\s/, '').trim());
@@ -1273,7 +1319,6 @@
                 
             } catch(error) {
                 console.error('Background Save error:', error);
-                // Optional: You could show a small toast here if it fails
             } finally {
                 showSyncStatus(false); // Hide spinner
             }
@@ -1515,9 +1560,6 @@
             
             // 2. Trigger Cloud Delete in Background (No await)
             deleteFromSupabase(id);
-            
-            // 3. Show instant feedback
-            // (We could show a toast here, but the list update is usually enough feedback)
         }
 
         function searchWordsToEdit() {
