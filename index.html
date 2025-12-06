@@ -821,7 +821,15 @@
             .bg-decoration { top: -15%; }
             .container { padding: 0 16px; }
             
-            .interactive-card { padding: 24px; padding-bottom: 32px; } 
+            /* Mobile Request: Remove container styling (background, border, shadow) to maximize text space */
+            .interactive-card {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            } 
             
             /* Request 5: Match heading size to Curiosity "Hooks" (which are 1.65rem below) */
             .modern-section-title { font-size: 1.65rem !important; }
