@@ -815,10 +815,24 @@
         .curiosity-detail.show { max-height: 2000px; opacity: 1; margin-bottom: 24px; }
 
         @media (max-width: 767px) {
+            
+            /* --- OPTIMIZED MOBILE BACKGROUND --- */
+            /* 1. Change from Fixed to Absolute: Icons will scroll away with the content */
+            .bg-decoration {
+                position: absolute !important;
+                top: -15%; /* Original offset maintained */
+                height: 120vh; /* Limits icons to just the top area */
+                overflow: hidden;
+            }
+
+            /* 2. Reduced Opacity: Makes icons much fainter so text on top is readable */
+            .bg-icon {
+                opacity: 0.04 !important; /* Reduced from 0.08 */
+            }
+
             .hero-title { font-size: 3rem; }
             /* 1. Decrease top padding to half (50px) */
             .hero-section { padding-top: 50px; }
-            .bg-decoration { top: -15%; }
             .container { padding: 0 16px; }
             
             /* Mobile Request: Remove container styling (background, border, shadow) to maximize text space */
