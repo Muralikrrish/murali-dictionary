@@ -122,6 +122,7 @@
             .bg-icon { opacity: 0.25; }
         }
 
+        /* Default Desktop Positions */
         .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; } 
         .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; } 
         .icon-3 { bottom: 25%; left: 10%; font-size: 6rem; transform: rotate(5deg); color: #34d399; } 
@@ -817,18 +818,33 @@
         @media (max-width: 767px) {
             
             /* --- OPTIMIZED MOBILE BACKGROUND --- */
-            /* 1. Change from Fixed to Absolute: Icons will scroll away with the content */
+            /* Fixed position creates a modern 'wallpaper' feel that stays as you scroll */
             .bg-decoration {
-                position: absolute !important;
-                top: -15%; /* Original offset maintained */
-                height: 120vh; /* Limits icons to just the top area */
+                position: fixed !important;
+                top: 0 !important;
+                height: 100vh !important;
+                width: 100%;
+                z-index: -1;
                 overflow: hidden;
             }
 
-            /* 2. Reduced Opacity: Makes icons much fainter so text on top is readable */
+            /* Blur effect makes icons look like a premium texture/watermark, 
+               preventing them from competing with text */
             .bg-icon {
-                opacity: 0.04 !important; /* Reduced from 0.08 */
+                opacity: 0.06 !important; /* Subtle but visible */
+                filter: blur(1.5px);      /* The 'Frosted' look */
             }
+
+            /* Re-distribute icons for Portrait (Vertical) screens */
+            /* We place them alternately left and right down the screen */
+            .icon-1 { top: 5%; left: -10%; font-size: 6rem; transform: rotate(-15deg); } 
+            .icon-2 { top: 18%; right: -10%; font-size: 5rem; transform: rotate(10deg); } 
+            .icon-3 { top: 32%; left: 5%; font-size: 4rem; transform: rotate(5deg); } 
+            .icon-4 { top: 45%; right: 5%; font-size: 4.5rem; transform: rotate(-20deg); } 
+            .icon-5 { top: 60%; left: -5%; font-size: 5rem; transform: rotate(30deg); } 
+            .icon-6 { top: 75%; right: -8%; font-size: 5.5rem; transform: rotate(-10deg); } 
+            .icon-7 { display: none; } /* Hide clutter in middle */
+            .icon-8 { bottom: -5%; left: 10%; font-size: 10rem; opacity: 0.04 !important; transform: rotate(15deg); } 
 
             .hero-title { font-size: 3rem; }
             /* 1. Decrease top padding to half (50px) */
