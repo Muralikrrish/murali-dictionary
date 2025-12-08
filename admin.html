@@ -1129,26 +1129,59 @@
             }
         }
 
+        // --- UPDATED SYNC LOGIC FOR LARGE DATASETS (>1000 items) ---
         async function syncWithSupabase() {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
             showSyncStatus(true);
             
             try {
-                const { data, error } = await supabaseClient
-                    .from('dictionary')
-                    .select('*')
-                    .order('word', { ascending: true });
+                let allData = [];
+                let rangeStart = 0;
+                const rangeStep = 1000; // Supabase fetches 1000 items max per request
+                let hasMore = true;
+
+                // Loop to fetch data in chunks until we have everything
+                while (hasMore) {
+                    const { data, error } = await supabaseClient
+                        .from('dictionary')
+                        .select('*')
+                        .order('word', { ascending: true })
+                        .range(rangeStart, rangeStart + rangeStep - 1);
+                    
+                    if (error) throw error;
+                    
+                    if (data && data.length > 0) {
+                        allData = [...allData, ...data];
+                        
+                        if (data.length < rangeStep) {
+                            // If we got fewer items than requested, we reached the end
+                            hasMore = false;
+                        } else {
+                            // Prepare to fetch the next chunk
+                            rangeStart += rangeStep;
+                        }
+                    } else {
+                        hasMore = false;
+                    }
+                }
                 
-                if (error) throw error;
-                
-                if (data && data.length > 0) {
-                    dictionary = data.map(item => ({
+                if (allData.length > 0) {
+                    // Map to our internal structure
+                    dictionary = allData.map(item => ({
                         id: item.id,
                         word: item.word,
                         definition: item.definition,
                         dateAdded: item.date_added,
                         dateModified: item.date_modified
                     }));
+                    
+                    // Deduplicate based on ID just in case
+                    const uniqueWords = new Map();
+                    dictionary.forEach(item => uniqueWords.set(item.id, item));
+                    dictionary = Array.from(uniqueWords.values());
+
+                    // Sort
+                    dictionary.sort((a, b) => a.word.localeCompare(b.word));
                     
                     buildSearchIndex();
                     updateWordCount();
@@ -1161,8 +1194,6 @@
             }
         }
 
-        // --- NEW OPTIMIZED SYNC LOGIC ---
-        
         // 1. Sync Indicator Logic
         function showSyncStatus(isSyncing) {
             const indicator = document.getElementById('syncIndicator');
@@ -1591,13 +1622,15 @@
                     
                     if (isSupabaseConfigured && supabaseInitialized) {
                         try {
+                            // 1. Delete all existing data first
                             const { error: deleteError } = await supabaseClient
                                 .from('dictionary')
                                 .delete()
-                                .neq('id', 0);
+                                .neq('id', 0); // Delete everything where ID is not 0 (effectively everything)
                             
                             if (deleteError) throw deleteError;
                             
+                            // 2. Prepare data
                             const supabaseData = dictionary.map(item => ({
                                 id: item.id,
                                 word: item.word,
@@ -1606,11 +1639,21 @@
                                 date_modified: item.dateModified
                             }));
                             
-                            const { error: insertError } = await supabaseClient
-                                .from('dictionary')
-                                .insert(supabaseData);
+                            // 3. Chunking for Import (Batch Insert)
+                            const CHUNK_SIZE = 100; // Insert 100 items at a time
+                            const totalChunks = Math.ceil(supabaseData.length / CHUNK_SIZE);
                             
-                            if (insertError) throw insertError;
+                            for (let i = 0; i < totalChunks; i++) {
+                                const start = i * CHUNK_SIZE;
+                                const end = start + CHUNK_SIZE;
+                                const chunk = supabaseData.slice(start, end);
+                                
+                                const { error: insertError } = await supabaseClient
+                                    .from('dictionary')
+                                    .insert(chunk);
+                                
+                                if (insertError) throw insertError;
+                            }
                         } catch(error) {
                             console.error('Supabase import error:', error);
                             alert('Error importing to cloud: ' + error.message);
