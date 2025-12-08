@@ -847,6 +847,32 @@
             
             /* Request 5: Match heading size to Curiosity "Hooks" (which are 1.65rem below) */
             .modern-section-title { font-size: 1.65rem !important; }
+            
+            /* --- Mobile Separator Update --- */
+            .modern-section {
+                /* Add breathing room inside the section before the divider */
+                padding-bottom: 40px; 
+                /* Add breathing room after the divider before the next header */
+                margin-bottom: 40px !important; 
+                position: relative;
+            }
+
+            /* The elegant divider line */
+            .modern-section::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 15%; /* Indent from sides */
+                width: 70%; /* Not full width to look less like a grid */
+                height: 1px;
+                /* Radial gradient for a tapered look */
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            }
+
+            /* Hide divider on the last section */
+            .modern-section:last-of-type::after {
+                display: none;
+            }
 
             /* Reduce tool header size to 1.65rem as requested */
             .tool-header h3 { font-size: 1.65rem !important; }
@@ -921,7 +947,7 @@
             
             /* 6. Spotlight toggle list spacing (Item 5 Confirmation) */
             .word-definition ul, .word-definition ol { margin: 8px 0 16px 0; }
-            .word-definition li { margin-bottom: 6px; line-height: 1.4; }
+            .word-definition li { margin-bottom: 4px; line-height: 1.4; }
 
             .mode-selector { 
                 justify-content: center; /* Center tabs */
