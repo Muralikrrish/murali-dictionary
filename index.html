@@ -803,7 +803,7 @@
         /* --- NEW: Highlighter Animation Keyframes --- */
         @keyframes drawHighlight {
             0% { width: 0%; opacity: 0; }
-            100% { width: 105%; opacity: 0.9; } 
+            100% { width: 105%; opacity: 0.5; } /* Opacity reduced to 0.5 for a subtle, non-distracting look */
         }
 
         /* --- NEW CURIOSITY STYLES --- */
@@ -875,17 +875,17 @@
                 z-index: 10;
             }
 
-            /* --- NEW: Mobile Highlighting Effect (Straight & Jagged) --- */
+            /* --- NEW: Mobile Highlighting Effect (Taller & Softer) --- */
             
-            /* 1. Define Colors for each section */
-            #searchResultsSection .modern-section-title { --highlight-color: var(--primary); }
-            #curiositySection .modern-section-title { --highlight-color: #f472b6; }      /* Pink */
-            #vocabularyQuizSection .modern-section-title { --highlight-color: #34d399; } /* Green */
-            #wordToolkitSection .modern-section-title { --highlight-color: #38bdf8; }    /* Sky Blue */
-            #hangmanSection .modern-section-title { --highlight-color: #fb923c; }        /* Orange */
-            #gkQuizSection .modern-section-title { --highlight-color: #a78bfa; }         /* Purple */
-            #reverseDictSection .modern-section-title { --highlight-color: #2dd4bf; }    /* Teal */
-            #wordSpotlightSection .modern-section-title { --highlight-color: #fbbf24; }  /* Gold */
+            /* 1. Define Pastel Colors (Lighter, softer variants) */
+            #searchResultsSection .modern-section-title { --highlight-color: #fde68a; } /* Pastel Amber */
+            #curiositySection .modern-section-title { --highlight-color: #fbcfe8; }      /* Pastel Pink */
+            #vocabularyQuizSection .modern-section-title { --highlight-color: #a7f3d0; } /* Pastel Green */
+            #wordToolkitSection .modern-section-title { --highlight-color: #bae6fd; }    /* Pastel Blue */
+            #hangmanSection .modern-section-title { --highlight-color: #fed7aa; }        /* Pastel Orange */
+            #gkQuizSection .modern-section-title { --highlight-color: #ddd6fe; }         /* Pastel Purple */
+            #reverseDictSection .modern-section-title { --highlight-color: #99f6e4; }    /* Pastel Teal */
+            #wordSpotlightSection .modern-section-title { --highlight-color: #e2e8f0; }  /* Pastel Slate */
 
             .modern-section-title span {
                 position: relative;
@@ -898,22 +898,21 @@
                 position: absolute;
                 z-index: -1;
                 
-                /* Position: Lower part of text */
-                bottom: 4px; 
+                /* Position: Covers almost full height of the text now */
+                bottom: 2px; 
                 left: -4px;
-                height: 55%; 
+                height: 90%; /* Increased from 55% to 90% so text tops don't stick out */
                 
                 /* Color: Dynamic variable based on section */
                 background: var(--highlight-color, var(--primary));
                 
-                /* Shape: STRAIGHT but JAGGED corners using a custom polygon */
-                /* This draws a box with slightly 'messy' coordinates for that hand-drawn feel */
+                /* Shape: STRAIGHT but JAGGED corners */
                 clip-path: polygon(
                     0% 5%, 2% 0%, 98% 2%, 100% 0%, 
                     100% 95%, 98% 100%, 2% 98%, 0% 100%
                 );
                 
-                /* Remove previous slant/rotation to keep it straight */
+                /* Remove previous slant */
                 transform: none; 
                 
                 /* Animation */
@@ -922,8 +921,7 @@
                 animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
                 animation-delay: 0.3s;
                 
-                /* Blending for marker effect */
-                mix-blend-mode: hard-light; 
+                /* Removed mix-blend-mode to keep the pastel colors true and soft */
             }
             
             /* --- Mobile Separator Update --- */
