@@ -1123,6 +1123,21 @@
             .toggle-content.expanded {
                 max-height: 8000px !important;
             }
+
+            /* --- NEW: Mobile-only Divider between Dictionaries --- */
+            .mobile-result-separator {
+                display: none;
+            }
+            
+            @media (max-width: 767px) {
+                .mobile-result-separator {
+                    display: block;
+                    width: 70%;
+                    height: 1px;
+                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                    margin: 24px auto; /* Same as spacing between sections */
+                }
+            }
         }
     </style>
 </head>
@@ -2489,6 +2504,7 @@
             t = t.replace(/{bc}/g, ': ').replace(/{it}/g, '<i>').replace(/{\/it}/g, '</i>');
             t = t.replace(/{b}/g, '<b>').replace(/{\/b}/g, '</b>').replace(/{wi}/g, '<i>').replace(/{\/wi}/g, '</i>');
             t = t.replace(/{ldquo}/g, '“').replace(/{rdquo}/g, '”').replace(/{sx\|([^|]+)\|([^|]*)\|}/g, '$1');
+            t = t.replace(/{phrase}/g, '<b>').replace(/{\/phrase}/g, '</b>'); // Added fix for phrases
             return t;
         }
 
@@ -2584,6 +2600,11 @@
                     if (wordnikData && Array.isArray(wordnikData) && wordnikData.length > 0) {
                         let wordnikHtmlContent = '';
                         
+                        // Add mobile separator if Merriam Webster data exists
+                        if (finalHtml) {
+                            finalHtml += `<div class="mobile-result-separator"></div>`;
+                        }
+
                         wordnikHtmlContent += `<h1>${query}</h1>`;
                         // REMOVED: Dictionary Name Label
                         
@@ -2608,16 +2629,21 @@
                             }
                         });
 
-                        // NEW: Add Related Words Section
+                        // NEW: Add Related Words Section with Filtering
                         if (wordnikRelated && Array.isArray(wordnikRelated) && wordnikRelated.length > 0) {
-                            wordnikHtmlContent += `<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;
-                            wordnikRelated.forEach(grp => {
-                                // Capitalize relationship type (e.g., "synonym" -> "Synonym")
-                                const type = grp.relationshipType.charAt(0).toUpperCase() + grp.relationshipType.slice(1);
-                                const words = grp.words.join(', ');
-                                wordnikHtmlContent += `<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`;
-                            });
-                            wordnikHtmlContent += `</div>`;
+                            const allowedTypes = new Set(['form', 'verb-form']);
+                            const filteredRelated = wordnikRelated.filter(grp => allowedTypes.has(grp.relationshipType));
+
+                            if (filteredRelated.length > 0) {
+                                wordnikHtmlContent += `<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;
+                                filteredRelated.forEach(grp => {
+                                    // Capitalize relationship type (e.g., "synonym" -> "Synonym")
+                                    const type = grp.relationshipType.charAt(0).toUpperCase() + grp.relationshipType.slice(1);
+                                    const words = grp.words.join(', ');
+                                    wordnikHtmlContent += `<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`;
+                                });
+                                wordnikHtmlContent += `</div>`;
+                            }
                         }
 
                         finalHtml += `<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`;
