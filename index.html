@@ -2422,6 +2422,7 @@
 
             searchBtn.addEventListener('click', function() {
                 playButtonSound();
+                clearTimeout(typingTimer); // Clear typing timer
                 const query = searchInput.value.trim().toLowerCase();
                 
                 if (query) { 
@@ -2455,6 +2456,7 @@
                 if (e.key === 'Enter') {
                     // Added Play Sound here as requested
                     playButtonSound();
+                    clearTimeout(typingTimer); // Clear typing timer
                     
                     const query = this.value.trim().toLowerCase();
                     if (query) { 
@@ -2620,37 +2622,36 @@
 
                     // --- Process Wordnik Results (American Heritage) ---
                     if (wordnikData && Array.isArray(wordnikData) && wordnikData.length > 0) {
-                        let wordnikHtmlContent = '';
+                        let wordnikInnerHtml = '';
                         
                         // Add mobile separator if Merriam Webster data exists
                         if (finalHtml) {
                             finalHtml += `<div class="mobile-result-separator"></div>`;
                         }
 
-                        wordnikHtmlContent += `<h1>${query}</h1>`;
                         // REMOVED: Dictionary Name Label
                         
                         wordnikData.forEach(def => {
                             // NEW: Only process definitions that have actual text content
                             if (!def.text) return; 
 
-                            if (def.partOfSpeech) wordnikHtmlContent += `<h3>${def.partOfSpeech}</h3>`;
+                            if (def.partOfSpeech) wordnikInnerHtml += `<h3>${def.partOfSpeech}</h3>`;
                             
                             // NEW: Add Labels (e.g., [Archaic])
                             if (def.labels && def.labels.length > 0) {
                                 const labelText = def.labels.map(l => l.text).join(', ');
-                                wordnikHtmlContent += `<p style="font-style: italic; color: var(--primary); margin-bottom: 4px;">[${labelText}]</p>`;
+                                wordnikInnerHtml += `<p style="font-style: italic; color: var(--primary); margin-bottom: 4px;">[${labelText}]</p>`;
                             }
 
-                            if (def.text) wordnikHtmlContent += `<p>${def.text}</p>`;
+                            if (def.text) wordnikInnerHtml += `<p>${def.text}</p>`;
 
                             // NEW: Add Example Citations
                             if (def.exampleUses && def.exampleUses.length > 0) {
-                                wordnikHtmlContent += `<ul style="margin-top:0; padding-left: 20px; list-style-type: none;">`;
+                                wordnikInnerHtml += `<ul style="margin-top:0; padding-left: 20px; list-style-type: none;">`;
                                 def.exampleUses.forEach(ex => {
-                                    wordnikHtmlContent += `<li style="color: var(--text-muted); font-style: italic; margin-bottom: 4px;">"${ex.text}"</li>`;
+                                    wordnikInnerHtml += `<li style="color: var(--text-muted); font-style: italic; margin-bottom: 4px;">"${ex.text}"</li>`;
                                 });
-                                wordnikHtmlContent += `</ul>`;
+                                wordnikInnerHtml += `</ul>`;
                             }
                         });
 
@@ -2660,25 +2661,30 @@
                             const filteredRelated = wordnikRelated.filter(grp => allowedTypes.has(grp.relationshipType));
 
                             if (filteredRelated.length > 0) {
-                                wordnikHtmlContent += `<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;
+                                wordnikInnerHtml += `<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;
                                 filteredRelated.forEach(grp => {
                                     // Capitalize relationship type (e.g., "synonym" -> "Synonym")
                                     const type = grp.relationshipType.charAt(0).toUpperCase() + grp.relationshipType.slice(1);
                                     const words = grp.words.join(', ');
-                                    wordnikHtmlContent += `<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`;
+                                    wordnikInnerHtml += `<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`;
                                 });
-                                wordnikHtmlContent += `</div>`;
+                                wordnikInnerHtml += `</div>`;
                             }
                         }
 
-                        finalHtml += `<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`;
+                        // Only add the Card if we actually generated content inside it
+                        if (wordnikInnerHtml) {
+                            let wordnikHtmlContent = `<h1>${query}</h1>` + wordnikInnerHtml;
+                            finalHtml += `<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`;
+                        }
                     }
 
                     // --- Render Final Output ---
                     if (finalHtml) {
                         wordsList.innerHTML = finalHtml;
                     } else {
-                        wordsList.innerHTML = '<p style="text-align:center;">No definitions found in our archives.</p>';
+                        // Updated to include the query word
+                        wordsList.innerHTML = `<p style="text-align:center;">No definitions found for <strong>${query}</strong>.</p>`;
                     }
 
                 } catch (e) {
