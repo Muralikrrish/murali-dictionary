@@ -2562,7 +2562,7 @@
                             }
                             
                             mwHtmlContent += `<h1>${word} ${pronHtml}</h1>`;
-                            mwHtmlContent += `<p style="color:var(--primary); font-size:0.9rem; font-weight:600; margin-bottom:12px;">Merriam-Webster</p>`; // Added Label
+                            // REMOVED: Dictionary Name Label
                             
                             if (entry.fl) mwHtmlContent += `<h3>${entry.fl}</h3>`;
                             if (entry.def && entry.def.length > 0) mwHtmlContent += renderSenses(entry.def[0].sseq);
@@ -2579,7 +2579,7 @@
                         let wordnikHtmlContent = '';
                         
                         wordnikHtmlContent += `<h1>${query}</h1>`;
-                        wordnikHtmlContent += `<p style="color:var(--secondary); font-size:0.9rem; font-weight:600; margin-bottom:12px;">American Heritage Dictionary</p>`;
+                        // REMOVED: Dictionary Name Label
                         
                         wordnikData.forEach(def => {
                             if (def.partOfSpeech) wordnikHtmlContent += `<h3>${def.partOfSpeech}</h3>`;
