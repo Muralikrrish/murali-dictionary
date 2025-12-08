@@ -901,7 +901,7 @@
                 /* Position: Covers almost full height of the text now */
                 bottom: 2px; 
                 left: -4px;
-                height: 90%; /* Increased from 55% to 90% so text tops don't stick out */
+                height: 75%; /* Increased from 55% to 90% so text tops don't stick out */
                 
                 /* Color: Dynamic variable based on section */
                 background: var(--highlight-color, var(--primary));
@@ -918,7 +918,7 @@
                 /* Animation */
                 width: 0%; 
                 opacity: 0;
-                animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+                animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.3, 1) forwards;
                 animation-delay: 0.3s;
                 
                 /* Removed mix-blend-mode to keep the pastel colors true and soft */
