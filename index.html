@@ -246,9 +246,12 @@
             font-weight: 500;
             outline: none;
             min-width: 0; /* Fix flex issue */
+            /* Added font-family matching dropdowns and lowercase transformation */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-transform: lowercase;
         }
 
-        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box input::placeholder { color: var(--text-muted); text-transform: none; } /* Keep placeholder normal */
         .search-icon { 
             color: var(--text-muted); 
             font-size: 1.2rem; 
@@ -1181,7 +1184,8 @@
             <div class="search-container">
                 <div class="search-box">
                     <div class="search-input-wrapper">
-                        <input type="text" id="searchInput" placeholder="Search vocabulary..." autocomplete="off">
+                        <!-- Updated Input with autocapitalize -->
+                        <input type="text" id="searchInput" placeholder="Search vocabulary..." autocomplete="off" autocapitalize="off">
                         <span class="clear-btn" id="clearBtn"><i class="fas fa-times"></i></span>
                         <span class="search-icon" id="searchBtn"><i class="fas fa-search"></i></span>
                     </div>
@@ -2419,7 +2423,15 @@
             searchBtn.addEventListener('click', function() {
                 playButtonSound();
                 const query = searchInput.value.trim().toLowerCase();
-                if (query) { autocompleteDropdown.classList.remove('show'); displaySearchResults(query); }
+                
+                if (query) { 
+                    // Add Mobile blur logic here
+                    if (window.innerWidth < 768) {
+                        searchInput.blur();
+                    }
+                    autocompleteDropdown.classList.remove('show'); 
+                    displaySearchResults(query); 
+                }
             });
 
             clearBtn.addEventListener('click', function() {
@@ -2441,8 +2453,18 @@
             searchInput.addEventListener('keydown', function(e) { 
                 if (e.key === 'Escape') autocompleteDropdown.classList.remove('show'); 
                 if (e.key === 'Enter') {
+                    // Added Play Sound here as requested
+                    playButtonSound();
+                    
                     const query = this.value.trim().toLowerCase();
-                    if (query) { autocompleteDropdown.classList.remove('show'); displaySearchResults(query); }
+                    if (query) { 
+                        // Add Mobile blur logic here
+                        if (window.innerWidth < 768) {
+                            this.blur();
+                        }
+                        autocompleteDropdown.classList.remove('show'); 
+                        displaySearchResults(query); 
+                    }
                 }
             });
             document.addEventListener('click', function(e) { if (!e.target.closest('.search-container')) autocompleteDropdown.classList.remove('show'); });
@@ -2609,6 +2631,9 @@
                         // REMOVED: Dictionary Name Label
                         
                         wordnikData.forEach(def => {
+                            // NEW: Only process definitions that have actual text content
+                            if (!def.text) return; 
+
                             if (def.partOfSpeech) wordnikHtmlContent += `<h3>${def.partOfSpeech}</h3>`;
                             
                             // NEW: Add Labels (e.g., [Archaic])
@@ -2631,7 +2656,7 @@
 
                         // NEW: Add Related Words Section with Filtering
                         if (wordnikRelated && Array.isArray(wordnikRelated) && wordnikRelated.length > 0) {
-                            const allowedTypes = new Set(['form', 'verb-form']);
+                            const allowedTypes = new Set(['form']);
                             const filteredRelated = wordnikRelated.filter(grp => allowedTypes.has(grp.relationshipType));
 
                             if (filteredRelated.length > 0) {
