@@ -803,7 +803,7 @@
         /* --- NEW: Highlighter Animation Keyframes --- */
         @keyframes drawHighlight {
             0% { width: 0%; opacity: 0; }
-            100% { width: 105%; opacity: 0.8; } /* Goes slightly beyond text for realism */
+            100% { width: 105%; opacity: 0.9; } 
         }
 
         /* --- NEW CURIOSITY STYLES --- */
@@ -868,20 +868,28 @@
             } 
             
             /* Request 5: Match heading size to Curiosity "Hooks" (which are 1.65rem below) */
-            /* Also enabling Position Relative for the highlight effect */
             .modern-section-title { 
                 font-size: 1.65rem !important;
                 position: relative;
-                width: fit-content; /* Only take up necessary space */
+                width: fit-content;
                 z-index: 10;
             }
 
-            /* --- NEW: Mobile Highlighting Effect --- */
+            /* --- NEW: Mobile Highlighting Effect (Straight & Jagged) --- */
+            
+            /* 1. Define Colors for each section */
+            #searchResultsSection .modern-section-title { --highlight-color: var(--primary); }
+            #curiositySection .modern-section-title { --highlight-color: #f472b6; }      /* Pink */
+            #vocabularyQuizSection .modern-section-title { --highlight-color: #34d399; } /* Green */
+            #wordToolkitSection .modern-section-title { --highlight-color: #38bdf8; }    /* Sky Blue */
+            #hangmanSection .modern-section-title { --highlight-color: #fb923c; }        /* Orange */
+            #gkQuizSection .modern-section-title { --highlight-color: #a78bfa; }         /* Purple */
+            #reverseDictSection .modern-section-title { --highlight-color: #2dd4bf; }    /* Teal */
+            #wordSpotlightSection .modern-section-title { --highlight-color: #fbbf24; }  /* Gold */
+
             .modern-section-title span {
                 position: relative;
                 display: inline-block;
-                /* Use a dark text color specifically for the highlight to pop, or keep white if highlight is subtle. 
-                   Given the request for "Real Highlighter", we'll keep the text white but make the highlight partially transparent */
                 z-index: 1;
             }
 
@@ -890,26 +898,31 @@
                 position: absolute;
                 z-index: -1;
                 
-                /* Position: Lower half of the text to look like a thick underline marker */
-                bottom: 2px;
+                /* Position: Lower part of text */
+                bottom: 4px; 
                 left: -4px;
-                height: 65%; /* Covers bottom 65% of text */
+                height: 55%; 
                 
-                /* Color: Use the Primary Saffron color */
-                background: var(--primary);
+                /* Color: Dynamic variable based on section */
+                background: var(--highlight-color, var(--primary));
                 
-                /* Shape: Uneven ends using border-radius and skew */
-                border-radius: 4px 15px 8px 10px;
-                transform: skewX(-10deg) rotate(-2deg);
+                /* Shape: STRAIGHT but JAGGED corners using a custom polygon */
+                /* This draws a box with slightly 'messy' coordinates for that hand-drawn feel */
+                clip-path: polygon(
+                    0% 5%, 2% 0%, 98% 2%, 100% 0%, 
+                    100% 95%, 98% 100%, 2% 98%, 0% 100%
+                );
                 
-                /* Animation Setup */
-                width: 0%; /* Start empty */
+                /* Remove previous slant/rotation to keep it straight */
+                transform: none; 
+                
+                /* Animation */
+                width: 0%; 
                 opacity: 0;
-                /* Animation runs for 0.8s, with a small delay */
                 animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
                 animation-delay: 0.3s;
                 
-                /* Blending: Makes the text readable over the yellow */
+                /* Blending for marker effect */
                 mix-blend-mode: hard-light; 
             }
             
