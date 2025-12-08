@@ -803,7 +803,7 @@
         /* --- NEW: Highlighter Animation Keyframes --- */
         @keyframes drawHighlight {
             0% { width: 0%; opacity: 0; }
-            100% { width: 105%; opacity: 0.5; } /* Opacity reduced to 0.5 for a subtle, non-distracting look */
+            100% { width: 105%; opacity: 0.3; } /* Opacity reduced to 0.3 for a very subtle, transparent look */
         }
 
         /* --- NEW CURIOSITY STYLES --- */
@@ -898,10 +898,10 @@
                 position: absolute;
                 z-index: -1;
                 
-                /* Position: Covers almost full height of the text now */
+                /* Position: Adjusted height and bottom alignment */
                 bottom: 2px; 
                 left: -4px;
-                height: 75%; /* Increased from 55% to 90% so text tops don't stick out */
+                height: 77%; /* Reduced height to 77% as requested */
                 
                 /* Color: Dynamic variable based on section */
                 background: var(--highlight-color, var(--primary));
@@ -918,7 +918,7 @@
                 /* Animation */
                 width: 0%; 
                 opacity: 0;
-                animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.3, 1) forwards;
+                animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
                 animation-delay: 0.3s;
                 
                 /* Removed mix-blend-mode to keep the pastel colors true and soft */
