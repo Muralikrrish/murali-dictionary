@@ -2533,14 +2533,20 @@
                 
                 try {
                     // We run both requests in parallel for speed
-                    const [mwData, wordnikData] = await Promise.all([
+                    const [mwData, wordnikData, wordnikRelated] = await Promise.all([
                         // MW Request
                         fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${query}?key=${MW_API_KEY}`)
                             .then(res => res.ok ? res.json() : null)
                             .catch(e => null),
                             
-                        // Wordnik Request (ahd-5 = American Heritage Dictionary)
-                        fetch(`https://api.wordnik.com/v4/word.json/${query}/definitions?limit=10&sourceDictionaries=ahd-5&useCanonical=false&includeTags=false&api_key=${WORDNIK_API_KEY}`)
+                        // Wordnik Request (Definitions, Examples, Labels)
+                        // Changed: includeTags=true just in case, but data usually in labels field
+                        fetch(`https://api.wordnik.com/v4/word.json/${query}/definitions?limit=10&sourceDictionaries=ahd-5&useCanonical=false&includeTags=true&api_key=${WORDNIK_API_KEY}`)
+                            .then(res => res.ok ? res.json() : null)
+                            .catch(e => null),
+
+                        // NEW: Wordnik Related Words Request
+                        fetch(`https://api.wordnik.com/v4/word.json/${query}/relatedWords?useCanonical=false&limitPerRelationshipType=10&sourceDictionaries=ahd-5&api_key=${WORDNIK_API_KEY}`)
                             .then(res => res.ok ? res.json() : null)
                             .catch(e => null)
                     ]);
@@ -2574,7 +2580,7 @@
                         }
                     }
 
-                    // --- Process Wordnik Results ---
+                    // --- Process Wordnik Results (American Heritage) ---
                     if (wordnikData && Array.isArray(wordnikData) && wordnikData.length > 0) {
                         let wordnikHtmlContent = '';
                         
@@ -2583,8 +2589,36 @@
                         
                         wordnikData.forEach(def => {
                             if (def.partOfSpeech) wordnikHtmlContent += `<h3>${def.partOfSpeech}</h3>`;
+                            
+                            // NEW: Add Labels (e.g., [Archaic])
+                            if (def.labels && def.labels.length > 0) {
+                                const labelText = def.labels.map(l => l.text).join(', ');
+                                wordnikHtmlContent += `<p style="font-style: italic; color: var(--primary); margin-bottom: 4px;">[${labelText}]</p>`;
+                            }
+
                             if (def.text) wordnikHtmlContent += `<p>${def.text}</p>`;
+
+                            // NEW: Add Example Citations
+                            if (def.exampleUses && def.exampleUses.length > 0) {
+                                wordnikHtmlContent += `<ul style="margin-top:0; padding-left: 20px; list-style-type: none;">`;
+                                def.exampleUses.forEach(ex => {
+                                    wordnikHtmlContent += `<li style="color: var(--text-muted); font-style: italic; margin-bottom: 4px;">"${ex.text}"</li>`;
+                                });
+                                wordnikHtmlContent += `</ul>`;
+                            }
                         });
+
+                        // NEW: Add Related Words Section
+                        if (wordnikRelated && Array.isArray(wordnikRelated) && wordnikRelated.length > 0) {
+                            wordnikHtmlContent += `<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;
+                            wordnikRelated.forEach(grp => {
+                                // Capitalize relationship type (e.g., "synonym" -> "Synonym")
+                                const type = grp.relationshipType.charAt(0).toUpperCase() + grp.relationshipType.slice(1);
+                                const words = grp.words.join(', ');
+                                wordnikHtmlContent += `<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`;
+                            });
+                            wordnikHtmlContent += `</div>`;
+                        }
 
                         finalHtml += `<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`;
                     }
