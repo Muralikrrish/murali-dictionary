@@ -150,18 +150,7 @@
         .icon-7 { top: 8%; left: 45%; font-size: 2.5rem; transform: rotate(45deg); color: #94a3b8; opacity: 0.06; } 
         .icon-8 { bottom: 40%; right: 40%; font-size: 8rem; transform: rotate(0deg); color: #1e293b; opacity: 0.3; z-index: -2; } 
 
-        /* --- Header / Logo --- */
-        .site-header {
-            position: absolute;
-            top: 24px;
-            left: 24px;
-            z-index: 1001; /* Above navigation */
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* REMOVED .site-logo style completely */
+        /* --- REMOVED HEADER STYLES (Clean Header) --- */
 
         /* --- Desktop Navigation --- */
         .desktop-nav {
@@ -214,7 +203,7 @@
             position: relative;
         }
 
-        /* UPDATED: Solid color for desktop, removed gradient */
+        /* UPDATED: Solid color for desktop */
         .hero-title {
             font-family: 'Playfair Display', serif;
             font-size: 3.5rem; 
@@ -1185,10 +1174,7 @@
 </head>
 <body>
 
-    <!-- Header / Logo -->
-    <header class="site-header">
-        <i class="fas fa-gem site-logo"></i>
-    </header>
+    <!-- Header Removed: <header class="site-header"><i class="fas fa-gem site-logo"></i></header> -->
 
     <!-- Navigation -->
     <nav class="desktop-nav">
@@ -2244,7 +2230,7 @@
             
             detail.classList.toggle('show');
             
-            if (btn) btn.innerHTML = isExpanding ? '<i class="fas fa-eye-slash"></i> Hide Explanation' : '<i class="fas fa-eye"></i> Explanation';
+            if (btn) btn.innerHTML = isExpanding ? '<i class="fas fa-eye-slash"></i> Show less' : '<i class="fas fa-eye"></i> Tell me more';
 
             // Scroll to top when hiding explanation on mobile
             if (!isExpanding && window.innerWidth <= 768) {
@@ -2770,4 +2756,3 @@
     </script>
 </body>
 </html>
-}
