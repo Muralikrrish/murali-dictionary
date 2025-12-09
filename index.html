@@ -423,7 +423,7 @@
         /* DESKTOP Light Mode Separator - High Contrast (0.4 Opacity) with Colors */
         [data-theme="light"] .modern-section-title::after {
             background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
-            opacity: 0.4; /* User Requirement: 0.4 Contrast */
+            opacity: 0.4 !important; /* User Requirement: 0.4 Contrast */
             height: 2px;
         }
 
@@ -659,14 +659,27 @@
             .mobile-nav-container { display: block; } 
             
             /* UI Controls reposition for mobile (Left: Sandwich, Right: Theme) */
-            .ui-controls { justify-content: space-between; align-items: center; padding: 0 16px; }
+            .ui-controls { 
+                justify-content: space-between; 
+                align-items: center; 
+                padding: 0 16px; 
+                position: absolute; /* Fixes sticking issue */
+                top: 24px;
+            }
 
             .interactive-card {
                 background: transparent !important; border: none !important; box-shadow: none !important;
                 padding: 0 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
             } 
             
-            .modern-section-title { font-size: 1.65rem !important; position: relative; z-index: 10; }
+            /* Enforce flex to keep line next to text */
+            .modern-section-title { 
+                font-size: 1.65rem !important; 
+                position: relative; 
+                z-index: 10;
+                display: flex !important;
+                align-items: center;
+            }
 
             /* --- NEW: Mobile Highlighting Effect --- */
             .modern-section-title span { position: relative; display: inline-block; z-index: 1; }
@@ -679,12 +692,25 @@
                 transform: none; width: 0%; opacity: 0;
                 animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; animation-delay: 0.3s;
             }
-            
+
+            /* Ensure line is visible and sized correctly on mobile */
+            .modern-section-title::after {
+                display: block !important; 
+                height: 1px;
+                flex: 1;
+                margin-left: 16px;
+            }
+
             /* High Contrast Mobile Border Logic for Light Theme */
             [data-theme="light"] .modern-section-title span::before { 
                 opacity: 0.3 !important; 
                 background: var(--section-acc, var(--primary)); /* Use vibrant color for better visibility in light mode */
             } 
+            
+            /* Mobile Light Theme specific for the line next to text */
+            [data-theme="light"] .modern-section-title::after {
+                opacity: 0.3 !important; /* Point 1: Contrast 0.3 */
+            }
             
             /* --- Mobile Separator Update --- */
             .modern-section { padding-bottom: 40px; margin-bottom: 40px !important; position: relative; }
