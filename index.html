@@ -150,6 +150,19 @@
         .icon-7 { top: 8%; left: 45%; font-size: 2.5rem; transform: rotate(45deg); color: #94a3b8; opacity: 0.06; } 
         .icon-8 { bottom: 40%; right: 40%; font-size: 8rem; transform: rotate(0deg); color: #1e293b; opacity: 0.3; z-index: -2; } 
 
+        /* --- Header / Logo --- */
+        .site-header {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            z-index: 1001; /* Above navigation */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* REMOVED .site-logo style completely */
+
         /* --- Desktop Navigation --- */
         .desktop-nav {
             display: none;
@@ -196,12 +209,12 @@
         }
 
         .hero-section {
-            padding: 120px 0 50px; /* Reduced padding slightly */
+            padding: 120px 0 50px;
             text-align: center;
             position: relative;
         }
 
-        /* Smaller, less conspicuous hero title */
+        /* UPDATED: Solid color for desktop, removed gradient */
         .hero-title {
             font-family: 'Playfair Display', serif;
             font-size: 3.5rem; 
@@ -209,9 +222,7 @@
             letter-spacing: -0.01em;
             line-height: 1.1;
             margin-bottom: 12px;
-            background: linear-gradient(to bottom, #f1f5f9 30%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #f1f5f9; /* Solid off-white/light gray */
             cursor: pointer;
             transition: opacity 0.3s ease;
             text-decoration: none;
@@ -884,7 +895,7 @@
 
             /* UPDATED MOBILE HERO SIZE */
             .hero-title { font-size: 2.5rem !important; }
-            /* 1. Decrease top padding to half (50px) */
+            /* 1. Decrease top padding to half (50px) - UPDATED TO 80px */
             .hero-section { padding-top: 80px; }
             .container { padding: 0 16px; }
             
@@ -2744,50 +2755,19 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const cachedDict = SafeStorage.getItem('dictionary');
-            
-            // --- NEW: Check URL for search parameter ---
-            const urlParams = new URLSearchParams(window.location.search);
-            const wordFromUrl = urlParams.get('q');
-            // --------------------------------------------
-
             if (cachedDict) {
                 try {
                     dictionary = JSON.parse(cachedDict);
                     buildSearchIndex();
-                    // Only show spotlight if we are NOT about to auto-search for a URL word
-                    if (!wordFromUrl && dictionary.length > 0) { 
-                        displayWordSpotlight(); 
-                        hasDisplayedWordSpotlight = true; 
-                    }
+                    if (dictionary.length > 0) { displayWordSpotlight(); hasDisplayedWordSpotlight = true; }
                 } catch(e) { console.error('Cache parse error:', e); }
             }
-            
-            // If empty and not searching, show skeleton
-            if (dictionary.length === 0 && !wordFromUrl) {
+            if (dictionary.length === 0) {
                 document.getElementById('wordSpotlightDisplay').innerHTML = `<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>`;
             }
-
-            requestAnimationFrame(() => { 
-                initializeSupabase(); 
-                setupSearch();
-                
-                // --- NEW: Handle URL Search Trigger ---
-                if (wordFromUrl) {
-                    // Mark spotlight as 'displayed' so syncWithSupabase doesn't override the view
-                    hasDisplayedWordSpotlight = true; 
-                    
-                    const cleanWord = wordFromUrl.trim().toLowerCase();
-                    
-                    // UPDATED: Set search input AND show clear button
-                    const searchInput = document.getElementById('searchInput');
-                    searchInput.value = cleanWord;
-                    document.getElementById('clearBtn').classList.add('visible');
-                    
-                    displaySearchResults(cleanWord);
-                }
-                // --------------------------------------
-            });
+            requestAnimationFrame(() => { initializeSupabase(); setupSearch(); });
         });
     </script>
 </body>
 </html>
+}
