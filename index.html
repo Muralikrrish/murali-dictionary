@@ -884,8 +884,8 @@
 
             /* UPDATED MOBILE HERO SIZE */
             .hero-title { font-size: 2.5rem !important; }
-            /* 1. Decrease top padding to half (50px) - UPDATED TO 80px */
-            .hero-section { padding-top: 80px; }
+            /* 1. Decrease top padding to half (50px) - UPDATED TO 54px */
+            .hero-section { padding-top: 54px; }
             .container { padding: 0 16px; }
             
             /* Mobile Request: Remove container styling (background, border, shadow) to maximize text space */
@@ -2230,7 +2230,7 @@
             
             detail.classList.toggle('show');
             
-            if (btn) btn.innerHTML = isExpanding ? '<i class="fas fa-eye-slash"></i> Show less' : '<i class="fas fa-eye"></i> Tell me more';
+            if (btn) btn.innerHTML = isExpanding ? '<i class="fas fa-eye-slash"></i> Hide Explanation' : '<i class="fas fa-eye"></i> Explanation';
 
             // Scroll to top when hiding explanation on mobile
             if (!isExpanding && window.innerWidth <= 768) {
