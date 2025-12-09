@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- --- GOOGLE VERIFICATION TAG (Use this to verify ownership) --- -->
+    <!-- --- GOOGLE VERIFICATION TAG --- -->
     <meta name="google-site-verification" content="9UJ81L157RSg0pwFNzgUGoqBYJOIxSRWeOtMlTaJQaM" />
     
-    <!-- --- SEO METADATA (Helps Google describe your site) --- -->
+    <!-- --- SEO METADATA --- -->
     <title>Pearls of Knowledge - Advanced Visual Dictionary & Thesaurus</title>
     <meta name="description" content="Discover the Pearls of Knowledge. A beautiful, visual dictionary and thesaurus featuring word origins, scientific associations, and deep definitions.">
     <meta name="keywords" content="dictionary, vocabulary, visual dictionary, word origins, etymology, thesaurus, learn english, pearls of knowledge, GRE words, definitions">
     <meta name="author" content="Pearls of Knowledge">
     
-    <!-- --- OPEN GRAPH (Makes your link look good on Facebook/Twitter/WhatsApp) --- -->
+    <!-- --- OPEN GRAPH --- -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://murali-dictionary.pages.dev/">
     <meta property="og:title" content="Pearls of Knowledge - Illuminate Your Vocabulary">
     <meta property="og:description" content="Explore words in a new light. Interactive dictionary, reverse lookup, and word curiosities.">
+
+    <!-- --- FAVICON (Browser Tab Icon) --- -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23fbbf24%22/></svg>">
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -193,29 +196,38 @@
         }
 
         .hero-section {
-            padding: 140px 0 60px;
+            padding: 120px 0 50px; /* Reduced padding slightly */
             text-align: center;
             position: relative;
         }
 
+        /* Smaller, less conspicuous hero title */
         .hero-title {
             font-family: 'Playfair Display', serif;
-            font-size: 4.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+            font-size: 3.5rem; 
+            font-weight: 600; 
+            letter-spacing: -0.01em;
             line-height: 1.1;
-            margin-bottom: 16px;
-            background: linear-gradient(to bottom, #f8fafc 30%, #94a3b8 100%);
+            margin-bottom: 12px;
+            background: linear-gradient(to bottom, #f1f5f9 30%, #cbd5e1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .hero-title:hover {
+            opacity: 0.8;
         }
 
         .hero-subtitle {
             font-family: 'Playfair Display', serif;
-            font-size: 1.35rem;
+            font-size: 1.2rem;
             color: var(--text-header);
             max-width: 500px;
-            margin: 0 auto 60px;
+            margin: 0 auto 50px;
             font-weight: 400;
             font-style: italic;
         }
@@ -260,13 +272,12 @@
             padding: 16px 12px;
             font-weight: 500;
             outline: none;
-            min-width: 0; /* Fix flex issue */
-            /* Added font-family matching dropdowns and lowercase transformation */
+            min-width: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
             text-transform: lowercase;
         }
 
-        .search-box input::placeholder { color: var(--text-muted); text-transform: none; } /* Keep placeholder normal */
+        .search-box input::placeholder { color: var(--text-muted); text-transform: none; }
         .search-icon { 
             color: var(--text-muted); 
             font-size: 1.2rem; 
@@ -289,6 +300,10 @@
             flex-shrink: 0;
         }
 
+        .clear-btn.visible {
+            display: block !important;
+        }
+
         .clear-btn:hover {
             color: var(--text-main);
             opacity: 1;
@@ -298,13 +313,10 @@
         /* Shared Tool Search Box Style */
         .tool-search-box {
             width: 100%;
-            max-width: 500px; /* Matching the tool input width */
+            max-width: 500px;
             margin: 0 auto;
         }
         
-        /* Show clear button via JS when text present */
-        .clear-btn.visible { display: block; }
-
         .autocomplete-dropdown {
             position: absolute;
             top: calc(100% + 16px);
@@ -870,9 +882,10 @@
             .icon-7 { display: none; } /* Hide clutter in middle */
             .icon-8 { bottom: -5%; left: 10%; font-size: 10rem; opacity: 0.04 !important; transform: rotate(15deg); } 
 
-            .hero-title { font-size: 3rem; }
+            /* UPDATED MOBILE HERO SIZE */
+            .hero-title { font-size: 2.5rem !important; }
             /* 1. Decrease top padding to half (50px) */
-            .hero-section { padding-top: 50px; }
+            .hero-section { padding-top: 80px; }
             .container { padding: 0 16px; }
             
             /* Mobile Request: Remove container styling (background, border, shadow) to maximize text space */
@@ -1161,6 +1174,11 @@
 </head>
 <body>
 
+    <!-- Header / Logo -->
+    <header class="site-header">
+        <i class="fas fa-gem site-logo"></i>
+    </header>
+
     <!-- Navigation -->
     <nav class="desktop-nav">
         <a href="#curiositySection" class="nav-link">Curiosities</a>
@@ -1193,7 +1211,8 @@
 
     <section class="hero-section">
         <div class="container">
-            <h1 class="hero-title">Pearls of Knowledge</h1>
+            <!-- Updated Hero Title with Link -->
+            <a href="/" class="hero-title">Pearls of Knowledge</a>
             <p class="hero-subtitle">Discover, Learn, Illuminate</p>
             
             <div class="search-container">
@@ -1821,7 +1840,7 @@
                     toggleBtn.className = 'action-btn';
                     toggleBtn.innerHTML = '<i class="fas fa-chevron-down"></i> Show More';
                     toggleBtn.onclick = function() {
-                        playButtonSound();
+                        playButtonButtonSound();
                         const isExpanded = wrapper.classList.contains('expanded');
                         
                         if (isExpanded) {
@@ -2346,6 +2365,7 @@
                 if (!input) return;
 
                 const toggleClear = () => {
+                     // NEW FIX: Show clear button if input has ANY text
                      if(clearBtn) clearBtn.classList.toggle('visible', input.value.trim().length > 0);
                 };
 
@@ -2424,7 +2444,11 @@
             updateMobilePlaceholders();
             window.addEventListener('resize', updateMobilePlaceholders);
 
-            const toggleClearBtn = () => { clearBtn.style.display = searchInput.value.trim().length > 0 ? 'block' : 'none'; };
+            // UPDATED: Use classList 'visible' instead of inline display:none
+            const toggleClearBtn = () => { 
+                const hasText = searchInput.value.trim().length > 0;
+                clearBtn.classList.toggle('visible', hasText);
+            };
 
             searchInput.addEventListener('focus', function() {
                 if (window.innerWidth <= 768) {
@@ -2753,7 +2777,12 @@
                     hasDisplayedWordSpotlight = true; 
                     
                     const cleanWord = wordFromUrl.trim().toLowerCase();
-                    document.getElementById('searchInput').value = cleanWord;
+                    
+                    // UPDATED: Set search input AND show clear button
+                    const searchInput = document.getElementById('searchInput');
+                    searchInput.value = cleanWord;
+                    document.getElementById('clearBtn').classList.add('visible');
+                    
                     displaySearchResults(cleanWord);
                 }
                 // --------------------------------------
