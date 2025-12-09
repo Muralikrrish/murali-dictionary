@@ -1160,11 +1160,22 @@
         }
 
         function scrollToSection(id) {
-            playButtonSound();
+            // NOTE: Sound is handled by toggleMobileNav(), so we don't call it here to avoid double-play.
+            
+            // 1. Force close the keyboard if it is open (by blurring active input)
+            if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+                document.activeElement.blur();
+            }
+
             const section = document.getElementById(id);
             if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                toggleMobileNav(); // Close menu
+                // 2. Close the menu immediately
+                toggleMobileNav(); 
+
+                // 3. Wait for keyboard to slide away/viewport to resize (approx 400ms) then scroll
+                setTimeout(() => {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 400); 
             }
         }
 
