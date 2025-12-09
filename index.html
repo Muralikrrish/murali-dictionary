@@ -311,7 +311,11 @@
             cursor: pointer;
             transition: opacity 0.3s ease;
             text-decoration: none;
-            display: inline-block;
+            display: block;
+            /* Point 5 Fix: Restrict click width */
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
         }
         [data-theme="light"] .hero-title { color: #1e293b; }
 
@@ -420,10 +424,11 @@
             background: linear-gradient(90deg, var(--section-acc, var(--glass-border)), transparent);
         }
         
-        /* DESKTOP Light Mode Separator - High Contrast (0.4 Opacity) with Colors */
+        /* DESKTOP Light Mode Separator - High Contrast */
         [data-theme="light"] .modern-section-title::after {
             background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
-            opacity: 0.4; /* User Requirement: 0.4 Contrast */
+            /* Point 1 Fix: Reduced contrast from 0.4 to 0.2 */
+            opacity: 0.2; 
             height: 2px;
         }
 
@@ -469,7 +474,8 @@
                 height: 77%; /* UPDATED: Changed from 60% to 77% */
                 width: 105%;
                 background: var(--section-acc, var(--primary));
-                opacity: 0.3; /* UPDATED: Changed from 0.4 to 0.3 */
+                /* Point 1 Fix: Reduced contrast from 0.3 to 0.2 */
+                opacity: 0.2;
                 clip-path: polygon(0% 5%, 2% 0%, 98% 2%, 100% 0%, 100% 95%, 98% 100%, 2% 98%, 0% 100%);
                 border-radius: 4px;
                 transition: opacity 0.3s ease;
@@ -530,6 +536,11 @@
         .option-btn.selected { background: var(--primary); border-color: var(--primary); color: #0f172a; font-weight: 600; box-shadow: 0 0 20px var(--primary-glow); }
         .option-btn.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: #34d399; }
         .option-btn.incorrect { background: rgba(248, 113, 113, 0.15); border-color: var(--error); color: #f87171; }
+
+        /* Point 4 Fix: Ensure colors stick on light mode by using !important to override hover */
+        [data-theme="light"] .option-btn.correct { background: rgba(16, 185, 129, 0.15) !important; border-color: var(--success) !important; color: #34d399 !important; }
+        [data-theme="light"] .option-btn.incorrect { background: rgba(248, 113, 113, 0.15) !important; border-color: var(--error) !important; color: #f87171 !important; }
+
 
         /* --- SHARED BUTTON STYLES --- */
         .action-btn {
@@ -713,9 +724,9 @@
                 animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; animation-delay: 0.3s;
             }
             
-            /* Point 1: Mobile Light Theme Highlight - 0.3 Contrast */
+            /* Point 1: Mobile Light Theme Highlight - Reduced contrast to 0.2 */
             [data-theme="light"] .modern-section-title span::before { 
-                opacity: 0.3 !important; 
+                opacity: 0.2 !important; 
                 background: var(--section-acc, var(--primary)); 
             } 
             
@@ -735,7 +746,7 @@
              /* Point 3 (cont): Mobile Light Theme Line */
              [data-theme="light"] .modern-section-title::after {
                 background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
-                opacity: 0.4;
+                opacity: 0.2; /* Point 1 Fix: Reduced contrast from 0.4 to 0.2 */
                 height: 2px;
             }
 
@@ -1078,45 +1089,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // --- 1. SHARED UTILITIES & CONFIG ---
+        // Simplified Storage Logic to Fix Persistence Issue
         const SafeStorage = {
-            isAvailable: false,
-            memoryStorage: {},
-            init() {
+            getItem(key) {
                 try {
-                    const test = '__storage_test__';
-                    localStorage.setItem(test, test);
-                    localStorage.removeItem(test);
-                    this.isAvailable = true;
+                    return localStorage.getItem(key);
                 } catch(e) {
-                    console.warn('localStorage not available, using memory storage:', e);
+                    return null;
                 }
             },
             setItem(key, value) {
                 try {
-                    if (this.isAvailable) localStorage.setItem(key, value);
-                    this.memoryStorage[key] = value;
-                } catch(e) {
-                    this.memoryStorage[key] = value;
-                }
-            },
-            getItem(key) {
-                try {
-                    if (this.isAvailable) {
-                        const value = localStorage.getItem(key);
-                        if (value !== null) return value;
-                    }
-                    return this.memoryStorage[key] || null;
-                } catch(e) {
-                    return this.memoryStorage[key] || null;
-                }
-            },
-            removeItem(key) {
-                try {
-                    if (this.isAvailable) localStorage.removeItem(key);
-                    delete this.memoryStorage[key];
-                } catch(e) {
-                    delete this.memoryStorage[key];
-                }
+                    localStorage.setItem(key, value);
+                } catch(e) {}
             }
         };
 
@@ -1133,9 +1118,11 @@
             SafeStorage.setItem('theme', newTheme);
         }
 
-        // Initialize Theme
+        // Initialize Theme - Point 3 Fix (Robustness)
+        // Ensure this runs immediately and reliably
         const savedTheme = SafeStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
+        
         document.addEventListener('DOMContentLoaded', () => {
             const icon = document.getElementById('themeIcon');
             if(icon) icon.className = savedTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
@@ -1230,7 +1217,14 @@
             { word: "EPHEMERAL", clue: "It describes something lasting for a very short time, like the lifespan of a mayfly or a fleeting moment." }
         ];
 
-        SafeStorage.init();
+        // Point 2 Fix: Fast Loading Spotlight (Local Fallback)
+        const LOCAL_SPOTLIGHT_WORDS = [
+            { word: "Mellifluous", definition: "<h2>Mellifluous</h2><h3>Adjective</h3><p>Sounding sweet and smooth; pleasing to the ear.</p>" },
+            { word: "Ineffable", definition: "<h2>Ineffable</h2><h3>Adjective</h3><p>Too great or extreme to be expressed or described in words.</p>" },
+            { word: "Petrichor", definition: "<h2>Petrichor</h2><h3>Noun</h3><p>A pleasant smell that frequently accompanies the first rain after a long period of warm, dry weather.</p>" },
+            { word: "Sonder", definition: "<h2>Sonder</h2><h3>Noun</h3><p>The realization that each random passerby is living a life as vivid and complex as your own.</p>" },
+            { word: "Limerence", definition: "<h2>Limerence</h2><h3>Noun</h3><p>The state of being infatuated or obsessed with another person, typically experienced involuntarily.</p>" }
+        ];
 
         let supabaseClient, dictionary = [], searchIndex = null;
         let isSupabaseConfigured = false, supabaseInitialized = false, hasDisplayedWordSpotlight = false;
@@ -1318,10 +1312,9 @@
                     }));
                     buildSearchIndex();
                     SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
-                    if (!hasDisplayedWordSpotlight) {
-                        displayWordSpotlight();
-                        hasDisplayedWordSpotlight = true;
-                    }
+                    // Optional: Refresh spotlight with real data if needed, but local fallback is fine too.
+                    // If we haven't displayed one yet (local fallback failed?), display now.
+                    // But usually local fallback runs first. We can leave it be to avoid UI jump.
                 }
             } catch(error) { console.error('Sync error:', error); }
         }
@@ -1476,10 +1469,6 @@
             if (hangmanMistakes >= MAX_MISTAKES || display.textContent.includes('Hint:')) return;
 
             playClueSound();
-            
-            // Request 2: Revealing the clue should not be counted as a try.
-            // hangmanMistakes++; <--- REMOVED
-            // drawHangmanPart(hangmanMistakes); <--- REMOVED
             
             if (hangmanClue) {
                 // Clue stays left aligned
@@ -2043,21 +2032,31 @@
             </div>`;
         }
 
+        // Point 2 Fix: Display Spotlight instantly using fallback if needed
         function displayWordSpotlight() {
             const ws = document.getElementById('wordSpotlightDisplay');
+            
+            // If dictionary is empty (first load), use fast local backup
             if (!dictionary || dictionary.length === 0) {
-                ws.innerHTML = '<div class="no-words"><p>No words available yet!</p></div>';
+                const randomLocal = LOCAL_SPOTLIGHT_WORDS[Math.floor(Math.random() * LOCAL_SPOTLIGHT_WORDS.length)];
+                ws.innerHTML = createExpandableDefinition(randomLocal.definition);
                 return;
             }
+            
+            // Standard behavior if DB is loaded
             const randomIndex = Math.floor(Math.random() * dictionary.length);
             ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
         }
 
         function showNewRandomWord() {
-            if (dictionary.length > 0) {
-                displayWordSpotlight();
-                document.querySelector('#wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
+            // Even if offline, we can cycle local words or DB words
+            if (dictionary.length === 0) {
+                 const randomLocal = LOCAL_SPOTLIGHT_WORDS[Math.floor(Math.random() * LOCAL_SPOTLIGHT_WORDS.length)];
+                 document.getElementById('wordSpotlightDisplay').innerHTML = createExpandableDefinition(randomLocal.definition);
+            } else {
+                 displayWordSpotlight();
             }
+            document.querySelector('#wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
         }
 
         // Helper for Tool Input Logic (Clear, Search Icon)
@@ -2457,8 +2456,9 @@
                     if (dictionary.length > 0) { displayWordSpotlight(); hasDisplayedWordSpotlight = true; }
                 } catch(e) { console.error('Cache parse error:', e); }
             }
+            // Point 2 Fix: If dictionary is empty, still run this to show local fallback immediately
             if (dictionary.length === 0) {
-                document.getElementById('wordSpotlightDisplay').innerHTML = `<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>`;
+                displayWordSpotlight();
             }
             requestAnimationFrame(() => { initializeSupabase(); setupSearch(); });
         });
