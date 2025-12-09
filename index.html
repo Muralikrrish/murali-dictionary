@@ -55,14 +55,24 @@
             --backdrop-blur: blur(16px);
         }
 
+        /* --- GLOBAL SECTION COLORS (Applied Everywhere) --- */
+        #searchResultsSection { --section-acc: #f59e0b; --section-acc-light: #fde68a; } /* Amber */
+        #curiositySection { --section-acc: #ec4899; --section-acc-light: #fbcfe8; }      /* Pink */
+        #vocabularyQuizSection { --section-acc: #10b981; --section-acc-light: #a7f3d0; } /* Green */
+        #wordToolkitSection { --section-acc: #0ea5e9; --section-acc-light: #bae6fd; }    /* Blue */
+        #hangmanSection { --section-acc: #f97316; --section-acc-light: #fed7aa; }        /* Orange */
+        #gkQuizSection { --section-acc: #8b5cf6; --section-acc-light: #ddd6fe; }         /* Purple */
+        #reverseDictSection { --section-acc: #14b8a6; --section-acc-light: #99f6e4; }    /* Teal */
+        #wordSpotlightSection { --section-acc: #64748b; --section-acc-light: #e2e8f0; }  /* Slate */
+
         /* --- LIGHT THEME OVERRIDES --- */
         [data-theme="light"] {
-            --bg-deep: #f8fafc; /* Slate 50 */
-            --bg-surface: rgba(255, 255, 255, 0.9);
+            --bg-deep: #f8fafc; /* Slate 50 base */
+            --bg-surface: rgba(255, 255, 255, 0.85); /* Slightly more transparent for colorful bg */
             
-            --glass-border: rgba(0, 0, 0, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.8);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+            --glass-border: rgba(0, 0, 0, 0.06);
+            --glass-highlight: rgba(255, 255, 255, 0.9);
+            --glass-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.15); /* Colored shadow */
             
             /* Darker Gold for visibility on white */
             --primary: #d97706; 
@@ -72,7 +82,7 @@
 
             --text-main: #0f172a; /* Slate 900 */
             --text-bright-dim: #334155; /* Slate 700 */
-            --text-muted: #64748b; /* Slate 500 */
+            --text-muted: #475569; /* Slate 600 - slightly darker for contrast */
             --text-header: #475569;
         }
 
@@ -89,18 +99,25 @@
             position: relative;
             transition: background-color 0.5s ease, color 0.5s ease;
         }
+        
+        /* Modern Gradient Background for Light Mode */
+        [data-theme="light"] body {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f1f5f9 100%);
+        }
 
         /* --- Ambient Background --- */
         .ambient-light { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; pointer-events: none; }
         .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4; animation: float 25s infinite ease-in-out; }
         
-        /* Light mode orb adjustments */
-        [data-theme="light"] .orb { opacity: 0.6; filter: blur(140px); }
-        [data-theme="light"] .orb-1 { background: radial-gradient(circle, #e2e8f0 0%, transparent 70%); } 
-        
         .orb-1 { top: -20%; left: -10%; width: 70vw; height: 70vw; background: radial-gradient(circle, #1e293b 0%, transparent 70%); animation-delay: 0s; }
         .orb-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #334155 0%, transparent 70%); animation-delay: -5s; }
         .orb-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%); animation-delay: -10s; opacity: 0.3; }
+
+        /* Light mode orb adjustments - Colorful! */
+        [data-theme="light"] .orb { opacity: 0.5; filter: blur(100px); }
+        [data-theme="light"] .orb-1 { background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%); } /* Sky Blue */
+        [data-theme="light"] .orb-2 { background: radial-gradient(circle, rgba(244, 114, 182, 0.1) 0%, transparent 70%); } /* Pink */
+        [data-theme="light"] .orb-3 { background: radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, transparent 60%); } /* Gold */
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -112,11 +129,14 @@
         .bg-decoration { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; transition: top 0.3s ease; }
         .bg-icon { position: absolute; opacity: 0.08; font-size: 2rem; transition: transform 0.5s ease; }
         
-        /* Updated: Colorful icons in Light Mode too, but low opacity */
-        [data-theme="light"] .bg-icon { opacity: 0.08; filter: saturate(0.8); }
+        /* Updated: Colorful icons in Light Mode too, more visible now */
+        [data-theme="light"] .bg-icon { opacity: 0.12; filter: none; }
 
         @media (min-width: 768px) and (max-width: 1024px) { .bg-decoration { top: -10%; } }
-        @media (min-width: 768px) { .bg-icon { opacity: 0.25; } [data-theme="light"] .bg-icon { opacity: 0.15; } }
+        @media (min-width: 768px) { 
+            .bg-icon { opacity: 0.25; } 
+            [data-theme="light"] .bg-icon { opacity: 0.18; } /* Higher opacity on desktop light mode */
+        }
 
         .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; } 
         .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; } 
@@ -158,7 +178,12 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        [data-theme="light"] .theme-toggle-btn { background: rgba(255, 255, 255, 0.8); border-color: rgba(0,0,0,0.1); color: #f59e0b; }
+        [data-theme="light"] .theme-toggle-btn { 
+            background: rgba(255, 255, 255, 0.8); 
+            border-color: rgba(0,0,0,0.05); 
+            color: #f59e0b;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
 
         .theme-toggle-btn:hover { transform: rotate(15deg) scale(1.05); }
 
@@ -389,28 +414,17 @@
             display: flex; align-items: center; gap: 16px;
         }
 
-        /* Default Dark Mode Separator */
+        /* Default Dark Mode Separator with Section Colors */
         .modern-section-title::after {
             content: ''; flex: 1; height: 1px;
-            background: linear-gradient(90deg, var(--glass-border), transparent);
+            background: linear-gradient(90deg, var(--section-acc, var(--glass-border)), transparent);
         }
-
-        /* --- DESKTOP LIGHT MODE BORDER UPDATE --- */
-        @media (min-width: 768px) {
-            #searchResultsSection .modern-section-title { --section-color: #f59e0b; } /* Amber */
-            #curiositySection .modern-section-title { --section-color: #ec4899; }      /* Pink */
-            #vocabularyQuizSection .modern-section-title { --section-color: #10b981; } /* Green */
-            #wordToolkitSection .modern-section-title { --section-color: #0ea5e9; }    /* Blue */
-            #hangmanSection .modern-section-title { --section-color: #f97316; }        /* Orange */
-            #gkQuizSection .modern-section-title { --section-color: #8b5cf6; }         /* Purple */
-            #reverseDictSection .modern-section-title { --section-color: #14b8a6; }    /* Teal */
-            #wordSpotlightSection .modern-section-title { --section-color: #64748b; }  /* Slate */
-
-            [data-theme="light"] .modern-section-title::after {
-                background: linear-gradient(90deg, var(--section-color, var(--primary)), transparent);
-                opacity: 0.5; /* High contrast for visibility */
-                height: 2px;
-            }
+        
+        /* DESKTOP Light Mode Separator - High Contrast (0.5 Opacity) with Colors */
+        [data-theme="light"] .modern-section-title::after {
+            background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
+            opacity: 0.5; /* User Requirement: 0.5 Contrast */
+            height: 2px;
         }
 
         .interactive-card {
@@ -421,7 +435,13 @@
             transition: transform 0.3s ease, border-color 0.3s ease; position: relative;
         }
         .interactive-card:hover { border-color: rgba(255, 255, 255, 0.15); }
-        [data-theme="light"] .interactive-card { border-color: rgba(0,0,0,0.08); }
+        
+        /* Light mode card border - Subtle hint of section color or default */
+        [data-theme="light"] .interactive-card { 
+            border-color: rgba(0,0,0,0.06); 
+            /* Optional: Add a very subtle tint to border based on section, if available in scope */
+            border-color: color-mix(in srgb, var(--section-acc, var(--primary)) 20%, rgba(0,0,0,0.05));
+        }
         [data-theme="light"] .interactive-card:hover { border-color: rgba(0, 0, 0, 0.15); }
 
         /* --- Typography & Word Definition --- */
@@ -615,8 +635,8 @@
             /* --- OPTIMIZED MOBILE BACKGROUND --- */
             .bg-decoration { position: fixed !important; top: 0 !important; height: 100vh !important; width: 100%; z-index: -1; overflow: hidden; }
             .bg-icon { opacity: 0.06 !important; filter: blur(1.5px); }
-            /* Light mode mobile icons same color but low opacity */
-            [data-theme="light"] .bg-icon { opacity: 0.08 !important; filter: saturate(0.8); }
+            /* Light mode mobile icons */
+            [data-theme="light"] .bg-icon { opacity: 0.1 !important; filter: none !important; }
 
             .icon-1 { top: 5%; left: -10%; font-size: 6rem; transform: rotate(-15deg); } 
             .icon-2 { top: 18%; right: -10%; font-size: 5rem; transform: rotate(10deg); } 
@@ -649,26 +669,22 @@
             .modern-section-title { font-size: 1.65rem !important; position: relative; width: fit-content; z-index: 10; }
 
             /* --- NEW: Mobile Highlighting Effect --- */
-            #searchResultsSection .modern-section-title { --highlight-color: #fde68a; } 
-            #curiositySection .modern-section-title { --highlight-color: #fbcfe8; }      
-            #vocabularyQuizSection .modern-section-title { --highlight-color: #a7f3d0; } 
-            #wordToolkitSection .modern-section-title { --highlight-color: #bae6fd; }    
-            #hangmanSection .modern-section-title { --highlight-color: #fed7aa; }        
-            #gkQuizSection .modern-section-title { --highlight-color: #ddd6fe; }         
-            #reverseDictSection .modern-section-title { --highlight-color: #99f6e4; }    
-            #wordSpotlightSection .modern-section-title { --highlight-color: #e2e8f0; }  
-
             .modern-section-title span { position: relative; display: inline-block; z-index: 1; }
             
-            /* High Contrast Mobile Border Logic for Light Theme */
+            /* Use global variable or fallback to primary */
             .modern-section-title span::before {
                 content: ''; position: absolute; z-index: -1; bottom: 2px; left: -4px; height: 77%;
-                background: var(--highlight-color, var(--primary));
+                background: var(--section-acc-light, var(--primary)); /* Use pastel light color */
                 clip-path: polygon(0% 5%, 2% 0%, 98% 2%, 100% 0%, 100% 95%, 98% 100%, 2% 98%, 0% 100%);
                 transform: none; width: 0%; opacity: 0;
                 animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; animation-delay: 0.3s;
             }
-            [data-theme="light"] .modern-section-title span::before { opacity: 0.5 !important; } /* Higher contrast for light mode */
+            
+            /* High Contrast Mobile Border Logic for Light Theme */
+            [data-theme="light"] .modern-section-title span::before { 
+                opacity: 0.5 !important; 
+                background: var(--section-acc, var(--primary)); /* Use vibrant color for better visibility in light mode */
+            } 
             
             /* --- Mobile Separator Update --- */
             .modern-section { padding-bottom: 40px; margin-bottom: 40px !important; position: relative; }
