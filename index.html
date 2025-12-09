@@ -24,6 +24,21 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- --- CRITICAL: THEME INIT SCRIPT (IN HEAD TO PREVENT FLASH) --- -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                    document.documentElement.setAttribute('data-theme', savedTheme);
+                }
+            } catch (e) {
+                console.log('Theme storage not accessible');
+            }
+        })();
+    </script>
+
     <style>
         :root {
             /* --- DARK THEME (DEFAULT) --- */
@@ -308,14 +323,10 @@
             line-height: 1.1;
             margin-bottom: 12px;
             color: #f1f5f9; /* Solid off-white */
-            cursor: pointer;
+            cursor: default; /* Removed pointer to indicate not a link */
             transition: opacity 0.3s ease;
             text-decoration: none;
-            display: block;
-            /* Point 5 Fix: Restrict click width */
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
+            display: inline-block;
         }
         [data-theme="light"] .hero-title { color: #1e293b; }
 
@@ -424,11 +435,10 @@
             background: linear-gradient(90deg, var(--section-acc, var(--glass-border)), transparent);
         }
         
-        /* DESKTOP Light Mode Separator - High Contrast */
+        /* DESKTOP Light Mode Separator - FIXED Contrast (0.2 Opacity) */
         [data-theme="light"] .modern-section-title::after {
             background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
-            /* Point 1 Fix: Reduced contrast from 0.4 to 0.2 */
-            opacity: 0.2; 
+            opacity: 0.2; /* FIXED: Changed from 0.4 to 0.2 per request */
             height: 2px;
         }
 
@@ -458,7 +468,7 @@
             .desktop-nav { display: flex; }
             .word-definition p { margin-bottom: 0.9em; }
 
-            /* NEW: Enable Highlight Effect for Desktop Light Mode (Point 2) */
+            /* NEW: Enable Highlight Effect for Desktop Light Mode */
             [data-theme="light"] .modern-section-title span {
                 position: relative;
                 display: inline-block;
@@ -471,11 +481,10 @@
                 z-index: -1;
                 bottom: 4px;
                 left: -6px;
-                height: 77%; /* UPDATED: Changed from 60% to 77% */
+                height: 77%; 
                 width: 105%;
                 background: var(--section-acc, var(--primary));
-                /* Point 1 Fix: Reduced contrast from 0.3 to 0.2 */
-                opacity: 0.2;
+                opacity: 0.3; 
                 clip-path: polygon(0% 5%, 2% 0%, 98% 2%, 100% 0%, 100% 95%, 98% 100%, 2% 98%, 0% 100%);
                 border-radius: 4px;
                 transition: opacity 0.3s ease;
@@ -537,10 +546,17 @@
         .option-btn.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: #34d399; }
         .option-btn.incorrect { background: rgba(248, 113, 113, 0.15); border-color: var(--error); color: #f87171; }
 
-        /* Point 4 Fix: Ensure colors stick on light mode by using !important to override hover */
-        [data-theme="light"] .option-btn.correct { background: rgba(16, 185, 129, 0.15) !important; border-color: var(--success) !important; color: #34d399 !important; }
-        [data-theme="light"] .option-btn.incorrect { background: rgba(248, 113, 113, 0.15) !important; border-color: var(--error) !important; color: #f87171 !important; }
-
+        /* FIXED: Quiz Buttons on Light Theme (Prevent Hover Override & Improve Contrast) */
+        [data-theme="light"] .option-btn.correct {
+            background: rgba(16, 185, 129, 0.2) !important;
+            border-color: var(--success) !important;
+            color: #059669 !important; /* Darker green (Emerald 600) for contrast on white */
+        }
+        [data-theme="light"] .option-btn.incorrect {
+            background: rgba(248, 113, 113, 0.2) !important;
+            border-color: var(--error) !important;
+            color: #dc2626 !important; /* Darker red (Red 600) */
+        }
 
         /* --- SHARED BUTTON STYLES --- */
         .action-btn {
@@ -724,9 +740,9 @@
                 animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; animation-delay: 0.3s;
             }
             
-            /* Point 1: Mobile Light Theme Highlight - Reduced contrast to 0.2 */
+            /* Point 1: Mobile Light Theme Highlight - 0.3 Contrast */
             [data-theme="light"] .modern-section-title span::before { 
-                opacity: 0.2 !important; 
+                opacity: 0.3 !important; 
                 background: var(--section-acc, var(--primary)); 
             } 
             
@@ -746,7 +762,7 @@
              /* Point 3 (cont): Mobile Light Theme Line */
              [data-theme="light"] .modern-section-title::after {
                 background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
-                opacity: 0.2; /* Point 1 Fix: Reduced contrast from 0.4 to 0.2 */
+                opacity: 0.2; /* FIXED: Updated to 0.2 here as well */
                 height: 2px;
             }
 
@@ -876,7 +892,8 @@
 
     <section class="hero-section">
         <div class="container">
-            <a href="/" class="hero-title">Pearls of Knowledge</a>
+            <!-- CHANGED: Replaced Link with Heading to remove click action -->
+            <h1 class="hero-title">Pearls of Knowledge</h1>
             <p class="hero-subtitle">Discover, Learn, Illuminate</p>
             
             <div class="search-container">
@@ -1088,98 +1105,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // --- 1. SHARED UTILITIES & CONFIG ---
-        // Simplified Storage Logic to Fix Persistence Issue
-        const SafeStorage = {
-            getItem(key) {
-                try {
-                    return localStorage.getItem(key);
-                } catch(e) {
-                    return null;
-                }
-            },
-            setItem(key, value) {
-                try {
-                    localStorage.setItem(key, value);
-                } catch(e) {}
-            }
-        };
-
-        // --- THEME LOGIC ---
-        function toggleTheme() {
-            playButtonSound();
-            const html = document.documentElement;
-            const icon = document.getElementById('themeIcon');
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            html.setAttribute('data-theme', newTheme);
-            icon.className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
-            SafeStorage.setItem('theme', newTheme);
-        }
-
-        // Initialize Theme - Point 3 Fix (Robustness)
-        // Ensure this runs immediately and reliably
-        const savedTheme = SafeStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const icon = document.getElementById('themeIcon');
-            if(icon) icon.className = savedTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
-        });
-
-        // --- MOBILE NAV LOGIC ---
-        function toggleMobileNav() {
-            playButtonSound();
-            const dropdown = document.getElementById('mobileDropdown');
-            const toggleBtn = document.querySelector('.mobile-nav-toggle i');
-            
-            dropdown.classList.toggle('show');
-            
-            // Toggle icon between hamburger and close
-            if (dropdown.classList.contains('show')) {
-                toggleBtn.classList.remove('fa-bars');
-                toggleBtn.classList.add('fa-times');
-            } else {
-                toggleBtn.classList.remove('fa-times');
-                toggleBtn.classList.add('fa-bars');
-            }
-        }
-
-        function scrollToSection(id) {
-            // NOTE: Sound is handled by toggleMobileNav(), so we don't call it here to avoid double-play.
-            
-            // 1. Force close the keyboard if it is open (by blurring active input)
-            if (document.activeElement && document.activeElement.tagName === 'INPUT') {
-                document.activeElement.blur();
-            }
-
-            const section = document.getElementById(id);
-            if (section) {
-                // 2. Close the menu immediately
-                toggleMobileNav(); 
-
-                // 3. Wait for keyboard to slide away/viewport to resize (approx 400ms) then scroll
-                setTimeout(() => {
-                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 400); 
-            }
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            const container = document.querySelector('.mobile-nav-container');
-            if (container && !container.contains(e.target)) {
-                const dropdown = document.getElementById('mobileDropdown');
-                if (dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
-                    const toggleBtn = document.querySelector('.mobile-nav-toggle i');
-                    toggleBtn.classList.remove('fa-times');
-                    toggleBtn.classList.add('fa-bars');
-                }
-            }
-        });
-
+        // --- 1. CONFIG ---
         const MW_API_KEY = '3bb3615c-eca5-4cb3-8e0f-eece50d1037e'; 
         const WORDNIK_API_KEY = 'yfp2ausp6gk53i8i0g7ud3r1usrhixxhhwfxiip0c2hmjydq1';
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
@@ -1217,14 +1143,79 @@
             { word: "EPHEMERAL", clue: "It describes something lasting for a very short time, like the lifespan of a mayfly or a fleeting moment." }
         ];
 
-        // Point 2 Fix: Fast Loading Spotlight (Local Fallback)
-        const LOCAL_SPOTLIGHT_WORDS = [
-            { word: "Mellifluous", definition: "<h2>Mellifluous</h2><h3>Adjective</h3><p>Sounding sweet and smooth; pleasing to the ear.</p>" },
-            { word: "Ineffable", definition: "<h2>Ineffable</h2><h3>Adjective</h3><p>Too great or extreme to be expressed or described in words.</p>" },
-            { word: "Petrichor", definition: "<h2>Petrichor</h2><h3>Noun</h3><p>A pleasant smell that frequently accompanies the first rain after a long period of warm, dry weather.</p>" },
-            { word: "Sonder", definition: "<h2>Sonder</h2><h3>Noun</h3><p>The realization that each random passerby is living a life as vivid and complex as your own.</p>" },
-            { word: "Limerence", definition: "<h2>Limerence</h2><h3>Noun</h3><p>The state of being infatuated or obsessed with another person, typically experienced involuntarily.</p>" }
-        ];
+        // --- THEME LOGIC (Simplified & Direct for Persistence) ---
+        function toggleTheme() {
+            playButtonSound();
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            icon.className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+            
+            try {
+                localStorage.setItem('theme', newTheme);
+            } catch (e) {
+                console.warn('Unable to save theme preference');
+            }
+        }
+
+        // --- MOBILE NAV LOGIC ---
+        function toggleMobileNav() {
+            playButtonSound();
+            const dropdown = document.getElementById('mobileDropdown');
+            const toggleBtn = document.querySelector('.mobile-nav-toggle i');
+            
+            dropdown.classList.toggle('show');
+            
+            // Toggle icon between hamburger and close
+            if (dropdown.classList.contains('show')) {
+                toggleBtn.classList.remove('fa-bars');
+                toggleBtn.classList.add('fa-times');
+            } else {
+                toggleBtn.classList.remove('fa-times');
+                toggleBtn.classList.add('fa-bars');
+            }
+        }
+
+        function scrollToSection(id) {
+            // 1. Force close the keyboard if it is open (by blurring active input)
+            if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+                document.activeElement.blur();
+            }
+
+            const section = document.getElementById(id);
+            if (section) {
+                // 2. Close the menu immediately
+                toggleMobileNav(); 
+
+                // 3. Wait for keyboard to slide away/viewport to resize (approx 400ms) then scroll
+                setTimeout(() => {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 400); 
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const container = document.querySelector('.mobile-nav-container');
+            if (container && !container.contains(e.target)) {
+                const dropdown = document.getElementById('mobileDropdown');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                    const toggleBtn = document.querySelector('.mobile-nav-toggle i');
+                    toggleBtn.classList.remove('fa-times');
+                    toggleBtn.classList.add('fa-bars');
+                }
+            }
+        });
+
+        // SafeStorage implementation (Simple wrapper)
+        const SafeStorage = {
+            getItem(key) { try { return localStorage.getItem(key); } catch(e){ return null; } },
+            setItem(key, val) { try { localStorage.setItem(key, val); } catch(e){} }
+        };
 
         let supabaseClient, dictionary = [], searchIndex = null;
         let isSupabaseConfigured = false, supabaseInitialized = false, hasDisplayedWordSpotlight = false;
@@ -1312,9 +1303,10 @@
                     }));
                     buildSearchIndex();
                     SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
-                    // Optional: Refresh spotlight with real data if needed, but local fallback is fine too.
-                    // If we haven't displayed one yet (local fallback failed?), display now.
-                    // But usually local fallback runs first. We can leave it be to avoid UI jump.
+                    if (!hasDisplayedWordSpotlight) {
+                        displayWordSpotlight();
+                        hasDisplayedWordSpotlight = true;
+                    }
                 }
             } catch(error) { console.error('Sync error:', error); }
         }
@@ -1469,6 +1461,8 @@
             if (hangmanMistakes >= MAX_MISTAKES || display.textContent.includes('Hint:')) return;
 
             playClueSound();
+            
+            // Request 2: Revealing the clue should not be counted as a try.
             
             if (hangmanClue) {
                 // Clue stays left aligned
@@ -2032,31 +2026,21 @@
             </div>`;
         }
 
-        // Point 2 Fix: Display Spotlight instantly using fallback if needed
         function displayWordSpotlight() {
             const ws = document.getElementById('wordSpotlightDisplay');
-            
-            // If dictionary is empty (first load), use fast local backup
             if (!dictionary || dictionary.length === 0) {
-                const randomLocal = LOCAL_SPOTLIGHT_WORDS[Math.floor(Math.random() * LOCAL_SPOTLIGHT_WORDS.length)];
-                ws.innerHTML = createExpandableDefinition(randomLocal.definition);
+                ws.innerHTML = '<div class="no-words"><p>No words available yet!</p></div>';
                 return;
             }
-            
-            // Standard behavior if DB is loaded
             const randomIndex = Math.floor(Math.random() * dictionary.length);
             ws.innerHTML = createExpandableDefinition(dictionary[randomIndex].definition);
         }
 
         function showNewRandomWord() {
-            // Even if offline, we can cycle local words or DB words
-            if (dictionary.length === 0) {
-                 const randomLocal = LOCAL_SPOTLIGHT_WORDS[Math.floor(Math.random() * LOCAL_SPOTLIGHT_WORDS.length)];
-                 document.getElementById('wordSpotlightDisplay').innerHTML = createExpandableDefinition(randomLocal.definition);
-            } else {
-                 displayWordSpotlight();
+            if (dictionary.length > 0) {
+                displayWordSpotlight();
+                document.querySelector('#wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
             }
-            document.querySelector('#wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'});
         }
 
         // Helper for Tool Input Logic (Clear, Search Icon)
@@ -2135,6 +2119,18 @@
             }
         }
 
+        // --- HELPER: RESET URL ---
+        function resetUrl() {
+            try {
+                // Remove the query parameter without reloading
+                const url = new URL(window.location);
+                url.searchParams.delete('q');
+                window.history.pushState({}, '', url);
+            } catch(e) {
+                console.warn('History API not supported');
+            }
+        }
+
         function setupSearch() {
             const searchInput = document.getElementById('searchInput');
             const searchBtn = document.getElementById('searchBtn');
@@ -2181,13 +2177,24 @@
 
             clearBtn.addEventListener('click', function() {
                 playClearSound();
-                searchInput.value = ''; toggleClearBtn(); searchInput.focus();
+                searchInput.value = ''; 
+                toggleClearBtn(); 
+                searchInput.focus();
                 autocompleteDropdown.classList.remove('show');
                 document.getElementById('searchResultsSection').style.display = 'none';
+                
+                // NEW: Reset URL when clearing search
+                resetUrl();
             });
 
             searchInput.addEventListener('input', function() {
                 toggleClearBtn(); clearTimeout(typingTimer);
+                
+                // NEW: If user manually deletes text, reset URL
+                if (this.value.trim().length === 0) {
+                     resetUrl();
+                }
+
                 typingTimer = setTimeout(() => {
                     const query = this.value.trim().toLowerCase();
                     if (query.length === 0) { autocompleteDropdown.classList.remove('show'); document.getElementById('searchResultsSection').style.display = 'none'; return; }
@@ -2448,6 +2455,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Check icon state based on theme initialized in head
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                 const icon = document.getElementById('themeIcon');
+                 if(icon) icon.className = 'fas fa-sun';
+            }
+
             const cachedDict = SafeStorage.getItem('dictionary');
             if (cachedDict) {
                 try {
@@ -2456,9 +2470,8 @@
                     if (dictionary.length > 0) { displayWordSpotlight(); hasDisplayedWordSpotlight = true; }
                 } catch(e) { console.error('Cache parse error:', e); }
             }
-            // Point 2 Fix: If dictionary is empty, still run this to show local fallback immediately
             if (dictionary.length === 0) {
-                displayWordSpotlight();
+                document.getElementById('wordSpotlightDisplay').innerHTML = `<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>`;
             }
             requestAnimationFrame(() => { initializeSupabase(); setupSearch(); });
         });
