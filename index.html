@@ -420,10 +420,10 @@
             background: linear-gradient(90deg, var(--section-acc, var(--glass-border)), transparent);
         }
         
-        /* DESKTOP Light Mode Separator - High Contrast (0.5 Opacity) with Colors */
+        /* DESKTOP Light Mode Separator - High Contrast (0.4 Opacity) with Colors */
         [data-theme="light"] .modern-section-title::after {
             background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
-            opacity: 0.5; /* User Requirement: 0.5 Contrast */
+            opacity: 0.4; /* User Requirement: 0.4 Contrast */
             height: 2px;
         }
 
@@ -666,7 +666,7 @@
                 padding: 0 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
             } 
             
-            .modern-section-title { font-size: 1.65rem !important; position: relative; width: fit-content; z-index: 10; }
+            .modern-section-title { font-size: 1.65rem !important; position: relative; z-index: 10; }
 
             /* --- NEW: Mobile Highlighting Effect --- */
             .modern-section-title span { position: relative; display: inline-block; z-index: 1; }
@@ -682,7 +682,7 @@
             
             /* High Contrast Mobile Border Logic for Light Theme */
             [data-theme="light"] .modern-section-title span::before { 
-                opacity: 0.5 !important; 
+                opacity: 0.3 !important; 
                 background: var(--section-acc, var(--primary)); /* Use vibrant color for better visibility in light mode */
             } 
             
