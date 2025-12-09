@@ -423,7 +423,7 @@
         /* DESKTOP Light Mode Separator - High Contrast (0.4 Opacity) with Colors */
         [data-theme="light"] .modern-section-title::after {
             background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
-            opacity: 0.4 !important; /* User Requirement: 0.4 Contrast */
+            opacity: 0.4; /* User Requirement: 0.4 Contrast */
             height: 2px;
         }
 
@@ -452,6 +452,28 @@
         @media (min-width: 768px) {
             .desktop-nav { display: flex; }
             .word-definition p { margin-bottom: 0.9em; }
+
+            /* NEW: Enable Highlight Effect for Desktop Light Mode (Point 2) */
+            [data-theme="light"] .modern-section-title span {
+                position: relative;
+                display: inline-block;
+                z-index: 1;
+            }
+            
+            [data-theme="light"] .modern-section-title span::before {
+                content: '';
+                position: absolute;
+                z-index: -1;
+                bottom: 4px;
+                left: -6px;
+                height: 60%;
+                width: 105%;
+                background: var(--section-acc, var(--primary));
+                opacity: 0.4; /* Request: Contrast 0.4 */
+                clip-path: polygon(0% 5%, 2% 0%, 98% 2%, 100% 0%, 100% 95%, 98% 100%, 2% 98%, 0% 100%);
+                border-radius: 4px;
+                transition: opacity 0.3s ease;
+            }
         }
         
         .word-definition strong, .word-definition b { color: var(--text-main); opacity: 0.7; font-weight: 700; }
@@ -659,12 +681,13 @@
             .mobile-nav-container { display: block; } 
             
             /* UI Controls reposition for mobile (Left: Sandwich, Right: Theme) */
+            /* Point 4: Use absolute position here so they scroll away with page */
             .ui-controls { 
+                position: absolute; /* Replaces fixed from desktop */
+                top: 24px;
                 justify-content: space-between; 
                 align-items: center; 
                 padding: 0 16px; 
-                position: absolute; /* Fixes sticking issue */
-                top: 24px;
             }
 
             .interactive-card {
@@ -672,13 +695,10 @@
                 padding: 0 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
             } 
             
-            /* Enforce flex to keep line next to text */
             .modern-section-title { 
-                font-size: 1.65rem !important; 
-                position: relative; 
-                z-index: 10;
-                display: flex !important;
-                align-items: center;
+                font-size: 1.65rem !important; position: relative; z-index: 10; 
+                /* Point 3: Ensure flex is active to display the line next to text */
+                display: flex !important; align-items: center; gap: 16px;
             }
 
             /* --- NEW: Mobile Highlighting Effect --- */
@@ -692,28 +712,33 @@
                 transform: none; width: 0%; opacity: 0;
                 animation: drawHighlight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; animation-delay: 0.3s;
             }
-
-            /* Ensure line is visible and sized correctly on mobile */
-            .modern-section-title::after {
-                display: block !important; 
-                height: 1px;
-                flex: 1;
-                margin-left: 16px;
-            }
-
-            /* High Contrast Mobile Border Logic for Light Theme */
+            
+            /* Point 1: Mobile Light Theme Highlight - 0.3 Contrast */
             [data-theme="light"] .modern-section-title span::before { 
                 opacity: 0.3 !important; 
-                background: var(--section-acc, var(--primary)); /* Use vibrant color for better visibility in light mode */
+                background: var(--section-acc, var(--primary)); 
             } 
-            
-            /* Mobile Light Theme specific for the line next to text */
-            [data-theme="light"] .modern-section-title::after {
-                opacity: 0.3 !important; /* Point 1: Contrast 0.3 */
-            }
             
             /* --- Mobile Separator Update --- */
             .modern-section { padding-bottom: 40px; margin-bottom: 40px !important; position: relative; }
+            
+            /* Point 3: Color Line NEXT to text on Mobile (Like Desktop) */
+            .modern-section-title::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                /* Use gradient to match desktop style */
+                background: linear-gradient(90deg, var(--section-acc, var(--glass-border)), transparent);
+                display: block !important;
+            }
+
+             /* Point 3 (cont): Mobile Light Theme Line */
+             [data-theme="light"] .modern-section-title::after {
+                background: linear-gradient(90deg, var(--section-acc, var(--primary)), transparent);
+                opacity: 0.4;
+                height: 2px;
+            }
+
             .modern-section::after {
                 content: ''; position: absolute; bottom: 0; left: 15%; width: 70%; height: 1px;
                 background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
