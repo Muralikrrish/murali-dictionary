@@ -27,7 +27,7 @@ export async function onRequest(context) {
     messages: [
       {
         role: "system",
-        content: "You are the 'Pearls of Knowledge' AI assistant. You are an expert etymologist and linguist. Keep answers concise, educational, and easy to understand. If asked for a definition, provide the meaning and a brief etymology."
+        content: "You are a helpful knowledge assistant. Do not introduce yourself. Do not mention being an AI. Just answer the user's question directly, concisely, and accurately."
       },
       {
         role: "user",
