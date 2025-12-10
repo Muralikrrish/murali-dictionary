@@ -711,6 +711,26 @@
                 -webkit-tap-highlight-color: transparent; /* Ensure no tap color */
                 outline: none;
             }
+
+            /* NEW: Strictly disable hover/active movement and highlighting on mobile */
+            /* We use :not() to ensure we don't accidentally hide the green/red result colors */
+            .option-btn:not(.selected):not(.correct):not(.incorrect):hover,
+            .option-btn:not(.selected):not(.correct):not(.incorrect):active,
+            .option-btn:not(.selected):not(.correct):not(.incorrect):focus {
+                transform: none !important;
+                background: rgba(255, 255, 255, 0.03) !important;
+                border-color: var(--glass-border) !important;
+                color: var(--text-muted) !important;
+                box-shadow: none !important;
+            }
+
+            /* Light Theme override for the above reset */
+            [data-theme="light"] .option-btn:not(.selected):not(.correct):not(.incorrect):hover,
+            [data-theme="light"] .option-btn:not(.selected):not(.correct):not(.incorrect):active,
+            [data-theme="light"] .option-btn:not(.selected):not(.correct):not(.incorrect):focus {
+                background: rgba(0, 0, 0, 0.02) !important;
+                border-color: rgba(0, 0, 0, 0.1) !important;
+            }
             
             /* UPDATED MOBILE HERO SIZE */
             .hero-title { font-size: 2.5rem !important; }
