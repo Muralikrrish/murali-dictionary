@@ -701,6 +701,17 @@
             .icon-7 { display: none; } 
             .icon-8 { bottom: -5%; left: 10%; font-size: 10rem; opacity: 0.04 !important; transform: rotate(15deg); } 
 
+            /* --- FIX: Remove Mobile Selection Highlight on Quiz Options --- */
+            .option-btn {
+                -webkit-user-select: none;       /* Disable text selection */
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-touch-callout: none;     /* Disable long-press menu */
+                -webkit-tap-highlight-color: transparent; /* Ensure no tap color */
+                outline: none;
+            }
+            
             /* UPDATED MOBILE HERO SIZE */
             .hero-title { font-size: 2.5rem !important; }
             /* 1. Decrease top padding to 2/3 of 80px (approx 54px) */
