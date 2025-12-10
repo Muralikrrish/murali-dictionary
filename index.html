@@ -276,6 +276,82 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     width: 100%;
 }
 
+/* AI Chat Specifics - Responsive */
+.chat-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: flex-start; /* Aligns avatar to top */
+}
+.chat-row.user {
+    justify-content: flex-end;
+}
+.chat-row.ai {
+    justify-content: flex-start;
+}
+.chat-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: bold;
+}
+.chat-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    max-width: 85%;
+    line-height: 1.6;
+    word-wrap: break-word;
+    font-size: 1rem;
+}
+/* User specific */
+.chat-row.user .chat-avatar {
+    background: var(--text-muted);
+    color: var(--bg-deep);
+    order: 2; /* Avatar on right */
+}
+.chat-row.user .chat-bubble {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px 4px 16px 16px;
+    color: var(--text-main);
+    order: 1;
+}
+/* AI specific */
+.chat-row.ai .chat-avatar {
+    background: var(--primary);
+    color: var(--bg-deep);
+    order: 1; /* Avatar on left */
+}
+.chat-row.ai .chat-bubble {
+    background: var(--bg-deep);
+    border: 1px solid var(--glass-border);
+    border-radius: 4px 16px 16px 16px;
+    color: var(--text-main);
+    order: 2;
+}
+.chat-bubble ul {
+    margin: 8px 0 8px 20px;
+    padding: 0;
+}
+.chat-bubble li {
+    margin-bottom: 4px;
+}
+.chat-bubble p {
+    margin: 0 0 8px 0;
+}
+.chat-bubble strong {
+    font-weight: 700;
+    color: var(--primary);
+}
+.chat-bubble em {
+    font-style: italic;
+    color: var(--text-bright-dim);
+}
+
 @media(max-width:767px){
 .bg-decoration{position:fixed!important;top:0!important;height:100vh!important;width:100%;z-index:-1;overflow:hidden}
 .bg-icon{opacity:0.06!important;filter:blur(1.5px)}
@@ -350,6 +426,28 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .toggle-content.expanded{max-height:8000px!important}
 .mobile-result-separator{display:block;width:70%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);margin:24px auto}
 [data-theme="light"] .mobile-result-separator{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.1),transparent)}
+
+/* AI Chat Mobile Optimizations */
+.chat-row {
+    gap: 8px; /* Reduced gap */
+    margin-bottom: 12px;
+}
+.chat-avatar {
+    width: 28px; /* Smaller avatar */
+    height: 28px;
+    font-size: 0.8rem;
+    margin-top: 4px; /* Align with first line of text */
+}
+.chat-bubble {
+    padding: 10px 14px; /* Tighter padding */
+    font-size: 0.95rem; /* Slightly smaller text */
+    max-width: 88%; /* Allow more width */
+}
+/* Ensure send button color is visible on mobile */
+#aiSendBtn {
+    color: var(--primary) !important;
+    opacity: 1 !important;
+}
 }
 </style>
 </head>
@@ -442,7 +540,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     <div class="interactive-card">
         <div class="tool-header">
             <h3>Ask Anything</h3>
-            <p>Unravel the mysteries of language</p>
+            <!-- REMOVED: Unravel the mysteries of language -->
         </div>
         
         <!-- Empty container for the CSS empty state to work -->
@@ -654,7 +752,21 @@ document.addEventListener('click',function(e){const header=e.target.closest('.to
 function createExpandableDefinition(definitionHTML){return`<div class="word-entry"><div class="word-definition">${convertH2ToToggles(definitionHTML)}</div><div style="display:flex; justify-content:center; margin-top:20px;"><button class="action-btn" onclick="showNewRandomWord()">Show another word</button></div></div>`}
 function displayWordSpotlight(){const ws=document.getElementById('wordSpotlightDisplay');if(!dictionary||dictionary.length===0){ws.innerHTML='<div class="no-words"><p>No words available yet!</p></div>';return}const randomIndex=Math.floor(Math.random()*dictionary.length);ws.innerHTML=createExpandableDefinition(dictionary[randomIndex].definition)}
 function showNewRandomWord(){if(dictionary.length>0){displayWordSpotlight();document.querySelector('#wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'})}}
-function setupToolInputs(){const setup=(inputId,clearBtnId,searchBtnId,actionFn)=>{const input=document.getElementById(inputId);const clearBtn=document.getElementById(clearBtnId);const searchBtn=document.getElementById(searchBtnId);let typingTimer;if(!input)return;const toggleClear=()=>{if(clearBtn)clearBtn.classList.toggle('visible',input.value.trim().length>0)};input.addEventListener('input',()=>{toggleClear()});input.addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();actionFn()}});if(clearBtn){clearBtn.addEventListener('click',()=>{playClearSound();input.value='';toggleClear();input.focus()})}if(searchBtn){searchBtn.addEventListener('click',()=>{actionFn()})}toggleClear();input.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{input.scrollIntoView({behavior:'smooth',block:'center'})},300)}})};setup('wordToolkitInput','toolkitClearBtn','toolkitSearchBtn',handleWordTool);setup('reverseInput','reverseClearBtn','reverseSearchBtn',handleReverseSearch)}
+function setupToolInputs(){const setup=(inputId,clearBtnId,searchBtnId,actionFn)=>{const input=document.getElementById(inputId);const clearBtn=document.getElementById(clearBtnId);const searchBtn=document.getElementById(searchBtnId);let typingTimer;if(!input)return;const toggleClear=()=>{if(clearBtn)clearBtn.classList.toggle('visible',input.value.trim().length>0)};input.addEventListener('input',()=>{toggleClear()});input.addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();actionFn()}});if(clearBtn){clearBtn.addEventListener('click',()=>{playClearSound();input.value='';toggleClear();input.focus()})}if(searchBtn){searchBtn.addEventListener('click',()=>{actionFn()})}toggleClear();input.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{input.scrollIntoView({behavior:'smooth',block:'center'})},300)}})};setup('wordToolkitInput','toolkitClearBtn','toolkitSearchBtn',handleWordTool);setup('reverseInput','reverseClearBtn','reverseSearchBtn',handleReverseSearch)
+
+/* Auto-scroll for AI Input on Mobile */
+const aiInput = document.getElementById('aiInput');
+if(aiInput) {
+    // We use 'click' for better mobile support or 'focus'
+    aiInput.addEventListener('click', () => {
+        if(window.innerWidth < 768) {
+            setTimeout(() => {
+                aiInput.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }, 300); // 300ms delay to allow keyboard to pop up
+        }
+    });
+}
+}
 function updateMobilePlaceholders(){const reverseInput=document.getElementById('reverseInput');if(reverseInput){if(window.innerWidth<768){reverseInput.placeholder="e.g. smell of rain"}else{reverseInput.placeholder="e.g. the smell of rain on dry earth"}}}
 function resetUrl(){try{const url=new URL(window.location);url.searchParams.delete('q');window.history.pushState({},'',url)}catch(e){console.warn('History API not supported')}}
 function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;setupToolInputs();updateMobilePlaceholders();window.addEventListener('resize',updateMobilePlaceholders);const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};searchInput.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{const y=document.querySelector('.search-container').getBoundingClientRect().top+window.pageYOffset-24;window.scrollTo({top:y,behavior:'smooth'})},300)}});searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl()});searchInput.addEventListener('input',function(){toggleClearBtn();clearTimeout(typingTimer);if(this.value.trim().length===0){resetUrl()}typingTimer=setTimeout(()=>{const query=this.value.trim().toLowerCase();if(query.length===0){autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';return}showAutocomplete(query)},300)});searchInput.addEventListener('keydown',function(e){if(e.key==='Escape')autocompleteDropdown.classList.remove('show');if(e.key==='Enter'){playButtonSound();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query){if(window.innerWidth<768){this.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}}});document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))autocompleteDropdown.classList.remove('show')})}
@@ -670,41 +782,107 @@ document.addEventListener('DOMContentLoaded',function(){const savedTheme=localSt
 
 // --- AI Chat Logic ---
 const chatHistory = document.getElementById('chatHistory');
-const aiInput = document.getElementById('aiInput');
+// aiInput is already selected above in setupToolInputs scope, but let's re-select for clarity
+const aiInputEl = document.getElementById('aiInput');
 const aiSendBtn = document.getElementById('aiSendBtn');
+
+function formatMessage(text) {
+    if(!text) return '';
+    
+    // 1. Safe Encode (basic)
+    let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    // 2. Bold (**text**)
+    html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    
+    // 3. Italic (*text*)
+    html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+    
+    // 4. Code blocks (basic)
+    html = html.replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
+
+    // 5. Lists and Paragraphs processing
+    const lines = html.split('\n');
+    let output = '';
+    let inList = false;
+
+    lines.forEach(line => {
+        let trimmed = line.trim();
+        
+        // List Item
+        if (trimmed.startsWith('- ') || trimmed.startsWith('• ') || trimmed.startsWith('* ')) {
+            if (!inList) {
+                output += '<ul>';
+                inList = true;
+            }
+            // Remove the marker and add li
+            const content = trimmed.substring(2);
+            output += `<li>${content}</li>`;
+        } 
+        // Not a list item
+        else {
+            if (inList) {
+                output += '</ul>';
+                inList = false;
+            }
+            if (trimmed.length > 0) {
+                // Headers (###)
+                if(trimmed.startsWith('### ')) output += `<h4>${trimmed.substring(4)}</h4>`;
+                else output += `<p>${line}</p>`; 
+            }
+        }
+    });
+    
+    if (inList) output += '</ul>';
+    
+    return output;
+}
 
 function appendMessage(sender, text) {
     const isUser = sender === 'User';
-    const div = document.createElement('div');
-    div.style.marginBottom = '15px';
-    div.style.display = 'flex';
-    div.style.gap = '10px';
-    div.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
-
-    const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-    const avatar = `<div style="width: 35px; height: 35px; border-radius: 50%; background: ${isUser ? 'var(--text-muted)' : 'var(--primary)'}; display: flex; align-items: center; justify-content: center; color: var(--bg-deep); font-weight: bold; flex-shrink: 0;">${isUser ? '<i class="fas fa-user"></i>' : 'AI'}</div>`;
     
-    const bubble = `<div style="background: ${isUser ? 'rgba(255,255,255,0.05)' : 'var(--bg-deep)'}; padding: 10px 15px; border-radius: ${isUser ? '15px 0 15px 15px' : '0 15px 15px 15px'}; border: 1px solid var(--glass-border); color: var(--text-main); line-height: 1.5; max-width: 80%; word-wrap: break-word;">
-        ${formattedText}
-    </div>`;
+    // Create container
+    const rowDiv = document.createElement('div');
+    rowDiv.className = `chat-row ${isUser ? 'user' : 'ai'}`;
 
-    div.innerHTML = isUser ? (bubble + avatar) : (avatar + bubble);
-    chatHistory.appendChild(div);
+    // Format text
+    let formattedText = isUser ? text : formatMessage(text);
+    // User text bold fallback if needed
+    if(isUser) formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    // Avatar
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'chat-avatar';
+    avatarDiv.innerHTML = isUser ? '<i class="fas fa-user"></i>' : 'AI';
+
+    // Bubble
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = 'chat-bubble';
+    bubbleDiv.innerHTML = formattedText;
+
+    // Append based on order logic handled by CSS flex order
+    rowDiv.appendChild(avatarDiv);
+    rowDiv.appendChild(bubbleDiv);
+
+    chatHistory.appendChild(rowDiv);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 
 async function sendToAI() {
-    const text = aiInput.value.trim();
+    const text = aiInputEl.value.trim();
     if (!text) return;
 
     appendMessage('User', text);
-    aiInput.value = '';
+    aiInputEl.value = '';
     
     const loadingId = 'loading-' + Date.now();
     const loadingDiv = document.createElement('div');
     loadingDiv.id = loadingId;
-    loadingDiv.innerHTML = `<div style="margin-left: 45px; color: var(--text-muted); font-style: italic; font-size: 0.9rem;">Thinking...</div>`;
+    loadingDiv.style.marginLeft = '45px';
+    loadingDiv.style.color = 'var(--text-muted)';
+    loadingDiv.style.fontStyle = 'italic';
+    loadingDiv.innerText = 'Thinking...';
+    
     chatHistory.appendChild(loadingDiv);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 
@@ -738,8 +916,8 @@ async function sendToAI() {
 if(aiSendBtn) {
     aiSendBtn.addEventListener('click', () => { playButtonSound(); sendToAI(); });
 }
-if(aiInput) {
-    aiInput.addEventListener('keypress', (e) => {
+if(aiInputEl) {
+    aiInputEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') { playButtonSound(); sendToAI(); }
     });
 }
@@ -769,8 +947,8 @@ function sendSelectionToAI() {
   aiSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
   
   // Fill input
-  aiInput.value = `Explain this: "${selectedText}"`;
-  aiInput.focus();
+  aiInputEl.value = `Explain this: "${selectedText}"`;
+  aiInputEl.focus();
   
   // Clear selection and hide button
   window.getSelection().removeAllRanges();
