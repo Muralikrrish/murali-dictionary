@@ -22,6 +22,7 @@
 :root{--bg-deep:#0f172a;--bg-surface:rgba(30,41,59,0.75);--glass-border:rgba(255,255,255,0.08);--glass-highlight:rgba(255,255,255,0.05);--glass-shadow:0 8px 32px 0 rgba(0,0,0,0.4);--primary:#fbbf24;--primary-dim:#d97706;--primary-soft:#f59e0b;--primary-glow:rgba(251,191,36,0.25);--text-main:#f8fafc;--text-bright-dim:#cbd5e1;--text-muted:#94a3b8;--text-header:#64748b;--success:#34d399;--error:#f87171;--section-gap:80px;--radius-lg:24px;--radius-md:16px;--radius-sm:12px;--backdrop-blur:blur(16px)}
 #searchResultsSection{--section-acc:#f59e0b;--section-acc-light:#fde68a}
 #curiositySection{--section-acc:#ec4899;--section-acc-light:#fbcfe8}
+#aiAssistantSection{--section-acc:#8b5cf6;--section-acc-light:#ddd6fe}
 #vocabularyQuizSection{--section-acc:#10b981;--section-acc-light:#a7f3d0}
 #wordToolkitSection{--section-acc:#0ea5e9;--section-acc-light:#bae6fd}
 #hangmanSection{--section-acc:#f97316;--section-acc-light:#fed7aa}
@@ -208,6 +209,51 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .curiosity-fact{font-family:'Playfair Display',serif;font-size:1.8rem;line-height:1.3;color:var(--text-main);margin-bottom:20px}
 .curiosity-detail{color:var(--text-muted);font-size:1.05rem;line-height:1.8;max-height:0;overflow:hidden;transition:max-height 0.5s ease,opacity 0.5s ease;opacity:0}
 .curiosity-detail.show{max-height:2000px;opacity:1;margin-bottom:24px}
+
+/* --- Floating Magic Button --- */
+#magicAskBtn {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--primary);
+  color: var(--bg-deep);
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  border: 2px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  z-index: 2000;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+#magicAskBtn.visible {
+  transform: translateX(-50%) translateY(0);
+}
+#magicAskBtn:active {
+  transform: translateX(-50%) scale(0.95);
+}
+#magicAskBtn i {
+  font-size: 1.1rem;
+}
+
+/* --- AI Chat Empty State --- */
+#chatHistory:empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#chatHistory:empty::after {
+    content: 'Ask about definitions, origins, or grammar...';
+    color: var(--text-muted);
+    font-style: italic;
+    opacity: 0.5;
+}
+
 @media(max-width:767px){
 .bg-decoration{position:fixed!important;top:0!important;height:100vh!important;width:100%;z-index:-1;overflow:hidden}
 .bg-icon{opacity:0.06!important;filter:blur(1.5px)}
@@ -291,6 +337,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 <button class="mobile-nav-toggle" onclick="toggleMobileNav()" aria-label="Menu"><i class="fas fa-bars"></i></button>
 <div class="mobile-dropdown" id="mobileDropdown">
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('curiositySection')">Curiosities</a>
+<a href="#" class="mobile-nav-item" onclick="scrollToSection('aiAssistantSection')">Ask AI</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('vocabularyQuizSection')">Vocab Quiz</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('hangmanSection')">Hangman</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('gkQuizSection')">General Knowledge</a>
@@ -303,6 +350,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 </div>
 <nav class="desktop-nav">
 <a href="#curiositySection" class="nav-link">Curiosities</a>
+<a href="#aiAssistantSection" class="nav-link">Ask AI</a>
 <a href="#vocabularyQuizSection" class="nav-link">Vocab Quiz</a>
 <a href="#hangmanSection" class="nav-link">Hangman</a>
 <a href="#gkQuizSection" class="nav-link">General Knowledge</a>
@@ -325,6 +373,12 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 <i class="fas fa-dna bg-icon icon-7"></i>
 <i class="fas fa-quote-left bg-icon icon-8"></i>
 </div>
+
+<!-- Floating Magic Button -->
+<button id="magicAskBtn" onclick="sendSelectionToAI()">
+  <i class="fas fa-robot"></i> Ask AI
+</button>
+
 <section class="hero-section">
 <div class="container">
 <h1 class="hero-title">Pearls of Knowledge</h1>
@@ -359,6 +413,31 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 </div>
 </div>
 </section>
+
+<!-- AI Assistant Section -->
+<section class="modern-section" id="aiAssistantSection">
+    <h2 class="modern-section-title"><span>AI Knowledge Assistant</span></h2>
+    <div class="interactive-card">
+        <div class="tool-header">
+            <h3>Ask Anything</h3>
+            <p>Unravel the mysteries of language</p>
+        </div>
+        
+        <div id="chatHistory" style="min-height: 300px; max-height: 500px; overflow-y: auto; margin-bottom: 20px; padding: 15px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); background: rgba(0,0,0,0.2);">
+            <!-- Empty initial state, CSS :empty handles the placeholder -->
+        </div>
+
+        <div class="tool-input-group" style="position: relative;">
+            <div class="search-box tool-search-box" style="width: 100%; max-width: 100%;">
+                <div class="search-input-wrapper">
+                    <input type="text" id="aiInput" placeholder="Ask a question..." autocomplete="off">
+                    <span class="search-icon" id="aiSendBtn" style="cursor: pointer; color: var(--primary);"><i class="fas fa-paper-plane"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="modern-section" id="vocabularyQuizSection">
 <h2 class="modern-section-title"><span>Vocabulary Quiz</span></h2>
 <div class="interactive-card">
@@ -567,6 +646,115 @@ function renderSenses(sseq){let html='';sseq.forEach(senseBlock=>{senseBlock.for
 async function displaySearchResults(query){const searchResultsSection=document.getElementById('searchResultsSection');const wordsList=document.getElementById('wordsList');const newUrl=`${window.location.pathname}?q=${encodeURIComponent(query)}`;window.history.pushState({path:newUrl},'',newUrl);document.title=`${query.charAt(0).toUpperCase()+query.slice(1)} - Pearls of Knowledge`;const localMatches=dictionary.filter(item=>item.word.toLowerCase()===query);if(localMatches.length>0){let html='';localMatches.forEach(item=>{html+=`<div class="interactive-card"><div class="word-definition">${convertH2ToToggles(item.definition)}</div></div>`});wordsList.innerHTML=html}else{wordsList.innerHTML=`<div class="skeleton-loading"><div class="skeleton-line long"></div></div>`;let finalHtml='';try{const[mwData,wordnikData,wordnikRelated]=await Promise.all([fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${query}?key=${MW_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/definitions?limit=10&sourceDictionaries=ahd-5&useCanonical=false&includeTags=true&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/relatedWords?useCanonical=false&limitPerRelationshipType=10&sourceDictionaries=ahd-5&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null)]);if(mwData&&Array.isArray(mwData)&&mwData.length>0&&typeof mwData[0]==='object'){let mwHtmlContent='';mwData.slice(0,1).forEach(entry=>{if(!entry.hwi)return;const word=entry.hwi.hw.replace(/\*/g,'·');let pronHtml='';if(entry.hwi.prs&&entry.hwi.prs.length>0){const prs=entry.hwi.prs[0];if(prs.mw)pronHtml+=`<span class="pronunciation-text">/${prs.mw}/</span>`;if(prs.sound&&prs.sound.audio){const audioUrl=getAudioUrl(prs.sound.audio);pronHtml+=`<button class="audio-btn" onclick="playAudio('${audioUrl}')"><i class="fas fa-volume-up"></i></button>`}}mwHtmlContent+=`<h1>${word} ${pronHtml}</h1>`;if(entry.fl)mwHtmlContent+=`<h3>${entry.fl}</h3>`;if(entry.def&&entry.def.length>0)mwHtmlContent+=renderSenses(entry.def[0].sseq);else if(entry.shortdef)entry.shortdef.forEach(d=>mwHtmlContent+=`<p>${d}</p>`)})
 if(mwHtmlContent){finalHtml+=`<div class="interactive-card"><div class="word-definition">${mwHtmlContent}</div></div>`}}if(wordnikData&&Array.isArray(wordnikData)&&wordnikData.length>0){let wordnikInnerHtml='';if(finalHtml){finalHtml+=`<div class="mobile-result-separator"></div>`}wordnikData.forEach(def=>{if(!def.text)return;if(def.partOfSpeech)wordnikInnerHtml+=`<h3>${def.partOfSpeech}</h3>`;if(def.labels&&def.labels.length>0){const labelText=def.labels.map(l=>l.text).join(', ');wordnikInnerHtml+=`<p style="font-style: italic; color: var(--primary); margin-bottom: 4px;">[${labelText}]</p>`}if(def.text)wordnikInnerHtml+=`<p>${def.text}</p>`;if(def.exampleUses&&def.exampleUses.length>0){wordnikInnerHtml+=`<ul style="margin-top:0; padding-left: 20px; list-style-type: none;">`;def.exampleUses.forEach(ex=>{wordnikInnerHtml+=`<li style="color: var(--text-muted); font-style: italic; margin-bottom: 4px;">"${ex.text}"</li>`});wordnikInnerHtml+=`</ul>`}});if(wordnikRelated&&Array.isArray(wordnikRelated)&&wordnikRelated.length>0){const allowedTypes=new Set(['form']);const filteredRelated=wordnikRelated.filter(grp=>allowedTypes.has(grp.relationshipType));if(filteredRelated.length>0){wordnikInnerHtml+=`<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;filteredRelated.forEach(grp=>{const type=grp.relationshipType.charAt(0).toUpperCase()+grp.relationshipType.slice(1);const words=grp.words.join(', ');wordnikInnerHtml+=`<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`});wordnikInnerHtml+=`</div>`}}if(wordnikInnerHtml){let wordnikHtmlContent=`<h1>${query}</h1>`+wordnikInnerHtml;finalHtml+=`<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`}}if(finalHtml){wordsList.innerHTML=finalHtml}else{wordsList.innerHTML=`<p style="text-align:center;">No definitions found for <strong>${query}</strong>.</p>`}}catch(e){console.error(e);wordsList.innerHTML='<p style="text-align:center;">Error connecting to knowledge banks.</p>'}}searchResultsSection.style.display='block';setTimeout(()=>{searchResultsSection.scrollIntoView({behavior:'smooth',block:'start'})},100)}
 document.addEventListener('DOMContentLoaded',function(){const savedTheme=localStorage.getItem('theme');if(savedTheme==='light'){const icon=document.getElementById('themeIcon');if(icon)icon.className='fas fa-sun'}const cachedDict=SafeStorage.getItem('dictionary');if(cachedDict){try{dictionary=JSON.parse(cachedDict);buildSearchIndex();if(dictionary.length>0){displayWordSpotlight();hasDisplayedWordSpotlight=true}}catch(e){console.error('Cache parse error:',e)}}if(dictionary.length===0){document.getElementById('wordSpotlightDisplay').innerHTML=`<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>`}requestAnimationFrame(()=>{initializeSupabase();setupSearch()})});
+
+// --- AI Chat Logic ---
+const chatHistory = document.getElementById('chatHistory');
+const aiInput = document.getElementById('aiInput');
+const aiSendBtn = document.getElementById('aiSendBtn');
+
+function appendMessage(sender, text) {
+    const isUser = sender === 'User';
+    const div = document.createElement('div');
+    div.style.marginBottom = '15px';
+    div.style.display = 'flex';
+    div.style.gap = '10px';
+    div.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
+
+    const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    const avatar = `<div style="width: 35px; height: 35px; border-radius: 50%; background: ${isUser ? 'var(--text-muted)' : 'var(--primary)'}; display: flex; align-items: center; justify-content: center; color: var(--bg-deep); font-weight: bold; flex-shrink: 0;">${isUser ? '<i class="fas fa-user"></i>' : 'AI'}</div>`;
+    
+    const bubble = `<div style="background: ${isUser ? 'rgba(255,255,255,0.05)' : 'var(--bg-deep)'}; padding: 10px 15px; border-radius: ${isUser ? '15px 0 15px 15px' : '0 15px 15px 15px'}; border: 1px solid var(--glass-border); color: var(--text-main); line-height: 1.5; max-width: 80%; word-wrap: break-word;">
+        ${formattedText}
+    </div>`;
+
+    div.innerHTML = isUser ? (bubble + avatar) : (avatar + bubble);
+    chatHistory.appendChild(div);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+async function sendToAI() {
+    const text = aiInput.value.trim();
+    if (!text) return;
+
+    appendMessage('User', text);
+    aiInput.value = '';
+    
+    const loadingId = 'loading-' + Date.now();
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = loadingId;
+    loadingDiv.innerHTML = `<div style="margin-left: 45px; color: var(--text-muted); font-style: italic; font-size: 0.9rem;">Thinking...</div>`;
+    chatHistory.appendChild(loadingDiv);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+
+    try {
+        const response = await fetch('/api/ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: text })
+        });
+
+        const data = await response.json();
+        const loader = document.getElementById(loadingId);
+        if(loader) loader.remove();
+
+        if (data.answer) {
+            appendMessage('AI', data.answer);
+            playCorrectSound();
+        } else {
+            appendMessage('AI', 'Sorry, I encountered an error.');
+            console.error(data.error);
+        }
+
+    } catch (error) {
+        const loader = document.getElementById(loadingId);
+        if(loader) loader.remove();
+        appendMessage('AI', 'Error: Could not reach the server.');
+        console.error(error);
+    }
+}
+
+if(aiSendBtn) {
+    aiSendBtn.addEventListener('click', () => { playButtonSound(); sendToAI(); });
+}
+if(aiInput) {
+    aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') { playButtonSound(); sendToAI(); }
+    });
+}
+
+// --- Magic Button Logic ---
+const magicBtn = document.getElementById('magicAskBtn');
+let selectedText = '';
+
+document.addEventListener('selectionchange', () => {
+  const selection = window.getSelection();
+  selectedText = selection.toString().trim();
+  
+  if (selectedText.length > 0) {
+    magicBtn.classList.add('visible');
+  } else {
+    magicBtn.classList.remove('visible');
+  }
+});
+
+function sendSelectionToAI() {
+  if (!selectedText) return;
+  
+  playButtonSound();
+  
+  // Scroll to AI section
+  const aiSection = document.getElementById('aiAssistantSection');
+  aiSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  // Fill input
+  aiInput.value = `Explain this: "${selectedText}"`;
+  aiInput.focus();
+  
+  // Clear selection and hide button
+  window.getSelection().removeAllRanges();
+  magicBtn.classList.remove('visible');
+}
 </script>
 </body>
 </html>
