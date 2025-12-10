@@ -540,8 +540,13 @@
             font-family: 'Plus Jakarta Sans', sans-serif; position: relative; overflow: hidden;
         }
         [data-theme="light"] .option-btn { background: rgba(0, 0, 0, 0.02); border-color: rgba(0,0,0,0.1); }
-        .option-btn:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); transform: translateX(4px); color: var(--text-main); }
-        [data-theme="light"] .option-btn:hover { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.2); }
+        
+        /* HOVER FIX: Only apply hover effects on devices that support hover (Mouse/Trackpad) */
+        @media (hover: hover) {
+            .option-btn:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); transform: translateX(4px); color: var(--text-main); }
+            [data-theme="light"] .option-btn:hover { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.2); }
+        }
+
         .option-btn.selected { background: var(--primary); border-color: var(--primary); color: #0f172a; font-weight: 600; box-shadow: 0 0 20px var(--primary-glow); }
         .option-btn.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: #34d399; }
         .option-btn.incorrect { background: rgba(248, 113, 113, 0.15); border-color: var(--error); color: #f87171; }
@@ -817,7 +822,8 @@
 
             .word-definition h1 { font-size: 1.7rem !important; }
 
-            .hangman-word { white-space: nowrap; font-size: 6vw; letter-spacing: 0.15em; overflow: hidden; margin-top: 36px !important; margin-bottom: 24px; }
+            /* Updated Hangman Word Mobile Styles: Removed overflow hidden to allow text to fit, relying on JS resizing */
+            .hangman-word { white-space: nowrap; font-size: 6vw; letter-spacing: 0.15em; overflow: visible; margin-top: 36px !important; margin-bottom: 24px; }
             .hangman-clue-area { font-style: normal; text-align: left; }
 
             .result-area { margin-top: 8px !important; padding-top: 8px !important; }
@@ -1380,8 +1386,16 @@
                     wordDisplay.style.letterSpacing = '0.5em';
                 }
             } else {
-                 wordDisplay.style.fontSize = ''; // Clear inline for mobile CSS to take over
-                 wordDisplay.style.letterSpacing = '';
+                 // Mobile Logic (UPDATED: Handle long words like "disconsolate")
+                 const len = hangmanWord.length;
+                 if (len > 10) {
+                     // For long words, reduce size and spacing to fit on one line
+                     wordDisplay.style.fontSize = '5vw'; 
+                     wordDisplay.style.letterSpacing = '2px';
+                 } else {
+                     wordDisplay.style.fontSize = ''; // Use CSS default (6vw)
+                     wordDisplay.style.letterSpacing = '';
+                 }
             }
 
             // Render Keyboard
