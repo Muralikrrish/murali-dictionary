@@ -241,17 +241,39 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
   font-size: 1.1rem;
 }
 
-/* --- AI Chat Empty State --- */
-#chatHistory:empty {
+/* --- AI Chat Styling --- */
+#chatHistory {
+    position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
 }
+
+/* The modern "Empty State" */
+#chatHistory:empty::before {
+    content: '\f059'; /* FontAwesome Question Circle Icon */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 3rem;
+    color: var(--glass-border);
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
+}
+
 #chatHistory:empty::after {
     content: 'Ask about definitions, origins, or grammar...';
     color: var(--text-muted);
     font-style: italic;
+    font-size: 1.1rem;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     opacity: 0.5;
+    text-align: center;
+    width: 100%;
 }
 
 @media(max-width:767px){
@@ -423,9 +445,8 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
             <p>Unravel the mysteries of language</p>
         </div>
         
-        <div id="chatHistory" style="min-height: 300px; max-height: 500px; overflow-y: auto; margin-bottom: 20px; padding: 15px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); background: rgba(0,0,0,0.2);">
-            <!-- Empty initial state, CSS :empty handles the placeholder -->
-        </div>
+        <!-- Empty container for the CSS empty state to work -->
+        <div id="chatHistory" style="min-height: 300px; max-height: 500px; overflow-y: auto; margin-bottom: 20px; padding: 15px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); background: rgba(0,0,0,0.2);"></div>
 
         <div class="tool-input-group" style="position: relative;">
             <div class="search-box tool-search-box" style="width: 100%; max-width: 100%;">
