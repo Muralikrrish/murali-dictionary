@@ -450,19 +450,16 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     backdrop-filter: none !important;
 }
 .chat-row {
-    gap: 8px; /* Reduced gap */
+    gap: 0; /* No gap needed if avatar is gone */
     margin-bottom: 12px;
 }
 .chat-avatar {
-    width: 28px; /* Smaller avatar */
-    height: 28px;
-    font-size: 0.8rem;
-    margin-top: 4px; /* Align with first line of text */
+    display: none !important; /* Hide avatar on mobile */
 }
 .chat-bubble {
     padding: 10px 14px; /* Tighter padding */
     font-size: 0.95rem; /* Slightly smaller text */
-    max-width: 88%; /* Allow more width */
+    max-width: 90%; /* Allow more width */
 }
 /* Ensure send button color is visible on mobile */
 #aiSendBtn {
