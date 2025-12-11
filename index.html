@@ -210,11 +210,70 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .curiosity-detail{color:var(--text-muted);font-size:1.05rem;line-height:1.8;max-height:0;overflow:hidden;transition:max-height 0.5s ease,opacity 0.5s ease;opacity:0}
 .curiosity-detail.show{max-height:2000px;opacity:1;margin-bottom:24px}
 
+/* --- Floating Magic Button --- */
+#magicAskBtn {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--primary);
+  color: var(--bg-deep);
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  border: 2px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  z-index: 2000;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+#magicAskBtn.visible {
+  transform: translateX(-50%) translateY(0);
+}
+#magicAskBtn:active {
+  transform: translateX(-50%) scale(0.95);
+}
+#magicAskBtn i {
+  font-size: 1.1rem;
+}
+
 /* --- AI Chat Styling --- */
 #chatHistory {
     position: relative;
-    display: none; /* Hidden by default */
+    display: flex;
     flex-direction: column;
+}
+
+/* The modern "Empty State" */
+#chatHistory:empty::before {
+    content: '\f059'; /* FontAwesome Question Circle Icon */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 3rem;
+    color: var(--glass-border);
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
+}
+
+#chatHistory:empty::after {
+    content: 'Ask about definitions, origins, or grammar...';
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 1.1rem;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+    text-align: center;
+    width: 100%;
 }
 
 /* AI Chat Specifics - Responsive */
@@ -293,6 +352,40 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     color: var(--text-bright-dim);
 }
 
+/* AI Input Textarea Styling */
+#aiInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    padding: 12px 12px 12px 0;
+    font-weight: 500;
+    outline: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    resize: none;
+    height: 52px; /* Base height roughly 1-2 lines */
+    max-height: 140px; /* Slider appears if content exceeds this */
+    overflow-y: auto;
+    line-height: 1.5;
+}
+/* Scrollbar for textarea */
+#aiInput::-webkit-scrollbar {
+    width: 6px;
+}
+#aiInput::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 3px;
+}
+#aiInput::-webkit-scrollbar-track {
+    background: transparent;
+}
+.ai-input-wrapper {
+    display: flex; 
+    align-items: flex-end; /* Align send icon to bottom */
+    padding: 0 16px;
+}
+
 @media(max-width:767px){
 .bg-decoration{position:fixed!important;top:0!important;height:100vh!important;width:100%;z-index:-1;overflow:hidden}
 .bg-icon{opacity:0.06!important;filter:blur(1.5px)}
@@ -369,6 +462,20 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 [data-theme="light"] .mobile-result-separator{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.1),transparent)}
 
 /* AI Chat Mobile Optimizations */
+#aiAssistantSection .interactive-card {
+    /* Remove card styling on mobile */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+}
+#chatHistory {
+    /* Blend with background on mobile */
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
 .chat-row {
     gap: 8px; /* Reduced gap */
     margin-bottom: 12px;
@@ -388,6 +495,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 #aiSendBtn {
     color: var(--primary) !important;
     opacity: 1 !important;
+    padding: 10px;
 }
 }
 </style>
@@ -398,26 +506,26 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 <button class="mobile-nav-toggle" onclick="toggleMobileNav()" aria-label="Menu"><i class="fas fa-bars"></i></button>
 <div class="mobile-dropdown" id="mobileDropdown">
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('curiositySection')">Curiosities</a>
-<a href="#" class="mobile-nav-item" onclick="scrollToSection('aiAssistantSection')">Ask AI</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('vocabularyQuizSection')">Vocab Quiz</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('hangmanSection')">Hangman</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('gkQuizSection')">General Knowledge</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('wordSpotlightSection')">Word Spotlight</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('wordToolkitSection')">Linguistic Toolkit</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('reverseDictSection')">Reverse Dict</a>
+<a href="#" class="mobile-nav-item" onclick="scrollToSection('aiAssistantSection')">Ask AI</a>
 </div>
 </div>
 <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon" id="themeIcon"></i></button>
 </div>
 <nav class="desktop-nav">
 <a href="#curiositySection" class="nav-link">Curiosities</a>
-<a href="#aiAssistantSection" class="nav-link">Ask AI</a>
 <a href="#vocabularyQuizSection" class="nav-link">Vocab Quiz</a>
 <a href="#hangmanSection" class="nav-link">Hangman</a>
 <a href="#gkQuizSection" class="nav-link">General Knowledge</a>
 <a href="#wordSpotlightSection" class="nav-link">Spotlight</a>
 <a href="#wordToolkitSection" class="nav-link">Toolkit</a>
 <a href="#reverseDictSection" class="nav-link">Reverse Dict</a>
+<a href="#aiAssistantSection" class="nav-link">Ask AI</a>
 </nav>
 <div class="ambient-light">
 <div class="orb orb-1"></div>
@@ -434,6 +542,11 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 <i class="fas fa-dna bg-icon icon-7"></i>
 <i class="fas fa-quote-left bg-icon icon-8"></i>
 </div>
+
+<!-- Floating Magic Button -->
+<button id="magicAskBtn" onclick="sendSelectionToAI()">
+  <i class="fas fa-robot"></i> Ask AI
+</button>
 
 <section class="hero-section">
 <div class="container">
@@ -468,31 +581,6 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 </div>
 </div>
 </div>
-</section>
-
-<!-- AI Assistant Section -->
-<section class="modern-section" id="aiAssistantSection">
-    <h2 class="modern-section-title"><span>AI Knowledge Assistant</span></h2>
-    <div class="interactive-card">
-        <div class="tool-header" style="display: flex; justify-content: center; align-items: center; gap: 12px;">
-            <h3 style="margin-bottom: 0;">Ask Anything</h3>
-            <button id="resetChatBtn" class="action-btn" style="padding: 6px 12px; font-size: 0.9rem;" title="Clear Chat">
-                <i class="fas fa-redo-alt"></i>
-            </button>
-        </div>
-        
-        <!-- Chat history starts hidden -->
-        <div id="chatHistory" style="min-height: 300px; max-height: 500px; overflow-y: auto; margin-bottom: 20px; padding: 15px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); background: rgba(0,0,0,0.2);"></div>
-
-        <div class="tool-input-group" style="position: relative;">
-            <div class="search-box tool-search-box" style="width: 100%; max-width: 100%;">
-                <div class="search-input-wrapper">
-                    <input type="text" id="aiInput" placeholder="Ask a question..." autocomplete="off">
-                    <span class="search-icon" id="aiSendBtn" style="cursor: pointer; color: var(--primary);"><i class="fas fa-paper-plane"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>
 </section>
 
 <section class="modern-section" id="vocabularyQuizSection">
@@ -637,6 +725,29 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 <div id="reverseResults" class="results-container"></div>
 </div>
 </section>
+
+<!-- AI Assistant Section (Moved to Bottom) -->
+<section class="modern-section" id="aiAssistantSection">
+    <h2 class="modern-section-title"><span>AI Knowledge Assistant</span></h2>
+    <div class="interactive-card">
+        <div class="tool-header">
+            <h3>Ask Anything</h3>
+        </div>
+        
+        <div id="chatHistory" style="min-height: 300px; max-height: 500px; overflow-y: auto; margin-bottom: 20px; padding: 15px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); background: rgba(0,0,0,0.2);"></div>
+
+        <div class="tool-input-group" style="position: relative;">
+            <div class="search-box tool-search-box" style="width: 100%; max-width: 100%;">
+                <div class="ai-input-wrapper">
+                    <!-- Changed to Textarea -->
+                    <textarea id="aiInput" placeholder="Ask a question..." rows="1"></textarea>
+                    <span class="search-icon" id="aiSendBtn" style="cursor: pointer; color: var(--primary); padding: 10px;"><i class="fas fa-paper-plane"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -720,58 +831,88 @@ document.addEventListener('DOMContentLoaded',function(){const savedTheme=localSt
 
 // --- AI Chat Logic ---
 const chatHistory = document.getElementById('chatHistory');
+// aiInput is already selected above in setupToolInputs scope, but let's re-select for clarity
 const aiInputEl = document.getElementById('aiInput');
 const aiSendBtn = document.getElementById('aiSendBtn');
-const resetChatBtn = document.getElementById('resetChatBtn');
-
-// Store conversation context locally
-let conversationContext = [];
 
 function formatMessage(text) {
     if(!text) return '';
+    
+    // 1. Safe Encode (basic)
     let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    // 2. Bold (**text**)
     html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    
+    // 3. Italic (*text*)
     html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+    
+    // 4. Code blocks (basic)
     html = html.replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
+
+    // 5. Lists and Paragraphs processing
     const lines = html.split('\n');
     let output = '';
     let inList = false;
+
     lines.forEach(line => {
         let trimmed = line.trim();
+        
+        // List Item
         if (trimmed.startsWith('- ') || trimmed.startsWith('• ') || trimmed.startsWith('* ')) {
-            if (!inList) { output += '<ul>'; inList = true; }
-            output += `<li>${trimmed.substring(2)}</li>`;
-        } else {
-            if (inList) { output += '</ul>'; inList = false; }
+            if (!inList) {
+                output += '<ul>';
+                inList = true;
+            }
+            // Remove the marker and add li
+            const content = trimmed.substring(2);
+            output += `<li>${content}</li>`;
+        } 
+        // Not a list item
+        else {
+            if (inList) {
+                output += '</ul>';
+                inList = false;
+            }
             if (trimmed.length > 0) {
+                // Headers (###)
                 if(trimmed.startsWith('### ')) output += `<h4>${trimmed.substring(4)}</h4>`;
                 else output += `<p>${line}</p>`; 
             }
         }
     });
+    
     if (inList) output += '</ul>';
+    
     return output;
 }
 
 function appendMessage(sender, text) {
-    // Show chat history box if hidden
-    if(chatHistory.style.display === 'none' || chatHistory.style.display === '') {
-        chatHistory.style.display = 'flex';
-    }
-
     const isUser = sender === 'User';
+    
+    // Create container
     const rowDiv = document.createElement('div');
     rowDiv.className = `chat-row ${isUser ? 'user' : 'ai'}`;
+
+    // Format text
     let formattedText = isUser ? text : formatMessage(text);
+    // User text bold fallback if needed
     if(isUser) formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    // Avatar
     const avatarDiv = document.createElement('div');
     avatarDiv.className = 'chat-avatar';
     avatarDiv.innerHTML = isUser ? '<i class="fas fa-user"></i>' : 'AI';
+
+    // Bubble
     const bubbleDiv = document.createElement('div');
     bubbleDiv.className = 'chat-bubble';
     bubbleDiv.innerHTML = formattedText;
+
+    // Append based on order logic handled by CSS flex order
     rowDiv.appendChild(avatarDiv);
     rowDiv.appendChild(bubbleDiv);
+
     chatHistory.appendChild(rowDiv);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
@@ -794,21 +935,11 @@ async function sendToAI() {
     chatHistory.appendChild(loadingDiv);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 
-    // Construct Contextual Prompt
-    // We send previous messages as context to the AI
-    let contextString = "";
-    if (conversationContext.length > 0) {
-        contextString = "Previous conversation:\n" + conversationContext.map(msg => `${msg.role}: ${msg.content}`).join("\n") + "\n\n";
-    }
-    
-    // We combine context + current user question
-    const finalPrompt = `${contextString}User: ${text}\nAI:`;
-
     try {
         const response = await fetch('/api/ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: finalPrompt })
+            body: JSON.stringify({ prompt: text })
         });
 
         const data = await response.json();
@@ -818,15 +949,6 @@ async function sendToAI() {
         if (data.answer) {
             appendMessage('AI', data.answer);
             playCorrectSound();
-            
-            // Update Context
-            conversationContext.push({ role: 'User', content: text });
-            conversationContext.push({ role: 'AI', content: data.answer });
-            
-            // Keep context manageable (last 6 exchanges)
-            if (conversationContext.length > 12) {
-                conversationContext = conversationContext.slice(conversationContext.length - 12);
-            }
         } else {
             appendMessage('AI', 'Sorry, I encountered an error.');
             console.error(data.error);
@@ -840,26 +962,51 @@ async function sendToAI() {
     }
 }
 
-function resetAiChat() {
-    playClearSound();
-    // Clear DOM
-    chatHistory.innerHTML = '';
-    // Hide Box
-    chatHistory.style.display = 'none';
-    // Clear Memory
-    conversationContext = [];
-}
-
 if(aiSendBtn) {
     aiSendBtn.addEventListener('click', () => { playButtonSound(); sendToAI(); });
 }
 if(aiInputEl) {
+    // UPDATED: Handle Enter vs Shift+Enter for Textarea
     aiInputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') { playButtonSound(); sendToAI(); }
+        if (e.key === 'Enter' && !e.shiftKey) { 
+            e.preventDefault(); 
+            playButtonSound(); 
+            sendToAI(); 
+        }
     });
 }
-if(resetChatBtn) {
-    resetChatBtn.addEventListener('click', resetAiChat);
+
+// --- Magic Button Logic ---
+const magicBtn = document.getElementById('magicAskBtn');
+let selectedText = '';
+
+document.addEventListener('selectionchange', () => {
+  const selection = window.getSelection();
+  selectedText = selection.toString().trim();
+  
+  if (selectedText.length > 0) {
+    magicBtn.classList.add('visible');
+  } else {
+    magicBtn.classList.remove('visible');
+  }
+});
+
+function sendSelectionToAI() {
+  if (!selectedText) return;
+  
+  playButtonSound();
+  
+  // Scroll to AI section
+  const aiSection = document.getElementById('aiAssistantSection');
+  aiSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  // Fill input
+  aiInputEl.value = `Explain this: "${selectedText}"`;
+  aiInputEl.focus();
+  
+  // Clear selection and hide button
+  window.getSelection().removeAllRanges();
+  magicBtn.classList.remove('visible');
 }
 </script>
 </body>
