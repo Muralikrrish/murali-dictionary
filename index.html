@@ -210,37 +210,6 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .curiosity-detail{color:var(--text-muted);font-size:1.05rem;line-height:1.8;max-height:0;overflow:hidden;transition:max-height 0.5s ease,opacity 0.5s ease;opacity:0}
 .curiosity-detail.show{max-height:2000px;opacity:1;margin-bottom:24px}
 
-/* --- Floating Magic Button --- */
-#magicAskBtn {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: var(--primary);
-  color: var(--bg-deep);
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-weight: 700;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  border: 2px solid rgba(255,255,255,0.2);
-  cursor: pointer;
-  z-index: 2000;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-#magicAskBtn.visible {
-  transform: translateX(-50%) translateY(0);
-}
-#magicAskBtn:active {
-  transform: translateX(-50%) scale(0.95);
-}
-#magicAskBtn i {
-  font-size: 1.1rem;
-}
-
 /* --- AI Chat Styling --- */
 #chatHistory {
     position: relative;
@@ -249,9 +218,23 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     /* Remove default container styling (Desktop & Mobile) per request */
     border: none !important;
     background: transparent !important;
-    padding: 0 !important;
-    min-height: 0 !important; 
+    padding: 0 10px 0 0 !important; /* Added padding for scrollbar */
+    min-height: 0 !important;
     margin-bottom: 20px;
+    overflow-y: auto; /* Allow scrolling */
+    max-height: 600px; /* Default Desktop Max Height */
+}
+
+/* Custom scrollbar for chat history */
+#chatHistory::-webkit-scrollbar {
+    width: 6px;
+}
+#chatHistory::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 3px;
+}
+#chatHistory::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 /* Empty State: HIDE entire container and its spacing when empty */
@@ -487,6 +470,11 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     opacity: 1 !important;
     padding: 10px;
 }
+
+/* Chat History Max Height for Mobile */
+#chatHistory {
+    max-height: 800px;
+}
 }
 </style>
 </head>
@@ -532,11 +520,6 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 <i class="fas fa-dna bg-icon icon-7"></i>
 <i class="fas fa-quote-left bg-icon icon-8"></i>
 </div>
-
-<!-- Floating Magic Button -->
-<button id="magicAskBtn" onclick="sendSelectionToAI()">
-  <i class="fas fa-robot"></i> Ask AI
-</button>
 
 <section class="hero-section">
 <div class="container">
@@ -987,38 +970,19 @@ async function sendToAI() {
 if(aiSendBtn) {
     aiSendBtn.addEventListener('click', () => { playButtonSound(); sendToAI(); });
 }
-/* REMOVED Enter Key listener that sends message. 
-   Default behavior (newline) will apply. */
 
-// --- Magic Button Logic ---
-const magicBtn = document.getElementById('magicAskBtn');
-let selectedText = '';
-
-document.addEventListener('selectionchange', () => {
-  const selection = window.getSelection();
-  selectedText = selection.toString().trim();
-  
-  if (selectedText.length > 0) {
-    magicBtn.classList.add('visible');
-  } else {
-    magicBtn.classList.remove('visible');
-  }
-});
-
-function sendSelectionToAI() {
-  if (!selectedText) return;
-  playButtonSound();
-  const aiSection = document.getElementById('aiAssistantSection');
-  aiSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  
-  aiInputEl.value = `Explain this: "${selectedText}"`;
-  aiInputEl.focus();
-  // Trigger resize
-  aiInputEl.style.height = 'auto';
-  aiInputEl.style.height = (aiInputEl.scrollHeight) + 'px';
-  
-  window.getSelection().removeAllRanges();
-  magicBtn.classList.remove('visible');
+// Add Keyboard Listener for Desktop (Enter to Send, Shift+Enter for Newline)
+if(aiInputEl) {
+    aiInputEl.addEventListener('keydown', function(e) {
+        // Only for desktop (width >= 768px)
+        if (window.innerWidth >= 768) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // Prevent default newline
+                playButtonSound();
+                sendToAI();
+            }
+        }
+    });
 }
 </script>
 </body>
