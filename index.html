@@ -934,13 +934,22 @@ async function sendToAI() {
     chatHistory.scrollTop = chatHistory.scrollHeight;
 
     try {
-        // We send the history array if the backend supports context
-        // Even if backend only reads 'prompt', we keep local memory consistent
+        // Prepare context-aware prompt
+        let promptToSend = text;
+        
+        // If there is history, prepend it to the prompt to ensure the AI "sees" it 
+        // even if the backend ignores the 'history' array.
+        if(conversationMemory.length > 1) {
+             const previousMsgs = conversationMemory.slice(0, -1); // All except current
+             const contextStr = previousMsgs.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
+             promptToSend = `Here is the conversation so far:\n${contextStr}\n\nCurrent User Question: ${text}\nAI:`;
+        }
+
         const response = await fetch('/api/ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                prompt: text,
+                prompt: promptToSend,
                 history: conversationMemory 
             })
         });
@@ -951,9 +960,29 @@ async function sendToAI() {
 
         if (data.answer) {
             appendMessage('AI', data.answer);
-            // Add AI response to memory
+            // Add AI response to memory (using pure answer)
             conversationMemory.push({ role: 'model', content: data.answer });
             playCorrectSound();
+
+            // Mobile: Scroll to show new message at top of screen with buffer
+            if(window.innerWidth < 768) {
+                setTimeout(() => {
+                    const lastMsg = chatHistory.lastElementChild;
+                    if(lastMsg) {
+                        const offset = 90; // Header height + buffer
+                        const bodyRect = document.body.getBoundingClientRect().top;
+                        const elementRect = lastMsg.getBoundingClientRect().top;
+                        const elementPosition = elementRect - bodyRect;
+                        const offsetPosition = elementPosition - offset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 150);
+            }
+
         } else {
             appendMessage('AI', 'Sorry, I encountered an error.');
             console.error(data.error);
