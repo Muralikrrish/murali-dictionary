@@ -242,63 +242,40 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 }
 
 /* --- AI Chat Styling --- */
+/* Remove empty state gap and text */
 #chatHistory {
     position: relative;
-    display: flex;
+    display: none; /* Hidden by default */
     flex-direction: column;
+    /* Remove border and background to blend in on desktop too */
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin-bottom: 20px;
 }
-
-/* The modern "Empty State" */
-#chatHistory:empty::before {
-    content: '\f059'; /* FontAwesome Question Circle Icon */
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    font-size: 3rem;
-    color: var(--glass-border);
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.3;
-}
-
-#chatHistory:empty::after {
-    content: 'Ask about definitions, origins, or grammar...';
-    color: var(--text-muted);
-    font-style: italic;
-    font-size: 1.1rem;
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.5;
-    text-align: center;
-    width: 100%;
+#chatHistory.active {
+    display: flex; /* Show when active */
 }
 
 /* AI Chat Specifics - Responsive */
 .chat-row {
     display: flex;
-    gap: 12px;
+    gap: 0; /* Avatars gone, no gap needed */
     margin-bottom: 16px;
-    align-items: flex-start; /* Aligns avatar to top */
+    flex-direction: column; /* Stack bubble */
 }
 .chat-row.user {
-    justify-content: flex-end;
+    align-items: flex-end;
 }
 .chat-row.ai {
-    justify-content: flex-start;
+    align-items: flex-start;
 }
+
+/* Avatars removed */
 .chat-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-weight: bold;
+    display: none;
 }
+
 .chat-bubble {
     padding: 12px 16px;
     border-radius: 16px;
@@ -308,30 +285,18 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     font-size: 1rem;
 }
 /* User specific */
-.chat-row.user .chat-avatar {
-    background: var(--text-muted);
-    color: var(--bg-deep);
-    order: 2; /* Avatar on right */
-}
 .chat-row.user .chat-bubble {
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--glass-border);
     border-radius: 16px 4px 16px 16px;
     color: var(--text-main);
-    order: 1;
 }
 /* AI specific */
-.chat-row.ai .chat-avatar {
-    background: var(--primary);
-    color: var(--bg-deep);
-    order: 1; /* Avatar on left */
-}
 .chat-row.ai .chat-bubble {
     background: var(--bg-deep);
     border: 1px solid var(--glass-border);
     border-radius: 4px 16px 16px 16px;
     color: var(--text-main);
-    order: 2;
 }
 .chat-bubble ul {
     margin: 8px 0 8px 20px;
@@ -364,8 +329,9 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     outline: none;
     font-family: 'Plus Jakarta Sans', sans-serif;
     resize: none;
-    height: 52px; /* Base height roughly 1-2 lines */
-    max-height: 140px; /* Slider appears if content exceeds this */
+    /* Height roughly 4 lines */
+    min-height: 120px; 
+    max-height: 250px;
     overflow-y: auto;
     line-height: 1.5;
 }
@@ -384,6 +350,38 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     display: flex; 
     align-items: flex-end; /* Align send icon to bottom */
     padding: 0 16px;
+}
+
+/* Clear Chat Button */
+#clearChatBtn {
+    margin-top: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--glass-border);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+#clearChatBtn:hover {
+    color: var(--error);
+    border-color: var(--error);
+    background: rgba(248,113,113,0.1);
+}
+
+/* Remove Card Styling for AI Section Globally (Desktop & Mobile) */
+#aiAssistantSection .interactive-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 @media(max-width:767px){
@@ -408,7 +406,6 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .mobile-nav-toggle{display:flex}
 .mobile-nav-container{display:block}
 .ui-controls{position:absolute;top:24px;justify-content:space-between;align-items:center;padding:0 16px}
-.interactive-card{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .modern-section-title{font-size:1.65rem!important;position:relative;z-index:10;display:flex!important;align-items:center;gap:16px}
 .modern-section-title span{position:relative;display:inline-block;z-index:1}
 .modern-section-title span::before{content:'';position:absolute;z-index:-1;bottom:2px;left:-4px;height:77%;background:var(--section-acc-light,var(--primary));clip-path:polygon(0% 5%,2% 0%,98% 2%,100% 0%,100% 95%,98% 100%,2% 98%,0% 100%);transform:none;width:0%;opacity:0;animation:drawHighlight 0.8s cubic-bezier(0.25,1,0.5,1) forwards;animation-delay:0.3s}
@@ -463,33 +460,18 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 
 /* AI Chat Mobile Optimizations */
 #aiAssistantSection .interactive-card {
-    /* Remove card styling on mobile */
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    backdrop-filter: none !important;
+    /* (Styles handled globally above) */
 }
 #chatHistory {
-    /* Blend with background on mobile */
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
+    /* (Styles handled globally above) */
 }
 .chat-row {
-    gap: 8px; /* Reduced gap */
     margin-bottom: 12px;
 }
-.chat-avatar {
-    width: 28px; /* Smaller avatar */
-    height: 28px;
-    font-size: 0.8rem;
-    margin-top: 4px; /* Align with first line of text */
-}
 .chat-bubble {
-    padding: 10px 14px; /* Tighter padding */
-    font-size: 0.95rem; /* Slightly smaller text */
-    max-width: 88%; /* Allow more width */
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    max-width: 88%;
 }
 /* Ensure send button color is visible on mobile */
 #aiSendBtn {
@@ -734,16 +716,17 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
             <h3>Ask Anything</h3>
         </div>
         
-        <div id="chatHistory" style="min-height: 300px; max-height: 500px; overflow-y: auto; margin-bottom: 20px; padding: 15px; border: 1px solid var(--glass-border); border-radius: var(--radius-sm); background: rgba(0,0,0,0.2);"></div>
+        <div id="chatHistory" style="min-height: 0; max-height: 500px; overflow-y: auto;"></div>
 
-        <div class="tool-input-group" style="position: relative;">
+        <div class="tool-input-group" style="position: relative; flex-direction: column; align-items: stretch;">
             <div class="search-box tool-search-box" style="width: 100%; max-width: 100%;">
                 <div class="ai-input-wrapper">
-                    <!-- Changed to Textarea -->
-                    <textarea id="aiInput" placeholder="Ask a question..." rows="1"></textarea>
+                    <!-- Changed to Textarea with default 4 rows -->
+                    <textarea id="aiInput" placeholder="Ask a question..." rows="4"></textarea>
                     <span class="search-icon" id="aiSendBtn" style="cursor: pointer; color: var(--primary); padding: 10px;"><i class="fas fa-paper-plane"></i></span>
                 </div>
             </div>
+            <button id="clearChatBtn" style="display:none;"><i class="fas fa-trash"></i> Clear Chat</button>
         </div>
     </div>
 </section>
@@ -831,9 +814,10 @@ document.addEventListener('DOMContentLoaded',function(){const savedTheme=localSt
 
 // --- AI Chat Logic ---
 const chatHistory = document.getElementById('chatHistory');
-// aiInput is already selected above in setupToolInputs scope, but let's re-select for clarity
 const aiInputEl = document.getElementById('aiInput');
 const aiSendBtn = document.getElementById('aiSendBtn');
+const clearChatBtn = document.getElementById('clearChatBtn');
+let chatMemory = []; // To store conversation context
 
 function formatMessage(text) {
     if(!text) return '';
@@ -899,22 +883,31 @@ function appendMessage(sender, text) {
     // User text bold fallback if needed
     if(isUser) formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-    // Avatar
-    const avatarDiv = document.createElement('div');
-    avatarDiv.className = 'chat-avatar';
-    avatarDiv.innerHTML = isUser ? '<i class="fas fa-user"></i>' : 'AI';
-
     // Bubble
     const bubbleDiv = document.createElement('div');
     bubbleDiv.className = 'chat-bubble';
     bubbleDiv.innerHTML = formattedText;
 
-    // Append based on order logic handled by CSS flex order
-    rowDiv.appendChild(avatarDiv);
+    // Append (Avatar removed)
     rowDiv.appendChild(bubbleDiv);
 
     chatHistory.appendChild(rowDiv);
+    // Make sure chat history is visible now
+    chatHistory.classList.add('active');
+    clearChatBtn.style.display = 'inline-flex'; // Show clear button
     chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+function clearChat() {
+    playClearSound();
+    chatHistory.innerHTML = '';
+    chatHistory.classList.remove('active');
+    clearChatBtn.style.display = 'none';
+    chatMemory = []; // Clear memory
+}
+
+if(clearChatBtn) {
+    clearChatBtn.addEventListener('click', clearChat);
 }
 
 async function sendToAI() {
@@ -924,10 +917,13 @@ async function sendToAI() {
     appendMessage('User', text);
     aiInputEl.value = '';
     
+    // Add user message to memory
+    chatMemory.push({ role: 'user', content: text });
+
     const loadingId = 'loading-' + Date.now();
     const loadingDiv = document.createElement('div');
     loadingDiv.id = loadingId;
-    loadingDiv.style.marginLeft = '45px';
+    loadingDiv.style.marginLeft = '10px';
     loadingDiv.style.color = 'var(--text-muted)';
     loadingDiv.style.fontStyle = 'italic';
     loadingDiv.innerText = 'Thinking...';
@@ -935,11 +931,25 @@ async function sendToAI() {
     chatHistory.appendChild(loadingDiv);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 
+    // Construct prompt with history
+    // Simple concatenation of previous turns
+    let promptWithContext = "";
+    if (chatMemory.length > 1) {
+        promptWithContext += "Context of conversation:\n";
+        // Include last 6 turns for context window management
+        const recentHistory = chatMemory.slice(-6); 
+        recentHistory.forEach(msg => {
+            promptWithContext += `${msg.role === 'user' ? 'User' : 'AI'}: ${msg.content}\n`;
+        });
+        promptWithContext += "\nCurrent Request:\n";
+    }
+    promptWithContext += text;
+
     try {
         const response = await fetch('/api/ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: text })
+            body: JSON.stringify({ prompt: promptWithContext })
         });
 
         const data = await response.json();
@@ -948,6 +958,7 @@ async function sendToAI() {
 
         if (data.answer) {
             appendMessage('AI', data.answer);
+            chatMemory.push({ role: 'ai', content: data.answer });
             playCorrectSound();
         } else {
             appendMessage('AI', 'Sorry, I encountered an error.');
@@ -966,7 +977,7 @@ if(aiSendBtn) {
     aiSendBtn.addEventListener('click', () => { playButtonSound(); sendToAI(); });
 }
 if(aiInputEl) {
-    // UPDATED: Handle Enter vs Shift+Enter for Textarea
+    // Handle Enter vs Shift+Enter for Textarea
     aiInputEl.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) { 
             e.preventDefault(); 
