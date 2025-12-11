@@ -242,40 +242,51 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 }
 
 /* --- AI Chat Styling --- */
-/* Remove empty state gap and text */
 #chatHistory {
     position: relative;
-    display: none; /* Hidden by default */
+    display: flex;
     flex-direction: column;
-    /* Remove border and background to blend in on desktop too */
+    /* Remove default container styling (Desktop & Mobile) per request */
     border: none !important;
     background: transparent !important;
     padding: 0 !important;
+    min-height: 0 !important; 
     margin-bottom: 20px;
 }
-#chatHistory.active {
-    display: flex; /* Show when active */
+
+/* Empty State: HIDE entire container and its spacing when empty */
+#chatHistory:empty {
+    display: none;
+    margin-bottom: 0;
+}
+#chatHistory:empty::before, #chatHistory:empty::after {
+    display: none !important;
+    content: none !important;
 }
 
 /* AI Chat Specifics - Responsive */
 .chat-row {
     display: flex;
-    gap: 0; /* Avatars gone, no gap needed */
+    gap: 12px;
     margin-bottom: 16px;
-    flex-direction: column; /* Stack bubble */
+    align-items: flex-start; /* Aligns avatar to top */
 }
 .chat-row.user {
-    align-items: flex-end;
+    justify-content: flex-end;
 }
 .chat-row.ai {
-    align-items: flex-start;
+    justify-content: flex-start;
 }
-
-/* Avatars removed */
 .chat-avatar {
-    display: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: bold;
 }
-
 .chat-bubble {
     padding: 12px 16px;
     border-radius: 16px;
@@ -285,18 +296,30 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     font-size: 1rem;
 }
 /* User specific */
+.chat-row.user .chat-avatar {
+    background: var(--text-muted);
+    color: var(--bg-deep);
+    order: 2; /* Avatar on right */
+}
 .chat-row.user .chat-bubble {
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--glass-border);
     border-radius: 16px 4px 16px 16px;
     color: var(--text-main);
+    order: 1;
 }
 /* AI specific */
+.chat-row.ai .chat-avatar {
+    background: var(--primary);
+    color: var(--bg-deep);
+    order: 1; /* Avatar on left */
+}
 .chat-row.ai .chat-bubble {
     background: var(--bg-deep);
     border: 1px solid var(--glass-border);
     border-radius: 4px 16px 16px 16px;
     color: var(--text-main);
+    order: 2;
 }
 .chat-bubble ul {
     margin: 8px 0 8px 20px;
@@ -329,9 +352,9 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     outline: none;
     font-family: 'Plus Jakarta Sans', sans-serif;
     resize: none;
-    /* Height roughly 4 lines */
-    min-height: 120px; 
-    max-height: 250px;
+    height: auto; 
+    min-height: 48px;
+    max-height: 124px; /* Approx 4 lines */
     overflow-y: auto;
     line-height: 1.5;
 }
@@ -352,36 +375,11 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     padding: 0 16px;
 }
 
-/* Clear Chat Button */
-#clearChatBtn {
-    margin-top: 8px;
-    background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--glass-border);
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    align-self: flex-start;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-#clearChatBtn:hover {
-    color: var(--error);
-    border-color: var(--error);
-    background: rgba(248,113,113,0.1);
-}
-
-/* Remove Card Styling for AI Section Globally (Desktop & Mobile) */
-#aiAssistantSection .interactive-card {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+/* AI Controls (Clear Chat) */
+#aiControls {
+    text-align: center;
+    margin-top: 20px;
+    display: none; /* Hidden by default until chat starts */
 }
 
 @media(max-width:767px){
@@ -406,6 +404,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .mobile-nav-toggle{display:flex}
 .mobile-nav-container{display:block}
 .ui-controls{position:absolute;top:24px;justify-content:space-between;align-items:center;padding:0 16px}
+.interactive-card{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .modern-section-title{font-size:1.65rem!important;position:relative;z-index:10;display:flex!important;align-items:center;gap:16px}
 .modern-section-title span{position:relative;display:inline-block;z-index:1}
 .modern-section-title span::before{content:'';position:absolute;z-index:-1;bottom:2px;left:-4px;height:77%;background:var(--section-acc-light,var(--primary));clip-path:polygon(0% 5%,2% 0%,98% 2%,100% 0%,100% 95%,98% 100%,2% 98%,0% 100%);transform:none;width:0%;opacity:0;animation:drawHighlight 0.8s cubic-bezier(0.25,1,0.5,1) forwards;animation-delay:0.3s}
@@ -460,18 +459,27 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 
 /* AI Chat Mobile Optimizations */
 #aiAssistantSection .interactive-card {
-    /* (Styles handled globally above) */
-}
-#chatHistory {
-    /* (Styles handled globally above) */
+    /* Remove card styling on mobile */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
 }
 .chat-row {
+    gap: 8px; /* Reduced gap */
     margin-bottom: 12px;
 }
+.chat-avatar {
+    width: 28px; /* Smaller avatar */
+    height: 28px;
+    font-size: 0.8rem;
+    margin-top: 4px; /* Align with first line of text */
+}
 .chat-bubble {
-    padding: 10px 14px;
-    font-size: 0.95rem;
-    max-width: 88%;
+    padding: 10px 14px; /* Tighter padding */
+    font-size: 0.95rem; /* Slightly smaller text */
+    max-width: 88%; /* Allow more width */
 }
 /* Ensure send button color is visible on mobile */
 #aiSendBtn {
@@ -708,7 +716,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 </div>
 </section>
 
-<!-- AI Assistant Section (Moved to Bottom) -->
+<!-- AI Assistant Section -->
 <section class="modern-section" id="aiAssistantSection">
     <h2 class="modern-section-title"><span>AI Knowledge Assistant</span></h2>
     <div class="interactive-card">
@@ -716,17 +724,25 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
             <h3>Ask Anything</h3>
         </div>
         
-        <div id="chatHistory" style="min-height: 0; max-height: 500px; overflow-y: auto;"></div>
+        <!-- Chat History -->
+        <div id="chatHistory"></div>
 
-        <div class="tool-input-group" style="position: relative; flex-direction: column; align-items: stretch;">
+        <!-- Input Group -->
+        <div class="tool-input-group" style="position: relative;">
             <div class="search-box tool-search-box" style="width: 100%; max-width: 100%;">
                 <div class="ai-input-wrapper">
-                    <!-- Changed to Textarea with default 4 rows -->
-                    <textarea id="aiInput" placeholder="Ask a question..." rows="4"></textarea>
+                    <!-- Textarea starts at 1 row, auto expands via JS -->
+                    <textarea id="aiInput" placeholder="Ask a question..." rows="1"></textarea>
                     <span class="search-icon" id="aiSendBtn" style="cursor: pointer; color: var(--primary); padding: 10px;"><i class="fas fa-paper-plane"></i></span>
                 </div>
             </div>
-            <button id="clearChatBtn" style="display:none;"><i class="fas fa-trash"></i> Clear Chat</button>
+        </div>
+        
+        <!-- Controls (Clear Chat) -->
+        <div id="aiControls">
+            <button id="clearChatBtn" class="action-btn">
+                <i class="fas fa-trash-alt"></i> Clear Chat
+            </button>
         </div>
     </div>
 </section>
@@ -786,16 +802,36 @@ function displayWordSpotlight(){const ws=document.getElementById('wordSpotlightD
 function showNewRandomWord(){if(dictionary.length>0){displayWordSpotlight();document.querySelector('#wordSpotlightSection').scrollIntoView({behavior:'smooth',block:'start'})}}
 function setupToolInputs(){const setup=(inputId,clearBtnId,searchBtnId,actionFn)=>{const input=document.getElementById(inputId);const clearBtn=document.getElementById(clearBtnId);const searchBtn=document.getElementById(searchBtnId);let typingTimer;if(!input)return;const toggleClear=()=>{if(clearBtn)clearBtn.classList.toggle('visible',input.value.trim().length>0)};input.addEventListener('input',()=>{toggleClear()});input.addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();actionFn()}});if(clearBtn){clearBtn.addEventListener('click',()=>{playClearSound();input.value='';toggleClear();input.focus()})}if(searchBtn){searchBtn.addEventListener('click',()=>{actionFn()})}toggleClear();input.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{input.scrollIntoView({behavior:'smooth',block:'center'})},300)}})};setup('wordToolkitInput','toolkitClearBtn','toolkitSearchBtn',handleWordTool);setup('reverseInput','reverseClearBtn','reverseSearchBtn',handleReverseSearch)
 
-/* Auto-scroll for AI Input on Mobile */
+/* Auto-scroll for AI Input on Mobile - Updated Logic */
 const aiInput = document.getElementById('aiInput');
 if(aiInput) {
-    // We use 'click' for better mobile support or 'focus'
-    aiInput.addEventListener('click', () => {
+    // We use a focus listener for the keyboard opening event
+    aiInput.addEventListener('focus', () => {
         if(window.innerWidth < 768) {
+            // Buffer delay for keyboard animation
             setTimeout(() => {
-                aiInput.scrollIntoView({behavior: 'smooth', block: 'center'});
-            }, 300); // 300ms delay to allow keyboard to pop up
+                // Calculate position to put input near top with buffer
+                const wrapper = document.querySelector('.ai-input-wrapper');
+                if(wrapper) {
+                     const offset = 80; // Buffer pixels from top
+                     const bodyRect = document.body.getBoundingClientRect().top;
+                     const elementRect = wrapper.getBoundingClientRect().top;
+                     const elementPosition = elementRect - bodyRect;
+                     const offsetPosition = elementPosition - offset;
+
+                     window.scrollTo({
+                         top: offsetPosition,
+                         behavior: "smooth"
+                     });
+                }
+            }, 300); 
         }
+    });
+
+    // Auto-resize logic for textarea
+    aiInput.addEventListener('input', function() {
+        this.style.height = 'auto'; // Reset height
+        this.style.height = (this.scrollHeight) + 'px'; // Set new height based on content
     });
 }
 }
@@ -817,97 +853,76 @@ const chatHistory = document.getElementById('chatHistory');
 const aiInputEl = document.getElementById('aiInput');
 const aiSendBtn = document.getElementById('aiSendBtn');
 const clearChatBtn = document.getElementById('clearChatBtn');
-let chatMemory = []; // To store conversation context
+const aiControls = document.getElementById('aiControls');
+
+// Memory for the current session (cleared on refresh)
+let conversationMemory = [];
 
 function formatMessage(text) {
     if(!text) return '';
-    
-    // 1. Safe Encode (basic)
     let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-    // 2. Bold (**text**)
     html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-    
-    // 3. Italic (*text*)
     html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
-    
-    // 4. Code blocks (basic)
     html = html.replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
-
-    // 5. Lists and Paragraphs processing
     const lines = html.split('\n');
     let output = '';
     let inList = false;
 
     lines.forEach(line => {
         let trimmed = line.trim();
-        
-        // List Item
         if (trimmed.startsWith('- ') || trimmed.startsWith('• ') || trimmed.startsWith('* ')) {
-            if (!inList) {
-                output += '<ul>';
-                inList = true;
-            }
-            // Remove the marker and add li
-            const content = trimmed.substring(2);
-            output += `<li>${content}</li>`;
-        } 
-        // Not a list item
-        else {
-            if (inList) {
-                output += '</ul>';
-                inList = false;
-            }
+            if (!inList) { output += '<ul>'; inList = true; }
+            output += `<li>${trimmed.substring(2)}</li>`;
+        } else {
+            if (inList) { output += '</ul>'; inList = false; }
             if (trimmed.length > 0) {
-                // Headers (###)
                 if(trimmed.startsWith('### ')) output += `<h4>${trimmed.substring(4)}</h4>`;
                 else output += `<p>${line}</p>`; 
             }
         }
     });
-    
     if (inList) output += '</ul>';
-    
     return output;
 }
 
 function appendMessage(sender, text) {
+    // Show chat history container and controls when first message is added
+    chatHistory.style.display = 'flex';
+    aiControls.style.display = 'block';
+
     const isUser = sender === 'User';
-    
-    // Create container
     const rowDiv = document.createElement('div');
     rowDiv.className = `chat-row ${isUser ? 'user' : 'ai'}`;
-
-    // Format text
     let formattedText = isUser ? text : formatMessage(text);
-    // User text bold fallback if needed
     if(isUser) formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-    // Bubble
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'chat-avatar';
+    avatarDiv.innerHTML = isUser ? '<i class="fas fa-user"></i>' : 'AI';
+
     const bubbleDiv = document.createElement('div');
     bubbleDiv.className = 'chat-bubble';
     bubbleDiv.innerHTML = formattedText;
 
-    // Append (Avatar removed)
+    rowDiv.appendChild(avatarDiv);
     rowDiv.appendChild(bubbleDiv);
-
     chatHistory.appendChild(rowDiv);
-    // Make sure chat history is visible now
-    chatHistory.classList.add('active');
-    clearChatBtn.style.display = 'inline-flex'; // Show clear button
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 
 function clearChat() {
-    playClearSound();
     chatHistory.innerHTML = '';
-    chatHistory.classList.remove('active');
-    clearChatBtn.style.display = 'none';
-    chatMemory = []; // Clear memory
+    conversationMemory = []; // Reset memory
+    aiControls.style.display = 'none'; // Hide controls
+    // Chat history container will hide via CSS :empty selector or explicit hide
+    chatHistory.style.display = 'none'; 
 }
 
 if(clearChatBtn) {
-    clearChatBtn.addEventListener('click', clearChat);
+    clearChatBtn.addEventListener('click', () => {
+        playButtonSound();
+        clearChat();
+    });
 }
 
 async function sendToAI() {
@@ -915,15 +930,19 @@ async function sendToAI() {
     if (!text) return;
 
     appendMessage('User', text);
-    aiInputEl.value = '';
     
-    // Add user message to memory
-    chatMemory.push({ role: 'user', content: text });
+    // Reset input height and value
+    aiInputEl.value = '';
+    aiInputEl.style.height = 'auto'; 
+    aiInputEl.style.height = (aiInputEl.scrollHeight) + 'px';
 
+    // Add user message to memory
+    conversationMemory.push({ role: 'user', content: text });
+    
     const loadingId = 'loading-' + Date.now();
     const loadingDiv = document.createElement('div');
     loadingDiv.id = loadingId;
-    loadingDiv.style.marginLeft = '10px';
+    loadingDiv.style.marginLeft = '45px';
     loadingDiv.style.color = 'var(--text-muted)';
     loadingDiv.style.fontStyle = 'italic';
     loadingDiv.innerText = 'Thinking...';
@@ -931,25 +950,16 @@ async function sendToAI() {
     chatHistory.appendChild(loadingDiv);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 
-    // Construct prompt with history
-    // Simple concatenation of previous turns
-    let promptWithContext = "";
-    if (chatMemory.length > 1) {
-        promptWithContext += "Context of conversation:\n";
-        // Include last 6 turns for context window management
-        const recentHistory = chatMemory.slice(-6); 
-        recentHistory.forEach(msg => {
-            promptWithContext += `${msg.role === 'user' ? 'User' : 'AI'}: ${msg.content}\n`;
-        });
-        promptWithContext += "\nCurrent Request:\n";
-    }
-    promptWithContext += text;
-
     try {
+        // We send the history array if the backend supports context
+        // Even if backend only reads 'prompt', we keep local memory consistent
         const response = await fetch('/api/ai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: promptWithContext })
+            body: JSON.stringify({ 
+                prompt: text,
+                history: conversationMemory 
+            })
         });
 
         const data = await response.json();
@@ -958,7 +968,8 @@ async function sendToAI() {
 
         if (data.answer) {
             appendMessage('AI', data.answer);
-            chatMemory.push({ role: 'ai', content: data.answer });
+            // Add AI response to memory
+            conversationMemory.push({ role: 'model', content: data.answer });
             playCorrectSound();
         } else {
             appendMessage('AI', 'Sorry, I encountered an error.');
@@ -976,16 +987,8 @@ async function sendToAI() {
 if(aiSendBtn) {
     aiSendBtn.addEventListener('click', () => { playButtonSound(); sendToAI(); });
 }
-if(aiInputEl) {
-    // Handle Enter vs Shift+Enter for Textarea
-    aiInputEl.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { 
-            e.preventDefault(); 
-            playButtonSound(); 
-            sendToAI(); 
-        }
-    });
-}
+/* REMOVED Enter Key listener that sends message. 
+   Default behavior (newline) will apply. */
 
 // --- Magic Button Logic ---
 const magicBtn = document.getElementById('magicAskBtn');
@@ -1004,18 +1007,16 @@ document.addEventListener('selectionchange', () => {
 
 function sendSelectionToAI() {
   if (!selectedText) return;
-  
   playButtonSound();
-  
-  // Scroll to AI section
   const aiSection = document.getElementById('aiAssistantSection');
   aiSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
   
-  // Fill input
   aiInputEl.value = `Explain this: "${selectedText}"`;
   aiInputEl.focus();
+  // Trigger resize
+  aiInputEl.style.height = 'auto';
+  aiInputEl.style.height = (aiInputEl.scrollHeight) + 'px';
   
-  // Clear selection and hide button
   window.getSelection().removeAllRanges();
   magicBtn.classList.remove('visible');
 }
