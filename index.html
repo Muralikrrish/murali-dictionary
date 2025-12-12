@@ -739,7 +739,8 @@ function toggleMobileNav(){playButtonSound();const dropdown=document.getElementB
 function scrollToSection(id){if(document.activeElement&&document.activeElement.tagName==='INPUT'){document.activeElement.blur()}const section=document.getElementById(id);if(section){toggleMobileNav();setTimeout(()=>{section.scrollIntoView({behavior:'smooth',block:'start'})},400)}}
 document.addEventListener('click',function(e){const container=document.querySelector('.mobile-nav-container');if(container&&!container.contains(e.target)){const dropdown=document.getElementById('mobileDropdown');if(dropdown.classList.contains('show')){dropdown.classList.remove('show');const toggleBtn=document.querySelector('.mobile-nav-toggle i');toggleBtn.classList.remove('fa-times');toggleBtn.classList.add('fa-bars')}}});
 const SafeStorage={getItem(key){try{return localStorage.getItem(key)}catch(e){return null}},setItem(key,val){try{localStorage.setItem(key,val)}catch(e){}}};
-let supabaseClient,dictionary=[],searchIndex=null;let isSupabaseConfigured=false,supabaseInitialized=false;let quizQuestions=[],currentQuizQuestion=null,selectedQuizAnswer=null;let quizAnswered=false,questionDisplayed=false;let gkQuizQuestions=[],currentGkQuizQuestion=null,selectedGkQuizAnswer=null;let gkQuizAnswered=false,gkQuestionDisplayed=false;let audioContext=null;let toolkitMode='describe';
+let supabaseClient, dictionary = []; // Dictionary is now empty by default, not loaded entirely
+let isSupabaseConfigured=false,supabaseInitialized=false;let quizQuestions=[],currentQuizQuestion=null,selectedQuizAnswer=null;let quizAnswered=false,questionDisplayed=false;let gkQuizQuestions=[],currentGkQuizQuestion=null,selectedGkQuizAnswer=null;let gkQuizAnswered=false,gkQuestionDisplayed=false;let audioContext=null;let toolkitMode='describe';
 function initAudio(){if(!audioContext){audioContext=new(window.AudioContext||window.webkitAudioContext)()}if(audioContext.state==='suspended'){audioContext.resume()}return audioContext}
 function playSound(frequency,duration,type='sine',volume=0.3){const ctx=initAudio();const osc=ctx.createOscillator();const gainNode=ctx.createGain();osc.connect(gainNode);gainNode.connect(ctx.destination);osc.frequency.value=frequency;osc.type=type;gainNode.gain.setValueAtTime(volume,ctx.currentTime);gainNode.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+duration);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+duration)}
 function playTypeSound(){playSound(1000,0.05,'sine',0.1)}
@@ -751,7 +752,16 @@ function playRevealSound(){playSound(1200,0.1,'triangle',0.15)}
 function playClueSound(){playSound(900,0.1,'sine',0.15)}
 function playClearSound(){const ctx=initAudio();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.setValueAtTime(400,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(100,ctx.currentTime+0.2);gain.gain.setValueAtTime(0.2,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.2);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.2)}
 async function initializeSupabase(){try{const{createClient}=supabase;supabaseClient=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);isSupabaseConfigured=supabaseInitialized=true;loadQuizQuestions();loadGkQuizQuestions();fetchCuriosity();fetchWordSpotlight();initHangmanGame(false);syncWithSupabase()}catch(error){console.error('Supabase init error:',error);isSupabaseConfigured=false;initHangmanGame(false)}}
-async function syncWithSupabase(){if(!isSupabaseConfigured||!supabaseInitialized)return;try{const{data:dictData,error:dictError}=await supabaseClient.from('dictionary').select('*').order('word',{ascending:true}).range(0, 9999);if(dictData&&dictData.length>0){dictionary=dictData.map(item=>({id:item.id,word:item.word,definition:item.definition,}));buildSearchIndex();SafeStorage.setItem('dictionary',JSON.stringify(dictionary));}}catch(error){console.error('Sync error:',error)}}
+
+// Updated Sync: Just keeps connection alive, does NOT download dictionary
+async function syncWithSupabase(){if(!isSupabaseConfigured||!supabaseInitialized)return;
+    // We removed the full dictionary fetch to prevent local storage limit issues
+    // and to ensure fresh data is always fetched via search
+    try{
+        console.log("Supabase connected. Dictionary will be fetched dynamically.");
+    }catch(error){console.error('Sync error:',error)}
+}
+
 let hangmanWord="",hangmanClue="",hangmanGuessed=new Set(),hangmanMistakes=0;const MAX_MISTAKES=5;
 async function initHangmanGame(shouldScroll=true){playButtonSound();if(shouldScroll&&window.innerWidth<768){const section=document.getElementById('hangmanSection');if(section)section.scrollIntoView({behavior:'smooth',block:'start'})}hangmanGuessed.clear();hangmanMistakes=0;hangmanWord="";hangmanClue="";document.getElementById('hangmanClueDisplay').textContent="";document.getElementById('hangmanKeyboard').innerHTML="";document.querySelectorAll('.hm-part').forEach(el=>el.style.display='none');document.getElementById('hangmanWordDisplay').innerHTML='<div class="skeleton-loading"><div class="skeleton-line short" style="margin:0 auto"></div></div>';try{if(isSupabaseConfigured){const{data,error}=await supabaseClient.from('hangman_words').select('*');if(data&&data.length>0){const randomEntry=data[Math.floor(Math.random()*data.length)];hangmanWord=randomEntry.word.toUpperCase();hangmanClue=randomEntry.clue}}}catch(e){console.warn("Supabase hangman fetch failed",e)}if(!hangmanWord){const localEntry=LOCAL_HANGMAN_WORDS[Math.floor(Math.random()*LOCAL_HANGMAN_WORDS.length)];hangmanWord=localEntry.word.toUpperCase();hangmanClue=localEntry.clue}renderHangmanGame()}
 function renderHangmanGame(){const wordDisplay=document.getElementById('hangmanWordDisplay');wordDisplay.textContent=hangmanWord.split('').map(letter=>hangmanGuessed.has(letter)?letter:"_").join(" ");if(window.innerWidth>=768){const len=hangmanWord.length;if(len>14){wordDisplay.style.fontSize='1.2rem';wordDisplay.style.letterSpacing='0.1em'}else if(len>10){wordDisplay.style.fontSize='1.5rem';wordDisplay.style.letterSpacing='0.2em'}else{wordDisplay.style.fontSize='2rem';wordDisplay.style.letterSpacing='0.5em'}}else{const len=hangmanWord.length;if(len>10){wordDisplay.style.fontSize='5vw';wordDisplay.style.letterSpacing='2px'}else{wordDisplay.style.fontSize='';wordDisplay.style.letterSpacing=''}}const keyboard=document.getElementById('hangmanKeyboard');keyboard.innerHTML='';for(let i=65;i<=90;i++){const letter=String.fromCharCode(i);const btn=document.createElement('button');btn.className='key-btn';btn.textContent=letter;if(hangmanGuessed.has(letter)){btn.disabled=true;if(hangmanWord.includes(letter))btn.classList.add('correct');else btn.classList.add('wrong')}btn.onclick=()=>handleHangmanGuess(letter);keyboard.appendChild(btn)}}
@@ -764,7 +774,10 @@ function setToolkitMode(mode,btn){playSelectSound();toolkitMode=mode;document.qu
 async function handleWordTool(){playButtonSound();const input=document.getElementById('wordToolkitInput');const resultsContainer=document.getElementById('wordToolkitResults');const query=input.value.trim();if(!query)return;resultsContainer.innerHTML='<div class="skeleton-loading"><div class="skeleton-line medium"></div></div>';let apiUrl='https://api.datamuse.com/words?';const encodedQuery=encodeURIComponent(query);switch(toolkitMode){case 'describe':apiUrl+=`rel_jjb=${encodedQuery}&max=100`;break;case 'modify':apiUrl+=`rel_jja=${encodedQuery}&max=50`;break;case 'synonym':apiUrl+=`rel_syn=${encodedQuery}&max=50`;break;case 'antonym':apiUrl+=`rel_ant=${encodedQuery}&max=50`;break;case 'follows':apiUrl+=`rel_bga=${encodedQuery}&max=50`;break;case 'precedes':apiUrl+=`rel_bgb=${encodedQuery}&max=50`;break;default:apiUrl+=`rel_jjb=${encodedQuery}&max=50`}try{const response=await fetch(apiUrl);let data=await response.json();data=data.filter(item=>{const w=item.word.toLowerCase();const isValidLength=w.length>1;const hasLetters=/[a-zA-Z]/.test(w);const isStopWord=STOP_WORDS.has(w);return isValidLength&&hasLetters&&!isStopWord});if(toolkitMode==='follows'||toolkitMode==='precedes'){data=data.slice(0,20)}else{data=data.slice(0,50)}resultsContainer.innerHTML='';if(data.length===0){resultsContainer.innerHTML='<p>No interesting results found.</p>';return}const wrapper=document.createElement('div');wrapper.className='expandable-wrapper';data.forEach(item=>{const chip=document.createElement('div');chip.className='word-chip';chip.innerHTML=`${item.word}`;chip.onclick=()=>{playSelectSound();document.getElementById('searchInput').value=item.word;displaySearchResults(item.word)};wrapper.appendChild(chip)});resultsContainer.appendChild(wrapper);if(data.length>15){const controlsDiv=document.createElement('div');controlsDiv.className='expandable-controls';const toggleBtn=document.createElement('button');toggleBtn.className='action-btn';toggleBtn.innerHTML='<i class="fas fa-chevron-down"></i> Show More';toggleBtn.onclick=function(){playButtonSound();const isExpanded=wrapper.classList.contains('expanded');if(isExpanded){wrapper.classList.remove('expanded');this.innerHTML='<i class="fas fa-chevron-down"></i> Show More';if(window.innerWidth<768){document.getElementById('wordToolkitSection').scrollIntoView({behavior:'smooth',block:'start'})}else{resultsContainer.scrollIntoView({behavior:'smooth',block:'nearest'})}}else{wrapper.classList.add('expanded');this.innerHTML='<i class="fas fa-chevron-up"></i> Show Less'}};controlsDiv.appendChild(toggleBtn);resultsContainer.appendChild(controlsDiv)}}catch(e){resultsContainer.innerHTML='<p>Error fetching results.</p>'}}
 async function fetchCuriosity(scrollToTop=false){const display=document.getElementById('curiosityDisplay');if(scrollToTop&&window.innerWidth<=768){const section=document.getElementById('curiositySection');if(section)section.scrollIntoView({behavior:'smooth',block:'start'})}try{const{data,error}=await supabaseClient.rpc('get_random_curiosity');if(error)throw error;if(!data||data.length===0)throw new Error('No curiosities found');const item=data[0];display.innerHTML=`<span class="curiosity-category">${item.category}</span><h3 class="curiosity-fact">${item.fact_text}</h3><div class="curiosity-detail" id="curiosityDetail">${item.detail_text||''}</div><div class="curiosity-controls" style="margin-top: 20px; display: flex; gap: 12px;"><button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail(this)"><i class="fas fa-eye"></i> Tell me more</button><button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)"><i class="fas fa-random"></i> Next Fact</button></div>`}catch(err){display.innerHTML=`<span class="curiosity-category">Fact</span><h3 class="curiosity-fact">Octopuses have three hearts.</h3><div class="curiosity-controls" style="margin-top: 24px; display: flex; gap: 12px;"><button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)"><i class="fas fa-random"></i> Next Fact</button></div>`}}
 function toggleCuriosityDetail(btn){const detail=document.getElementById('curiosityDetail');const isExpanding=!detail.classList.contains('show');detail.classList.toggle('show');if(btn)btn.innerHTML=isExpanding?'<i class="fas fa-eye-slash"></i> Show less':'<i class="fas fa-eye"></i> Tell me more';if(!isExpanding&&window.innerWidth<=768){const section=document.getElementById('curiositySection');if(section){setTimeout(()=>{section.scrollIntoView({behavior:'smooth',block:'start'})},50)}}}
-function buildSearchIndex(){searchIndex=dictionary.map(item=>({id:item.id,word:item.word,wordLower:item.word.toLowerCase(),definition:item.definition,definitionText:item.definition.replace(/<[^>]*>/g,'').toLowerCase()}))}
+
+// No longer building local search index
+function buildSearchIndex(){ }
+
 async function loadQuizQuestions(){try{const cachedQuestions=SafeStorage.getItem('cachedQuizQuestions');if(cachedQuestions){quizQuestions=JSON.parse(cachedQuestions);document.getElementById('quizLoadingMessage').style.display='none';document.getElementById('quizQuestion').style.display='block';displayQuizQuestion()}const response=await fetch(`${SUPABASE_URL}/rest/v1/quiz_questions?select=*`,{headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`}});if(!response.ok)throw new Error('Network error');const freshQuestions=await response.json();quizQuestions=freshQuestions;SafeStorage.setItem('cachedQuizQuestions',JSON.stringify(freshQuestions));if(!cachedQuestions){document.getElementById('quizLoadingMessage').style.display='none';document.getElementById('quizQuestion').style.display='block';displayQuizQuestion()}}catch(error){console.warn(error)}}
 async function loadGkQuizQuestions(){try{const cachedQuestions=SafeStorage.getItem('cachedGkQuizQuestions');if(cachedQuestions){gkQuizQuestions=JSON.parse(cachedQuestions);document.getElementById('gkQuizLoadingMessage').style.display='none';document.getElementById('gkQuizQuestion').style.display='block';displayGkQuizQuestion()}const response=await fetch(`${SUPABASE_URL}/rest/v1/gk_quiz?select=*`,{headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`}});if(!response.ok)throw new Error('Network error');const freshQuestions=await response.json();gkQuizQuestions=freshQuestions;SafeStorage.setItem('cachedGkQuizQuestions',JSON.stringify(freshQuestions));if(!cachedQuestions){document.getElementById('gkQuizLoadingMessage').style.display='none';document.getElementById('gkQuizQuestion').style.display='block';displayGkQuizQuestion()}}catch(error){console.warn(error)}}
 function displayQuizQuestion(scrollToTop=false){if(quizQuestions.length===0)return;if(scrollToTop)document.getElementById('vocabularyQuizSection').scrollIntoView({behavior:'smooth',block:'start'});const randomIndex=Math.floor(Math.random()*quizQuestions.length);currentQuizQuestion=quizQuestions[randomIndex];document.getElementById('quizQuestionText').textContent=currentQuizQuestion.question_text;const optionsGrid=document.getElementById('quizOptionsGrid');optionsGrid.innerHTML='';const optionsArray=Array.isArray(currentQuizQuestion.options)?currentQuizQuestion.options:JSON.parse(currentQuizQuestion.options||'[]');const originalCorrectAnswer=optionsArray[currentQuizQuestion.correct_answer];const shuffledOptions=shuffleArray(optionsArray);currentQuizQuestion.shuffledOptions=shuffledOptions;currentQuizQuestion.currentCorrectAnswer=shuffledOptions.indexOf(originalCorrectAnswer);shuffledOptions.forEach((option,index)=>{const btn=document.createElement('button');btn.className='option-btn';btn.textContent=option;btn.onclick=()=>selectQuizAnswer(index);optionsGrid.appendChild(btn)});document.getElementById('quizResultArea').style.display='none';document.getElementById('quizOptionsGrid').style.display='grid';document.getElementById('quizExplanationContent').classList.remove('show');quizAnswered=false}
@@ -804,14 +817,8 @@ async function fetchWordSpotlight(scrollToTop=false){
         }
     }
 
-    // Fallback: Use local dictionary if RPC failed or not configured
-    if(dictionary && dictionary.length > 0) {
-        const randomIndex=Math.floor(Math.random()*dictionary.length);
-        ws.innerHTML=createExpandableDefinition(dictionary[randomIndex].definition);
-    } else {
-        // If everything fails and no cache
-        ws.innerHTML='<div class="no-words"><p>Loading vocabulary...</p></div>';
-    }
+    // Fallback if RPC fails: Show generic or error
+    ws.innerHTML='<div class="no-words"><p>Loading vocabulary from the stars...</p></div>';
 }
 
 function showNewRandomWord(){
@@ -856,20 +863,141 @@ if(aiInput) {
 }
 function updateMobilePlaceholders(){const reverseInput=document.getElementById('reverseInput');if(reverseInput){if(window.innerWidth<768){reverseInput.placeholder="e.g. smell of rain"}else{reverseInput.placeholder="e.g. the smell of rain on dry earth"}}}
 function resetUrl(){try{const url=new URL(window.location);url.searchParams.delete('q');window.history.pushState({},'',url)}catch(e){console.warn('History API not supported')}}
-function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;setupToolInputs();updateMobilePlaceholders();window.addEventListener('resize',updateMobilePlaceholders);const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};searchInput.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{const y=document.querySelector('.search-container').getBoundingClientRect().top+window.pageYOffset-24;window.scrollTo({top:y,behavior:'smooth'})},300)}});searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl()});searchInput.addEventListener('input',function(){toggleClearBtn();clearTimeout(typingTimer);if(this.value.trim().length===0){resetUrl()}typingTimer=setTimeout(()=>{const query=this.value.trim().toLowerCase();if(query.length===0){autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';return}showAutocomplete(query)},300)});searchInput.addEventListener('keydown',function(e){if(e.key==='Escape')autocompleteDropdown.classList.remove('show');if(e.key==='Enter'){playButtonSound();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query){if(window.innerWidth<768){this.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}}});document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))autocompleteDropdown.classList.remove('show')})}
-function showAutocomplete(query){const autocompleteDropdown=document.getElementById('autocompleteDropdown');let matches=dictionary.filter(item=>item.word.toLowerCase().includes(query));if(matches.length===0){matches.push({word:query})}matches.sort((a,b)=>{const aWord=a.word.toLowerCase();const bWord=b.word.toLowerCase();if(aWord===query&&bWord!==query)return-1;if(aWord!==query&&bWord===query)return 1;return aWord.localeCompare(bWord)});const topMatches=matches.slice(0,5);if(topMatches.length===0){autocompleteDropdown.classList.remove('show');return}let html='';topMatches.forEach(item=>{html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${item.word}')"><div class="autocomplete-word">${item.word}</div><div class="autocomplete-hint">View</div></div>`});autocompleteDropdown.innerHTML=html;autocompleteDropdown.classList.add('show')}
+
+// NEW: Real-time Autocomplete with Skeleton
+async function fetchAutocompleteSuggestions(query) {
+    const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+    
+    // Show Skeleton Loader in Dropdown
+    autocompleteDropdown.innerHTML = `
+        <div style="padding: 12px;">
+            <div class="skeleton-loading">
+                <div class="skeleton-line medium" style="margin-bottom: 8px;"></div>
+                <div class="skeleton-line short"></div>
+            </div>
+        </div>
+    `;
+    autocompleteDropdown.classList.add('show');
+
+    try {
+        // Fetch matching words from Supabase (Limit 7)
+        const { data, error } = await supabaseClient
+            .from('dictionary')
+            .select('word')
+            .ilike('word', `${query}%`)
+            .limit(7);
+
+        if (error) throw error;
+
+        let matches = data || [];
+        
+        // Ensure exact query match is included if not present (for visual clarity)
+        if (!matches.some(m => m.word.toLowerCase() === query)) {
+           // We generally only want real words, but if user typed a real word that wasn't in top 7,
+           // or is about to be searched via API, we can leave it. 
+           // For now, let's just show what Supabase returned.
+        }
+        
+        // Filter out empty results if any
+        if (matches.length === 0) {
+            autocompleteDropdown.innerHTML = `<div class="autocomplete-item" style="cursor: default; color: var(--text-muted);">No matches found</div>`;
+            return;
+        }
+
+        let html = '';
+        matches.forEach(item => {
+            html += `<div class="autocomplete-item" onclick="selectAutocompleteItem('${item.word}')">
+                        <div class="autocomplete-word">${item.word}</div>
+                        <div class="autocomplete-hint"><i class="fas fa-chevron-right"></i></div>
+                     </div>`;
+        });
+        autocompleteDropdown.innerHTML = html;
+
+    } catch (err) {
+        console.error('Autocomplete error:', err);
+        autocompleteDropdown.classList.remove('show');
+    }
+}
+
+function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;setupToolInputs();updateMobilePlaceholders();window.addEventListener('resize',updateMobilePlaceholders);const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};searchInput.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{const y=document.querySelector('.search-container').getBoundingClientRect().top+window.pageYOffset-24;window.scrollTo({top:y,behavior:'smooth'})},300)}});searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl()});
+    
+    // Updated Input Listener with Debounce
+    searchInput.addEventListener('input',function(){
+        toggleClearBtn();
+        clearTimeout(typingTimer);
+        const query = this.value.trim().toLowerCase();
+        
+        if(query.length === 0){
+            autocompleteDropdown.classList.remove('show');
+            document.getElementById('searchResultsSection').style.display='none';
+            resetUrl();
+            return;
+        }
+
+        // Wait 300ms before fetching to prevent too many requests
+        typingTimer = setTimeout(() => {
+            fetchAutocompleteSuggestions(query);
+        }, 300);
+    });
+
+    searchInput.addEventListener('keydown',function(e){if(e.key==='Escape')autocompleteDropdown.classList.remove('show');if(e.key==='Enter'){playButtonSound();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query){if(window.innerWidth<768){this.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}}});document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))autocompleteDropdown.classList.remove('show')})
+}
+
+// Renamed and unused, replaced by fetchAutocompleteSuggestions
+function showAutocomplete(query){ }
+
 function selectAutocompleteItem(word){playSelectSound();document.getElementById('searchInput').value=word;document.getElementById('autocompleteDropdown').classList.remove('show');displaySearchResults(word.toLowerCase())}
 function getAudioUrl(filename){let subdir=filename.charAt(0);if(filename.startsWith('bix'))subdir='bix';else if(filename.startsWith('gg'))subdir='gg';else if(!isNaN(subdir)||!/^[a-zA-Z]/.test(subdir))subdir='number';return`https://media.merriam-webster.com/audio/prons/en/us/mp3/${subdir}/${filename}.mp3`}
 function playAudio(url){new Audio(url).play().catch(e=>console.error(e))}
 function cleanMWTags(text){if(!text)return'';let t=text.replace(/{dxt\|([^|}]*)\|([^|}]*)\|([^|}]*)}/g,(m,t,s,txt)=>txt||t.split(':')[0]);t=t.replace(/{dxt\|([^|}]*)\|?([^|}]*)}/g,(m,t)=>t.split(':')[0]);t=t.replace(/{dx}/g,' — ').replace(/{\/dx}/g,'');t=t.replace(/{bc}/g,': ').replace(/{it}/g,'<i>').replace(/{\/it}/g,'</i>');t=t.replace(/{b}/g,'<b>').replace(/{\/b}/g,'</b>').replace(/{wi}/g,'<i>').replace(/{\/wi}/g,'</i>');t=t.replace(/{ldquo}/g,'“').replace(/{rdquo}/g,'”').replace(/{sx\|([^|]+)\|([^|]*)\|}/g,'$1');t=t.replace(/{phrase}/g,'<b>').replace(/{\/phrase}/g,'</b>');return t}
 function renderSenses(sseq){let html='';sseq.forEach(senseBlock=>{senseBlock.forEach(item=>{if(item[0]==='sense'){const senseData=item[1];if(senseData.dt){senseData.dt.forEach(dt=>{if(dt[0]==='text')html+=`<p>${cleanMWTags(dt[1])}</p>`;else if(dt[0]==='vis'){html+='<ul class="examples-list">';dt[1].forEach(visItem=>{if(visItem.t)html+=`<li class="example-item">"${cleanMWTags(visItem.t)}"</li>`});html+='</ul>'}})}}})});return html}
-async function displaySearchResults(query){const searchResultsSection=document.getElementById('searchResultsSection');const wordsList=document.getElementById('wordsList');const newUrl=`${window.location.pathname}?q=${encodeURIComponent(query)}`;window.history.pushState({path:newUrl},'',newUrl);document.title=`${query.charAt(0).toUpperCase()+query.slice(1)} - Pearls of Knowledge`;const localMatches=dictionary.filter(item=>item.word.toLowerCase()===query);if(localMatches.length>0){let html='';localMatches.forEach(item=>{html+=`<div class="interactive-card"><div class="word-definition">${convertH2ToToggles(item.definition)}</div></div>`});wordsList.innerHTML=html}else{wordsList.innerHTML=`<div class="skeleton-loading"><div class="skeleton-line long"></div></div>`;let finalHtml='';
-// --- CHANGED START: Add Direct Supabase Search Fallback ---
-let supabaseMatch=null;if(isSupabaseConfigured){try{const{data,error}=await supabaseClient.from('dictionary').select('*').ilike('word',query);if(data&&data.length>0){supabaseMatch=data[0];dictionary.push(supabaseMatch)}}catch(err){console.warn("Supabase direct search failed",err)}}if(supabaseMatch){let html=`<div class="interactive-card"><div class="word-definition">${convertH2ToToggles(supabaseMatch.definition)}</div></div>`;wordsList.innerHTML=html;searchResultsSection.style.display='block';setTimeout(()=>{searchResultsSection.scrollIntoView({behavior:'smooth',block:'start'})},100);return}
-// --- CHANGED END ---
-try{const[mwData,wordnikData,wordnikRelated]=await Promise.all([fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${query}?key=${MW_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/definitions?limit=10&sourceDictionaries=ahd-5&useCanonical=false&includeTags=true&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/relatedWords?useCanonical=false&limitPerRelationshipType=10&sourceDictionaries=ahd-5&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null)]);if(mwData&&Array.isArray(mwData)&&mwData.length>0&&typeof mwData[0]==='object'){let mwHtmlContent='';mwData.slice(0,1).forEach(entry=>{if(!entry.hwi)return;const word=entry.hwi.hw.replace(/\*/g,'·');let pronHtml='';if(entry.hwi.prs&&entry.hwi.prs.length>0){const prs=entry.hwi.prs[0];if(prs.mw)pronHtml+=`<span class="pronunciation-text">/${prs.mw}/</span>`;if(prs.sound&&prs.sound.audio){const audioUrl=getAudioUrl(prs.sound.audio);pronHtml+=`<button class="audio-btn" onclick="playAudio('${audioUrl}')"><i class="fas fa-volume-up"></i></button>`}}mwHtmlContent+=`<h1>${word} ${pronHtml}</h1>`;if(entry.fl)mwHtmlContent+=`<h3>${entry.fl}</h3>`;if(entry.def&&entry.def.length>0)mwHtmlContent+=renderSenses(entry.def[0].sseq);else if(entry.shortdef)entry.shortdef.forEach(d=>mwHtmlContent+=`<p>${d}</p>`)})
+
+async function displaySearchResults(query){
+    const searchResultsSection=document.getElementById('searchResultsSection');
+    const wordsList=document.getElementById('wordsList');
+    const newUrl=`${window.location.pathname}?q=${encodeURIComponent(query)}`;
+    window.history.pushState({path:newUrl},'',newUrl);
+    document.title=`${query.charAt(0).toUpperCase()+query.slice(1)} - Pearls of Knowledge`;
+    
+    // Show Loading
+    wordsList.innerHTML=`<div class="skeleton-loading"><div class="skeleton-line long"></div></div>`;
+    searchResultsSection.style.display='block';
+    
+    let html='';
+
+    // 1. Try Fetching from Supabase Directly (No local dictionary)
+    try {
+        if(isSupabaseConfigured){
+            const { data, error } = await supabaseClient
+                .from('dictionary')
+                .select('*')
+                .ilike('word', query); // Exact match search
+            
+            if(data && data.length > 0){
+                data.forEach(item=>{
+                    html+=`<div class="interactive-card"><div class="word-definition">${convertH2ToToggles(item.definition)}</div></div>`;
+                });
+            }
+        }
+    } catch(err) {
+        console.warn("Supabase definition fetch failed", err);
+    }
+
+    // 2. If Supabase found something, show it. If NOT, use External APIs (Fallback)
+    if(html.length > 0) {
+        wordsList.innerHTML = html;
+        setTimeout(()=>{searchResultsSection.scrollIntoView({behavior:'smooth',block:'start'})},100);
+        return; 
+    }
+
+    // --- External API Fallback Logic ---
+    let finalHtml='';
+    try{const[mwData,wordnikData,wordnikRelated]=await Promise.all([fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${query}?key=${MW_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/definitions?limit=10&sourceDictionaries=ahd-5&useCanonical=false&includeTags=true&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/relatedWords?useCanonical=false&limitPerRelationshipType=10&sourceDictionaries=ahd-5&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null)]);if(mwData&&Array.isArray(mwData)&&mwData.length>0&&typeof mwData[0]==='object'){let mwHtmlContent='';mwData.slice(0,1).forEach(entry=>{if(!entry.hwi)return;const word=entry.hwi.hw.replace(/\*/g,'·');let pronHtml='';if(entry.hwi.prs&&entry.hwi.prs.length>0){const prs=entry.hwi.prs[0];if(prs.mw)pronHtml+=`<span class="pronunciation-text">/${prs.mw}/</span>`;if(prs.sound&&prs.sound.audio){const audioUrl=getAudioUrl(prs.sound.audio);pronHtml+=`<button class="audio-btn" onclick="playAudio('${audioUrl}')"><i class="fas fa-volume-up"></i></button>`}}mwHtmlContent+=`<h1>${word} ${pronHtml}</h1>`;if(entry.fl)mwHtmlContent+=`<h3>${entry.fl}</h3>`;if(entry.def&&entry.def.length>0)mwHtmlContent+=renderSenses(entry.def[0].sseq);else if(entry.shortdef)entry.shortdef.forEach(d=>mwHtmlContent+=`<p>${d}</p>`)})
 if(mwHtmlContent){finalHtml+=`<div class="interactive-card"><div class="word-definition">${mwHtmlContent}</div></div>`}}if(wordnikData&&Array.isArray(wordnikData)&&wordnikData.length>0){let wordnikInnerHtml='';if(finalHtml){finalHtml+=`<div class="mobile-result-separator"></div>`}wordnikData.forEach(def=>{if(!def.text)return;if(def.partOfSpeech)wordnikInnerHtml+=`<h3>${def.partOfSpeech}</h3>`;if(def.labels&&def.labels.length>0){const labelText=def.labels.map(l=>l.text).join(', ');wordnikInnerHtml+=`<p style="font-style: italic; color: var(--primary); margin-bottom: 4px;">[${labelText}]</p>`}if(def.text)wordnikInnerHtml+=`<p>${def.text}</p>`;if(def.exampleUses&&def.exampleUses.length>0){wordnikInnerHtml+=`<ul style="margin-top:0; padding-left: 20px; list-style-type: none;">`;def.exampleUses.forEach(ex=>{wordnikInnerHtml+=`<li style="color: var(--text-muted); font-style: italic; margin-bottom: 4px;">"${ex.text}"</li>`});wordnikInnerHtml+=`</ul>`}});if(wordnikRelated&&Array.isArray(wordnikRelated)&&wordnikRelated.length>0){const allowedTypes=new Set(['form']);const filteredRelated=wordnikRelated.filter(grp=>allowedTypes.has(grp.relationshipType));if(filteredRelated.length>0){wordnikInnerHtml+=`<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;filteredRelated.forEach(grp=>{const type=grp.relationshipType.charAt(0).toUpperCase()+grp.relationshipType.slice(1);const words=grp.words.join(', ');wordnikInnerHtml+=`<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`});wordnikInnerHtml+=`</div>`}}if(wordnikInnerHtml){let wordnikHtmlContent=`<h1>${query}</h1>`+wordnikInnerHtml;finalHtml+=`<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`}}if(finalHtml){wordsList.innerHTML=finalHtml}else{wordsList.innerHTML=`<p style="text-align:center;">No definitions found for <strong>${query}</strong>.</p>`}}catch(e){console.error(e);wordsList.innerHTML='<p style="text-align:center;">Error connecting to knowledge banks.</p>'}}searchResultsSection.style.display='block';setTimeout(()=>{searchResultsSection.scrollIntoView({behavior:'smooth',block:'start'})},100)}
-document.addEventListener('DOMContentLoaded',function(){const savedTheme=localStorage.getItem('theme');if(savedTheme==='light'){const icon=document.getElementById('themeIcon');if(icon)icon.className='fas fa-sun'}const cachedDict=SafeStorage.getItem('dictionary');if(cachedDict){try{dictionary=JSON.parse(cachedDict);buildSearchIndex();if(dictionary.length>0){fetchWordSpotlight();}}catch(e){console.error('Cache parse error:',e)}}if(dictionary.length===0){document.getElementById('wordSpotlightDisplay').innerHTML=`<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>`}requestAnimationFrame(()=>{initializeSupabase();setupSearch()})});
+document.addEventListener('DOMContentLoaded',function(){const savedTheme=localStorage.getItem('theme');if(savedTheme==='light'){const icon=document.getElementById('themeIcon');if(icon)icon.className='fas fa-sun'}
+    // Removed local dictionary loading logic
+    requestAnimationFrame(()=>{initializeSupabase();setupSearch()})
+});
 
 // --- AI Chat Logic ---
 const chatHistory = document.getElementById('chatHistory');
