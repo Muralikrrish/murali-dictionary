@@ -880,7 +880,6 @@ async function fetchAutocompleteSuggestions(query) {
     autocompleteDropdown.classList.add('show');
 
     try {
-        // Fix: Use a wildcard match to find "slapdash (adj)" when typing "slapdash"
         const { data, error } = await supabaseClient
             .from('dictionary')
             .select('word')
@@ -891,14 +890,24 @@ async function fetchAutocompleteSuggestions(query) {
 
         let matches = data || [];
         
+        // --- FIX STARTS HERE ---
         if (matches.length === 0) {
-            autocompleteDropdown.innerHTML = `<div class="autocomplete-item" style="cursor: default; color: var(--text-muted);">No matches found</div>`;
+            // If Supabase is empty, show a "Search for [query]" button 
+            // This tells the user: "We don't have it locally, but click here to search the web/APIs"
+            autocompleteDropdown.innerHTML = `
+                <div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g, "\\'")}')">
+                    <div class="autocomplete-word">
+                        <i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>
+                        Search for "<strong>${query}</strong>"
+                    </div>
+                    <div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div>
+                </div>`;
             return;
         }
+        // --- FIX ENDS HERE ---
 
         let html = '';
         matches.forEach(item => {
-            // Highlight the matching part (optional visual improvement)
             const word = item.word;
             html += `<div class="autocomplete-item" onclick="selectAutocompleteItem('${word.replace(/'/g, "\\'")}')">
                         <div class="autocomplete-word">${word}</div>
