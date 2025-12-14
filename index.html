@@ -872,7 +872,7 @@ function resetUrl(){try{const url=new URL(window.location);url.searchParams.dele
 async function fetchAutocompleteSuggestions(query) {
     const autocompleteDropdown = document.getElementById('autocompleteDropdown');
     
-    // Show Skeleton Loader
+    // Skeleton loader...
     autocompleteDropdown.innerHTML = `
         <div style="padding: 12px;">
             <div class="skeleton-loading">
@@ -884,20 +884,17 @@ async function fetchAutocompleteSuggestions(query) {
     autocompleteDropdown.classList.add('show');
 
     try {
+        // --- NEW LOGIC START ---
+        // We use .rpc() to call the SQL function we just created
         const { data, error } = await supabaseClient
-            .from('dictionary')
-            .select('word')
-            .ilike('word', `${query}%`) 
-            .limit(7);
+            .rpc('fuzzy_search', { search_term: query });
+        // --- NEW LOGIC END ---
 
         if (error) throw error;
 
         let matches = data || [];
         
-        // --- FIX STARTS HERE ---
         if (matches.length === 0) {
-            // If Supabase is empty, show a "Search for [query]" button 
-            // This tells the user: "We don't have it locally, but click here to search the web/APIs"
             autocompleteDropdown.innerHTML = `
                 <div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g, "\\'")}')">
                     <div class="autocomplete-word">
@@ -908,7 +905,6 @@ async function fetchAutocompleteSuggestions(query) {
                 </div>`;
             return;
         }
-        // --- FIX ENDS HERE ---
 
         let html = '';
         matches.forEach(item => {
