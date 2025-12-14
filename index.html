@@ -872,7 +872,7 @@ function resetUrl(){try{const url=new URL(window.location);url.searchParams.dele
 async function fetchAutocompleteSuggestions(query) {
     const autocompleteDropdown = document.getElementById('autocompleteDropdown');
     
-    // Skeleton loader...
+    // Skeleton loader
     autocompleteDropdown.innerHTML = `
         <div style="padding: 12px;">
             <div class="skeleton-loading">
@@ -884,29 +884,16 @@ async function fetchAutocompleteSuggestions(query) {
     autocompleteDropdown.classList.add('show');
 
     try {
-        // --- NEW LOGIC START ---
-        // We use .rpc() to call the SQL function we just created
+        // 1. Run the fuzzy search RPC
         const { data, error } = await supabaseClient
             .rpc('fuzzy_search', { search_term: query });
-        // --- NEW LOGIC END ---
 
         if (error) throw error;
 
         let matches = data || [];
-        
-        if (matches.length === 0) {
-            autocompleteDropdown.innerHTML = `
-                <div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g, "\\'")}')">
-                    <div class="autocomplete-word">
-                        <i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>
-                        Search for "<strong>${query}</strong>"
-                    </div>
-                    <div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div>
-                </div>`;
-            return;
-        }
-
         let html = '';
+
+        // 2. Render all the matches found by Supabase (e.g. "unscrew")
         matches.forEach(item => {
             const word = item.word;
             html += `<div class="autocomplete-item" onclick="selectAutocompleteItem('${word.replace(/'/g, "\\'")}')">
@@ -914,6 +901,24 @@ async function fetchAutocompleteSuggestions(query) {
                         <div class="autocomplete-hint"><i class="fas fa-chevron-right"></i></div>
                      </div>`;
         });
+
+        // 3. CHECK: Did we find the exact word the user typed?
+        const hasExactMatch = matches.some(item => item.word.toLowerCase() === query.toLowerCase());
+
+        // 4. If the exact word is MISSING, append a "Search for..." button at the bottom.
+        // This ensures that if you type "crew" and DB only has "unscrew", 
+        // you still get a button to search "crew" externally.
+        if (!hasExactMatch) {
+            html += `
+                <div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g, "\\'")}')">
+                    <div class="autocomplete-word">
+                        <i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>
+                        Search for "<strong>${query}</strong>"
+                    </div>
+                    <div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div>
+                </div>`;
+        }
+
         autocompleteDropdown.innerHTML = html;
 
     } catch (err) {
@@ -921,7 +926,7 @@ async function fetchAutocompleteSuggestions(query) {
         autocompleteDropdown.classList.remove('show');
     }
 }
-
+    
 function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;setupToolInputs();updateMobilePlaceholders();window.addEventListener('resize',updateMobilePlaceholders);const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};searchInput.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{const y=document.querySelector('.search-container').getBoundingClientRect().top+window.pageYOffset-24;window.scrollTo({top:y,behavior:'smooth'})},300)}});searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl()});
     
     // Updated Input Listener with Debounce
