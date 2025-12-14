@@ -891,9 +891,25 @@ async function fetchAutocompleteSuggestions(query) {
         if (error) throw error;
 
         let matches = data || [];
+        
+        // 2. CHECK: Did we find the exact word the user typed?
+        const hasExactMatch = matches.some(item => item.word.toLowerCase() === query.toLowerCase());
+
+        // 3. MOBILE FIX: Enforce max 7 total items
+        if (window.innerWidth < 768) {
+            // If we are going to add a "Search for..." button (because !hasExactMatch),
+            // we only have room for 6 DB results (6 + 1 = 7).
+            // If we already have the exact match, we don't add the button, so we can keep all 7.
+            const limit = hasExactMatch ? 7 : 6;
+            
+            if (matches.length > limit) {
+                matches = matches.slice(0, limit);
+            }
+        }
+
         let html = '';
 
-        // 2. Render all the matches found by Supabase (e.g. "unscrew")
+        // 4. Render matches
         matches.forEach(item => {
             const word = item.word;
             html += `<div class="autocomplete-item" onclick="selectAutocompleteItem('${word.replace(/'/g, "\\'")}')">
@@ -902,12 +918,7 @@ async function fetchAutocompleteSuggestions(query) {
                      </div>`;
         });
 
-        // 3. CHECK: Did we find the exact word the user typed?
-        const hasExactMatch = matches.some(item => item.word.toLowerCase() === query.toLowerCase());
-
-        // 4. If the exact word is MISSING, append a "Search for..." button at the bottom.
-        // This ensures that if you type "crew" and DB only has "unscrew", 
-        // you still get a button to search "crew" externally.
+        // 5. If exact match is MISSING, append "Search for..." button
         if (!hasExactMatch) {
             html += `
                 <div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g, "\\'")}')">
