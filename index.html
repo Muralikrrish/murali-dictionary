@@ -900,7 +900,7 @@ async function fetchAutocompleteSuggestions(query) {
             // If we are going to add a "Search for..." button (because !hasExactMatch),
             // we only have room for 6 DB results (6 + 1 = 7).
             // If we already have the exact match, we don't add the button, so we can keep all 7.
-            const limit = hasExactMatch ? 7 : 6;
+            const limit = hasExactMatch ? 7 : 5;
             
             if (matches.length > limit) {
                 matches = matches.slice(0, limit);
