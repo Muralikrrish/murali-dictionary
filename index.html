@@ -896,7 +896,7 @@ async function fetchWordSpotlight(scrollToTop=false){
         if(section) {
             // We use a manual calculation here to add a 60px "buffer" (yOffset)
             // This prevents the section from snapping too tight to the top of the browser.
-            const yOffset = -60; 
+            const yOffset = -50; 
             const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
             window.scrollTo({top: y, behavior: 'smooth'});
         }
