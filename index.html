@@ -504,10 +504,9 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     color: rgba(245, 158, 11, 0.7) !important;
 }
 
-/* --- Mobile Word Spotlight Brightness Fix --- */
+/* --- Mobile Word Spotlight Adjustments --- */
 
-    /* 1. Make the Body Text (Paragraphs & Lists) brighter */
-    /* Target specifically p, ul, li to avoid affecting bold tags */
+    /* 1. Body Text (Definitions & Lists) - Brighter Blue-Grey */
 #wordSpotlightSection .word-definition p,
 #wordSpotlightSection .word-definition ul,
 #wordSpotlightSection .word-definition ol,
@@ -515,17 +514,17 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     color: #cbd5e1 !important; /* Lighter Blue-Grey */
 }
 
-    /* 2. Make the Toggle Headers (e.g. Definition, Origin) brighter */
+    /* 2. Toggle Headers - Brighter Blue-Grey */
 #wordSpotlightSection .toggle-header {
     color: #94a3b8 !important; /* Medium Blue-Grey */
 }
 
-    /* 3. SAFETY LOCK: Force Bold text to stay WHITE */
-    /* This ensures bold words never turn blue */
+    /* 3. RESTORED: Bold Text & H3 - Back to Original Soft White */
 #wordSpotlightSection .word-definition strong,
-#wordSpotlightSection .word-definition b {
-    color: #ffffff !important; /* Pure White */
-    opacity: 1 !important;     /* Full brightness */
+#wordSpotlightSection .word-definition b,
+#wordSpotlightSection .word-definition h3 {
+    color: var(--text-main) !important; /* Original off-white (#f8fafc) */
+    opacity: 0.7 !important;            /* Original softness */
 }
     
 }
