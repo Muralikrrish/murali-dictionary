@@ -365,41 +365,6 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     display: none; /* Hidden by default until chat starts */
 }
 
-/* --- Floating AI Button --- */
-.ai-floating-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: var(--primary);
-    background: linear-gradient(135deg, var(--primary), var(--primary-dim));
-    color: var(--bg-deep);
-    border: none;
-    box-shadow: 0 4px 20px var(--primary-glow);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.6rem;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    animation: ai-pulse 3s infinite;
-}
-.ai-floating-btn:hover {
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 8px 30px var(--primary-glow);
-}
-.ai-floating-btn:active {
-    transform: scale(0.95);
-}
-@keyframes ai-pulse {
-    0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
-    70% { box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
-}
-
 @media(max-width:767px){
 .bg-decoration{position:fixed!important;top:0!important;height:100vh!important;width:100%;z-index:-1;overflow:hidden}
 .bg-icon{opacity:0.06!important;filter:blur(1.5px)}
@@ -508,15 +473,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 #chatHistory {
     max-height: 800px;
 }
-
-/* Floating AI Button Mobile Adjustment */
-.ai-floating-btn { 
-    bottom: 20px; 
-    right: 20px; 
-    width: 50px; 
-    height: 50px; 
-    font-size: 1.3rem; 
-}
+    
 }
 </style>
 </head>
@@ -774,11 +731,6 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 
 </div>
 </div>
-
-<!-- Floating AI Button -->
-<button class="ai-floating-btn" onclick="activateAIAssistant()" aria-label="Ask AI Assistant">
-    <i class="fas fa-robot"></i>
-</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1371,25 +1323,6 @@ if(aiInputEl) {
     });
 }
 
-// --- Floating AI Button Logic ---
-function activateAIAssistant() {
-    playButtonSound();
-    const section = document.getElementById('aiAssistantSection');
-    const input = document.getElementById('aiInput');
-    
-    if(section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        
-        // Wait for smooth scroll (approx) then focus
-        setTimeout(() => {
-            if(input) {
-                input.focus();
-                // Note: Mobile scroll-to-focus adjustment is handled 
-                // by the existing focus listener on aiInput
-            }
-        }, 800); 
-    }
-}
 </script>
 </body>
 </html>
