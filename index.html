@@ -112,9 +112,22 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .word-definition p{margin-bottom:1.2em;margin-top:0}
 .word-definition p:has(> b:only-child),.word-definition p:has(> strong:only-child){margin-bottom:0.8em}
 @media(min-width:768px){.desktop-nav{display:flex}.word-definition p{margin-bottom:0.9em}[data-theme="light"] .modern-section-title span{position:relative;display:inline-block;z-index:1}[data-theme="light"] .modern-section-title span::before{content:'';position:absolute;z-index:-1;bottom:4px;left:-6px;height:77%;width:105%;background:var(--section-acc,var(--primary));opacity:0.3;clip-path:polygon(0% 5%,2% 0%,98% 2%,100% 0%,100% 95%,98% 100%,2% 98%,0% 100%);border-radius:4px;transition:opacity 0.3s ease}}
-.word-definition strong,.word-definition b{color:var(--text-main);opacity:0.7;font-weight:700}
+.word-definition strong,
+.word-definition b {
+    color: var(--text-main);
+    opacity: 0.85;
+    font-weight: 700;
+}
 .word-definition h1{font-family:'Playfair Display',serif;color:var(--text-main);margin-top:0.2em;margin-bottom:0.5em;font-size:2.5rem;line-height:1.2;display:flex;align-items:center;flex-wrap:wrap;gap:16px}
-.word-definition h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;color:var(--text-main);opacity:0.7;font-size:1.2rem;margin-top:1.2em;margin-bottom:0.6em}
+.word-definition h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    color: var(--text-main);
+    opacity: 0.85;
+    font-size: 1.2rem;
+    margin-top: 1.2em;
+    margin-bottom: 0.6em;
+}
 .word-definition ul,.word-definition ol{padding-left:20px;margin:16px 0 24px 0;color:var(--text-muted)}
 .word-definition li{margin-bottom:8px;padding-left:8px}
 .audio-btn{background:none;border:2px solid var(--primary-dim);color:var(--primary);width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;vertical-align:middle;font-size:1rem}
