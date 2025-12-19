@@ -680,11 +680,15 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 }
 
 /* 3. Bold Text & H3: Deepest Dark (Visual Anchor) */
+/* 3. Bold Text & H3: Dimmed (Matches Toggle Headers) */
 [data-theme="light"] #wordSpotlightSection .word-definition strong,
 [data-theme="light"] #wordSpotlightSection .word-definition b,
-[data-theme="light"] #wordSpotlightSection .word-definition h3 {
-    color: #0f172a !important; /* Slate 900 - Near black */
-    opacity: 1 !important;      /* Full opacity for maximum punch */
+[data-theme="light"] #wordSpotlightSection .word-definition h3,
+[data-theme="light"] #searchResultsSection .word-definition strong,
+[data-theme="light"] #searchResultsSection .word-definition b,
+[data-theme="light"] #searchResultsSection .word-definition h3 {
+    color: #475569 !important; /* Slate 600 - Matches Toggle Headers */
+    opacity: 1 !important;
 }
 }
 </style>
