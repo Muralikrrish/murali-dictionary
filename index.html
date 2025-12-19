@@ -657,11 +657,21 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 /* --- Mobile Word Spotlight: Light Theme Adjustments --- */
 
 /* 1. Body Text: Darker Slate for readability (was too dim) */
+/* 1. Body Text: Darker Slate (Spotlight AND Search Results) */
 [data-theme="light"] #wordSpotlightSection .word-definition p,
 [data-theme="light"] #wordSpotlightSection .word-definition ul,
 [data-theme="light"] #wordSpotlightSection .word-definition ol,
-[data-theme="light"] #wordSpotlightSection .word-definition li {
-    color: #0f172a !important; /* Slate 700 - High contrast dark grey */
+[data-theme="light"] #wordSpotlightSection .word-definition li,
+[data-theme="light"] #searchResultsSection .word-definition p,
+[data-theme="light"] #searchResultsSection .word-definition ul,
+[data-theme="light"] #searchResultsSection .word-definition ol,
+[data-theme="light"] #searchResultsSection .word-definition li {
+    color: #0f172a !important; /* Slate 900 - Near black */
+}
+
+/* 2. Quiz Options Text (Vocab & GK) - Darker Text */
+[data-theme="light"] .option-btn {
+    color: #0f172a !important;
 }
 
 /* 2. Toggle Headers: Medium Slate (Distinct but not black) */
