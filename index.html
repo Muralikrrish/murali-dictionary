@@ -47,25 +47,8 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .bg-decoration{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:hidden;transition:top 0.3s ease}
 .bg-icon{position:absolute;opacity:0.08;font-size:2rem;transition:transform 0.5s ease}
 [data-theme="light"] .bg-icon{opacity:0.12;filter:none}
-/* --- Global Input Unification (Desktop & Tablet) --- */
-
-/* 1. Match Text Styling to Main Search Box */
-#aiInput,
-#wordToolkitInput,
-#reverseInput {
-    font-size: 1.1rem !important;       /* Matches desktop #searchInput size */
-    color: var(--text-main) !important; /* Matches desktop text color */
-    font-weight: 500 !important;        /* Matches desktop font weight */
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-/* 2. Match Placeholder Styling (The gray hint text) */
-#aiInput::placeholder,
-#wordToolkitInput::placeholder,
-#reverseInput::placeholder {
-    color: var(--text-muted) !important; /* Matches desktop placeholder color */
-    opacity: 1 !important;
-}
+#aiInput,#wordToolkitInput,#reverseInput{font-size:1.1rem!important;color:var(--text-main)!important;font-weight:500!important;font-family:'Plus Jakarta Sans',sans-serif}
+#aiInput::placeholder,#wordToolkitInput::placeholder,#reverseInput::placeholder{color:var(--text-muted)!important;opacity:1!important}
 @media(min-width:768px) and (max-width:1024px){.bg-decoration{top:-10%}}
 @media(min-width:768px){.bg-icon{opacity:0.25}[data-theme="light"] .bg-icon{opacity:0.18}}
 .icon-1{top:12%;left:8%;font-size:5rem;transform:rotate(-15deg);color:#fbbf24}
@@ -88,89 +71,20 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 [data-theme="light"] .nav-link:hover{color:#fff}
 .mobile-nav-toggle{display:none;width:44px;height:44px;border-radius:50%;background:rgba(30,41,59,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);color:var(--text-main);align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.2);font-size:1.2rem;transition:all 0.3s ease;z-index:1002}
 [data-theme="light"] .mobile-nav-toggle{background:rgba(255,255,255,0.9);color:#1e293b;border-color:rgba(0,0,0,0.1)}
-/* --- Modernized Mobile Dropdown --- */
-.mobile-dropdown {
-    position: fixed;
-    top: 75px; /* Moved up slightly for tighter grouping */
-    left: 20px;
-    
-    /* Auto-width to fit "General Knowledge" */
-    width: max-content; 
-    min-width: 220px;
-    max-width: 85vw; /* Safety cap for small screens */
-
-    background: var(--bg-surface);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px; /* More rounded, modern corners */
-    padding: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    
-    /* Initial Animation State: Hidden, scaled down, shifted up */
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0.8) translateY(-20px) translateX(-10px);
-    transform-origin: top left; /* Expands from the button */
-    
-    /* Bouncy "Pop" Transition */
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    z-index: 1001;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-[data-theme="light"] .mobile-dropdown {
-    background: rgba(255, 255, 255, 0.95);
-    border-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-}
-
-.mobile-dropdown.show {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1) translateY(0) translateX(0);
-}
-
-/* --- Staggered List Item Animation --- */
-.mobile-nav-item {
-    display: block;
-    padding: 12px 20px;
-    color: var(--text-main);
-    text-decoration: none;
-    font-size: 1rem;
-    border-radius: 14px;
-    transition: background 0.2s, color 0.2s, transform 0.3s ease, opacity 0.3s ease;
-    text-align: left;
-    font-weight: 600;
-    
-    /* Start hidden for stagger effect */
-    opacity: 0;
-    transform: translateX(-15px);
-}
-
-.mobile-nav-item:hover,
-.mobile-nav-item:active {
-    background: rgba(251, 191, 36, 0.15);
-    color: var(--primary);
-}
-
-/* When dropdown is shown, animate items in one by one */
-.mobile-dropdown.show .mobile-nav-item {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* Stagger Delays (Waterfall effect) */
-.mobile-dropdown.show .mobile-nav-item:nth-child(1) { transition-delay: 0.05s; }
-.mobile-dropdown.show .mobile-nav-item:nth-child(2) { transition-delay: 0.10s; }
-.mobile-dropdown.show .mobile-nav-item:nth-child(3) { transition-delay: 0.15s; }
-.mobile-dropdown.show .mobile-nav-item:nth-child(4) { transition-delay: 0.20s; }
-.mobile-dropdown.show .mobile-nav-item:nth-child(5) { transition-delay: 0.25s; }
-.mobile-dropdown.show .mobile-nav-item:nth-child(6) { transition-delay: 0.30s; }
-.mobile-dropdown.show .mobile-nav-item:nth-child(7) { transition-delay: 0.35s; }
-.mobile-dropdown.show .mobile-nav-item:nth-child(8) { transition-delay: 0.40s; }
+.mobile-dropdown{position:fixed;top:75px;left:20px;width:max-content;min-width:220px;max-width:85vw;background:var(--bg-surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,0.5);opacity:0;visibility:hidden;transform:scale(0.8) translateY(-20px) translateX(-10px);transform-origin:top left;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);z-index:1001;display:flex;flex-direction:column;gap:6px}
+[data-theme="light"] .mobile-dropdown{background:rgba(255,255,255,0.95);border-color:rgba(0,0,0,0.1);box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+.mobile-dropdown.show{opacity:1;visibility:visible;transform:scale(1) translateY(0) translateX(0)}
+.mobile-nav-item{display:block;padding:12px 20px;color:var(--text-main);text-decoration:none;font-size:1rem;border-radius:14px;transition:background 0.2s,color 0.2s,transform 0.3s ease,opacity 0.3s ease;text-align:left;font-weight:600;opacity:0;transform:translateX(-15px)}
+.mobile-nav-item:hover,.mobile-nav-item:active{background:rgba(251,191,36,0.15);color:var(--primary)}
+.mobile-dropdown.show .mobile-nav-item{opacity:1;transform:translateX(0)}
+.mobile-dropdown.show .mobile-nav-item:nth-child(1){transition-delay:0.05s}
+.mobile-dropdown.show .mobile-nav-item:nth-child(2){transition-delay:0.10s}
+.mobile-dropdown.show .mobile-nav-item:nth-child(3){transition-delay:0.15s}
+.mobile-dropdown.show .mobile-nav-item:nth-child(4){transition-delay:0.20s}
+.mobile-dropdown.show .mobile-nav-item:nth-child(5){transition-delay:0.25s}
+.mobile-dropdown.show .mobile-nav-item:nth-child(6){transition-delay:0.30s}
+.mobile-dropdown.show .mobile-nav-item:nth-child(7){transition-delay:0.35s}
+.mobile-dropdown.show .mobile-nav-item:nth-child(8){transition-delay:0.40s}
 .container{max-width:900px;margin:0 auto;padding:0 24px}
 .hero-section{padding:120px 0 50px;text-align:center;position:relative}
 .hero-title{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:600;letter-spacing:-0.01em;line-height:1.1;margin-bottom:12px;color:#f1f5f9;cursor:default;transition:opacity 0.3s ease;text-decoration:none;display:inline-block}
@@ -209,22 +123,9 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .word-definition p{margin-bottom:1.2em;margin-top:0}
 .word-definition p:has(> b:only-child),.word-definition p:has(> strong:only-child){margin-bottom:0.8em}
 @media(min-width:768px){.desktop-nav{display:flex}.word-definition p{margin-bottom:0.9em}[data-theme="light"] .modern-section-title span{position:relative;display:inline-block;z-index:1}[data-theme="light"] .modern-section-title span::before{content:'';position:absolute;z-index:-1;bottom:4px;left:-6px;height:77%;width:105%;background:var(--section-acc,var(--primary));opacity:0.3;clip-path:polygon(0% 5%,2% 0%,98% 2%,100% 0%,100% 95%,98% 100%,2% 98%,0% 100%);border-radius:4px;transition:opacity 0.3s ease}}
-.word-definition strong,
-.word-definition b {
-    color: var(--text-main);
-    opacity: 0.85;
-    font-weight: 700;
-}
+.word-definition strong,.word-definition b{color:var(--text-main);opacity:0.85;font-weight:700}
 .word-definition h1{font-family:'Playfair Display',serif;color:var(--text-main);margin-top:0.2em;margin-bottom:0.5em;font-size:2.5rem;line-height:1.2;display:flex;align-items:center;flex-wrap:wrap;gap:16px}
-.word-definition h3 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700;
-    color: var(--text-main);
-    opacity: 0.85;
-    font-size: 1.2rem;
-    margin-top: 1.2em;
-    margin-bottom: 0.6em;
-}
+.word-definition h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;color:var(--text-main);opacity:0.85;font-size:1.2rem;margin-top:1.2em;margin-bottom:0.6em}
 .word-definition ul,.word-definition ol{padding-left:20px;margin:16px 0 24px 0;color:var(--text-muted)}
 .word-definition li{margin-bottom:8px;padding-left:8px}
 .audio-btn{background:none;border:2px solid var(--primary-dim);color:var(--primary);width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;vertical-align:middle;font-size:1rem}
@@ -319,162 +220,32 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .curiosity-fact{font-family:'Playfair Display',serif;font-size:1.8rem;line-height:1.3;color:var(--text-main);margin-bottom:20px}
 .curiosity-detail{color:var(--text-muted);font-size:1.05rem;line-height:1.8;max-height:0;overflow:hidden;transition:max-height 0.5s ease,opacity 0.5s ease;opacity:0}
 .curiosity-detail.show{max-height:2000px;opacity:1;margin-bottom:24px}
-
-/* --- AI Chat Styling --- */
-#chatHistory {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    /* Remove default container styling (Desktop & Mobile) per request */
-    border: none !important;
-    background: transparent !important;
-    padding: 0 10px 0 0 !important; /* Added padding for scrollbar */
-    min-height: 0 !important;
-    margin-bottom: 20px;
-    overflow-y: auto; /* Allow scrolling */
-    max-height: 600px; /* Default Desktop Max Height */
-}
-
-/* Custom scrollbar for chat history */
-#chatHistory::-webkit-scrollbar {
-    width: 6px;
-}
-#chatHistory::-webkit-scrollbar-thumb {
-    background: var(--glass-border);
-    border-radius: 3px;
-}
-#chatHistory::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-/* Empty State: HIDE entire container and its spacing when empty */
-#chatHistory:empty {
-    display: none;
-    margin-bottom: 0;
-}
-#chatHistory:empty::before, #chatHistory:empty::after {
-    display: none !important;
-    content: none !important;
-}
-
-/* AI Chat Specifics - Responsive */
-.chat-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
-    align-items: flex-start; /* Aligns avatar to top */
-}
-.chat-row.user {
-    justify-content: flex-end;
-}
-.chat-row.ai {
-    justify-content: flex-start;
-}
-.chat-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-weight: bold;
-}
-.chat-bubble {
-    padding: 12px 16px;
-    border-radius: 16px;
-    max-width: 85%;
-    line-height: 1.6;
-    word-wrap: break-word;
-    font-size: 1rem;
-}
-/* User specific */
-.chat-row.user .chat-avatar {
-    background: var(--text-muted);
-    color: var(--bg-deep);
-    order: 2; /* Avatar on right */
-}
-.chat-row.user .chat-bubble {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px 4px 16px 16px;
-    color: var(--text-main);
-    order: 1;
-}
-/* AI specific */
-.chat-row.ai .chat-avatar {
-    background: var(--primary);
-    color: var(--bg-deep);
-    order: 1; /* Avatar on left */
-}
-.chat-row.ai .chat-bubble {
-    background: var(--bg-deep);
-    border: 1px solid var(--glass-border);
-    border-radius: 4px 16px 16px 16px;
-    color: var(--text-main);
-    order: 2;
-}
-.chat-bubble ul {
-    margin: 8px 0 8px 20px;
-    padding: 0;
-}
-.chat-bubble li {
-    margin-bottom: 4px;
-}
-.chat-bubble p {
-    margin: 0 0 8px 0;
-}
-.chat-bubble strong {
-    font-weight: 700;
-    color: var(--primary);
-}
-.chat-bubble em {
-    font-style: italic;
-    color: var(--text-bright-dim);
-}
-
-/* AI Input Textarea Styling */
-#aiInput {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--text-main);
-    font-size: 1.1rem;
-    padding: 12px 12px 12px 0;
-    font-weight: 500;
-    outline: none;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    resize: none;
-    height: auto; 
-    min-height: 48px;
-    max-height: 124px; /* Approx 4 lines */
-    overflow-y: auto;
-    line-height: 1.5;
-}
-/* Scrollbar for textarea */
-#aiInput::-webkit-scrollbar {
-    width: 6px;
-}
-#aiInput::-webkit-scrollbar-thumb {
-    background: var(--glass-border);
-    border-radius: 3px;
-}
-#aiInput::-webkit-scrollbar-track {
-    background: transparent;
-}
-.ai-input-wrapper {
-    display: flex; 
-    align-items: flex-end; /* Align send icon to bottom */
-    padding: 0 16px;
-}
-
-/* AI Controls (Clear Chat) */
-#aiControls {
-    text-align: center;
-    margin-top: 20px;
-    display: none; /* Hidden by default until chat starts */
-}
-
+#chatHistory{position:relative;display:flex;flex-direction:column;border:none!important;background:transparent!important;padding:0 10px 0 0!important;min-height:0!important;margin-bottom:20px;overflow-y:auto;max-height:600px}
+#chatHistory::-webkit-scrollbar{width:6px}
+#chatHistory::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:3px}
+#chatHistory::-webkit-scrollbar-track{background:transparent}
+#chatHistory:empty{display:none;margin-bottom:0}
+#chatHistory:empty::before,#chatHistory:empty::after{display:none!important;content:none!important}
+.chat-row{display:flex;gap:12px;margin-bottom:16px;align-items:flex-start}
+.chat-row.user{justify-content:flex-end}
+.chat-row.ai{justify-content:flex-start}
+.chat-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:bold}
+.chat-bubble{padding:12px 16px;border-radius:16px;max-width:85%;line-height:1.6;word-wrap:break-word;font-size:1rem}
+.chat-row.user .chat-avatar{background:var(--text-muted);color:var(--bg-deep);order:2}
+.chat-row.user .chat-bubble{background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:16px 4px 16px 16px;color:var(--text-main);order:1}
+.chat-row.ai .chat-avatar{background:var(--primary);color:var(--bg-deep);order:1}
+.chat-row.ai .chat-bubble{background:var(--bg-deep);border:1px solid var(--glass-border);border-radius:4px 16px 16px 16px;color:var(--text-main);order:2}
+.chat-bubble ul{margin:8px 0 8px 20px;padding:0}
+.chat-bubble li{margin-bottom:4px}
+.chat-bubble p{margin:0 0 8px 0}
+.chat-bubble strong{font-weight:700;color:var(--primary)}
+.chat-bubble em{font-style:italic;color:var(--text-bright-dim)}
+#aiInput{flex:1;background:transparent;border:none;color:var(--text-main);font-size:1.1rem;padding:12px 12px 12px 0;font-weight:500;outline:none;font-family:'Plus Jakarta Sans',sans-serif;resize:none;height:auto;min-height:48px;max-height:124px;overflow-y:auto;line-height:1.5}
+#aiInput::-webkit-scrollbar{width:6px}
+#aiInput::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:3px}
+#aiInput::-webkit-scrollbar-track{background:transparent}
+.ai-input-wrapper{display:flex;align-items:flex-end;padding:0 16px}
+#aiControls{text-align:center;margin-top:20px;display:none}
 @media(max-width:767px){
 .bg-decoration{position:fixed!important;top:0!important;height:100vh!important;width:100%;z-index:-1;overflow:hidden}
 .bg-icon{opacity:0.06!important;filter:blur(1.5px)}
@@ -493,7 +264,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .hero-title{font-size:2.5rem!important}
 .hero-section{padding-top:30px}
 .container{padding:0 16px}
-.hero-subtitle {margin-bottom: 30px !important}
+.hero-subtitle{margin-bottom:30px!important}
 .desktop-nav{display:none!important}
 .mobile-nav-toggle{display:flex}
 .mobile-nav-container{display:block}
@@ -507,16 +278,12 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .modern-section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--section-acc,var(--glass-border)),transparent);display:block!important}
 [data-theme="light"] .modern-section-title::after{background:linear-gradient(90deg,var(--section-acc,var(--primary)),transparent);opacity:0.4;height:2px}
 .modern-section::after{content:'';position:absolute;bottom:0;left:15%;width:70%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)}
-[data-theme="light"] .modern-section::after{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.2),transparent)}
+[data-theme="light"] .modern-section::after{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.1),transparent)}
 .modern-section:last-of-type::after{display:none}
 .tool-header h3{font-size:1.65rem!important}
 .orb{opacity:0.25}
 .autocomplete-hint{display:none}
-#wordSpotlightSection .word-definition h1,
-#searchResultsSection .word-definition h1 {
-    font-size: 2rem;
-    line-height: 1.3;
-}
+#wordSpotlightSection .word-definition h1,#searchResultsSection .word-definition h1{font-size:2rem;line-height:1.3}
 #searchInput::placeholder{color:var(--text-header)!important;opacity:1}
 .search-icon{color:var(--text-header)!important;padding:8px 16px 8px 8px;font-size:1rem!important}
 .search-box input{padding:10px 14px;font-size:0.95rem}
@@ -524,15 +291,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .tool-input-group{flex-direction:column;gap:20px}
 .tool-input{width:100%;padding:12px 16px}
 .tool-search-box .search-icon{padding:10px}
-#wordSpotlightSection .action-btn {
-    width: auto !important;
-    flex: 0 0 auto !important;
-    display: inline-flex !important;
-    justify-content: center !important;
-    padding: 10px 12px !important;
-    font-size: 0.9rem !important;
-    margin: 0 auto;
-}
+#wordSpotlightSection .action-btn{width:auto!important;flex:0 0 auto!important;display:inline-flex!important;justify-content:center!important;padding:10px 12px!important;font-size:0.9rem!important;margin:0 auto}
 .expandable-wrapper{max-height:160px;-webkit-mask-image:linear-gradient(to bottom,black 80%,transparent 100%);mask-image:linear-gradient(to bottom,black 80%,transparent 100%)}
 .word-chip{padding:6px 14px;border:1px solid var(--glass-border)}
 .curiosity-detail,.quiz-detail{line-height:1.5}
@@ -550,146 +309,32 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .curiosity-controls .action-btn{flex:1;justify-content:center;padding:10px 12px;font-size:0.9rem}
 .question-text{color:rgba(248,250,252,0.75);font-size:1.2rem!important}
 [data-theme="light"] .question-text{color:rgba(15,23,42,0.75)}
-.quiz-controls {
-    display: flex !important;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 10px !important;
-}
-.quiz-controls .action-btn {
-    flex: 1;                     
-    justify-content: center;    
-    padding: 10px 12px !important;
-    font-size: 0.9rem !important; 
-    width: auto !important; 
-    grid-column: auto !important;
-    white-space: nowrap;
-}
-.quiz-controls .action-btn:first-child {
-    flex-basis: 100%;
-}
+.quiz-controls{display:flex!important;flex-wrap:wrap;gap:12px;margin-top:10px!important}
+.quiz-controls .action-btn{flex:1;justify-content:center;padding:10px 12px!important;font-size:0.9rem!important;width:auto!important;grid-column:auto!important;white-space:nowrap}
+.quiz-controls .action-btn:first-child{flex-basis:100%}
 .hangman-word{white-space:nowrap;font-size:6vw;letter-spacing:0.15em;overflow:visible;margin-top:36px!important;margin-bottom:24px}
 .hangman-clue-area{font-style:normal;text-align:left}
 .result-area{margin-top:8px!important;padding-top:8px!important}
 #quizFeedback,#gkQuizFeedback{margin-bottom:10px!important}
-.quiz-controls{margin-top:10px!important}
 .toggle-content.expanded{max-height:8000px!important}
 .mobile-result-separator{display:block;width:70%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);margin:24px auto}
 [data-theme="light"] .mobile-result-separator{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.1),transparent)}
-
-/* AI Chat Mobile Optimizations */
-#aiAssistantSection .interactive-card {
-    /* Remove card styling on mobile */
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    backdrop-filter: none !important;
-}
-.chat-row {
-    gap: 0; /* Remove gap since avatar is gone */
-    margin-bottom: 12px;
-}
-.chat-avatar {
-    display: none !important; /* Hide avatar on mobile */
-}
-.chat-bubble {
-    padding: 12px 14px; /* Comfortable padding */
-    font-size: 1rem; /* Better reading size */
-    max-width: 100%; /* Maximize width */
-}
-/* Ensure send button color is visible on mobile */
-#aiSendBtn {
-    color: var(--primary) !important;
-    opacity: 1 !important;
-    padding: 10px;
-}
-
-/* Chat History Max Height for Mobile */
-#chatHistory {
-    max-height: 800px;
-}
-
-/* Dimmer toggle color only for Mobile Word Spotlight */
-#wordSpotlightSection .toggle-header.active {
-    color: rgba(245, 158, 11, 0.7) !important;
-}
-
-/* --- Mobile Word Spotlight Adjustments --- */
-
-    /* 1. Body Text (Definitions & Lists) - Brighter Blue-Grey */
-#wordSpotlightSection .word-definition p,
-#wordSpotlightSection .word-definition ul,
-#wordSpotlightSection .word-definition ol,
-#wordSpotlightSection .word-definition li {
-    color: #cbd5e1 !important; /* Lighter Blue-Grey */
-}
-
-    /* 2. Toggle Headers - Brighter Blue-Grey */
-#wordSpotlightSection .toggle-header {
-    color: #94a3b8 !important; /* Medium Blue-Grey */
-}
-
-    /* 3. RESTORED: Bold Text & H3 - Back to Original Soft White */
-#wordSpotlightSection .word-definition strong,
-#wordSpotlightSection .word-definition b,
-#wordSpotlightSection .word-definition h3 {
-    color: var(--text-main) !important; /* Original off-white (#f8fafc) */
-    opacity: 0.85 !important;            /* Original softness */
-}
-/* Inside @media(max-width:767px) */
-
-/* 1. Unify Font Size for AI and Tool Inputs */
-#wordToolkitInput,
-#reverseInput,
-#aiInput {
-    font-size: 0.95rem !important; /* Matches main search text size */
-    padding: 10px 14px !important;  /* Matches main search padding */
-}
-
-/* 2. Unify Placeholder Color (The "gray" text before you type) */
-#wordToolkitInput::placeholder,
-#reverseInput::placeholder,
-#aiInput::placeholder {
-    color: var(--text-header) !important; /* Matches "Search Vocabulary..." color */
-    opacity: 1 !important;
-}
-/* --- Mobile Word Spotlight: Light Theme Adjustments --- */
-
-/* 1. Body Text: Darker Slate for readability (was too dim) */
-/* 1. Body Text: Darker Slate (Spotlight AND Search Results) */
-[data-theme="light"] #wordSpotlightSection .word-definition p,
-[data-theme="light"] #wordSpotlightSection .word-definition ul,
-[data-theme="light"] #wordSpotlightSection .word-definition ol,
-[data-theme="light"] #wordSpotlightSection .word-definition li,
-[data-theme="light"] #searchResultsSection .word-definition p,
-[data-theme="light"] #searchResultsSection .word-definition ul,
-[data-theme="light"] #searchResultsSection .word-definition ol,
-[data-theme="light"] #searchResultsSection .word-definition li {
-    color: #0f172a !important; /* Slate 900 - Near black */
-}
-
-/* 2. Quiz Options Text (Vocab & GK) - Darker Text */
-[data-theme="light"] .option-btn {
-    color: #0f172a !important;
-}
-
-/* 2. Toggle Headers: Medium Slate (Distinct but not black) */
-[data-theme="light"] #wordSpotlightSection .toggle-header {
-    color: #475569 !important; /* Slate 600 */
-}
-
-/* 3. Bold Text & H3: Deepest Dark (Visual Anchor) */
-/* 3. Bold Text & H3: Dimmed (Matches Toggle Headers) */
-[data-theme="light"] #wordSpotlightSection .word-definition strong,
-[data-theme="light"] #wordSpotlightSection .word-definition b,
-[data-theme="light"] #wordSpotlightSection .word-definition h3,
-[data-theme="light"] #searchResultsSection .word-definition strong,
-[data-theme="light"] #searchResultsSection .word-definition b,
-[data-theme="light"] #searchResultsSection .word-definition h3 {
-    color: #475569 !important; /* Slate 600 - Matches Toggle Headers */
-    opacity: 1 !important;
-}
+#aiAssistantSection .interactive-card{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;backdrop-filter:none!important}
+.chat-row{gap:0;margin-bottom:12px}
+.chat-avatar{display:none!important}
+.chat-bubble{padding:12px 14px;font-size:1rem;max-width:100%}
+#aiSendBtn{color:var(--primary)!important;opacity:1!important;padding:10px}
+#chatHistory{max-height:800px}
+#wordSpotlightSection .toggle-header.active{color:rgba(245,158,11,0.7)!important}
+#wordSpotlightSection .word-definition p,#wordSpotlightSection .word-definition ul,#wordSpotlightSection .word-definition ol,#wordSpotlightSection .word-definition li{color:#cbd5e1!important}
+#wordSpotlightSection .toggle-header{color:#94a3b8!important}
+#wordSpotlightSection .word-definition strong,#wordSpotlightSection .word-definition b,#wordSpotlightSection .word-definition h3{color:var(--text-main)!important;opacity:0.85!important}
+#wordToolkitInput,#reverseInput,#aiInput{font-size:0.95rem!important;padding:10px 14px!important}
+#wordToolkitInput::placeholder,#reverseInput::placeholder,#aiInput::placeholder{color:var(--text-header)!important;opacity:1!important}
+[data-theme="light"] #wordSpotlightSection .word-definition p,[data-theme="light"] #wordSpotlightSection .word-definition ul,[data-theme="light"] #wordSpotlightSection .word-definition ol,[data-theme="light"] #wordSpotlightSection .word-definition li,[data-theme="light"] #searchResultsSection .word-definition p,[data-theme="light"] #searchResultsSection .word-definition ul,[data-theme="light"] #searchResultsSection .word-definition ol,[data-theme="light"] #searchResultsSection .word-definition li{color:#0f172a!important}
+[data-theme="light"] .option-btn{color:#0f172a!important}
+[data-theme="light"] #wordSpotlightSection .toggle-header{color:#475569!important}
+[data-theme="light"] #wordSpotlightSection .word-definition strong,[data-theme="light"] #wordSpotlightSection .word-definition b,[data-theme="light"] #wordSpotlightSection .word-definition h3,[data-theme="light"] #searchResultsSection .word-definition strong,[data-theme="light"] #searchResultsSection .word-definition b,[data-theme="light"] #searchResultsSection .word-definition h3{color:#475569!important;opacity:1!important}
 }
 </style>
 </head>
@@ -735,7 +380,6 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 <i class="fas fa-dna bg-icon icon-7"></i>
 <i class="fas fa-quote-left bg-icon icon-8"></i>
 </div>
-
 <section class="hero-section">
 <div class="container">
 <h1 class="hero-title">Pearls of Knowledge</h1>
@@ -770,7 +414,6 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 </div>
 </div>
 </section>
-
 <section class="modern-section" id="vocabularyQuizSection">
 <h2 class="modern-section-title"><span>Vocabulary Quiz</span></h2>
 <div class="interactive-card">
@@ -913,77 +556,42 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 <div id="reverseResults" class="results-container"></div>
 </div>
 </section>
-
-<!-- AI Assistant Section -->
 <section class="modern-section" id="aiAssistantSection">
-    <h2 class="modern-section-title"><span>AI Knowledge Assistant</span></h2>
-    <div class="interactive-card">
-        <div class="tool-header">
-            <h3>Ask Anything</h3>
-        </div>
-        
-        <!-- Chat History -->
-        <div id="chatHistory"></div>
-
-        <!-- Input Group -->
-        <div class="tool-input-group" style="position: relative;">
-            <div class="search-box tool-search-box" style="width: 100%; max-width: 100%;">
-                <div class="ai-input-wrapper">
-                    <!-- Textarea starts at 1 row, auto expands via JS -->
-                    <textarea id="aiInput" placeholder="Ask a question..." rows="1"></textarea>
-                    <span class="search-icon" id="aiSendBtn" style="cursor: pointer; color: var(--primary); padding: 10px;"><i class="fas fa-paper-plane"></i></span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Controls (Clear Chat) -->
-        <div id="aiControls">
-            <button id="clearChatBtn" class="action-btn">
-                <i class="fas fa-trash-alt"></i> Clear Chat
-            </button>
-        </div>
-    </div>
+<h2 class="modern-section-title"><span>AI Knowledge Assistant</span></h2>
+<div class="interactive-card">
+<div class="tool-header">
+<h3>Ask Anything</h3>
+</div>
+<div id="chatHistory"></div>
+<div class="tool-input-group" style="position:relative;">
+<div class="search-box tool-search-box" style="width:100%;max-width:100%;">
+<div class="ai-input-wrapper">
+<textarea id="aiInput" placeholder="Ask a question..." rows="1"></textarea>
+<span class="search-icon" id="aiSendBtn" style="cursor:pointer;color:var(--primary);padding:10px;"><i class="fas fa-paper-plane"></i></span>
+</div>
+</div>
+</div>
+<div id="aiControls">
+<button id="clearChatBtn" class="action-btn">
+<i class="fas fa-trash-alt"></i> Clear Chat
+</button>
+</div>
+</div>
 </section>
-
 </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const MW_API_KEY='3bb3615c-eca5-4cb3-8e0f-eece50d1037e';const WORDNIK_API_KEY='yfp2ausp6gk53i8i0g7ud3r1usrhixxhhwfxiip0c2hmjydq1';const SUPABASE_URL='https://jlzzxruwxyzswzgppkgq.supabase.co';const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
 const STOP_WORDS=new Set(["a","an","the","and","or","but","if","because","as","what","where","when","how","who","whom","this","that","these","those","my","your","his","her","its","our","their","to","from","in","on","at","by","for","with","about","against","between","into","through","during","before","after","above","below","of","off","over","under","again","further","then","once","is","am","are","was","were","be","been","being","have","has","had","having","do","does","did","doing","can","could","should","would","will","might","must","shall","i","you","he","she","it","we","they","me","him","her","us","them","not","no","nor","so","too","very","just","more","most","up","down","out","left","right","back","forth","around","near","far"]);
 const LOCAL_HANGMAN_WORDS=[{word:"EPIPHANY",clue:"It refers to a moment of sudden and profound revelation or insight, often triggered by a mundane occurrence."},{word:"LABYRINTH",clue:"It describes a complicated, irregular network of passages or paths in which it is difficult to find one's way."},{word:"PARADOX",clue:"It is a seemingly absurd or self-contradictory statement that, when investigated or explained, may prove to be well-founded or true."},{word:"EUPHORIA",clue:"It describes a feeling or state of intense excitement and happiness, often amplified beyond normal emotional responses."},{word:"NOSTALGIA",clue:"It is a sentimental longing or wistful affection for the past, typically for a period or place with happy personal associations."},{word:"SERENDIPITY",clue:"It refers to the occurrence and development of events by chance in a happy or beneficial way."},{word:"AMBIGUOUS",clue:"It describes language or a situation that is open to more than one interpretation and does not have one obvious meaning."},{word:"ELOQUENT",clue:"It describes being fluent or persuasive in speaking or writing, clearly expressing something."},{word:"RESILIENCE",clue:"It is the capacity to recover quickly from difficulties; a form of mental or emotional toughness."},{word:"EPHEMERAL",clue:"It describes something lasting for a very short time, like the lifespan of a mayfly or a fleeting moment."}];
+function smoothScrollTo(elementId){const section=document.getElementById(elementId);if(section){const yOffset=-40;const y=section.getBoundingClientRect().top+window.pageYOffset+yOffset;window.scrollTo({top:y,behavior:'smooth'})}}
 function toggleTheme(){playButtonSound();const html=document.documentElement;const icon=document.getElementById('themeIcon');const currentTheme=html.getAttribute('data-theme');const newTheme=currentTheme==='light'?'dark':'light';html.setAttribute('data-theme',newTheme);icon.className=newTheme==='light'?'fas fa-sun':'fas fa-moon';try{localStorage.setItem('theme',newTheme)}catch(e){console.warn('Unable to save theme preference')}}
 function toggleMobileNav(){playButtonSound();const dropdown=document.getElementById('mobileDropdown');const toggleBtn=document.querySelector('.mobile-nav-toggle i');dropdown.classList.toggle('show');if(dropdown.classList.contains('show')){toggleBtn.classList.remove('fa-bars');toggleBtn.classList.add('fa-times')}else{toggleBtn.classList.remove('fa-times');toggleBtn.classList.add('fa-bars')}}
-function scrollToSection(id) {
-    // 1. Dismiss keyboard if open
-    if (document.activeElement && document.activeElement.tagName === 'INPUT') {
-        document.activeElement.blur();
-    }
-
-    const section = document.getElementById(id);
-    if (section) {
-        // 2. Close the mobile menu
-        toggleMobileNav();
-
-        // 3. Wait for menu animation (400ms), then scroll
-        setTimeout(() => {
-            // --- NEW OFFSET LOGIC START ---
-            const yOffset = -40; 
-            const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            
-            window.scrollTo({
-                top: y, 
-                behavior: 'smooth'
-            });
-            // --- NEW OFFSET LOGIC END ---
-            
-        }, 400);
-    }
-}
+function scrollToSection(id){if(document.activeElement&&document.activeElement.tagName==='INPUT'){document.activeElement.blur()}const section=document.getElementById(id);if(section){toggleMobileNav();setTimeout(()=>{smoothScrollTo(id)},400)}}
 document.addEventListener('click',function(e){const container=document.querySelector('.mobile-nav-container');if(container&&!container.contains(e.target)){const dropdown=document.getElementById('mobileDropdown');if(dropdown.classList.contains('show')){dropdown.classList.remove('show');const toggleBtn=document.querySelector('.mobile-nav-toggle i');toggleBtn.classList.remove('fa-times');toggleBtn.classList.add('fa-bars')}}});
 const SafeStorage={getItem(key){try{return localStorage.getItem(key)}catch(e){return null}},setItem(key,val){try{localStorage.setItem(key,val)}catch(e){}}};
-let supabaseClient, dictionary = []; // Dictionary is now empty by default, not loaded entirely
+let supabaseClient, dictionary = [];
 let isSupabaseConfigured=false,supabaseInitialized=false;let quizQuestions=[],currentQuizQuestion=null,selectedQuizAnswer=null;let quizAnswered=false,questionDisplayed=false;let gkQuizQuestions=[],currentGkQuizQuestion=null,selectedGkQuizAnswer=null;let gkQuizAnswered=false,gkQuestionDisplayed=false;let audioContext=null;let toolkitMode='describe';
 function initAudio(){if(!audioContext){audioContext=new(window.AudioContext||window.webkitAudioContext)()}if(audioContext.state==='suspended'){audioContext.resume()}return audioContext}
 function playSound(frequency,duration,type='sine',volume=0.3){const ctx=initAudio();const osc=ctx.createOscillator();const gainNode=ctx.createGain();osc.connect(gainNode);gainNode.connect(ctx.destination);osc.frequency.value=frequency;osc.type=type;gainNode.gain.setValueAtTime(volume,ctx.currentTime);gainNode.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+duration);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+duration)}
@@ -996,602 +604,56 @@ function playRevealSound(){playSound(1200,0.1,'triangle',0.15)}
 function playClueSound(){playSound(900,0.1,'sine',0.15)}
 function playClearSound(){const ctx=initAudio();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.setValueAtTime(400,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(100,ctx.currentTime+0.2);gain.gain.setValueAtTime(0.2,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.2);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.2)}
 async function initializeSupabase(){try{const{createClient}=supabase;supabaseClient=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);isSupabaseConfigured=supabaseInitialized=true;loadQuizQuestions();loadGkQuizQuestions();fetchCuriosity();fetchWordSpotlight();initHangmanGame(false);syncWithSupabase()}catch(error){console.error('Supabase init error:',error);isSupabaseConfigured=false;initHangmanGame(false)}}
-
-// Updated Sync: Just keeps connection alive, does NOT download dictionary
-async function syncWithSupabase(){if(!isSupabaseConfigured||!supabaseInitialized)return;
-    // We removed the full dictionary fetch to prevent local storage limit issues
-    // and to ensure fresh data is always fetched via search
-    try{
-        console.log("Supabase connected. Dictionary will be fetched dynamically.");
-    }catch(error){console.error('Sync error:',error)}
-}
-
+async function syncWithSupabase(){if(!isSupabaseConfigured||!supabaseInitialized)return;try{console.log("Supabase connected.")}catch(error){console.error('Sync error:',error)}}
 let hangmanWord="",hangmanClue="",hangmanGuessed=new Set(),hangmanMistakes=0;const MAX_MISTAKES=6;
-async function initHangmanGame(shouldScroll=true){playButtonSound();if(shouldScroll&&window.innerWidth<768){const section=document.getElementById('hangmanSection');if(section)section.scrollIntoView({behavior:'smooth',block:'start'})}hangmanGuessed.clear();hangmanMistakes=0;hangmanWord="";hangmanClue="";document.getElementById('hangmanClueDisplay').textContent="";document.getElementById('hangmanKeyboard').innerHTML="";document.querySelectorAll('.hm-part').forEach(el=>el.style.display='none');document.getElementById('hangmanWordDisplay').innerHTML='<div class="skeleton-loading"><div class="skeleton-line short" style="margin:0 auto"></div></div>';try{if(isSupabaseConfigured){const{data,error}=await supabaseClient.from('hangman_words').select('*');if(data&&data.length>0){const randomEntry=data[Math.floor(Math.random()*data.length)];hangmanWord=randomEntry.word.toUpperCase();hangmanClue=randomEntry.clue}}}catch(e){console.warn("Supabase hangman fetch failed",e)}if(!hangmanWord){const localEntry=LOCAL_HANGMAN_WORDS[Math.floor(Math.random()*LOCAL_HANGMAN_WORDS.length)];hangmanWord=localEntry.word.toUpperCase();hangmanClue=localEntry.clue}renderHangmanGame()}
+async function initHangmanGame(shouldScroll=true){playButtonSound();if(shouldScroll){smoothScrollTo('hangmanSection')}hangmanGuessed.clear();hangmanMistakes=0;hangmanWord="";hangmanClue="";document.getElementById('hangmanClueDisplay').textContent="";document.getElementById('hangmanKeyboard').innerHTML="";document.querySelectorAll('.hm-part').forEach(el=>el.style.display='none');document.getElementById('hangmanWordDisplay').innerHTML='<div class="skeleton-loading"><div class="skeleton-line short" style="margin:0 auto"></div></div>';try{if(isSupabaseConfigured){const{data,error}=await supabaseClient.from('hangman_words').select('*');if(data&&data.length>0){const randomEntry=data[Math.floor(Math.random()*data.length)];hangmanWord=randomEntry.word.toUpperCase();hangmanClue=randomEntry.clue}}}catch(e){console.warn("Supabase hangman fetch failed",e)}if(!hangmanWord){const localEntry=LOCAL_HANGMAN_WORDS[Math.floor(Math.random()*LOCAL_HANGMAN_WORDS.length)];hangmanWord=localEntry.word.toUpperCase();hangmanClue=localEntry.clue}renderHangmanGame()}
 function renderHangmanGame(){const wordDisplay=document.getElementById('hangmanWordDisplay');wordDisplay.textContent=hangmanWord.split('').map(letter=>hangmanGuessed.has(letter)?letter:"_").join(" ");if(window.innerWidth>=768){const len=hangmanWord.length;if(len>14){wordDisplay.style.fontSize='1.2rem';wordDisplay.style.letterSpacing='0.1em'}else if(len>10){wordDisplay.style.fontSize='1.5rem';wordDisplay.style.letterSpacing='0.2em'}else{wordDisplay.style.fontSize='2rem';wordDisplay.style.letterSpacing='0.5em'}}else{const len=hangmanWord.length;if(len>10){wordDisplay.style.fontSize='5vw';wordDisplay.style.letterSpacing='2px'}else{wordDisplay.style.fontSize='';wordDisplay.style.letterSpacing=''}}const keyboard=document.getElementById('hangmanKeyboard');keyboard.innerHTML='';for(let i=65;i<=90;i++){const letter=String.fromCharCode(i);const btn=document.createElement('button');btn.className='key-btn';btn.textContent=letter;if(hangmanGuessed.has(letter)){btn.disabled=true;if(hangmanWord.includes(letter))btn.classList.add('correct');else btn.classList.add('wrong')}btn.onclick=()=>handleHangmanGuess(letter);keyboard.appendChild(btn)}}
 function handleHangmanGuess(letter){if(hangmanGuessed.has(letter)||hangmanMistakes>=MAX_MISTAKES)return;playSelectSound();hangmanGuessed.add(letter);if(hangmanWord.includes(letter)){playCorrectSound();const isWin=hangmanWord.split('').every(l=>hangmanGuessed.has(l));if(isWin){playRevealSound();document.getElementById('hangmanClueDisplay').innerHTML=`<div style="text-align: center;"><span style="color:var(--success)">Victory! A splendid vocabulary.</span></div>`}}else{playIncorrectSound();hangmanMistakes++;drawHangmanPart(hangmanMistakes);if(hangmanMistakes>=MAX_MISTAKES){endHangmanGame(false)}}renderHangmanGame()}
 function endHangmanGame(isWin){if(!isWin){document.getElementById('hangmanClueDisplay').innerHTML=`<div style="text-align: center;"><span style="color:var(--error)">Alas! The word has escaped you.</span></div>`;hangmanWord.split('').forEach(l=>hangmanGuessed.add(l));renderHangmanGame()}}
-function drawHangmanPart(step){
-    const partMap={
-        1:['hmHead'],
-        2:['hmBody'],
-        3:['hmArmL'],
-        4:['hmArmR'],
-        5:['hmLegL'],
-        6:['hmLegR']
-    };
-    if(partMap[step]){
-        partMap[step].forEach(id=>{
-            const el=document.getElementById(id);
-            if(el)el.style.display='block'
-        })
-    }
-}
+function drawHangmanPart(step){const partMap={1:['hmHead'],2:['hmBody'],3:['hmArmL'],4:['hmArmR'],5:['hmLegL'],6:['hmLegR']};if(partMap[step]){partMap[step].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='block'})}}
 function getHangmanClue(){const display=document.getElementById('hangmanClueDisplay');if(hangmanMistakes>=MAX_MISTAKES||display.textContent.includes('Hint:'))return;playClueSound();if(hangmanClue){display.textContent=`Hint: ${hangmanClue}`}else{display.textContent="The archives hold no secrets for this word."}}
 async function handleReverseSearch(){playButtonSound();const input=document.getElementById('reverseInput');const resultsDiv=document.getElementById('reverseResults');const query=input.value.trim();if(!query)return;if(window.innerWidth<768){input.blur();setTimeout(()=>{window.scrollBy({top:150,behavior:'smooth'})},100)}resultsDiv.innerHTML='<div class="skeleton-loading"><div class="skeleton-line medium"></div></div>';try{const response=await fetch(`https://api.datamuse.com/words?ml=${encodeURIComponent(query)}&max=25`);const data=await response.json();resultsDiv.innerHTML='';if(data.length===0){resultsDiv.innerHTML='<p>No results found.</p>';return}const wrapper=document.createElement('div');wrapper.className='expandable-wrapper';data.forEach(item=>{const chip=document.createElement('div');chip.className='word-chip';chip.innerHTML=`${item.word}`;chip.onclick=()=>{playSelectSound();document.getElementById('searchInput').value=item.word;displaySearchResults(item.word)};wrapper.appendChild(chip)});resultsDiv.appendChild(wrapper);if(data.length>15){const controlsDiv=document.createElement('div');controlsDiv.className='expandable-controls';const toggleBtn=document.createElement('button');toggleBtn.className='action-btn';toggleBtn.innerHTML='<i class="fas fa-chevron-down"></i> Show More';toggleBtn.onclick=function(){playButtonSound();const isExpanded=wrapper.classList.contains('expanded');if(isExpanded){wrapper.classList.remove('expanded');this.innerHTML='<i class="fas fa-chevron-down"></i> Show More';if(window.innerWidth<768){document.getElementById('reverseDictSection').scrollIntoView({behavior:'smooth',block:'start'})}else{resultsDiv.scrollIntoView({behavior:'smooth',block:'nearest'})}}else{wrapper.classList.add('expanded');this.innerHTML='<i class="fas fa-chevron-up"></i> Show Less'}};controlsDiv.appendChild(toggleBtn);resultsDiv.appendChild(controlsDiv)}}catch(e){console.error(e);resultsDiv.innerHTML='<p>Error connecting to word brain.</p>'}}
 function setToolkitMode(mode,btn){playSelectSound();toolkitMode=mode;document.querySelectorAll('.mode-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');const map={'describe':{hint:'Find adjectives that describe your noun',placeholder:'e.g. Ocean'},'modify':{hint:'Find nouns described by your adjective',placeholder:'e.g. Blue'},'synonym':{hint:'Find words with the same meaning',placeholder:'e.g. Happy'},'antonym':{hint:'Find words with opposite meaning',placeholder:'e.g. Hot'},'follows':{hint:'Find words that often come after',placeholder:'e.g. Silver'},'precedes':{hint:'Find words that often come before',placeholder:'e.g. Lining'}};document.getElementById('toolkitHint').textContent=map[mode].hint;document.getElementById('wordToolkitInput').placeholder=map[mode].placeholder;const val=document.getElementById('wordToolkitInput').value.trim();if(val)handleWordTool()}
 async function handleWordTool(){playButtonSound();const input=document.getElementById('wordToolkitInput');const resultsContainer=document.getElementById('wordToolkitResults');const query=input.value.trim();if(!query)return;resultsContainer.innerHTML='<div class="skeleton-loading"><div class="skeleton-line medium"></div></div>';let apiUrl='https://api.datamuse.com/words?';const encodedQuery=encodeURIComponent(query);switch(toolkitMode){case 'describe':apiUrl+=`rel_jjb=${encodedQuery}&max=100`;break;case 'modify':apiUrl+=`rel_jja=${encodedQuery}&max=50`;break;case 'synonym':apiUrl+=`rel_syn=${encodedQuery}&max=50`;break;case 'antonym':apiUrl+=`rel_ant=${encodedQuery}&max=50`;break;case 'follows':apiUrl+=`rel_bga=${encodedQuery}&max=50`;break;case 'precedes':apiUrl+=`rel_bgb=${encodedQuery}&max=50`;break;default:apiUrl+=`rel_jjb=${encodedQuery}&max=50`}try{const response=await fetch(apiUrl);let data=await response.json();data=data.filter(item=>{const w=item.word.toLowerCase();const isValidLength=w.length>1;const hasLetters=/[a-zA-Z]/.test(w);const isStopWord=STOP_WORDS.has(w);return isValidLength&&hasLetters&&!isStopWord});if(toolkitMode==='follows'||toolkitMode==='precedes'){data=data.slice(0,20)}else{data=data.slice(0,50)}resultsContainer.innerHTML='';if(data.length===0){resultsContainer.innerHTML='<p>No interesting results found.</p>';return}const wrapper=document.createElement('div');wrapper.className='expandable-wrapper';data.forEach(item=>{const chip=document.createElement('div');chip.className='word-chip';chip.innerHTML=`${item.word}`;chip.onclick=()=>{playSelectSound();document.getElementById('searchInput').value=item.word;displaySearchResults(item.word)};wrapper.appendChild(chip)});resultsContainer.appendChild(wrapper);if(data.length>15){const controlsDiv=document.createElement('div');controlsDiv.className='expandable-controls';const toggleBtn=document.createElement('button');toggleBtn.className='action-btn';toggleBtn.innerHTML='<i class="fas fa-chevron-down"></i> Show More';toggleBtn.onclick=function(){playButtonSound();const isExpanded=wrapper.classList.contains('expanded');if(isExpanded){wrapper.classList.remove('expanded');this.innerHTML='<i class="fas fa-chevron-down"></i> Show More';if(window.innerWidth<768){document.getElementById('wordToolkitSection').scrollIntoView({behavior:'smooth',block:'start'})}else{resultsContainer.scrollIntoView({behavior:'smooth',block:'nearest'})}}else{wrapper.classList.add('expanded');this.innerHTML='<i class="fas fa-chevron-up"></i> Show Less'}};controlsDiv.appendChild(toggleBtn);resultsContainer.appendChild(controlsDiv)}}catch(e){resultsContainer.innerHTML='<p>Error fetching results.</p>'}}
-async function fetchCuriosity(scrollToTop=false){const display=document.getElementById('curiosityDisplay');if(scrollToTop&&window.innerWidth<=768){const section=document.getElementById('curiositySection');if(section)section.scrollIntoView({behavior:'smooth',block:'start'})}try{const{data,error}=await supabaseClient.rpc('get_random_curiosity');if(error)throw error;if(!data||data.length===0)throw new Error('No curiosities found');const item=data[0];display.innerHTML=`<span class="curiosity-category">${item.category}</span><h3 class="curiosity-fact">${item.fact_text}</h3><div class="curiosity-detail" id="curiosityDetail">${item.detail_text||''}</div><div class="curiosity-controls" style="margin-top: 20px; display: flex; gap: 12px;"><button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail(this)"><i class="fas fa-eye"></i> Tell me more</button><button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)"><i class="fas fa-random"></i> Next Fact</button></div>`}catch(err){display.innerHTML=`<span class="curiosity-category">Fact</span><h3 class="curiosity-fact">Octopuses have three hearts.</h3><div class="curiosity-controls" style="margin-top: 24px; display: flex; gap: 12px;"><button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)"><i class="fas fa-random"></i> Next Fact</button></div>`}}
+async function fetchCuriosity(scrollToTop=false){const display=document.getElementById('curiosityDisplay');if(scrollToTop){smoothScrollTo('curiositySection')}try{const{data,error}=await supabaseClient.rpc('get_random_curiosity');if(error)throw error;if(!data||data.length===0)throw new Error('No curiosities found');const item=data[0];display.innerHTML=`<span class="curiosity-category">${item.category}</span><h3 class="curiosity-fact">${item.fact_text}</h3><div class="curiosity-detail" id="curiosityDetail">${item.detail_text||''}</div><div class="curiosity-controls" style="margin-top: 20px; display: flex; gap: 12px;"><button class="action-btn" onclick="playButtonSound(); toggleCuriosityDetail(this)"><i class="fas fa-eye"></i> Tell me more</button><button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)"><i class="fas fa-random"></i> Next Fact</button></div>`}catch(err){display.innerHTML=`<span class="curiosity-category">Fact</span><h3 class="curiosity-fact">Octopuses have three hearts.</h3><div class="curiosity-controls" style="margin-top: 24px; display: flex; gap: 12px;"><button class="action-btn" onclick="playButtonSound(); fetchCuriosity(true)"><i class="fas fa-random"></i> Next Fact</button></div>`}}
 function toggleCuriosityDetail(btn){const detail=document.getElementById('curiosityDetail');const isExpanding=!detail.classList.contains('show');detail.classList.toggle('show');if(btn)btn.innerHTML=isExpanding?'<i class="fas fa-eye-slash"></i> Show less':'<i class="fas fa-eye"></i> Tell me more';if(!isExpanding&&window.innerWidth<=768){const section=document.getElementById('curiositySection');if(section){setTimeout(()=>{section.scrollIntoView({behavior:'smooth',block:'start'})},50)}}}
-
-// No longer building local search index
 function buildSearchIndex(){ }
-
 async function loadQuizQuestions(){try{const cachedQuestions=SafeStorage.getItem('cachedQuizQuestions');if(cachedQuestions){quizQuestions=JSON.parse(cachedQuestions);document.getElementById('quizLoadingMessage').style.display='none';document.getElementById('quizQuestion').style.display='block';displayQuizQuestion()}const response=await fetch(`${SUPABASE_URL}/rest/v1/quiz_questions?select=*`,{headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`}});if(!response.ok)throw new Error('Network error');const freshQuestions=await response.json();quizQuestions=freshQuestions;SafeStorage.setItem('cachedQuizQuestions',JSON.stringify(freshQuestions));if(!cachedQuestions){document.getElementById('quizLoadingMessage').style.display='none';document.getElementById('quizQuestion').style.display='block';displayQuizQuestion()}}catch(error){console.warn(error)}}
 async function loadGkQuizQuestions(){try{const cachedQuestions=SafeStorage.getItem('cachedGkQuizQuestions');if(cachedQuestions){gkQuizQuestions=JSON.parse(cachedQuestions);document.getElementById('gkQuizLoadingMessage').style.display='none';document.getElementById('gkQuizQuestion').style.display='block';displayGkQuizQuestion()}const response=await fetch(`${SUPABASE_URL}/rest/v1/gk_quiz?select=*`,{headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`}});if(!response.ok)throw new Error('Network error');const freshQuestions=await response.json();gkQuizQuestions=freshQuestions;SafeStorage.setItem('cachedGkQuizQuestions',JSON.stringify(freshQuestions));if(!cachedQuestions){document.getElementById('gkQuizLoadingMessage').style.display='none';document.getElementById('gkQuizQuestion').style.display='block';displayGkQuizQuestion()}}catch(error){console.warn(error)}}
-function displayQuizQuestion(scrollToTop=false){if(quizQuestions.length===0)return;if(scrollToTop)document.getElementById('vocabularyQuizSection').scrollIntoView({behavior:'smooth',block:'start'});const randomIndex=Math.floor(Math.random()*quizQuestions.length);currentQuizQuestion=quizQuestions[randomIndex];document.getElementById('quizQuestionText').textContent=currentQuizQuestion.question_text;const optionsGrid=document.getElementById('quizOptionsGrid');optionsGrid.innerHTML='';const optionsArray=Array.isArray(currentQuizQuestion.options)?currentQuizQuestion.options:JSON.parse(currentQuizQuestion.options||'[]');const originalCorrectAnswer=optionsArray[currentQuizQuestion.correct_answer];const shuffledOptions=shuffleArray(optionsArray);currentQuizQuestion.shuffledOptions=shuffledOptions;currentQuizQuestion.currentCorrectAnswer=shuffledOptions.indexOf(originalCorrectAnswer);shuffledOptions.forEach((option,index)=>{const btn=document.createElement('button');btn.className='option-btn';btn.textContent=option;btn.onclick=()=>selectQuizAnswer(index);optionsGrid.appendChild(btn)});document.getElementById('quizResultArea').style.display='none';document.getElementById('quizOptionsGrid').style.display='grid';document.getElementById('quizExplanationContent').classList.remove('show');
-const qLabel = window.innerWidth < 768 ? 'See Explanations' : 'Explanation';
-document.getElementById('quizTellMeMoreBtn').innerHTML = `<i class="fas fa-eye"></i> ${qLabel}`;
-quizAnswered=false}
-function displayGkQuizQuestion(scrollToTop=false){if(gkQuizQuestions.length===0)return;if(scrollToTop)document.getElementById('gkQuizSection').scrollIntoView({behavior:'smooth',block:'start'});const randomIndex=Math.floor(Math.random()*gkQuizQuestions.length);currentGkQuizQuestion=gkQuizQuestions[randomIndex];document.getElementById('gkQuizQuestionText').textContent=currentGkQuizQuestion.question_text;const optionsGrid=document.getElementById('gkQuizOptionsGrid');optionsGrid.innerHTML='';const optionsArray=Array.isArray(currentGkQuizQuestion.options)?currentGkQuizQuestion.options:JSON.parse(currentGkQuizQuestion.options||'[]');const originalCorrectAnswer=optionsArray[currentGkQuizQuestion.correct_answer];const shuffledOptions=shuffleArray(optionsArray);currentGkQuizQuestion.shuffledOptions=shuffledOptions;currentGkQuizQuestion.currentCorrectAnswer=shuffledOptions.indexOf(originalCorrectAnswer);shuffledOptions.forEach((option,index)=>{const btn=document.createElement('button');btn.className='option-btn';btn.textContent=option;btn.onclick=()=>selectGkQuizAnswer(index);optionsGrid.appendChild(btn)});document.getElementById('gkQuizResultArea').style.display='none';document.getElementById('gkQuizOptionsGrid').style.display='grid';document.getElementById('gkQuizExplanationContent').classList.remove('show');
-const gkLabel = window.innerWidth < 768 ? 'See Explanations' : 'Explanation';
-document.getElementById('gkQuizTellMeMoreBtn').innerHTML = `<i class="fas fa-eye"></i> ${gkLabel}`;
-gkQuizAnswered=false}
+function displayQuizQuestion(scrollToTop=false){if(quizQuestions.length===0)return;if(scrollToTop)smoothScrollTo('vocabularyQuizSection');const randomIndex=Math.floor(Math.random()*quizQuestions.length);currentQuizQuestion=quizQuestions[randomIndex];document.getElementById('quizQuestionText').textContent=currentQuizQuestion.question_text;const optionsGrid=document.getElementById('quizOptionsGrid');optionsGrid.innerHTML='';const optionsArray=Array.isArray(currentQuizQuestion.options)?currentQuizQuestion.options:JSON.parse(currentQuizQuestion.options||'[]');const originalCorrectAnswer=optionsArray[currentQuizQuestion.correct_answer];const shuffledOptions=shuffleArray(optionsArray);currentQuizQuestion.shuffledOptions=shuffledOptions;currentQuizQuestion.currentCorrectAnswer=shuffledOptions.indexOf(originalCorrectAnswer);shuffledOptions.forEach((option,index)=>{const btn=document.createElement('button');btn.className='option-btn';btn.textContent=option;btn.onclick=()=>selectQuizAnswer(index);optionsGrid.appendChild(btn)});document.getElementById('quizResultArea').style.display='none';document.getElementById('quizOptionsGrid').style.display='grid';document.getElementById('quizExplanationContent').classList.remove('show');const qLabel=window.innerWidth<768?'See Explanations':'Explanation';document.getElementById('quizTellMeMoreBtn').innerHTML=`<i class="fas fa-eye"></i> ${qLabel}`;quizAnswered=false}
+function displayGkQuizQuestion(scrollToTop=false){if(gkQuizQuestions.length===0)return;if(scrollToTop)smoothScrollTo('gkQuizSection');const randomIndex=Math.floor(Math.random()*gkQuizQuestions.length);currentGkQuizQuestion=gkQuizQuestions[randomIndex];document.getElementById('gkQuizQuestionText').textContent=currentGkQuizQuestion.question_text;const optionsGrid=document.getElementById('gkQuizOptionsGrid');optionsGrid.innerHTML='';const optionsArray=Array.isArray(currentGkQuizQuestion.options)?currentGkQuizQuestion.options:JSON.parse(currentGkQuizQuestion.options||'[]');const originalCorrectAnswer=optionsArray[currentGkQuizQuestion.correct_answer];const shuffledOptions=shuffleArray(optionsArray);currentGkQuizQuestion.shuffledOptions=shuffledOptions;currentGkQuizQuestion.currentCorrectAnswer=shuffledOptions.indexOf(originalCorrectAnswer);shuffledOptions.forEach((option,index)=>{const btn=document.createElement('button');btn.className='option-btn';btn.textContent=option;btn.onclick=()=>selectGkQuizAnswer(index);optionsGrid.appendChild(btn)});document.getElementById('gkQuizResultArea').style.display='none';document.getElementById('gkQuizOptionsGrid').style.display='grid';document.getElementById('gkQuizExplanationContent').classList.remove('show');const gkLabel=window.innerWidth<768?'See Explanations':'Explanation';document.getElementById('gkQuizTellMeMoreBtn').innerHTML=`<i class="fas fa-eye"></i> ${gkLabel}`;gkQuizAnswered=false}
 function selectQuizAnswer(index){playSelectSound();if(quizAnswered)return;quizAnswered=true;const isCorrect=index===currentQuizQuestion.currentCorrectAnswer;const feedback=document.getElementById('quizFeedback');const options=document.querySelectorAll('#quizOptionsGrid .option-btn');options[index].classList.add(isCorrect?'correct':'incorrect');if(!isCorrect)options[currentQuizQuestion.currentCorrectAnswer].classList.add('correct');if(isCorrect){playCorrectSound();feedback.textContent=""}else{playIncorrectSound();feedback.textContent=""}document.getElementById('quizExplanationContent').innerHTML=currentQuizQuestion.explanation;document.getElementById('quizResultArea').style.display='block';options.forEach(opt=>{opt.style.cursor='default';opt.onclick=null})}
 function selectGkQuizAnswer(index){playSelectSound();if(gkQuizAnswered)return;gkQuizAnswered=true;const isCorrect=index===currentGkQuizQuestion.currentCorrectAnswer;const feedback=document.getElementById('gkQuizFeedback');const options=document.querySelectorAll('#gkQuizOptionsGrid .option-btn');options[index].classList.add(isCorrect?'correct':'incorrect');if(!isCorrect)options[currentGkQuizQuestion.currentCorrectAnswer].classList.add('correct');if(isCorrect){playCorrectSound();feedback.textContent=""}else{playIncorrectSound();feedback.textContent=""}document.getElementById('gkQuizExplanationContent').innerHTML=currentGkQuizQuestion.explanation;document.getElementById('gkQuizResultArea').style.display='block';options.forEach(opt=>{opt.style.cursor='default';opt.onclick=null})}
-function toggleQuizDetail(id,btn){const detail=document.getElementById(id);const isExpanding=!detail.classList.contains('show');detail.classList.toggle('show');if(btn) {
-    const defaultText = window.innerWidth < 768 ? 'See Explanations' : 'Explanation';
-    btn.innerHTML = isExpanding ? '<i class="fas fa-eye-slash"></i> Hide Explanation' : `<i class="fas fa-eye"></i> ${defaultText}`;
-};if(!isExpanding&&window.innerWidth<=768){let sectionId=null;if(id==='quizExplanationContent')sectionId='vocabularyQuizSection';else if(id==='gkQuizExplanationContent')sectionId='gkQuizSection';if(sectionId){const section=document.getElementById(sectionId);if(section){setTimeout(()=>{section.scrollIntoView({behavior:'smooth',block:'start'})},50)}}}}
+function toggleQuizDetail(id,btn){const detail=document.getElementById(id);const isExpanding=!detail.classList.contains('show');detail.classList.toggle('show');if(btn){const defaultText=window.innerWidth<768?'See Explanations':'Explanation';btn.innerHTML=isExpanding?'<i class="fas fa-eye-slash"></i> Hide Explanation':`<i class="fas fa-eye"></i> ${defaultText}`};if(!isExpanding&&window.innerWidth<=768){let sectionId=null;if(id==='quizExplanationContent')sectionId='vocabularyQuizSection';else if(id==='gkQuizExplanationContent')sectionId='gkQuizSection';if(sectionId){const section=document.getElementById(sectionId);if(section){setTimeout(()=>{section.scrollIntoView({behavior:'smooth',block:'start'})},50)}}}}
 function shuffleArray(array){const shuffled=[...array];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]}return shuffled}
 function continueToFullQuiz(){window.location.href='quiz.html'}
 function continueToFullGkQuiz(){window.location.href='https://murali-dictionary.pages.dev/gk_quiz'}
 function convertH2ToToggles(htmlString){const parser=new DOMParser();const doc=parser.parseFromString(htmlString,'text/html');const h2Elements=doc.querySelectorAll('h2');h2Elements.forEach(h2=>{let headingText=h2.textContent;if(headingText===headingText.toUpperCase()&&headingText!==headingText.toLowerCase()){headingText=headingText.charAt(0).toUpperCase()+headingText.slice(1).toLowerCase();h2.textContent=headingText}const toggleSection=document.createElement('div');toggleSection.className='toggle-section';const toggleHeader=document.createElement('button');toggleHeader.className='toggle-header';toggleHeader.innerHTML=`<i class="fas fa-chevron-right toggle-icon"></i><span class="toggle-title">${h2.innerHTML}</span>`;const toggleContent=document.createElement('div');toggleContent.className='toggle-content';let nextSibling=h2.nextElementSibling;while(nextSibling&&nextSibling.tagName!=='H2'){const temp=nextSibling;nextSibling=nextSibling.nextElementSibling;toggleContent.appendChild(temp)}if(toggleContent.children.length===0)toggleContent.innerHTML='<p>No content available.</p>';toggleSection.appendChild(toggleHeader);toggleSection.appendChild(toggleContent);h2.parentNode.replaceChild(toggleSection,h2)});return doc.body.innerHTML}
 document.addEventListener('click',function(e){const header=e.target.closest('.toggle-header');if(header){e.preventDefault();e.stopPropagation();playSelectSound();const content=header.nextElementSibling;const isActive=header.classList.contains('active');if(!isActive){header.classList.add('active');content.classList.add('expanded');setTimeout(()=>header.scrollIntoView({behavior:'smooth',block:'start'}),350)}else{header.classList.remove('active');content.classList.remove('expanded')}}});
 function createExpandableDefinition(definitionHTML){return`<div class="word-entry"><div class="word-definition">${convertH2ToToggles(definitionHTML)}</div><div style="display:flex; justify-content:center; margin-top:20px;"><button class="action-btn" onclick="showNewRandomWord()">Show another word</button></div></div>`}
-
-// Refactored to use Supabase RPC for faster loading
-// Refactored to use Supabase RPC for faster loading
-async function fetchWordSpotlight(scrollToTop=false){
-    const ws=document.getElementById('wordSpotlightDisplay');
-    
-    // UPDATED: Scroll logic now runs on ALL devices (Desktop & Mobile)
-    if(scrollToTop){
-        const section=document.getElementById('wordSpotlightSection');
-        if(section) {
-            // We use a manual calculation here to add a 60px "buffer" (yOffset)
-            // This prevents the section from snapping too tight to the top of the browser.
-            const yOffset = -40; 
-            const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({top: y, behavior: 'smooth'});
-        }
-    }
-    
-    // Show loading skeleton
-    ws.innerHTML='<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>';
-
-    // Try RPC fetch first (Fastest method)
-    if(isSupabaseConfigured) {
-        try {
-            const { data, error } = await supabaseClient.rpc('get_random_word');
-            if(error) throw error;
-            if(data && data.length > 0) {
-                 ws.innerHTML = createExpandableDefinition(data[0].definition);
-                 return;
-            }
-        } catch(e) {
-            console.warn('Spotlight RPC fetch failed, falling back to local cache', e);
-        }
-    }
-
-    // Fallback if RPC fails: Show generic or error
-    ws.innerHTML='<div class="no-words"><p>Loading vocabulary from the stars...</p></div>';
-}
-
-function showNewRandomWord(){
-    playButtonSound();
-    fetchWordSpotlight(true);
-}
-
+async function fetchWordSpotlight(scrollToTop=false){const ws=document.getElementById('wordSpotlightDisplay');if(scrollToTop){smoothScrollTo('wordSpotlightSection')}ws.innerHTML='<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>';if(isSupabaseConfigured){try{const{data,error}=await supabaseClient.rpc('get_random_word');if(error)throw error;if(data&&data.length>0){ws.innerHTML=createExpandableDefinition(data[0].definition);return}}catch(e){console.warn('Spotlight RPC fetch failed',e)}}ws.innerHTML='<div class="no-words"><p>Loading vocabulary from the stars...</p></div>'}
+function showNewRandomWord(){playButtonSound();fetchWordSpotlight(true)}
 function setupToolInputs(){const setup=(inputId,clearBtnId,searchBtnId,actionFn)=>{const input=document.getElementById(inputId);const clearBtn=document.getElementById(clearBtnId);const searchBtn=document.getElementById(searchBtnId);let typingTimer;if(!input)return;const toggleClear=()=>{if(clearBtn)clearBtn.classList.toggle('visible',input.value.trim().length>0)};input.addEventListener('input',()=>{toggleClear()});input.addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();actionFn()}});if(clearBtn){clearBtn.addEventListener('click',()=>{playClearSound();input.value='';toggleClear();input.focus()})}if(searchBtn){searchBtn.addEventListener('click',()=>{actionFn()})}toggleClear();input.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{input.scrollIntoView({behavior:'smooth',block:'center'})},300)}})};setup('wordToolkitInput','toolkitClearBtn','toolkitSearchBtn',handleWordTool);setup('reverseInput','reverseClearBtn','reverseSearchBtn',handleReverseSearch)
-
-/* Auto-scroll for AI Input on Mobile - Updated Logic */
-const aiInput = document.getElementById('aiInput');
-if(aiInput) {
-    // We use a focus listener for the keyboard opening event
-    aiInput.addEventListener('focus', () => {
-        if(window.innerWidth < 768) {
-            // Buffer delay for keyboard animation
-            setTimeout(() => {
-                // Calculate position to put input near top with buffer
-                const wrapper = document.querySelector('.ai-input-wrapper');
-                if(wrapper) {
-                     const offset = 80; // Buffer pixels from top
-                     const bodyRect = document.body.getBoundingClientRect().top;
-                     const elementRect = wrapper.getBoundingClientRect().top;
-                     const elementPosition = elementRect - bodyRect;
-                     const offsetPosition = elementPosition - offset;
-
-                     window.scrollTo({
-                         top: offsetPosition,
-                         behavior: "smooth"
-                     });
-                }
-            }, 300); 
-        }
-    });
-
-    // Auto-resize logic for textarea
-    aiInput.addEventListener('input', function() {
-        this.style.height = 'auto'; // Reset height
-        this.style.height = (this.scrollHeight) + 'px'; // Set new height based on content
-    });
-}
-}
+const aiInput=document.getElementById('aiInput');if(aiInput){aiInput.addEventListener('focus',()=>{if(window.innerWidth<768){setTimeout(()=>{const wrapper=document.querySelector('.ai-input-wrapper');if(wrapper){const offset=80;const bodyRect=document.body.getBoundingClientRect().top;const elementRect=wrapper.getBoundingClientRect().top;const elementPosition=elementRect-bodyRect;const offsetPosition=elementPosition-offset;window.scrollTo({top:offsetPosition,behavior:"smooth"})}},300)}});aiInput.addEventListener('input',function(){this.style.height='auto';this.style.height=(this.scrollHeight)+'px'})}}
 function updateMobilePlaceholders(){const reverseInput=document.getElementById('reverseInput');if(reverseInput){if(window.innerWidth<768){reverseInput.placeholder="e.g. smell of rain"}else{reverseInput.placeholder="e.g. the smell of rain on dry earth"}}}
 function resetUrl(){try{const url=new URL(window.location);url.searchParams.delete('q');window.history.pushState({},'',url)}catch(e){console.warn('History API not supported')}}
-
-// NEW: Real-time Autocomplete with Skeleton
-async function fetchAutocompleteSuggestions(query) {
-    const autocompleteDropdown = document.getElementById('autocompleteDropdown');
-    
-    // Skeleton loader
-    autocompleteDropdown.innerHTML = `
-        <div style="padding: 12px;">
-            <div class="skeleton-loading">
-                <div class="skeleton-line medium" style="margin-bottom: 8px;"></div>
-                <div class="skeleton-line short"></div>
-            </div>
-        </div>
-    `;
-    autocompleteDropdown.classList.add('show');
-
-    try {
-        // 1. Run the fuzzy search RPC
-        const { data, error } = await supabaseClient
-            .rpc('fuzzy_search', { search_term: query });
-
-        if (error) throw error;
-
-        let matches = data || [];
-        
-        // 2. CHECK: Did we find the exact word the user typed?
-        const hasExactMatch = matches.some(item => item.word.toLowerCase() === query.toLowerCase());
-
-        // 3. MOBILE FIX: Enforce max 7 total items
-        if (window.innerWidth < 768) {
-            // If we are going to add a "Search for..." button (because !hasExactMatch),
-            // we only have room for 6 DB results (6 + 1 = 7).
-            // If we already have the exact match, we don't add the button, so we can keep all 7.
-            const limit = hasExactMatch ? 7 : 5;
-            
-            if (matches.length > limit) {
-                matches = matches.slice(0, limit);
-            }
-        }
-
-        let html = '';
-
-        // 4. Render matches
-        matches.forEach(item => {
-            const word = item.word;
-            html += `<div class="autocomplete-item" onclick="selectAutocompleteItem('${word.replace(/'/g, "\\'")}')">
-                        <div class="autocomplete-word">${word}</div>
-                        <div class="autocomplete-hint"><i class="fas fa-chevron-right"></i></div>
-                     </div>`;
-        });
-
-        // 5. If exact match is MISSING, append "Search for..." button
-        if (!hasExactMatch) {
-            html += `
-                <div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g, "\\'")}')">
-                    <div class="autocomplete-word">
-                        <i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>
-                        Search for "<strong>${query}</strong>"
-                    </div>
-                    <div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div>
-                </div>`;
-        }
-
-        autocompleteDropdown.innerHTML = html;
-
-    } catch (err) {
-        console.error('Autocomplete error:', err);
-        autocompleteDropdown.classList.remove('show');
-    }
-}
-    
-function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;setupToolInputs();updateMobilePlaceholders();window.addEventListener('resize',updateMobilePlaceholders);const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};// Restore auto-scroll on focus for mobile
-    searchInput.addEventListener('focus', function() {
-        if (window.innerWidth <= 768) {
-            setTimeout(() => {
-                // Calculates the position of the search container relative to the top of the document
-                // The '- 24' acts as a small buffer so the search bar isn't jammed right against the top edge
-                const y = document.querySelector('.search-container').getBoundingClientRect().top + window.pageYOffset - 24;
-                
-                window.scrollTo({
-                    top: y,
-                    behavior: 'smooth'
-                });
-            }, 300); // 300ms delay to allow the mobile keyboard to fully open first
-        }
-    });searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl()});
-    
-    // Updated Input Listener with Debounce
-    searchInput.addEventListener('input',function(){
-        toggleClearBtn();
-        clearTimeout(typingTimer);
-        const query = this.value.trim().toLowerCase();
-        
-        if(query.length === 0){
-            autocompleteDropdown.classList.remove('show');
-            document.getElementById('searchResultsSection').style.display='none';
-            resetUrl();
-            return;
-        }
-
-        // Wait 300ms before fetching to prevent too many requests
-        typingTimer = setTimeout(() => {
-            fetchAutocompleteSuggestions(query);
-        }, 300);
-    });
-
-    searchInput.addEventListener('keydown',function(e){if(e.key==='Escape')autocompleteDropdown.classList.remove('show');if(e.key==='Enter'){playButtonSound();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query){if(window.innerWidth<768){this.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}}});document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))autocompleteDropdown.classList.remove('show')})
-}
-
-// Renamed and unused, replaced by fetchAutocompleteSuggestions
-function showAutocomplete(query){ }
-
+async function fetchAutocompleteSuggestions(query){const autocompleteDropdown=document.getElementById('autocompleteDropdown');autocompleteDropdown.innerHTML=`<div style="padding: 12px;"><div class="skeleton-loading"><div class="skeleton-line medium" style="margin-bottom: 8px;"></div><div class="skeleton-line short"></div></div></div>`;autocompleteDropdown.classList.add('show');try{const{data,error}=await supabaseClient.rpc('fuzzy_search',{search_term:query});if(error)throw error;let matches=data||[];const hasExactMatch=matches.some(item=>item.word.toLowerCase()===query.toLowerCase());if(window.innerWidth<768){const limit=hasExactMatch?7:5;if(matches.length>limit){matches=matches.slice(0,limit)}}let html='';matches.forEach(item=>{const word=item.word;html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${word}</div><div class="autocomplete-hint"><i class="fas fa-chevron-right"></i></div></div>`});if(!hasExactMatch){html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g,"\\'")}')"><div class="autocomplete-word"><i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>Search for "<strong>${query}</strong>"</div><div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div></div>`}autocompleteDropdown.innerHTML=html}catch(err){autocompleteDropdown.classList.remove('show')}}
+function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;setupToolInputs();updateMobilePlaceholders();window.addEventListener('resize',updateMobilePlaceholders);const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};searchInput.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{const y=document.querySelector('.search-container').getBoundingClientRect().top+window.pageYOffset-24;window.scrollTo({top:y,behavior:'smooth'})},300)}});searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl()});searchInput.addEventListener('input',function(){toggleClearBtn();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query.length===0){autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl();return}typingTimer=setTimeout(()=>{fetchAutocompleteSuggestions(query)},300)});searchInput.addEventListener('keydown',function(e){if(e.key==='Escape')autocompleteDropdown.classList.remove('show');if(e.key==='Enter'){playButtonSound();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query){if(window.innerWidth<768){this.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}}});document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))autocompleteDropdown.classList.remove('show')})}
 function selectAutocompleteItem(word){playSelectSound();document.getElementById('searchInput').value=word;document.getElementById('autocompleteDropdown').classList.remove('show');displaySearchResults(word.toLowerCase())}
 function getAudioUrl(filename){let subdir=filename.charAt(0);if(filename.startsWith('bix'))subdir='bix';else if(filename.startsWith('gg'))subdir='gg';else if(!isNaN(subdir)||!/^[a-zA-Z]/.test(subdir))subdir='number';return`https://media.merriam-webster.com/audio/prons/en/us/mp3/${subdir}/${filename}.mp3`}
 function playAudio(url){new Audio(url).play().catch(e=>console.error(e))}
 function cleanMWTags(text){if(!text)return'';let t=text.replace(/{dxt\|([^|}]*)\|([^|}]*)\|([^|}]*)}/g,(m,t,s,txt)=>txt||t.split(':')[0]);t=t.replace(/{dxt\|([^|}]*)\|?([^|}]*)}/g,(m,t)=>t.split(':')[0]);t=t.replace(/{dx}/g,' — ').replace(/{\/dx}/g,'');t=t.replace(/{bc}/g,': ').replace(/{it}/g,'<i>').replace(/{\/it}/g,'</i>');t=t.replace(/{b}/g,'<b>').replace(/{\/b}/g,'</b>').replace(/{wi}/g,'<i>').replace(/{\/wi}/g,'</i>');t=t.replace(/{ldquo}/g,'“').replace(/{rdquo}/g,'”').replace(/{sx\|([^|]+)\|([^|]*)\|}/g,'$1');t=t.replace(/{phrase}/g,'<b>').replace(/{\/phrase}/g,'</b>');return t}
 function renderSenses(sseq){let html='';sseq.forEach(senseBlock=>{senseBlock.forEach(item=>{if(item[0]==='sense'){const senseData=item[1];if(senseData.dt){senseData.dt.forEach(dt=>{if(dt[0]==='text')html+=`<p>${cleanMWTags(dt[1])}</p>`;else if(dt[0]==='vis'){html+='<ul class="examples-list">';dt[1].forEach(visItem=>{if(visItem.t)html+=`<li class="example-item">"${cleanMWTags(visItem.t)}"</li>`});html+='</ul>'}})}}})});return html}
-
-async function displaySearchResults(query) {
-    const searchResultsSection = document.getElementById('searchResultsSection');
-    const wordsList = document.getElementById('wordsList');
-
-    // Update URL and Title
-    const newUrl = `${window.location.pathname}?q=${encodeURIComponent(query)}`;
-    window.history.pushState({ path: newUrl }, '', newUrl);
-    document.title = `${query.charAt(0).toUpperCase() + query.slice(1)} - Pearls of Knowledge`;
-
-    // Show Loading
-    wordsList.innerHTML = `<div class="skeleton-loading"><div class="skeleton-line long"></div></div>`;
-    searchResultsSection.style.display = 'block';
-
-    let html = '';
-
-    // 1. Supabase Logic (Fixed to handle "word (pos)" formats)
-    try {
-        if (isSupabaseConfigured) {
-            // Fix: Fetch words starting with the query (wildcard search)
-            const { data, error } = await supabaseClient
-                .from('dictionary')
-                .select('*')
-                .ilike('word', `${query}%`);
-
-            if (data && data.length > 0) {
-                // Filter specifically for:
-                // 1. Exact match (e.g. "slapdash")
-                // 2. Format match "slapdash (adj)" -> starts with "query ("
-                const exactOrFormatMatches = data.filter(item => {
-                    const w = item.word.toLowerCase();
-                    const q = query.toLowerCase();
-                    return w === q || w.startsWith(`${q} (`);
-                });
-
-                if (exactOrFormatMatches.length > 0) {
-                    exactOrFormatMatches.forEach(item => {
-                        html += `<div class="interactive-card"><div class="word-definition">${convertH2ToToggles(item.definition)}</div></div>`;
-                    });
-                }
-            }
-        }
-    } catch (err) {
-        console.warn("Supabase definition fetch failed", err);
-    }
-
-    // 2. If Supabase found something, show it.
-    if (html.length > 0) {
-        wordsList.innerHTML = html;
-        setTimeout(() => { searchResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' }) }, 100);
-        return;
-    }
-
-    // --- External API Fallback Logic (Kept exactly as it was) ---
-    let finalHtml = '';
-    try {
-        const [mwData, wordnikData, wordnikRelated] = await Promise.all([
-            fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${query}?key=${MW_API_KEY}`).then(res => res.ok ? res.json() : null).catch(e => null),
-            fetch(`https://api.wordnik.com/v4/word.json/${query}/definitions?limit=10&sourceDictionaries=ahd-5&useCanonical=false&includeTags=true&api_key=${WORDNIK_API_KEY}`).then(res => res.ok ? res.json() : null).catch(e => null),
-            fetch(`https://api.wordnik.com/v4/word.json/${query}/relatedWords?useCanonical=false&limitPerRelationshipType=10&sourceDictionaries=ahd-5&api_key=${WORDNIK_API_KEY}`).then(res => res.ok ? res.json() : null).catch(e => null)
-        ]);
-        
-        if (mwData && Array.isArray(mwData) && mwData.length > 0 && typeof mwData[0] === 'object') {
-            let mwHtmlContent = '';
-            mwData.slice(0, 1).forEach(entry => {
-                if (!entry.hwi) return;
-                const word = entry.hwi.hw.replace(/\*/g, '·');
-                let pronHtml = '';
-                if (entry.hwi.prs && entry.hwi.prs.length > 0) {
-                    const prs = entry.hwi.prs[0];
-                    if (prs.mw) pronHtml += `<span class="pronunciation-text">/${prs.mw}/</span>`;
-                    if (prs.sound && prs.sound.audio) {
-                        const audioUrl = getAudioUrl(prs.sound.audio);
-                        pronHtml += `<button class="audio-btn" onclick="playAudio('${audioUrl}')"><i class="fas fa-volume-up"></i></button>`
-                    }
-                }
-                mwHtmlContent += `<h1>${word} ${pronHtml}</h1>`;
-                if (entry.fl) mwHtmlContent += `<h3>${entry.fl}</h3>`;
-                if (entry.def && entry.def.length > 0) mwHtmlContent += renderSenses(entry.def[0].sseq);
-                else if (entry.shortdef) entry.shortdef.forEach(d => mwHtmlContent += `<p>${d}</p>`)
-            })
-            if (mwHtmlContent) {
-                finalHtml += `<div class="interactive-card"><div class="word-definition">${mwHtmlContent}</div></div>`
-            }
-        }
-        if (wordnikData && Array.isArray(wordnikData) && wordnikData.length > 0) {
-            let wordnikInnerHtml = '';
-            if (finalHtml) {
-                finalHtml += `<div class="mobile-result-separator"></div>`
-            }
-            wordnikData.forEach(def => {
-                if (!def.text) return;
-                if (def.partOfSpeech) wordnikInnerHtml += `<h3>${def.partOfSpeech}</h3>`;
-                if (def.labels && def.labels.length > 0) {
-                    const labelText = def.labels.map(l => l.text).join(', ');
-                    wordnikInnerHtml += `<p style="font-style: italic; color: var(--primary); margin-bottom: 4px;">[${labelText}]</p>`
-                }
-                if (def.text) wordnikInnerHtml += `<p>${def.text}</p>`;
-                if (def.exampleUses && def.exampleUses.length > 0) {
-                    wordnikInnerHtml += `<ul style="margin-top:0; padding-left: 20px; list-style-type: none;">`;
-                    def.exampleUses.forEach(ex => {
-                        wordnikInnerHtml += `<li style="color: var(--text-muted); font-style: italic; margin-bottom: 4px;">"${ex.text}"</li>`
-                    });
-                    wordnikInnerHtml += `</ul>`
-                }
-            });
-            if (wordnikRelated && Array.isArray(wordnikRelated) && wordnikRelated.length > 0) {
-                const allowedTypes = new Set(['form']);
-                const filteredRelated = wordnikRelated.filter(grp => allowedTypes.has(grp.relationshipType));
-                if (filteredRelated.length > 0) {
-                    wordnikInnerHtml += `<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;
-                    filteredRelated.forEach(grp => {
-                        const type = grp.relationshipType.charAt(0).toUpperCase() + grp.relationshipType.slice(1);
-                        const words = grp.words.join(', ');
-                        wordnikInnerHtml += `<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`
-                    });
-                    wordnikInnerHtml += `</div>`
-                }
-            }
-            if (wordnikInnerHtml) {
-                let wordnikHtmlContent = `<h1>${query}</h1>` + wordnikInnerHtml;
-                finalHtml += `<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`
-            }
-        }
-        if (finalHtml) {
-            wordsList.innerHTML = finalHtml
-        } else {
-            wordsList.innerHTML = `<p style="text-align:center;">No definitions found for <strong>${query}</strong>.</p>`
-        }
-    } catch (e) {
-        console.error(e);
-        wordsList.innerHTML = '<p style="text-align:center;">Error connecting to knowledge banks.</p>'
-    }
-    
-    searchResultsSection.style.display = 'block';
-    setTimeout(() => { searchResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' }) }, 100)
-}
-
-// Initialization Code (Preserved)
-document.addEventListener('DOMContentLoaded', function() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        const icon = document.getElementById('themeIcon');
-        if (icon) icon.className = 'fas fa-sun'
-    }
-    // Removed local dictionary loading logic
-    requestAnimationFrame(() => {
-        initializeSupabase();
-        setupSearch()
-    })
-});
-
-// --- AI Chat Logic ---
-const chatHistory = document.getElementById('chatHistory');
-const aiInputEl = document.getElementById('aiInput');
-const aiSendBtn = document.getElementById('aiSendBtn');
-const clearChatBtn = document.getElementById('clearChatBtn');
-const aiControls = document.getElementById('aiControls');
-
-// Memory for the current session (cleared on refresh)
-let conversationMemory = [];
-
-function formatMessage(text) {
-    if(!text) return '';
-    let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-    html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
-    html = html.replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
-    const lines = html.split('\n');
-    let output = '';
-    let inList = false;
-
-    lines.forEach(line => {
-        let trimmed = line.trim();
-        if (trimmed.startsWith('- ') || trimmed.startsWith('• ') || trimmed.startsWith('* ')) {
-            if (!inList) { output += '<ul>'; inList = true; }
-            output += `<li>${trimmed.substring(2)}</li>`;
-        } else {
-            if (inList) { output += '</ul>'; inList = false; }
-            if (trimmed.length > 0) {
-                if(trimmed.startsWith('### ')) output += `<h4>${trimmed.substring(4)}</h4>`;
-                else output += `<p>${line}</p>`; 
-            }
-        }
-    });
-    if (inList) output += '</ul>';
-    return output;
-}
-
-function appendMessage(sender, text) {
-    // Show chat history container and controls when first message is added
-    chatHistory.style.display = 'flex';
-    aiControls.style.display = 'block';
-
-    const isUser = sender === 'User';
-    const rowDiv = document.createElement('div');
-    rowDiv.className = `chat-row ${isUser ? 'user' : 'ai'}`;
-    let formattedText = isUser ? text : formatMessage(text);
-    if(isUser) formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-    const avatarDiv = document.createElement('div');
-    avatarDiv.className = 'chat-avatar';
-    avatarDiv.innerHTML = isUser ? '<i class="fas fa-user"></i>' : 'AI';
-
-    const bubbleDiv = document.createElement('div');
-    bubbleDiv.className = 'chat-bubble';
-    bubbleDiv.innerHTML = formattedText;
-
-    rowDiv.appendChild(avatarDiv);
-    rowDiv.appendChild(bubbleDiv);
-    chatHistory.appendChild(rowDiv);
-    chatHistory.scrollTop = chatHistory.scrollHeight;
-}
-
-function clearChat() {
-    chatHistory.innerHTML = '';
-    conversationMemory = []; // Reset memory
-    aiControls.style.display = 'none'; // Hide controls
-    // Chat history container will hide via CSS :empty selector or explicit hide
-    chatHistory.style.display = 'none'; 
-}
-
-if(clearChatBtn) {
-    clearChatBtn.addEventListener('click', () => {
-        playButtonSound();
-        clearChat();
-    });
-}
-
-async function sendToAI() {
-    const text = aiInputEl.value.trim();
-    if (!text) return;
-
-    appendMessage('User', text);
-    
-    // Reset input height and value
-    aiInputEl.value = '';
-    aiInputEl.style.height = 'auto'; 
-    aiInputEl.style.height = (aiInputEl.scrollHeight) + 'px';
-
-    // Add user message to memory
-    conversationMemory.push({ role: 'user', content: text });
-    
-    const loadingId = 'loading-' + Date.now();
-    const loadingDiv = document.createElement('div');
-    loadingDiv.id = loadingId;
-    loadingDiv.style.marginLeft = '45px';
-    loadingDiv.style.color = 'var(--text-muted)';
-    loadingDiv.style.fontStyle = 'italic';
-    loadingDiv.innerText = 'Thinking...';
-    
-    chatHistory.appendChild(loadingDiv);
-    chatHistory.scrollTop = chatHistory.scrollHeight;
-
-    try {
-        // Prepare context-aware prompt
-        let promptToSend = text;
-        
-        // If there is history, prepend it to the prompt to ensure the AI "sees" it 
-        // even if the backend ignores the 'history' array.
-        if(conversationMemory.length > 1) {
-             const previousMsgs = conversationMemory.slice(0, -1); // All except current
-             const contextStr = previousMsgs.map(m => `${m.role === 'user' ? 'User' : 'AI'}: ${m.content}`).join('\n');
-             promptToSend = `Here is the conversation so far:\n${contextStr}\n\nCurrent User Question: ${text}\nAI:`;
-        }
-
-        const response = await fetch('/api/ai', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                prompt: promptToSend,
-                history: conversationMemory 
-            })
-        });
-
-        const data = await response.json();
-        const loader = document.getElementById(loadingId);
-        if(loader) loader.remove();
-
-        if (data.answer) {
-            appendMessage('AI', data.answer);
-            // Add AI response to memory (using pure answer)
-            conversationMemory.push({ role: 'model', content: data.answer });
-            playCorrectSound();
-
-            // Mobile: Scroll to show new message at top of screen with buffer
-            if(window.innerWidth < 768) {
-                setTimeout(() => {
-                    const lastMsg = chatHistory.lastElementChild;
-                    if(lastMsg) {
-                        const offset = 90; // Header height + buffer
-                        const bodyRect = document.body.getBoundingClientRect().top;
-                        const elementRect = lastMsg.getBoundingClientRect().top;
-                        const elementPosition = elementRect - bodyRect;
-                        const offsetPosition = elementPosition - offset;
-                        
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
-                }, 150);
-            }
-
-        } else {
-            appendMessage('AI', 'Sorry, I encountered an error.');
-            console.error(data.error);
-        }
-
-    } catch (error) {
-        const loader = document.getElementById(loadingId);
-        if(loader) loader.remove();
-        appendMessage('AI', 'Error: Could not reach the server.');
-        console.error(error);
-    }
-}
-
-if(aiSendBtn) {
-    aiSendBtn.addEventListener('click', () => { playButtonSound(); sendToAI(); });
-}
-
-// Add Keyboard Listener for Desktop (Enter to Send, Shift+Enter for Newline)
-if(aiInputEl) {
-    aiInputEl.addEventListener('keydown', function(e) {
-        // Only for desktop (width >= 768px)
-        if (window.innerWidth >= 768) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault(); // Prevent default newline
-                playButtonSound();
-                sendToAI();
-            }
-        }
-    });
-}
-
+async function displaySearchResults(query){const searchResultsSection=document.getElementById('searchResultsSection');const wordsList=document.getElementById('wordsList');const newUrl=`${window.location.pathname}?q=${encodeURIComponent(query)}`;window.history.pushState({path:newUrl},'',newUrl);document.title=`${query.charAt(0).toUpperCase()+query.slice(1)} - Pearls of Knowledge`;wordsList.innerHTML=`<div class="skeleton-loading"><div class="skeleton-line long"></div></div>`;searchResultsSection.style.display='block';let html='';try{if(isSupabaseConfigured){const{data,error}=await supabaseClient.from('dictionary').select('*').ilike('word',`${query}%`);if(data&&data.length>0){const exactOrFormatMatches=data.filter(item=>{const w=item.word.toLowerCase();const q=query.toLowerCase();return w===q||w.startsWith(`${q} (`)});if(exactOrFormatMatches.length>0){exactOrFormatMatches.forEach(item=>{html+=`<div class="interactive-card"><div class="word-definition">${convertH2ToToggles(item.definition)}</div></div>`})}}}}catch(err){console.warn("Supabase definition fetch failed",err)}if(html.length>0){wordsList.innerHTML=html;setTimeout(()=>{searchResultsSection.scrollIntoView({behavior:'smooth',block:'start'})},100);return}let finalHtml='';try{const[mwData,wordnikData,wordnikRelated]=await Promise.all([fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${query}?key=${MW_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/definitions?limit=10&sourceDictionaries=ahd-5&useCanonical=false&includeTags=true&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/relatedWords?useCanonical=false&limitPerRelationshipType=10&sourceDictionaries=ahd-5&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null)]);if(mwData&&Array.isArray(mwData)&&mwData.length>0&&typeof mwData[0]==='object'){let mwHtmlContent='';mwData.slice(0,1).forEach(entry=>{if(!entry.hwi)return;const word=entry.hwi.hw.replace(/\*/g,'·');let pronHtml='';if(entry.hwi.prs&&entry.hwi.prs.length>0){const prs=entry.hwi.prs[0];if(prs.mw)pronHtml+=`<span class="pronunciation-text">/${prs.mw}/</span>`;if(prs.sound&&prs.sound.audio){const audioUrl=getAudioUrl(prs.sound.audio);pronHtml+=`<button class="audio-btn" onclick="playAudio('${audioUrl}')"><i class="fas fa-volume-up"></i></button>`}}mwHtmlContent+=`<h1>${word} ${pronHtml}</h1>`;if(entry.fl)mwHtmlContent+=`<h3>${entry.fl}</h3>`;if(entry.def&&entry.def.length>0)mwHtmlContent+=renderSenses(entry.def[0].sseq);else if(entry.shortdef)entry.shortdef.forEach(d=>mwHtmlContent+=`<p>${d}</p>`)})
+if(mwHtmlContent){finalHtml+=`<div class="interactive-card"><div class="word-definition">${mwHtmlContent}</div></div>`}}if(wordnikData&&Array.isArray(wordnikData)&&wordnikData.length>0){let wordnikInnerHtml='';if(finalHtml){finalHtml+=`<div class="mobile-result-separator"></div>`}wordnikData.forEach(def=>{if(!def.text)return;if(def.partOfSpeech)wordnikInnerHtml+=`<h3>${def.partOfSpeech}</h3>`;if(def.labels&&def.labels.length>0){const labelText=def.labels.map(l=>l.text).join(', ');wordnikInnerHtml+=`<p style="font-style: italic; color: var(--primary); margin-bottom: 4px;">[${labelText}]</p>`}if(def.text)wordnikInnerHtml+=`<p>${def.text}</p>`;if(def.exampleUses&&def.exampleUses.length>0){wordnikInnerHtml+=`<ul style="margin-top:0; padding-left: 20px; list-style-type: none;">`;def.exampleUses.forEach(ex=>{wordnikInnerHtml+=`<li style="color: var(--text-muted); font-style: italic; margin-bottom: 4px;">"${ex.text}"</li>`});wordnikInnerHtml+=`</ul>`}});if(wordnikRelated&&Array.isArray(wordnikRelated)&&wordnikRelated.length>0){const allowedTypes=new Set(['form']);const filteredRelated=wordnikRelated.filter(grp=>allowedTypes.has(grp.relationshipType));if(filteredRelated.length>0){wordnikInnerHtml+=`<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;filteredRelated.forEach(grp=>{const type=grp.relationshipType.charAt(0).toUpperCase()+grp.relationshipType.slice(1);const words=grp.words.join(', ');wordnikInnerHtml+=`<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`});wordnikInnerHtml+=`</div>`}}if(wordnikInnerHtml){let wordnikHtmlContent=`<h1>${query}</h1>`+wordnikInnerHtml;finalHtml+=`<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`}}if(finalHtml){wordsList.innerHTML=finalHtml}else{wordsList.innerHTML=`<p style="text-align:center;">No definitions found for <strong>${query}</strong>.</p>`}}catch(e){console.error(e);wordsList.innerHTML='<p style="text-align:center;">Error connecting to knowledge banks.</p>'}searchResultsSection.style.display='block';setTimeout(()=>{searchResultsSection.scrollIntoView({behavior:'smooth',block:'start'})},100)}
+document.addEventListener('DOMContentLoaded',function(){const savedTheme=localStorage.getItem('theme');if(savedTheme==='light'){const icon=document.getElementById('themeIcon');if(icon)icon.className='fas fa-sun'}requestAnimationFrame(()=>{initializeSupabase();setupSearch()})});
+const chatHistory=document.getElementById('chatHistory');const aiInputEl=document.getElementById('aiInput');const aiSendBtn=document.getElementById('aiSendBtn');const clearChatBtn=document.getElementById('clearChatBtn');const aiControls=document.getElementById('aiControls');let conversationMemory=[];function formatMessage(text){if(!text)return'';let html=text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");html=html.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>");html=html.replace(/\*(.*?)\*/g,"<em>$1</em>");html=html.replace(/```([\s\S]*?)```/g,"<pre><code>$1</code></pre>");const lines=html.split('\n');let output='';let inList=false;lines.forEach(line=>{let trimmed=line.trim();if(trimmed.startsWith('- ')||trimmed.startsWith('• ')||trimmed.startsWith('* ')){if(!inList){output+='<ul>';inList=true}output+=`<li>${trimmed.substring(2)}</li>`}else{if(inList){output+='</ul>';inList=false}if(trimmed.length>0){if(trimmed.startsWith('### '))output+=`<h4>${trimmed.substring(4)}</h4>`;else output+=`<p>${line}</p>`}}});if(inList)output+='</ul>';return output}
+function appendMessage(sender,text){chatHistory.style.display='flex';aiControls.style.display='block';const isUser=sender==='User';const rowDiv=document.createElement('div');rowDiv.className=`chat-row ${isUser?'user':'ai'}`;let formattedText=isUser?text:formatMessage(text);if(isUser)formattedText=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');const avatarDiv=document.createElement('div');avatarDiv.className='chat-avatar';avatarDiv.innerHTML=isUser?'<i class="fas fa-user"></i>':'AI';const bubbleDiv=document.createElement('div');bubbleDiv.className='chat-bubble';bubbleDiv.innerHTML=formattedText;rowDiv.appendChild(avatarDiv);rowDiv.appendChild(bubbleDiv);chatHistory.appendChild(rowDiv);chatHistory.scrollTop=chatHistory.scrollHeight}
+function clearChat(){chatHistory.innerHTML='';conversationMemory=[];aiControls.style.display='none';chatHistory.style.display='none'}
+if(clearChatBtn){clearChatBtn.addEventListener('click',()=>{playButtonSound();clearChat()})}
+async function sendToAI(){const text=aiInputEl.value.trim();if(!text)return;appendMessage('User',text);aiInputEl.value='';aiInputEl.style.height='auto';aiInputEl.style.height=(aiInputEl.scrollHeight)+'px';conversationMemory.push({role:'user',content:text});const loadingId='loading-'+Date.now();const loadingDiv=document.createElement('div');loadingDiv.id=loadingId;loadingDiv.style.marginLeft='45px';loadingDiv.style.color='var(--text-muted)';loadingDiv.style.fontStyle='italic';loadingDiv.innerText='Thinking...';chatHistory.appendChild(loadingDiv);chatHistory.scrollTop=chatHistory.scrollHeight;try{let promptToSend=text;if(conversationMemory.length>1){const previousMsgs=conversationMemory.slice(0,-1);const contextStr=previousMsgs.map(m=>`${m.role==='user'?'User':'AI'}: ${m.content}`).join('\n');promptToSend=`Here is the conversation so far:\n${contextStr}\n\nCurrent User Question: ${text}\nAI:`}const response=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:promptToSend,history:conversationMemory})});const data=await response.json();const loader=document.getElementById(loadingId);if(loader)loader.remove();if(data.answer){appendMessage('AI',data.answer);conversationMemory.push({role:'model',content:data.answer});playCorrectSound();if(window.innerWidth<768){setTimeout(()=>{const lastMsg=chatHistory.lastElementChild;if(lastMsg){const offset=90;const bodyRect=document.body.getBoundingClientRect().top;const elementRect=lastMsg.getBoundingClientRect().top;const elementPosition=elementRect-bodyRect;const offsetPosition=elementPosition-offset;window.scrollTo({top:offsetPosition,behavior:'smooth'})}},150)}}else{appendMessage('AI','Sorry, I encountered an error.');console.error(data.error)}}catch(error){const loader=document.getElementById(loadingId);if(loader)loader.remove();appendMessage('AI','Error: Could not reach the server.');console.error(error)}}
+if(aiSendBtn){aiSendBtn.addEventListener('click',()=>{playButtonSound();sendToAI()})}
+if(aiInputEl){aiInputEl.addEventListener('keydown',function(e){if(window.innerWidth>=768){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();playButtonSound();sendToAI()}}})}
 </script>
 </body>
 </html>
