@@ -1150,7 +1150,21 @@ async function fetchAutocompleteSuggestions(query) {
     }
 }
     
-function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;setupToolInputs();updateMobilePlaceholders();window.addEventListener('resize',updateMobilePlaceholders);const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl()});
+function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;setupToolInputs();updateMobilePlaceholders();window.addEventListener('resize',updateMobilePlaceholders);const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};// Restore auto-scroll on focus for mobile
+    searchInput.addEventListener('focus', function() {
+        if (window.innerWidth <= 768) {
+            setTimeout(() => {
+                // Calculates the position of the search container relative to the top of the document
+                // The '- 24' acts as a small buffer so the search bar isn't jammed right against the top edge
+                const y = document.querySelector('.search-container').getBoundingClientRect().top + window.pageYOffset - 24;
+                
+                window.scrollTo({
+                    top: y,
+                    behavior: 'smooth'
+                });
+            }, 300); // 300ms delay to allow the mobile keyboard to fully open first
+        }
+    });searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';resetUrl()});
     
     // Updated Input Listener with Debounce
     searchInput.addEventListener('input',function(){
