@@ -343,12 +343,21 @@ body.android-app .bg-decoration {
     display: none !important;
 }
 body.android-app .container {
-    padding-top: 20px !important;
+    padding-top: 10px !important;
 }
 body.android-app .search-container {
     display: block !important;
     margin-top: 10px;
     margin-bottom: 20px;
+}
+body.android-app .modern-section {
+    display: none;
+}
+body.android-app #wordSpotlightSection {
+    display: block;
+}
+body.android-app .main-content {
+    min-height: 85vh;
 }
 </style>
 </head>
@@ -705,6 +714,36 @@ if(clearChatBtn){clearChatBtn.addEventListener('click',()=>{playButtonSound();cl
 async function sendToAI(){const text=aiInputEl.value.trim();if(!text)return;appendMessage('User',text);aiInputEl.value='';aiInputEl.style.height='auto';aiInputEl.style.height=(aiInputEl.scrollHeight)+'px';conversationMemory.push({role:'user',content:text});const loadingId='loading-'+Date.now();const loadingDiv=document.createElement('div');loadingDiv.id=loadingId;loadingDiv.style.marginLeft='45px';loadingDiv.style.color='var(--text-muted)';loadingDiv.style.fontStyle='italic';loadingDiv.innerText='Thinking...';chatHistory.appendChild(loadingDiv);chatHistory.scrollTop=chatHistory.scrollHeight;try{let promptToSend=text;if(conversationMemory.length>1){const previousMsgs=conversationMemory.slice(0,-1);const contextStr=previousMsgs.map(m=>`${m.role==='user'?'User':'AI'}: ${m.content}`).join('\n');promptToSend=`Here is the conversation so far:\n${contextStr}\n\nCurrent User Question: ${text}\nAI:`}const response=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:promptToSend,history:conversationMemory})});const data=await response.json();const loader=document.getElementById(loadingId);if(loader)loader.remove();if(data.answer){appendMessage('AI',data.answer);conversationMemory.push({role:'model',content:data.answer});playCorrectSound();if(window.innerWidth<768){setTimeout(()=>{const lastMsg=chatHistory.lastElementChild;if(lastMsg){const offset=90;const bodyRect=document.body.getBoundingClientRect().top;const elementRect=lastMsg.getBoundingClientRect().top;const elementPosition=elementRect-bodyRect;const offsetPosition=elementPosition-offset;window.scrollTo({top:offsetPosition,behavior:'smooth'})}},150)}}else{appendMessage('AI','Sorry, I encountered an error.');console.error(data.error)}}catch(error){const loader=document.getElementById(loadingId);if(loader)loader.remove();appendMessage('AI','Error: Could not reach the server.');console.error(error)}}
 if(aiSendBtn){aiSendBtn.addEventListener('click',()=>{playButtonSound();sendToAI()})}
 if(aiInputEl){aiInputEl.addEventListener('keydown',function(e){if(window.innerWidth>=768){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();playButtonSound();sendToAI()}}})}
+function showAppView(viewId) {
+    const allSections = [        'searchResultsSection', 'curiositySection', 'vocabularyQuizSection',         'hangmanSection', 'gkQuizSection', 'wordSpotlightSection',         'wordToolkitSection', 'reverseDictSection', 'aiAssistantSection'    ];
+
+
+    allSections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    if (viewId === 'home') {
+        const searchContainer = document.querySelector('.search-container');
+        if (searchContainer) searchContainer.style.display = 'block';
+        
+        const spotlight = document.getElementById('wordSpotlightSection');
+        if (spotlight) {
+            spotlight.style.display = 'block';
+            const titleSpan = spotlight.querySelector('.modern-section-title span');
+            if(titleSpan) titleSpan.textContent = "Word of the Day";
+        }
+        window.scrollTo(0,0);
+        return;
+    }
+
+    const target = document.getElementById(viewId);
+    if (target) {
+        target.style.display = 'block';
+        const searchContainer = document.querySelector('.search-container');
+        if (searchContainer) searchContainer.style.display = 'none';
+        window.scrollTo(0,0);
+    }
+}
 </script>
 </body>
 </html>
