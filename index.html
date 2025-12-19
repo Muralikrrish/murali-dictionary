@@ -47,6 +47,25 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 .bg-decoration{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:hidden;transition:top 0.3s ease}
 .bg-icon{position:absolute;opacity:0.08;font-size:2rem;transition:transform 0.5s ease}
 [data-theme="light"] .bg-icon{opacity:0.12;filter:none}
+/* --- Global Input Unification (Desktop & Tablet) --- */
+
+/* 1. Match Text Styling to Main Search Box */
+#aiInput,
+#wordToolkitInput,
+#reverseInput {
+    font-size: 1.1rem !important;       /* Matches desktop #searchInput size */
+    color: var(--text-main) !important; /* Matches desktop text color */
+    font-weight: 500 !important;        /* Matches desktop font weight */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* 2. Match Placeholder Styling (The gray hint text) */
+#aiInput::placeholder,
+#wordToolkitInput::placeholder,
+#reverseInput::placeholder {
+    color: var(--text-muted) !important; /* Matches desktop placeholder color */
+    opacity: 1 !important;
+}
 @media(min-width:768px) and (max-width:1024px){.bg-decoration{top:-10%}}
 @media(min-width:768px){.bg-icon{opacity:0.25}[data-theme="light"] .bg-icon{opacity:0.18}}
 .icon-1{top:12%;left:8%;font-size:5rem;transform:rotate(-15deg);color:#fbbf24}
