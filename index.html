@@ -88,11 +88,89 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 [data-theme="light"] .nav-link:hover{color:#fff}
 .mobile-nav-toggle{display:none;width:44px;height:44px;border-radius:50%;background:rgba(30,41,59,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);color:var(--text-main);align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.2);font-size:1.2rem;transition:all 0.3s ease;z-index:1002}
 [data-theme="light"] .mobile-nav-toggle{background:rgba(255,255,255,0.9);color:#1e293b;border-color:rgba(0,0,0,0.1)}
-.mobile-dropdown{position:fixed;top:80px;left:24px;width:200px;background:var(--bg-surface);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:20px;padding:12px;box-shadow:0 10px 40px rgba(0,0,0,0.4);opacity:0;visibility:hidden;transform:translateY(-10px);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);z-index:1001;display:flex;flex-direction:column;gap:4px}
-[data-theme="light"] .mobile-dropdown{background:rgba(255,255,255,0.95);border-color:rgba(0,0,0,0.1)}
-.mobile-dropdown.show{opacity:1;visibility:visible;transform:translateY(0)}
-.mobile-nav-item{display:block;padding:12px 16px;color:var(--text-main);text-decoration:none;font-size:0.95rem;border-radius:12px;transition:all 0.2s;text-align:left;font-weight:500}
-.mobile-nav-item:hover,.mobile-nav-item:active{background:rgba(251,191,36,0.1);color:var(--primary)}
+/* --- Modernized Mobile Dropdown --- */
+.mobile-dropdown {
+    position: fixed;
+    top: 75px; /* Moved up slightly for tighter grouping */
+    left: 20px;
+    
+    /* Auto-width to fit "General Knowledge" */
+    width: max-content; 
+    min-width: 220px;
+    max-width: 85vw; /* Safety cap for small screens */
+
+    background: var(--bg-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px; /* More rounded, modern corners */
+    padding: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    
+    /* Initial Animation State: Hidden, scaled down, shifted up */
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8) translateY(-20px) translateX(-10px);
+    transform-origin: top left; /* Expands from the button */
+    
+    /* Bouncy "Pop" Transition */
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+[data-theme="light"] .mobile-dropdown {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.mobile-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1) translateY(0) translateX(0);
+}
+
+/* --- Staggered List Item Animation --- */
+.mobile-nav-item {
+    display: block;
+    padding: 12px 20px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 1rem;
+    border-radius: 14px;
+    transition: background 0.2s, color 0.2s, transform 0.3s ease, opacity 0.3s ease;
+    text-align: left;
+    font-weight: 600;
+    
+    /* Start hidden for stagger effect */
+    opacity: 0;
+    transform: translateX(-15px);
+}
+
+.mobile-nav-item:hover,
+.mobile-nav-item:active {
+    background: rgba(251, 191, 36, 0.15);
+    color: var(--primary);
+}
+
+/* When dropdown is shown, animate items in one by one */
+.mobile-dropdown.show .mobile-nav-item {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Stagger Delays (Waterfall effect) */
+.mobile-dropdown.show .mobile-nav-item:nth-child(1) { transition-delay: 0.05s; }
+.mobile-dropdown.show .mobile-nav-item:nth-child(2) { transition-delay: 0.10s; }
+.mobile-dropdown.show .mobile-nav-item:nth-child(3) { transition-delay: 0.15s; }
+.mobile-dropdown.show .mobile-nav-item:nth-child(4) { transition-delay: 0.20s; }
+.mobile-dropdown.show .mobile-nav-item:nth-child(5) { transition-delay: 0.25s; }
+.mobile-dropdown.show .mobile-nav-item:nth-child(6) { transition-delay: 0.30s; }
+.mobile-dropdown.show .mobile-nav-item:nth-child(7) { transition-delay: 0.35s; }
+.mobile-dropdown.show .mobile-nav-item:nth-child(8) { transition-delay: 0.40s; }
 .container{max-width:900px;margin:0 auto;padding:0 24px}
 .hero-section{padding:120px 0 50px;text-align:center;position:relative}
 .hero-title{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:600;letter-spacing:-0.01em;line-height:1.1;margin-bottom:12px;color:#f1f5f9;cursor:default;transition:opacity 0.3s ease;text-decoration:none;display:inline-block}
