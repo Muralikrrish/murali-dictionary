@@ -955,7 +955,32 @@ const STOP_WORDS=new Set(["a","an","the","and","or","but","if","because","as","w
 const LOCAL_HANGMAN_WORDS=[{word:"EPIPHANY",clue:"It refers to a moment of sudden and profound revelation or insight, often triggered by a mundane occurrence."},{word:"LABYRINTH",clue:"It describes a complicated, irregular network of passages or paths in which it is difficult to find one's way."},{word:"PARADOX",clue:"It is a seemingly absurd or self-contradictory statement that, when investigated or explained, may prove to be well-founded or true."},{word:"EUPHORIA",clue:"It describes a feeling or state of intense excitement and happiness, often amplified beyond normal emotional responses."},{word:"NOSTALGIA",clue:"It is a sentimental longing or wistful affection for the past, typically for a period or place with happy personal associations."},{word:"SERENDIPITY",clue:"It refers to the occurrence and development of events by chance in a happy or beneficial way."},{word:"AMBIGUOUS",clue:"It describes language or a situation that is open to more than one interpretation and does not have one obvious meaning."},{word:"ELOQUENT",clue:"It describes being fluent or persuasive in speaking or writing, clearly expressing something."},{word:"RESILIENCE",clue:"It is the capacity to recover quickly from difficulties; a form of mental or emotional toughness."},{word:"EPHEMERAL",clue:"It describes something lasting for a very short time, like the lifespan of a mayfly or a fleeting moment."}];
 function toggleTheme(){playButtonSound();const html=document.documentElement;const icon=document.getElementById('themeIcon');const currentTheme=html.getAttribute('data-theme');const newTheme=currentTheme==='light'?'dark':'light';html.setAttribute('data-theme',newTheme);icon.className=newTheme==='light'?'fas fa-sun':'fas fa-moon';try{localStorage.setItem('theme',newTheme)}catch(e){console.warn('Unable to save theme preference')}}
 function toggleMobileNav(){playButtonSound();const dropdown=document.getElementById('mobileDropdown');const toggleBtn=document.querySelector('.mobile-nav-toggle i');dropdown.classList.toggle('show');if(dropdown.classList.contains('show')){toggleBtn.classList.remove('fa-bars');toggleBtn.classList.add('fa-times')}else{toggleBtn.classList.remove('fa-times');toggleBtn.classList.add('fa-bars')}}
-function scrollToSection(id){if(document.activeElement&&document.activeElement.tagName==='INPUT'){document.activeElement.blur()}const section=document.getElementById(id);if(section){toggleMobileNav();setTimeout(()=>{section.scrollIntoView({behavior:'smooth',block:'start'})},400)}}
+function scrollToSection(id) {
+    // 1. Dismiss keyboard if open
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+        document.activeElement.blur();
+    }
+
+    const section = document.getElementById(id);
+    if (section) {
+        // 2. Close the mobile menu
+        toggleMobileNav();
+
+        // 3. Wait for menu animation (400ms), then scroll
+        setTimeout(() => {
+            // --- NEW OFFSET LOGIC START ---
+            const yOffset = -40; 
+            const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            
+            window.scrollTo({
+                top: y, 
+                behavior: 'smooth'
+            });
+            // --- NEW OFFSET LOGIC END ---
+            
+        }, 400);
+    }
+}
 document.addEventListener('click',function(e){const container=document.querySelector('.mobile-nav-container');if(container&&!container.contains(e.target)){const dropdown=document.getElementById('mobileDropdown');if(dropdown.classList.contains('show')){dropdown.classList.remove('show');const toggleBtn=document.querySelector('.mobile-nav-toggle i');toggleBtn.classList.remove('fa-times');toggleBtn.classList.add('fa-bars')}}});
 const SafeStorage={getItem(key){try{return localStorage.getItem(key)}catch(e){return null}},setItem(key,val){try{localStorage.setItem(key,val)}catch(e){}}};
 let supabaseClient, dictionary = []; // Dictionary is now empty by default, not loaded entirely
