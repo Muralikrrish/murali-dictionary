@@ -653,7 +653,29 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
 #aiInput::placeholder {
     color: var(--text-header) !important; /* Matches "Search Vocabulary..." color */
     opacity: 1 !important;
-}    
+}
+/* --- Mobile Word Spotlight: Light Theme Adjustments --- */
+
+/* 1. Body Text: Darker Slate for readability (was too dim) */
+[data-theme="light"] #wordSpotlightSection .word-definition p,
+[data-theme="light"] #wordSpotlightSection .word-definition ul,
+[data-theme="light"] #wordSpotlightSection .word-definition ol,
+[data-theme="light"] #wordSpotlightSection .word-definition li {
+    color: #334155 !important; /* Slate 700 - High contrast dark grey */
+}
+
+/* 2. Toggle Headers: Medium Slate (Distinct but not black) */
+[data-theme="light"] #wordSpotlightSection .toggle-header {
+    color: #475569 !important; /* Slate 600 */
+}
+
+/* 3. Bold Text & H3: Deepest Dark (Visual Anchor) */
+[data-theme="light"] #wordSpotlightSection .word-definition strong,
+[data-theme="light"] #wordSpotlightSection .word-definition b,
+[data-theme="light"] #wordSpotlightSection .word-definition h3 {
+    color: #0f172a !important; /* Slate 900 - Near black */
+    opacity: 1 !important;      /* Full opacity for maximum punch */
+}
 }
 </style>
 </head>
