@@ -540,7 +540,23 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
     color: var(--text-main) !important; /* Original off-white (#f8fafc) */
     opacity: 0.85 !important;            /* Original softness */
 }
-    
+/* Inside @media(max-width:767px) */
+
+/* 1. Unify Font Size for AI and Tool Inputs */
+#wordToolkitInput,
+#reverseInput,
+#aiInput {
+    font-size: 0.95rem !important; /* Matches main search text size */
+    padding: 10px 14px !important;  /* Matches main search padding */
+}
+
+/* 2. Unify Placeholder Color (The "gray" text before you type) */
+#wordToolkitInput::placeholder,
+#reverseInput::placeholder,
+#aiInput::placeholder {
+    color: var(--text-header) !important; /* Matches "Search Vocabulary..." color */
+    opacity: 1 !important;
+}    
 }
 </style>
 </head>
