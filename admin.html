@@ -555,7 +555,7 @@
             font-size: 14px;
         }
 
-        #editSearchResults, #quickAddSearchResults, #quickAddList {
+        #editSearchResults, #quickAddSearchResults, #quickAddList, #editDefinitionSearchResults {
             max-height: 300px;
             overflow-y: auto;
             margin-top: 15px;
@@ -783,6 +783,18 @@
                             <input type="text" id="editSearchInput" placeholder="Type to search..." oninput="searchWordsToEdit()">
                         </div>
                         <div id="editSearchResults"></div>
+                    </div>
+                </div>
+
+                <!-- NEW: Edit Definition Section -->
+                <div class="modern-section">
+                    <h2 class="modern-section-title">Edit Definition</h2>
+                    <div class="interactive-card">
+                        <div class="form-group">
+                            <label for="editDefinitionSearchInput">Search in Definitions</label>
+                            <input type="text" id="editDefinitionSearchInput" placeholder="Type to search inside definitions..." oninput="searchDefinitionsToEdit()">
+                        </div>
+                        <div id="editDefinitionSearchResults"></div>
                     </div>
                 </div>
 
@@ -1453,8 +1465,13 @@
             editingWordId = id;
             document.getElementById('wordInput').value = word.word;
             document.getElementById('definitionInput').innerHTML = word.definition;
+            
+            // Clear searches
             document.getElementById('editSearchInput').value = '';
             document.getElementById('editSearchResults').innerHTML = '';
+            document.getElementById('editDefinitionSearchInput').value = '';
+            document.getElementById('editDefinitionSearchResults').innerHTML = '';
+            
             setTimeout(activateTogglesInEditor, 0);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1473,6 +1490,7 @@
             
             // Update search results immediately if open
             searchWordsToEdit(); 
+            searchDefinitionsToEdit(); // Update definition search results too
             
             // 2. Trigger Cloud Delete in Background (No await)
             deleteFromSupabase(id);
@@ -1503,6 +1521,71 @@
                     <div class="edit-result-item">
                         <div class="edit-result-word">${item.word}</div>
                         <div class="edit-result-definition">${preview}</div>
+                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                            <button class="editor-btn" onclick="editWord(${item.id})" style="font-size: 12px; padding: 5px 10px;">Edit</button>
+                            <button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: rgba(239, 68, 68, 0.2); color: var(--error);">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            resultsDiv.innerHTML = html;
+        }
+
+        /* --- NEW FUNCTION: Search Definitions --- */
+        function searchDefinitionsToEdit() {
+            const query = document.getElementById('editDefinitionSearchInput').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('editDefinitionSearchResults');
+            
+            if (!query) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
+            // Use the pre-built searchIndex (created in buildSearchIndex()) which already has 
+            // stripped definition text (definitionText) for faster searching.
+            // If searchIndex isn't ready for some reason, we fallback to filtering dictionary directly.
+            
+            let matches = [];
+            
+            if (searchIndex && searchIndex.length > 0) {
+                matches = searchIndex.filter(item => 
+                    item.definitionText.includes(query)
+                ).slice(0, 10); // Limit to 10 results
+            } else {
+                matches = dictionary.filter(item => {
+                    const cleanDef = item.definition.replace(/<[^>]*>/g, '').toLowerCase();
+                    return cleanDef.includes(query);
+                }).slice(0, 10);
+            }
+            
+            if (matches.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-results" style="padding:10px;color:var(--text-muted);">No matches found in definitions</div>';
+                return;
+            }
+            
+            let html = '';
+            matches.forEach(match => {
+                // Find the original item in the dictionary to get correct formatting/ID
+                const item = dictionary.find(d => d.id === match.id) || match;
+                const defText = item.definition.replace(/<[^>]*>/g, '');
+                const lowerDef = defText.toLowerCase();
+                
+                // Create a "Context Snippet" around the found word
+                const index = lowerDef.indexOf(query);
+                let snippet = '';
+                
+                if (index !== -1) {
+                    const start = Math.max(0, index - 40);
+                    const end = Math.min(defText.length, index + query.length + 40);
+                    snippet = (start > 0 ? '...' : '') + defText.substring(start, end) + (end < defText.length ? '...' : '');
+                } else {
+                    snippet = defText.substring(0, 100) + '...';
+                }
+
+                html += `
+                    <div class="edit-result-item">
+                        <div class="edit-result-word">${item.word}</div>
+                        <div class="edit-result-definition" style="font-style:italic; color: var(--primary);">Match: "${snippet}"</div>
                         <div style="margin-top: 10px; display: flex; gap: 10px;">
                             <button class="editor-btn" onclick="editWord(${item.id})" style="font-size: 12px; padding: 5px 10px;">Edit</button>
                             <button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: rgba(239, 68, 68, 0.2); color: var(--error);">Delete</button>
