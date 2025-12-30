@@ -19,6 +19,85 @@
 (function(){try{const savedTheme=localStorage.getItem('theme');if(savedTheme){document.documentElement.setAttribute('data-theme',savedTheme)}}catch(e){}})();
 </script>
 <style>
+/* --- 1. REGULAR (Normal text) --- */
+@font-face {
+    font-family: 'Tiempos Text';
+    src: url('fonts/TiemposText-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Tiempos Text';
+    src: url('fonts/TiemposText-Italic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* --- 2. MEDIUM (Slightly thicker) --- */
+@font-face {
+    font-family: 'Tiempos Text';
+    src: url('fonts/TiemposText-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Tiempos Text';
+    src: url('fonts/TiemposText-MediumItalic.otf') format('opentype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* --- 3. SEMIBOLD (Headings/Emphatic) --- */
+@font-face {
+    font-family: 'Tiempos Text';
+    src: url('fonts/TiemposText-Semibold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Tiempos Text';
+    src: url('fonts/TiemposText-SemiboldItalic.otf') format('opentype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* --- 4. BOLD (Strong emphasis) --- */
+@font-face {
+    font-family: 'Tiempos Text';
+    src: url('fonts/TiemposText-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Tiempos Text';
+    src: url('fonts/TiemposText-BoldItalic.otf') format('opentype');
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* --- THE TOGGLE CLASS --- */
+/* This activates when the button is clicked */
+body.serif-mode {
+    font-family: 'Tiempos Text', serif !important;
+}
+
+/* Tweak: Tiempos is a bit larger, so we increase line spacing for reading comfort */
+body.serif-mode p, body.serif-mode li, body.serif-mode .word-definition {
+    line-height: 1.85;
+}
+
+/* Ensure inputs and buttons also switch fonts */
+body.serif-mode input, body.serif-mode button, body.serif-mode textarea {
+    font-family: 'Tiempos Text', serif !important;
+}
 :root{--bg-deep:#0f172a;--bg-surface:rgba(30,41,59,0.75);--glass-border:rgba(255,255,255,0.08);--glass-highlight:rgba(255,255,255,0.05);--glass-shadow:0 8px 32px 0 rgba(0,0,0,0.4);--primary:#fbbf24;--primary-dim:#d97706;--primary-soft:#f59e0b;--primary-glow:rgba(251,191,36,0.25);--text-main:#f8fafc;--text-bright-dim:#cbd5e1;--text-muted:#cbd5e1;--text-header:#94a3b8;--success:#34d399;--error:#f87171;--section-gap:80px;--radius-lg:24px;--radius-md:16px;--radius-sm:12px;--backdrop-blur:blur(16px)}
 #searchResultsSection{--section-acc:#f59e0b;--section-acc-light:#fde68a}
 #curiositySection{--section-acc:#ec4899;--section-acc-light:#fbcfe8}
@@ -376,6 +455,9 @@ body.android-app .main-content {
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('reverseDictSection')">Reverse Dictionary</a>
 <a href="#" class="mobile-nav-item" onclick="scrollToSection('aiAssistantSection')">AI Assistant</a>
 </div>
+<button class="theme-toggle-btn" onclick="toggleFont()" aria-label="Toggle Font" style="margin-right: 12px;">
+    <i class="fas fa-font"></i>
+</button>
 </div>
 <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon" id="themeIcon"></i></button>
 </div>
@@ -613,6 +695,38 @@ const STOP_WORDS=new Set(["a","an","the","and","or","but","if","because","as","w
 const LOCAL_HANGMAN_WORDS=[{word:"EPIPHANY",clue:"It refers to a moment of sudden and profound revelation or insight, often triggered by a mundane occurrence."},{word:"LABYRINTH",clue:"It describes a complicated, irregular network of passages or paths in which it is difficult to find one's way."},{word:"PARADOX",clue:"It is a seemingly absurd or self-contradictory statement that, when investigated or explained, may prove to be well-founded or true."},{word:"EUPHORIA",clue:"It describes a feeling or state of intense excitement and happiness, often amplified beyond normal emotional responses."},{word:"NOSTALGIA",clue:"It is a sentimental longing or wistful affection for the past, typically for a period or place with happy personal associations."},{word:"SERENDIPITY",clue:"It refers to the occurrence and development of events by chance in a happy or beneficial way."},{word:"AMBIGUOUS",clue:"It describes language or a situation that is open to more than one interpretation and does not have one obvious meaning."},{word:"ELOQUENT",clue:"It describes being fluent or persuasive in speaking or writing, clearly expressing something."},{word:"RESILIENCE",clue:"It is the capacity to recover quickly from difficulties; a form of mental or emotional toughness."},{word:"EPHEMERAL",clue:"It describes something lasting for a very short time, like the lifespan of a mayfly or a fleeting moment."}];
 function smoothScrollTo(elementId){const section=document.getElementById(elementId);if(section){const yOffset=-40;const y=section.getBoundingClientRect().top+window.pageYOffset+yOffset;window.scrollTo({top:y,behavior:'smooth'})}}
 function toggleTheme(){playButtonSound();const html=document.documentElement;const icon=document.getElementById('themeIcon');const currentTheme=html.getAttribute('data-theme');const newTheme=currentTheme==='light'?'dark':'light';html.setAttribute('data-theme',newTheme);icon.className=newTheme==='light'?'fas fa-sun':'fas fa-moon';try{localStorage.setItem('theme',newTheme)}catch(e){console.warn('Unable to save theme preference')}}
+/* --- Font Toggle Logic --- */
+
+// 1. Check if user already turned this on previously
+(function(){
+    try {
+        const savedFont = localStorage.getItem('fontMode');
+        if(savedFont === 'serif'){
+            document.body.classList.add('serif-mode');
+        }
+    } catch(e) {}
+})();
+
+// 2. The toggle function
+function toggleFont() {
+    playButtonSound(); 
+    const body = document.body;
+    
+    // Toggle the class on/off
+    body.classList.toggle('serif-mode');
+    
+    // Check state and save preference
+    const isSerif = body.classList.contains('serif-mode');
+    
+    // Optional: Show a tiny popup or log to confirm
+    console.log(isSerif ? "Switched to Tiempos Text" : "Switched to Default Sans");
+
+    try {
+        localStorage.setItem('fontMode', isSerif ? 'serif' : 'sans');
+    } catch(e) {
+        console.warn('Unable to save font preference');
+    }
+}
 function toggleMobileNav(){playButtonSound();const dropdown=document.getElementById('mobileDropdown');const toggleBtn=document.querySelector('.mobile-nav-toggle i');dropdown.classList.toggle('show');if(dropdown.classList.contains('show')){toggleBtn.classList.remove('fa-bars');toggleBtn.classList.add('fa-times')}else{toggleBtn.classList.remove('fa-times');toggleBtn.classList.add('fa-bars')}}
 function scrollToSection(id){if(document.activeElement&&document.activeElement.tagName==='INPUT'){document.activeElement.blur()}const section=document.getElementById(id);if(section){toggleMobileNav();setTimeout(()=>{smoothScrollTo(id)},400)}}
 document.addEventListener('click',function(e){const container=document.querySelector('.mobile-nav-container');if(container&&!container.contains(e.target)){const dropdown=document.getElementById('mobileDropdown');if(dropdown.classList.contains('show')){dropdown.classList.remove('show');const toggleBtn=document.querySelector('.mobile-nav-toggle i');toggleBtn.classList.remove('fa-times');toggleBtn.classList.add('fa-bars')}}});
