@@ -147,19 +147,19 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
         <h1 class="hero-title">Pearls of Knowledge</h1>
         <p class="hero-subtitle">Discover, Learn, Illuminate</p>
     </div>
-    
-    <!-- SEARCH CONTAINER -->
-    <div class="search-container" style="max-width: 600px; margin: -40px auto 50px; padding: 0 16px;">
-        <div class="search-box">
-            <div class="search-input-wrapper">
-                <input type="text" id="searchInput" placeholder="Search vocabulary..." autocomplete="off" autocapitalize="off">
-                <span class="clear-btn" id="clearBtn"><i class="fas fa-times"></i></span>
-                <span class="search-icon" id="searchBtn"><i class="fas fa-search"></i></span>
-            </div>
-        </div>
-        <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
-    </div>
 </section>
+    
+<!-- SEARCH CONTAINER (Moved outside section to fix spacing) -->
+<div class="search-container" style="max-width: 600px; margin: -40px auto 50px; padding: 0 16px;">
+    <div class="search-box">
+        <div class="search-input-wrapper">
+            <input type="text" id="searchInput" placeholder="Search vocabulary..." autocomplete="off" autocapitalize="off">
+            <span class="clear-btn" id="clearBtn"><i class="fas fa-times"></i></span>
+            <span class="search-icon" id="searchBtn"><i class="fas fa-search"></i></span>
+        </div>
+    </div>
+    <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+</div>
 
 <div class="container">
     <div class="main-content" id="mainContentArea">
@@ -247,7 +247,7 @@ async function fetchWordSpotlight(scrollToTop=false){
 
             // 2. If the table is empty (count is 0), show a message and STOP.
             if (count === 0) {
-                ws.innerHTML='<div class="no-words" style="text-align:center; padding: 20px; color: var(--text-muted);"><p><i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><br>Word not found in dictionary.</p></div>';
+                ws.innerHTML='<div class="no-words" style="text-align:center; padding: 20px; color: var(--text-muted);"><p><i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><br>No words found in dictionary yet.</p></div>';
                 return;
             }
 
