@@ -710,7 +710,7 @@
         <div class="login-container">
             <div class="login-header">
                 <div class="lock-icon">🔒</div>
-                <h1>Admin Access (Dict 2)</h1>
+                <h1>Admin Access</h1>
                 <p>Enter password to continue</p>
             </div>
             
@@ -742,7 +742,7 @@
         <div class="container">
             <div class="main-content" id="mainContent">
                 <div class="modern-section">
-                    <h2 class="modern-section-title">Add New Word (Dict 2) <span class="word-count" id="dictionaryCount">(0)</span></h2>
+                    <h2 class="modern-section-title">Add New Word<span class="word-count" id="dictionaryCount">(0)</span></h2>
                     <div class="interactive-card">
                         <form id="addWordForm">
                             <div class="form-group">
@@ -974,7 +974,7 @@
             }
         }
 
-        // UPDATED Toggle Logic: Remove all H1s, convert ALL H3s to COLLAPSED toggles
+        // UPDATED Toggle Logic: Remove all H1s, Leave FIRST H3 as is, convert subsequent H3s to COLLAPSED toggles
         function convertH3ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
@@ -983,13 +983,13 @@
             const h1Elements = doc.querySelectorAll('h1');
             h1Elements.forEach(h1 => h1.remove());
 
-            // NOTE: The logic to remove the first header (formerly H2, now H3) has been removed as requested.
-            // All H3s will now be converted to toggles.
-
-            // 2. Convert ALL H3s to toggles (Collapsed by default)
+            // 2. Process H3s: Skip the first one, convert rest to toggles
             const h3Elements = doc.querySelectorAll('h3');
     
-            h3Elements.forEach(h3 => {
+            h3Elements.forEach((h3, index) => {
+                // SKIP the first H3 (leave it as a static heading)
+                if (index === 0) return;
+
                 // Format heading text
                 let headingText = h3.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
