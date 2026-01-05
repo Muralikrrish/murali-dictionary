@@ -974,8 +974,8 @@
             }
         }
 
-        // UPDATED Toggle Logic: Remove all H1s, Leave FIRST H3 as is, convert subsequent H3s to COLLAPSED toggles
-        function convertH3ToToggles(htmlString) {
+        // UPDATED Toggle Logic: Handle both H2 and H3 with nesting support
+        function convertHeadingsToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
             
@@ -983,19 +983,14 @@
             const h1Elements = doc.querySelectorAll('h1');
             h1Elements.forEach(h1 => h1.remove());
 
-            // 2. Process H3s: Skip the first one, convert rest to toggles
-            const h3Elements = doc.querySelectorAll('h3');
-    
-            h3Elements.forEach((h3, index) => {
-                // SKIP the first H3 (leave it as a static heading)
-                if (index === 0) return;
-
+            // Helper to create toggle structure
+            function createToggle(headingEl, stopTags) {
                 // Format heading text
-                let headingText = h3.textContent;
-                if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
+                let headingText = headingEl.textContent;
+                if (headingText && headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
                     headingText = headingText.toLowerCase();
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1);
-                    h3.textContent = headingText;
+                    headingEl.textContent = headingText;
                 }
         
                 const toggleWrapper = document.createElement('div');
@@ -1003,18 +998,20 @@
         
                 const toggleHeader = document.createElement('button');
                 toggleHeader.className = 'toggle-header';
-                // Modern Chevron Icon (Not active by default)
+                // Modern Chevron Icon
                 toggleHeader.innerHTML = `
                     <i class="fas fa-chevron-right toggle-icon"></i>
-                    <span class="toggle-title">${h3.innerHTML}</span>
+                    <span class="toggle-title">${headingEl.innerHTML}</span>
                 `;
         
                 const toggleContent = document.createElement('div');
                 toggleContent.className = 'toggle-content';
-                // Note: No 'expanded' class added here -> Collapsed by default
         
-                let nextSibling = h3.nextElementSibling;
-                while (nextSibling && nextSibling.tagName !== 'H3') {
+                // Gather content: Collect siblings until we hit a stop tag or run out
+                let nextSibling = headingEl.nextElementSibling;
+                while (nextSibling) {
+                    if (stopTags.includes(nextSibling.tagName)) break;
+                    
                     const temp = nextSibling;
                     nextSibling = nextSibling.nextElementSibling;
                     toggleContent.appendChild(temp);
@@ -1024,17 +1021,42 @@
                     toggleContent.innerHTML = '<p>No content available.</p>';
                 }
         
+                // Note: Events are re-attached in activateTogglesInEditor, 
+                // but we add basic logic here for completeness/testing
                 toggleHeader.addEventListener('click', function(e) {
                     e.stopPropagation();
                     e.preventDefault();
-            
                     this.classList.toggle('active');
                     toggleContent.classList.toggle('expanded');
                 });
         
                 toggleWrapper.appendChild(toggleHeader);
                 toggleWrapper.appendChild(toggleContent);
-                h3.parentNode.replaceChild(toggleWrapper, h3);
+                headingEl.parentNode.replaceChild(toggleWrapper, headingEl);
+            }
+
+            // 2. Process H3s FIRST (Bottom-up approach)
+            // We want to nest H3 toggles inside H2 toggles if applicable.
+            // By processing H3s first, they become 'div' wrappers, which H2s will then consume as regular content.
+            
+            const h3Elements = Array.from(doc.querySelectorAll('h3'));
+            h3Elements.forEach((h3, index) => {
+                // SKIP the first H3 globally
+                if (index === 0) return;
+                
+                // Stop gathering content at next H3 or an H2 (don't consume parent's next section)
+                createToggle(h3, ['H3', 'H2']); 
+            });
+
+            // 3. Process H2s SECOND
+            const h2Elements = Array.from(doc.querySelectorAll('h2'));
+            h2Elements.forEach((h2, index) => {
+                // SKIP the first H2 globally
+                if (index === 0) return;
+                
+                // Stop gathering at next H2. 
+                // Note: H3s are already div.toggle-wrapper, so they don't trigger a stop.
+                createToggle(h2, ['H2']);
             });
     
             return doc.body.innerHTML;
@@ -1369,7 +1391,7 @@
                         }
                     }
                     
-                    processedHtml = convertH3ToToggles(processedHtml);
+                    processedHtml = convertHeadingsToToggles(processedHtml);
                     document.execCommand('insertHTML', false, processedHtml);
                     setTimeout(activateTogglesInEditor, 0);
                 });
