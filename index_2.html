@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pearls of Knowledge - Search & Spotlight</title>
+<meta name="description" content="A simplified visual dictionary featuring search and word spotlight.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script>
+(function(){try{const savedTheme=localStorage.getItem('theme');if(savedTheme){document.documentElement.setAttribute('data-theme',savedTheme)}}catch(e){}})();
+</script>
+<style>
+/* --- CORE VARIABLES & THEME --- */
+:root{--bg-deep:#0f172a;--bg-surface:rgba(30,41,59,0.75);--glass-border:rgba(255,255,255,0.08);--glass-highlight:rgba(255,255,255,0.05);--glass-shadow:0 8px 32px 0 rgba(0,0,0,0.4);--primary:#fbbf24;--primary-dim:#d97706;--primary-soft:#f59e0b;--primary-glow:rgba(251,191,36,0.25);--text-main:#f8fafc;--text-bright-dim:#cbd5e1;--text-muted:#cbd5e1;--text-header:#94a3b8;--section-gap:80px;--radius-lg:24px;--radius-md:16px;--radius-sm:12px;--backdrop-blur:blur(16px)}
+
+/* Specific accent colors for remaining sections */
+#searchResultsSection{--section-acc:#f59e0b;--section-acc-light:#fde68a}
+#wordSpotlightSection{--section-acc:#64748b;--section-acc-light:#e2e8f0}
+
+[data-theme="light"]{--bg-deep:#f8fafc;--bg-surface:rgba(255,255,255,0.85);--glass-border:rgba(0,0,0,0.06);--glass-highlight:rgba(255,255,255,0.9);--glass-shadow:0 8px 32px 0 rgba(148,163,184,0.15);--primary:#d97706;--primary-dim:#b45309;--primary-soft:#f59e0b;--primary-glow:rgba(217,119,6,0.15);--text-main:#0f172a;--text-bright-dim:#334155;--text-muted:#475569;--text-header:#475569}
+
+html{scroll-behavior:smooth}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Jakarta Sans',sans-serif;line-height:1.7;overflow-x:hidden;min-height:100vh;position:relative;transition:background-color 0.5s ease,color 0.5s ease}
+[data-theme="light"] body{background:linear-gradient(135deg,#fdfbf7 0%,#f1f5f9 100%)}
+
+/* --- BACKGROUND ANIMATION --- */
+.ambient-light{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:0.4;animation:float 25s infinite ease-in-out}
+.orb-1{top:-20%;left:-10%;width:70vw;height:70vw;background:radial-gradient(circle,#1e293b 0%,transparent 70%);animation-delay:0s}
+.orb-2{bottom:-20%;right:-10%;width:50vw;height:50vw;background:radial-gradient(circle,#334155 0%,transparent 70%);animation-delay:-5s}
+.orb-3{top:40%;left:40%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(251,191,36,0.1) 0%,transparent 70%);animation-delay:-10s;opacity:0.3}
+[data-theme="light"] .orb{opacity:0.5;filter:blur(100px)}
+[data-theme="light"] .orb-1{background:radial-gradient(circle,rgba(56,189,248,0.1) 0%,transparent 70%)}
+[data-theme="light"] .orb-2{background:radial-gradient(circle,rgba(244,114,182,0.1) 0%,transparent 70%)}
+[data-theme="light"] .orb-3{background:radial-gradient(circle,rgba(251,191,36,0.15) 0%,transparent 60%)}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-60px) scale(1.1)}66%{transform:translate(-30px,30px) scale(0.9)}}
+
+/* --- UI CONTROLS (THEME TOGGLE) --- */
+.ui-controls{position:fixed;top:24px;width:100%;padding:0 24px;z-index:1002;display:flex;justify-content:flex-end;pointer-events:none}
+.ui-controls>*{pointer-events:auto}
+.theme-toggle-btn{width:44px;height:44px;border-radius:50%;background:rgba(30,41,59,0.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);color:var(--primary);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+[data-theme="light"] .theme-toggle-btn{background:rgba(255,255,255,0.8);border-color:rgba(0,0,0,0.05);color:#f59e0b;box-shadow:0 4px 12px rgba(0,0,0,0.05)}
+.theme-toggle-btn:hover{transform:rotate(15deg) scale(1.05)}
+
+/* --- LAYOUT & HERO --- */
+.container{max-width:900px;margin:0 auto;padding:0 24px}
+.hero-section{padding:120px 0 50px;text-align:center;position:relative}
+.hero-title{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:600;letter-spacing:-0.01em;line-height:1.1;margin-bottom:12px;color:#f1f5f9;cursor:default;transition:opacity 0.3s ease;text-decoration:none;display:inline-block}
+[data-theme="light"] .hero-title{color:#1e293b}
+.hero-subtitle{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text-header);max-width:500px;margin:0 auto 50px;font-weight:400;font-style:italic}
+
+/* --- SEARCH BOX --- */
+.search-container{max-width:600px;margin:0 auto;position:relative;z-index:100}
+.search-box{background:rgba(30,41,59,0.6);backdrop-filter:var(--backdrop-blur);-webkit-backdrop-filter:var(--backdrop-blur);border:1px solid var(--glass-border);border-radius:50px;padding:6px;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}
+[data-theme="light"] .search-box{background:rgba(255,255,255,0.8);border-color:rgba(0,0,0,0.1)}
+.search-box:focus-within{background:rgba(30,41,59,0.9);border-color:var(--primary);box-shadow:0 0 25px var(--primary-glow)}
+[data-theme="light"] .search-box:focus-within{background:#fff}
+.search-input-wrapper{display:flex;align-items:center;padding:0 16px}
+.search-box input{flex:1;background:transparent;border:none;color:var(--text-main);font-size:1.1rem;padding:16px 12px;font-weight:500;outline:none;min-width:0;font-family:'Plus Jakarta Sans',sans-serif;text-transform:lowercase}
+.search-box input::placeholder{color:var(--text-muted);text-transform:none}
+.search-icon{color:var(--text-muted);font-size:1.2rem;padding:10px;transition:color 0.3s;cursor:pointer;flex-shrink:0}
+.search-box:focus-within .search-icon{color:var(--primary)}
+.clear-btn{color:var(--text-muted);font-size:1rem;padding:10px;cursor:pointer;transition:all 0.2s ease;display:none;opacity:0.6;margin-right:4px;flex-shrink:0}
+.clear-btn.visible{display:block!important}
+.clear-btn:hover{color:var(--text-main);opacity:1;transform:scale(1.1)}
+.autocomplete-dropdown{position:absolute;top:calc(100% + 16px);left:0;right:0;background:#1e293b;border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:8px;box-shadow:0 20px 40px rgba(0,0,0,0.5);display:none;opacity:0;transform:translateY(-10px);transition:all 0.2s ease;max-height:300px;overflow-y:auto}
+[data-theme="light"] .autocomplete-dropdown{background:#fff;border-color:rgba(0,0,0,0.1)}
+.autocomplete-dropdown.show{display:block;opacity:1;transform:translateY(0)}
+.autocomplete-item{padding:14px 20px;border-radius:var(--radius-sm);color:var(--text-muted);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s}
+.autocomplete-item:hover{background:rgba(255,255,255,0.05);color:var(--primary)}
+[data-theme="light"] .autocomplete-item:hover{background:rgba(0,0,0,0.05)}
+
+/* --- CARDS & DEFINITIONS --- */
+.modern-section{margin-bottom:var(--section-gap);position:relative}
+.modern-section-title{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:24px;color:var(--text-main);display:flex;align-items:center;gap:16px}
+.modern-section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--section-acc,var(--glass-border)),transparent)}
+[data-theme="light"] .modern-section-title::after{background:linear-gradient(90deg,var(--section-acc,var(--primary)),transparent);opacity:0.4;height:2px}
+.interactive-card{background:var(--bg-surface);backdrop-filter:var(--backdrop-blur);-webkit-backdrop-filter:var(--backdrop-blur);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:40px;box-shadow:var(--glass-shadow);transition:transform 0.3s ease,border-color 0.3s ease;position:relative}
+.interactive-card:hover{border-color:rgba(255,255,255,0.15)}
+[data-theme="light"] .interactive-card{border-color:rgba(0,0,0,0.06);border-color:color-mix(in srgb,var(--section-acc,var(--primary)) 20%,rgba(0,0,0,0.05))}
+[data-theme="light"] .interactive-card:hover{border-color:rgba(0,0,0,0.15)}
+
+.word-definition{font-size:1.1rem;color:var(--text-muted);line-height:1.8}
+.word-definition p{margin-bottom:1.2em;margin-top:0}
+.word-definition strong,.word-definition b{color:var(--text-main);opacity:0.85;font-weight:700}
+.word-definition h1{font-family:'Playfair Display',serif;color:var(--text-main);margin-top:0.2em;margin-bottom:0.5em;font-size:2.5rem;line-height:1.2;display:flex;align-items:center;flex-wrap:wrap;gap:16px}
+.word-definition h3{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;color:var(--text-main);opacity:0.85;font-size:1.2rem;margin-top:1.2em;margin-bottom:0.6em}
+.word-definition ul,.word-definition ol{padding-left:20px;margin:16px 0 24px 0;color:var(--text-muted)}
+.word-definition li{margin-bottom:8px;padding-left:8px}
+
+.audio-btn{background:none;border:2px solid var(--primary-dim);color:var(--primary);width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease;vertical-align:middle;font-size:1rem}
+.audio-btn:hover{background:var(--primary);color:var(--bg-deep);box-shadow:0 0 15px var(--primary-glow)}
+.pronunciation-text{font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:1.1rem;opacity:0.8;font-weight:400}
+.action-btn{background:transparent;color:var(--text-main);border:1px solid rgba(255,255,255,0.2);padding:10px 24px;border-radius:50px;font-weight:600;cursor:pointer;transition:all 0.3s ease;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+[data-theme="light"] .action-btn{border-color:rgba(0,0,0,0.2)}
+.action-btn:hover{border-color:var(--primary);color:var(--primary);background:rgba(251,191,36,0.1)}
+
+/* --- TOGGLES (FOR DEFINITIONS) --- */
+.toggle-section{border:none;background:transparent;margin:16px 0;border-radius:0;overflow:hidden;width:100%}
+.toggle-header{width:100%;display:flex;align-items:center;justify-content:flex-start;flex-direction:row;padding:16px 0;background:transparent;border:none;color:var(--text-header);font-size:1.2rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-align:left;transition:color 0.3s ease;gap:16px;scroll-margin-top:80px}
+.toggle-header.active{color:var(--primary-soft)}
+.toggle-icon{margin-right:4px;flex-shrink:0;transition:transform 0.3s ease}
+.toggle-header.active .toggle-icon{transform:rotate(90deg)}
+.toggle-title{flex:1}
+.toggle-content{max-height:0;overflow:hidden;transition:max-height 0.3s cubic-bezier(0,1,0,1);padding:0;opacity:0.7}
+.toggle-content.expanded{max-height:2000px;padding-bottom:24px;opacity:1;transition:max-height 0.3s ease-in-out,opacity 0.3s ease}
+.toggle-content.expanded::after{content:'';display:block;width:100%;height:1px;background:var(--primary);margin-top:24px;margin-bottom:8px;opacity:0.5}
+
+/* --- SKELETON LOADING --- */
+.skeleton-loading{width:100%}
+.skeleton-word{height:48px;width:40%;margin-bottom:32px;border-radius:8px}
+.skeleton-line{height:16px;margin-bottom:16px;border-radius:4px}
+.skeleton-line.extra-long{width:95%}
+.skeleton-line.long{width:85%}
+.skeleton-word,.skeleton-line{background:linear-gradient(90deg,rgba(255,255,255,0.03) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.03) 75%);background-size:200% 100%;animation:shimmer 2s infinite}
+[data-theme="light"] .skeleton-word,[data-theme="light"] .skeleton-line{background:linear-gradient(90deg,rgba(0,0,0,0.05) 25%,rgba(0,0,0,0.1) 50%,rgba(0,0,0,0.05) 75%)}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+/* --- MOBILE ADJUSTMENTS --- */
+@media(max-width:767px){
+    .hero-title{font-size:2.5rem!important}
+    .hero-section{padding-top:30px}
+    .modern-section-title{font-size:1.65rem!important}
+    .interactive-card{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;backdrop-filter:none!important}
+    .modern-section{padding-bottom:40px;margin-bottom:40px!important}
+    .modern-section-title::after{display:block!important}
+    .ui-controls{position:absolute;top:24px;justify-content:space-between;align-items:center;padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<div class="ui-controls">
+    <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme"><i class="fas fa-moon" id="themeIcon"></i></button>
+</div>
+
+<div class="ambient-light">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Pearls of Knowledge</h1>
+        <p class="hero-subtitle">Discover, Learn, Illuminate</p>
+    </div>
+    
+    <!-- SEARCH CONTAINER -->
+    <div class="search-container" style="max-width: 600px; margin: -40px auto 50px; padding: 0 16px;">
+        <div class="search-box">
+            <div class="search-input-wrapper">
+                <input type="text" id="searchInput" placeholder="Search vocabulary..." autocomplete="off" autocapitalize="off">
+                <span class="clear-btn" id="clearBtn"><i class="fas fa-times"></i></span>
+                <span class="search-icon" id="searchBtn"><i class="fas fa-search"></i></span>
+            </div>
+        </div>
+        <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="main-content" id="mainContentArea">
+        
+        <!-- SEARCH RESULTS (Hidden by default) -->
+        <section class="modern-section search-results-section" id="searchResultsSection" style="display:none;">
+            <h2 class="modern-section-title"><span>Search Results</span></h2>
+            <div class="words-list" id="wordsList"></div>
+        </section>
+
+        <!-- WORD SPOTLIGHT (Visible by default) -->
+        <section class="modern-section" id="wordSpotlightSection">
+            <h2 class="modern-section-title"><span>Word Spotlight</span></h2>
+            <div class="interactive-card">
+                <div id="wordSpotlightDisplay">
+                    <div class="skeleton-loading">
+                        <div class="skeleton-word"></div>
+                        <div class="skeleton-line extra-long"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* --- CONFIGURATION --- */
+const MW_API_KEY='3bb3615c-eca5-4cb3-8e0f-eece50d1037e';
+const WORDNIK_API_KEY='yfp2ausp6gk53i8i0g7ud3r1usrhixxhhwfxiip0c2hmjydq1';
+const SUPABASE_URL='https://jlzzxruwxyzswzgppkgq.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
+
+let supabaseClient;
+let isSupabaseConfigured=false;
+let audioContext=null;
+
+/* --- UTILITIES & SOUNDS --- */
+function initAudio(){if(!audioContext){audioContext=new(window.AudioContext||window.webkitAudioContext)()}if(audioContext.state==='suspended'){audioContext.resume()}return audioContext}
+function playSound(frequency,duration,type='sine',volume=0.3){const ctx=initAudio();const osc=ctx.createOscillator();const gainNode=ctx.createGain();osc.connect(gainNode);gainNode.connect(ctx.destination);osc.frequency.value=frequency;osc.type=type;gainNode.gain.setValueAtTime(volume,ctx.currentTime);gainNode.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+duration);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+duration)}
+function playButtonSound(){playSound(600,0.08,'sine',0.1)}
+function playSelectSound(){playSound(600,0.05,'sine',0.1)}
+function playClearSound(){const ctx=initAudio();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.setValueAtTime(400,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(100,ctx.currentTime+0.2);gain.gain.setValueAtTime(0.2,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.2);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.2)}
+
+function toggleTheme(){playButtonSound();const html=document.documentElement;const icon=document.getElementById('themeIcon');const currentTheme=html.getAttribute('data-theme');const newTheme=currentTheme==='light'?'dark':'light';html.setAttribute('data-theme',newTheme);icon.className=newTheme==='light'?'fas fa-sun':'fas fa-moon';try{localStorage.setItem('theme',newTheme)}catch(e){console.warn('Unable to save theme preference')}}
+
+function smoothScrollTo(elementId){const section=document.getElementById(elementId);if(section){const yOffset=-40;const y=section.getBoundingClientRect().top+window.pageYOffset+yOffset;window.scrollTo({top:y,behavior:'smooth'})}}
+
+/* --- DATA HANDLING --- */
+async function initializeSupabase(){
+    try{
+        const{createClient}=supabase;
+        supabaseClient=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+        isSupabaseConfigured=true;
+        fetchWordSpotlight();
+    }catch(error){
+        console.error('Supabase init error:',error);
+        isSupabaseConfigured=false;
+    }
+}
+
+/* --- FORMATTING & DISPLAY HELPERS --- */
+function convertH2ToToggles(htmlString){const parser=new DOMParser();const doc=parser.parseFromString(htmlString,'text/html');const h2Elements=doc.querySelectorAll('h2');h2Elements.forEach(h2=>{let headingText=h2.textContent;if(headingText===headingText.toUpperCase()&&headingText!==headingText.toLowerCase()){headingText=headingText.charAt(0).toUpperCase()+headingText.slice(1).toLowerCase();h2.textContent=headingText}const toggleSection=document.createElement('div');toggleSection.className='toggle-section';const toggleHeader=document.createElement('button');toggleHeader.className='toggle-header';toggleHeader.innerHTML=`<i class="fas fa-chevron-right toggle-icon"></i><span class="toggle-title">${h2.innerHTML}</span>`;const toggleContent=document.createElement('div');toggleContent.className='toggle-content';let nextSibling=h2.nextElementSibling;while(nextSibling&&nextSibling.tagName!=='H2'){const temp=nextSibling;nextSibling=nextSibling.nextElementSibling;toggleContent.appendChild(temp)}if(toggleContent.children.length===0)toggleContent.innerHTML='<p>No content available.</p>';toggleSection.appendChild(toggleHeader);toggleSection.appendChild(toggleContent);h2.parentNode.replaceChild(toggleSection,h2)});return doc.body.innerHTML}
+document.addEventListener('click',function(e){const header=e.target.closest('.toggle-header');if(header){e.preventDefault();e.stopPropagation();playSelectSound();const content=header.nextElementSibling;const isActive=header.classList.contains('active');if(!isActive){header.classList.add('active');content.classList.add('expanded');setTimeout(()=>header.scrollIntoView({behavior:'smooth',block:'start'}),350)}else{header.classList.remove('active');content.classList.remove('expanded')}}});
+function createExpandableDefinition(definitionHTML){return`<div class="word-entry"><div class="word-definition">${convertH2ToToggles(definitionHTML)}</div><div style="display:flex; justify-content:center; margin-top:20px;"><button class="action-btn" onclick="showNewRandomWord()">Show another word</button></div></div>`}
+
+/* --- WORD SPOTLIGHT LOGIC --- */
+async function fetchWordSpotlight(scrollToTop=false){
+    const ws=document.getElementById('wordSpotlightDisplay');
+    if(scrollToTop){smoothScrollTo('wordSpotlightSection')}
+    ws.innerHTML='<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>';
+    if(isSupabaseConfigured){
+        try{
+            const{data,error}=await supabaseClient.rpc('get_random_word');
+            if(error)throw error;
+            if(data&&data.length>0){
+                ws.innerHTML=createExpandableDefinition(data[0].definition);
+                return
+            }
+        }catch(e){console.warn('Spotlight RPC fetch failed',e)}
+    }
+    ws.innerHTML='<div class="no-words"><p>Loading vocabulary from the stars...</p></div>'
+}
+function showNewRandomWord(){playButtonSound();fetchWordSpotlight(true)}
+
+/* --- SEARCH LOGIC --- */
+function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};searchInput.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{const y=document.querySelector('.search-container').getBoundingClientRect().top+window.pageYOffset-24;window.scrollTo({top:y,behavior:'smooth'})},300)}});searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none'});searchInput.addEventListener('input',function(){toggleClearBtn();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query.length===0){autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';return}typingTimer=setTimeout(()=>{fetchAutocompleteSuggestions(query)},300)});searchInput.addEventListener('keydown',function(e){if(e.key==='Escape')autocompleteDropdown.classList.remove('show');if(e.key==='Enter'){playButtonSound();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query){if(window.innerWidth<768){this.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}}});document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))autocompleteDropdown.classList.remove('show')})}
+
+async function fetchAutocompleteSuggestions(query){const autocompleteDropdown=document.getElementById('autocompleteDropdown');autocompleteDropdown.innerHTML=`<div style="padding: 12px;"><div class="skeleton-loading"><div class="skeleton-line medium" style="margin-bottom: 8px;"></div><div class="skeleton-line short"></div></div></div>`;autocompleteDropdown.classList.add('show');try{const{data,error}=await supabaseClient.rpc('fuzzy_search',{search_term:query});if(error)throw error;let matches=data||[];const hasExactMatch=matches.some(item=>item.word.toLowerCase()===query.toLowerCase());if(window.innerWidth<768){const limit=hasExactMatch?7:5;if(matches.length>limit){matches=matches.slice(0,limit)}}let html='';matches.forEach(item=>{const word=item.word;html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${word}</div><div class="autocomplete-hint"><i class="fas fa-chevron-right"></i></div></div>`});if(!hasExactMatch){html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g,"\\'")}')"><div class="autocomplete-word"><i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>Search for "<strong>${query}</strong>"</div><div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div></div>`}autocompleteDropdown.innerHTML=html}catch(err){autocompleteDropdown.classList.remove('show')}}
+
+function selectAutocompleteItem(word){playSelectSound();document.getElementById('searchInput').value=word;document.getElementById('autocompleteDropdown').classList.remove('show');displaySearchResults(word.toLowerCase())}
+
+/* --- DEFINITION RENDERING & API FETCHING --- */
+function getAudioUrl(filename){let subdir=filename.charAt(0);if(filename.startsWith('bix'))subdir='bix';else if(filename.startsWith('gg'))subdir='gg';else if(!isNaN(subdir)||!/^[a-zA-Z]/.test(subdir))subdir='number';return`https://media.merriam-webster.com/audio/prons/en/us/mp3/${subdir}/${filename}.mp3`}
+function playAudio(url){new Audio(url).play().catch(e=>console.error(e))}
+function cleanMWTags(text){if(!text)return'';let t=text.replace(/{dxt\|([^|}]*)\|([^|}]*)\|([^|}]*)}/g,(m,t,s,txt)=>txt||t.split(':')[0]);t=t.replace(/{dxt\|([^|}]*)\|?([^|}]*)}/g,(m,t)=>t.split(':')[0]);t=t.replace(/{dx}/g,' — ').replace(/{\/dx}/g,'');t=t.replace(/{bc}/g,': ').replace(/{it}/g,'<i>').replace(/{\/it}/g,'</i>');t=t.replace(/{b}/g,'<b>').replace(/{\/b}/g,'</b>').replace(/{wi}/g,'<i>').replace(/{\/wi}/g,'</i>');t=t.replace(/{ldquo}/g,'“').replace(/{rdquo}/g,'”').replace(/{sx\|([^|]+)\|([^|]*)\|}/g,'$1');t=t.replace(/{phrase}/g,'<b>').replace(/{\/phrase}/g,'</b>');return t}
+function renderSenses(sseq){let html='';sseq.forEach(senseBlock=>{senseBlock.forEach(item=>{if(item[0]==='sense'){const senseData=item[1];if(senseData.dt){senseData.dt.forEach(dt=>{if(dt[0]==='text')html+=`<p>${cleanMWTags(dt[1])}</p>`;else if(dt[0]==='vis'){html+='<ul class="examples-list">';dt[1].forEach(visItem=>{if(visItem.t)html+=`<li class="example-item">"${cleanMWTags(visItem.t)}"</li>`});html+='</ul>'}})}}})});return html}
+
+async function displaySearchResults(query){const searchResultsSection=document.getElementById('searchResultsSection');const wordsList=document.getElementById('wordsList');const newUrl=`${window.location.pathname}?q=${encodeURIComponent(query)}`;window.history.pushState({path:newUrl},'',newUrl);document.title=`${query.charAt(0).toUpperCase()+query.slice(1)} - Pearls of Knowledge`;wordsList.innerHTML=`<div class="skeleton-loading"><div class="skeleton-line long"></div></div>`;searchResultsSection.style.display='block';let html='';try{if(isSupabaseConfigured){const{data,error}=await supabaseClient.from('dictionary_2').select('*').ilike('word',`${query}%`);if(data&&data.length>0){const exactOrFormatMatches=data.filter(item=>{const w=item.word.toLowerCase();const q=query.toLowerCase();return w===q||w.startsWith(`${q} (`)});if(exactOrFormatMatches.length>0){exactOrFormatMatches.forEach(item=>{html+=`<div class="interactive-card"><div class="word-definition">${convertH2ToToggles(item.definition)}</div></div>`})}}}}catch(err){console.warn("Supabase definition fetch failed",err)}if(html.length>0){wordsList.innerHTML=html;setTimeout(()=>{smoothScrollTo('searchResultsSection')},100);return}let finalHtml='';try{const[mwData,wordnikData,wordnikRelated]=await Promise.all([fetch(`https://www.dictionaryapi.com/api/v3/references/learners/json/${query}?key=${MW_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/definitions?limit=10&sourceDictionaries=ahd-5&useCanonical=false&includeTags=true&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null),fetch(`https://api.wordnik.com/v4/word.json/${query}/relatedWords?useCanonical=false&limitPerRelationshipType=10&sourceDictionaries=ahd-5&api_key=${WORDNIK_API_KEY}`).then(res=>res.ok?res.json():null).catch(e=>null)]);if(mwData&&Array.isArray(mwData)&&mwData.length>0&&typeof mwData[0]==='object'){let mwHtmlContent='';mwData.slice(0,1).forEach(entry=>{if(!entry.hwi)return;const word=entry.hwi.hw.replace(/\*/g,'·');let pronHtml='';if(entry.hwi.prs&&entry.hwi.prs.length>0){const prs=entry.hwi.prs[0];if(prs.mw)pronHtml+=`<span class="pronunciation-text">/${prs.mw}/</span>`;if(prs.sound&&prs.sound.audio){const audioUrl=getAudioUrl(prs.sound.audio);pronHtml+=`<button class="audio-btn" onclick="playAudio('${audioUrl}')"><i class="fas fa-volume-up"></i></button>`}}mwHtmlContent+=`<h1>${word} ${pronHtml}</h1>`;if(entry.fl)mwHtmlContent+=`<h3>${entry.fl}</h3>`;if(entry.def&&entry.def.length>0)mwHtmlContent+=renderSenses(entry.def[0].sseq);else if(entry.shortdef)entry.shortdef.forEach(d=>mwHtmlContent+=`<p>${d}</p>`)})
+if(mwHtmlContent){finalHtml+=`<div class="interactive-card"><div class="word-definition">${mwHtmlContent}</div></div>`}}if(wordnikData&&Array.isArray(wordnikData)&&wordnikData.length>0){let wordnikInnerHtml='';if(finalHtml){finalHtml+=`<div class="mobile-result-separator"></div>`}wordnikData.forEach(def=>{if(!def.text)return;if(def.partOfSpeech)wordnikInnerHtml+=`<h3>${def.partOfSpeech}</h3>`;if(def.labels&&def.labels.length>0){const labelText=def.labels.map(l=>l.text).join(', ');wordnikInnerHtml+=`<p style="font-style: italic; color: var(--primary); margin-bottom: 4px;">[${labelText}]</p>`}if(def.text)wordnikInnerHtml+=`<p>${def.text}</p>`;if(def.exampleUses&&def.exampleUses.length>0){wordnikInnerHtml+=`<ul style="margin-top:0; padding-left: 20px; list-style-type: none;">`;def.exampleUses.forEach(ex=>{wordnikInnerHtml+=`<li style="color: var(--text-muted); font-style: italic; margin-bottom: 4px;">"${ex.text}"</li>`});wordnikInnerHtml+=`</ul>`}});if(wordnikRelated&&Array.isArray(wordnikRelated)&&wordnikRelated.length>0){const allowedTypes=new Set(['form']);const filteredRelated=wordnikRelated.filter(grp=>allowedTypes.has(grp.relationshipType));if(filteredRelated.length>0){wordnikInnerHtml+=`<div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--glass-border);">`;filteredRelated.forEach(grp=>{const type=grp.relationshipType.charAt(0).toUpperCase()+grp.relationshipType.slice(1);const words=grp.words.join(', ');wordnikInnerHtml+=`<p><strong>${type}:</strong> <span style="color: var(--text-muted);">${words}</span></p>`});wordnikInnerHtml+=`</div>`}}if(wordnikInnerHtml){let wordnikHtmlContent=`<h1>${query}</h1>`+wordnikInnerHtml;finalHtml+=`<div class="interactive-card" style="margin-top: 24px;"><div class="word-definition">${wordnikHtmlContent}</div></div>`}}if(finalHtml){wordsList.innerHTML=finalHtml}else{wordsList.innerHTML=`<p style="text-align:center;">No definitions found for <strong>${query}</strong>.</p>`}}catch(e){console.error(e);wordsList.innerHTML='<p style="text-align:center;">Error connecting to knowledge banks.</p>'}searchResultsSection.style.display='block';setTimeout(()=>{smoothScrollTo('searchResultsSection')},100)}
+
+/* --- INITIALIZATION --- */
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.search.length > 0) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        const icon = document.getElementById('themeIcon');
+        if (icon) icon.className = 'fas fa-sun';
+    }
+    requestAnimationFrame(() => {
+        initializeSupabase();
+        setupSearch();
+    });
+});
+</script>
+</body>
+</html>
