@@ -6,46 +6,109 @@
     <title>Admin - Pearls of Knowledge</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- NEW: Import Marked.js library for perfect text formatting -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root {
-            /* Theme: Deep Navy & Saffron */
+            /* Theme: Deep Navy & Saffron (Matching index.html) */
             --bg-deep: #0f172a;
             --bg-surface: rgba(30, 41, 59, 0.75);
+            
+            /* Glass Effects */
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-highlight: rgba(255, 255, 255, 0.05);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
             --backdrop-blur: blur(16px);
-            --primary: #fbbf24;
+
+            /* Accents */
+            --primary: #fbbf24; /* Amber-400 */
             --primary-dim: #d97706;
             --primary-glow: rgba(251, 191, 36, 0.25);
-            --secondary: #38bdf8;
+            
+            --secondary: #38bdf8; /* Sky-400 */
+            --accent-gradient: linear-gradient(135deg, #fbbf24, #f59e0b);
+            
             --success: #34d399;
             --error: #f87171;
             --warning: #fbbf24;
+
+            /* Text Colors */
             --text-main: #f8fafc;
             --text-bright-dim: #cbd5e1;
             --text-muted: #94a3b8;
             --text-header: #64748b;
+
+            /* Spacing */
             --radius-lg: 24px;
             --radius-md: 16px;
             --radius-sm: 12px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-deep); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.7; min-height: 100vh; position: relative; overflow-x: hidden; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
 
         /* --- Ambient Background --- */
-        .ambient-light { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; pointer-events: none; }
-        .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4; animation: float 25s infinite ease-in-out; }
+        .ambient-light {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            animation: float 25s infinite ease-in-out;
+        }
+
         .orb-1 { top: -20%; left: -10%; width: 70vw; height: 70vw; background: radial-gradient(circle, #1e293b 0%, transparent 70%); animation-delay: 0s; }
         .orb-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #334155 0%, transparent 70%); animation-delay: -5s; }
         .orb-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%); animation-delay: -10s; opacity: 0.3; }
-        @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(40px, -60px) scale(1.1); } 66% { transform: translate(-30px, 30px) scale(0.9); } }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -60px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
 
         /* --- Background Icons --- */
-        .bg-decoration { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
-        .bg-icon { position: absolute; opacity: 0.08; font-size: 2rem; }
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-icon {
+            position: absolute;
+            opacity: 0.08;
+            font-size: 2rem;
+        }
+
         .icon-1 { top: 12%; left: 8%; font-size: 5rem; transform: rotate(-15deg); color: #fbbf24; }
         .icon-2 { top: 18%; right: 12%; font-size: 3.5rem; transform: rotate(10deg); color: #38bdf8; }
         .icon-3 { bottom: 25%; left: 10%; font-size: 6rem; transform: rotate(5deg); color: #34d399; }
@@ -55,103 +118,561 @@
         .icon-7 { top: 8%; left: 45%; font-size: 2.5rem; transform: rotate(45deg); color: #94a3b8; opacity: 0.06; }
         .icon-8 { bottom: 40%; right: 40%; font-size: 8rem; transform: rotate(0deg); color: #1e293b; opacity: 0.3; z-index: -2; }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        /* --- Layout --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
 
         /* --- Login Screen --- */
-        .login-wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-container { background: var(--bg-surface); backdrop-filter: var(--backdrop-blur); -webkit-backdrop-filter: var(--backdrop-blur); padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); width: 100%; max-width: 400px; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .login-header { text-align: center; margin-bottom: 30px; }
-        .login-header h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 8px; background: linear-gradient(to bottom, #f8fafc 30%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; }
-        .login-header p { color: var(--text-muted); font-size: 1rem; }
-        .lock-icon { font-size: 48px; margin-bottom: 20px; color: var(--primary); text-shadow: 0 0 20px var(--primary-glow); }
-        .login-form-group { margin-bottom: 20px; }
-        .login-form-group label { display: block; color: var(--text-bright-dim); font-weight: 600; margin-bottom: 8px; font-size: 14px; }
-        .login-form-group input { width: 100%; padding: 14px; border: 1px solid var(--glass-border); border-radius: var(--radius-md); font-size: 16px; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.03); color: var(--text-main); }
-        .login-form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); background: rgba(255, 255, 255, 0.06); }
-        .login-button { width: 100%; padding: 14px; background: var(--text-main); color: var(--bg-deep); border: none; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); text-transform: uppercase; letter-spacing: 0.05em; }
-        .login-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2); background: white; }
-        .error-message { background: rgba(239, 68, 68, 0.1); color: var(--error); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 14px; text-align: center; display: none; animation: shake 0.4s ease; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: var(--bg-surface);
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(to bottom, #f8fafc 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .lock-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .login-form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-form-group label {
+            display: block;
+            color: var(--text-bright-dim);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .login-form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+        }
+
+        .login-form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .login-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+            background: white;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            animation: shake 0.4s ease;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
         .error-message.show { display: block; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        /* Hide login when authenticated */
         body.authenticated .login-wrapper { display: none; }
+
+        /* Admin Content Styles */
         .admin-content { display: none; padding: 40px 0 80px; }
         .admin-content.unlocked { display: block; }
 
-        /* --- TABLE TOGGLE --- */
-        .db-selector-wrapper { display: flex; justify-content: center; margin-bottom: 30px; }
-        .db-selector { display: flex; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border); padding: 4px; border-radius: 50px; backdrop-filter: blur(8px); }
-        .db-option { padding: 10px 24px; border-radius: 40px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-muted); transition: all 0.3s ease; background: transparent; border: none; display: flex; align-items: center; gap: 8px; }
-        .db-option.active { background: var(--primary); color: var(--bg-deep); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .db-option:hover:not(.active) { color: var(--text-main); background: rgba(255,255,255,0.05); }
-
         /* Modern Section Styling */
-        .modern-section { margin-bottom: 40px; position: relative; }
-        .modern-section-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 24px; color: var(--text-main); display: flex; align-items: center; gap: 16px; }
-        .modern-section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--glass-border), transparent); }
-        .modern-section-title .word-count { font-family: 'JetBrains Mono', monospace; font-size: 1rem; opacity: 0.7; color: var(--primary); }
-        .interactive-card { background: var(--bg-surface); backdrop-filter: var(--backdrop-blur); -webkit-backdrop-filter: var(--backdrop-blur); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 30px; box-shadow: var(--glass-shadow); transition: transform 0.3s ease; }
-        
+        .modern-section {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .modern-section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .modern-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--glass-border), transparent);
+        }
+
+        .modern-section-title .word-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            opacity: 0.7;
+            color: var(--primary);
+        }
+
+        .interactive-card {
+            background: var(--bg-surface);
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        /* Form Styling */
         .form-group { margin-bottom: 24px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-bright-dim); font-size: 14px; }
-        .form-group input { width: 100%; padding: 14px; border: 1px solid var(--glass-border); border-radius: var(--radius-md); font-size: 16px; transition: border-color 0.3s; background: rgba(255, 255, 255, 0.03); color: var(--text-main); }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-bright-dim);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+        }
+
         .form-group input::placeholder { color: var(--text-muted); }
-        .form-group input:focus { outline: none; border-color: var(--primary); background: rgba(255, 255, 255, 0.06); box-shadow: 0 0 15px var(--primary-glow); }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
 
-        .editor-toolbar { display: flex; gap: 8px; margin-bottom: 0; flex-wrap: wrap; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-bottom: none; border-radius: var(--radius-md) var(--radius-md) 0 0; align-items: center; }
-        .editor-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; color: var(--text-main); }
-        .editor-btn:hover { background: var(--primary); color: var(--bg-deep); border-color: var(--primary); }
-        .font-size-dropdown { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); padding: 8px 12px; border-radius: 6px; font-size: 14px; font-weight: 600; color: var(--text-main); cursor: pointer; transition: all 0.2s; }
-        .font-size-dropdown option { background: var(--bg-deep); color: var(--text-main); }
+        /* Editor Toolbar */
+        .editor-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 0;
+            flex-wrap: wrap;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            align-items: center;
+        }
 
-        .editor-content { width: 100%; min-height: 400px; max-height: 500px; padding: 20px; border: 1px solid var(--glass-border); border-radius: 0 0 var(--radius-md) var(--radius-md); font-size: 16px; overflow-y: auto; background: rgba(255, 255, 255, 0.02); color: var(--text-muted); line-height: 1.7; white-space: normal; word-wrap: break-word; }
+        .editor-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .editor-btn:hover {
+            background: var(--primary);
+            color: var(--bg-deep);
+            border-color: var(--primary);
+        }
+
+        .font-size-dropdown {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .font-size-dropdown option {
+            background: var(--bg-deep);
+            color: var(--text-main);
+        }
+
+        /* Editor Content */
+        .editor-content {
+            width: 100%;
+            min-height: 400px;
+            max-height: 500px;
+            padding: 20px;
+            border: 1px solid var(--glass-border);
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            font-size: 16px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-muted);
+            line-height: 1.7;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* Force consistent editor typography */
         .editor-content h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--text-main); margin: 0.2em 0; }
         .editor-content h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--text-main); margin: 1.5em 0 0.8em; }
         .editor-content h3 { font-weight: 700; color: var(--text-bright-dim); font-size: 1.3rem; margin: 1.2em 0 0.6em; }
         .editor-content p { margin-bottom: 1.5em; }
         .editor-content strong, .editor-content b { color: var(--text-bright-dim); font-weight: 700; }
-        .editor-content ul, .editor-content ol { padding-left: 20px; margin: 16px 0; }
-        .editor-content li { margin-bottom: 8px; }
-        .editor-content ul ul, .editor-content ol ol, .editor-content ul ol, .editor-content ol ul { margin: 8px 0 8px 20px; }
-        .editor-content[contenteditable="true"]:empty:before { content: attr(placeholder); color: var(--text-muted); font-style: italic; }
+        
+        /* List Styling Updates */
+        .editor-content ul, .editor-content ol { 
+            padding-left: 20px; 
+            margin: 16px 0; 
+        }
+        
+        .editor-content li { 
+            margin-bottom: 8px; 
+        }
 
-        .toggle-wrapper { border: none; background: transparent; margin: 16px 0; border-radius: 0; width: 100%; }
-        .toggle-header { width: 100%; display: flex; align-items: center; justify-content: flex-start; padding: 16px 0; background: transparent; border: none; color: var(--text-header); font-size: 1.2rem; font-weight: 600; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; text-align: left; transition: color 0.3s ease; gap: 16px; }
+        /* Nested List Styling */
+        .editor-content ul ul, 
+        .editor-content ol ol, 
+        .editor-content ul ol, 
+        .editor-content ol ul {
+            margin: 8px 0 8px 20px;
+        }
+
+        .editor-content[contenteditable="true"]:empty:before {
+            content: attr(placeholder);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Modern Toggle Styles (Matching Index) */
+        .toggle-wrapper {
+            border: none;
+            background: transparent;
+            margin: 16px 0;
+            border-radius: 0;
+            width: 100%;
+        }
+
+        .toggle-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 16px 0;
+            background: transparent;
+            border: none;
+            color: var(--text-header);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-align: left;
+            transition: color 0.3s ease;
+            gap: 16px;
+        }
+
         .toggle-header:hover, .toggle-header.active { color: var(--primary); }
-        .toggle-icon { font-size: 0.9rem; color: inherit; transition: transform 0.3s ease; margin-right: 4px; flex-shrink: 0; }
+
+        .toggle-icon {
+            font-size: 0.9rem;
+            color: inherit;
+            transition: transform 0.3s ease;
+            margin-right: 4px;
+            flex-shrink: 0;
+        }
+
         .toggle-header.active .toggle-icon { transform: rotate(90deg); }
-        .toggle-content { overflow: hidden; transition: max-height 0.5s cubic-bezier(0, 1, 0, 1); padding: 0; opacity: 0.7; }
-        .toggle-content.expanded { max-height: 2000px; opacity: 1; padding-bottom: 24px; }
-        .toggle-content.expanded::after { content: ''; display: block; width: 100%; height: 1px; background: var(--primary); margin-top: 24px; margin-bottom: 8px; opacity: 0.2; }
 
-        .btn { background: var(--text-main); color: var(--bg-deep); border: none; padding: 14px 28px; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; width: 100%; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 16px; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15); background: white; }
-        .btn-secondary { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); box-shadow: none; }
-        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); background: rgba(251, 191, 36, 0.1); }
+        .toggle-content {
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+            padding: 0;
+            opacity: 0.7;
+        }
 
-        .edit-result-item, .quick-add-result-item { background: rgba(255, 255, 255, 0.03); padding: 16px; margin-bottom: 10px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); cursor: pointer; transition: all 0.2s; }
-        .edit-result-item:hover, .quick-add-result-item:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--primary); transform: translateX(4px); }
-        .edit-result-word, .quick-add-result-word { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 16px; }
-        .edit-result-definition { color: var(--text-muted); font-size: 14px; }
-        #editSearchResults, #quickAddSearchResults, #quickAddList, #editDefinitionSearchResults { max-height: 300px; overflow-y: auto; margin-top: 15px; }
+        .toggle-content.expanded {
+            max-height: 2000px;
+            opacity: 1;
+            padding-bottom: 24px;
+        }
+        
+        .toggle-content.expanded::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: var(--primary);
+            margin-top: 24px;
+            margin-bottom: 8px;
+            opacity: 0.2;
+        }
 
-        .quick-add-item { background: rgba(255, 255, 255, 0.03); padding: 12px 15px; margin-bottom: 8px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .quick-add-word { color: var(--text-main); font-weight: 600; }
-        .quick-add-remove { background: rgba(239, 68, 68, 0.2); color: var(--error); border: 1px solid var(--error); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
-        .quick-add-remove:hover { background: var(--error); color: white; }
-        .quick-add-controls { display: flex; gap: 12px; margin-top: 16px; }
-        .quick-add-btn { flex: 1; background: var(--text-main); color: var(--bg-deep); border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .quick-add-btn:hover { background: white; transform: translateY(-2px); }
-        .quick-add-refresh { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); }
-        .quick-add-refresh:hover { background: rgba(255,255,255,0.05); border-color: var(--text-main); }
-        #quickAddList { background: rgba(0,0,0,0.2); border-radius: var(--radius-md); padding: 10px; }
+        /* Main Add Button */
+        .btn {
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 16px;
+        }
 
-        .status-container { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .info-box, .success-box, .sync-box { padding: 12px 16px; border-radius: var(--radius-md); font-size: 14px; display: flex; align-items: center; gap: 10px; }
-        .success-box { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .info-box { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .sync-box { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); display: none; }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+            background: white;
+        }
 
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        /* Quick Add & Edit Lists */
+        .edit-result-item, .quick-add-result-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 16px;
+            margin-bottom: 10px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .edit-result-item:hover, .quick-add-result-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .edit-result-word, .quick-add-result-word {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .edit-result-definition {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        #editSearchResults, #quickAddSearchResults, #quickAddList, #editDefinitionSearchResults {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        #quickAddList {
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-md);
+            padding: 10px;
+        }
+
+        .quick-add-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quick-add-word {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .quick-add-remove {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+            border: 1px solid var(--error);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .quick-add-remove:hover {
+            background: var(--error);
+            color: white;
+        }
+        
+        /* Quick Add Controls */
+        .quick-add-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .quick-add-btn {
+            flex: 1;
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        
+        .quick-add-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+        
+        .quick-add-refresh {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .quick-add-refresh:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--text-main);
+        }
+
+        /* Status Boxes */
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .info-box, .success-box, .sync-box {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .success-box {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .info-box {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .sync-box {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            display: none; /* Hidden by default */
+        }
+
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             .interactive-card { padding: 24px; }
@@ -159,28 +680,59 @@
             .orb { opacity: 0.25; }
             .main-content { padding-top: 20px; }
             .login-container { padding: 30px 20px; }
+            
             .editor-content h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-    <div class="ambient-light"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+    <!-- Ambient Background -->
+    <div class="ambient-light">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Background Icons -->
     <div class="bg-decoration">
-        <i class="fas fa-book-open bg-icon icon-1"></i><i class="fas fa-lightbulb bg-icon icon-2"></i><i class="fas fa-brain bg-icon icon-3"></i><i class="fas fa-pen-nib bg-icon icon-4"></i>
-        <i class="fas fa-atom bg-icon icon-5"></i><i class="fas fa-globe-americas bg-icon icon-6"></i><i class="fas fa-dna bg-icon icon-7"></i><i class="fas fa-quote-left bg-icon icon-8"></i>
+        <i class="fas fa-book-open bg-icon icon-1"></i>
+        <i class="fas fa-lightbulb bg-icon icon-2"></i>
+        <i class="fas fa-brain bg-icon icon-3"></i>
+        <i class="fas fa-pen-nib bg-icon icon-4"></i>
+        <i class="fas fa-atom bg-icon icon-5"></i>
+        <i class="fas fa-globe-americas bg-icon icon-6"></i>
+        <i class="fas fa-dna bg-icon icon-7"></i>
+        <i class="fas fa-quote-left bg-icon icon-8"></i>
     </div>
 
     <!-- Login Screen -->
     <div class="login-wrapper">
         <div class="login-container">
-            <div class="login-header"><div class="lock-icon">🔒</div><h1>Admin Access</h1><p>Enter password to continue</p></div>
-            <div class="error-message" id="errorMessage">Incorrect password. Please try again.</div>
+            <div class="login-header">
+                <div class="lock-icon">🔒</div>
+                <h1>Admin Access</h1>
+                <p>Enter password to continue</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                Incorrect password. Please try again.
+            </div>
+            
             <form id="loginForm" onsubmit="return false;">
                 <div class="login-form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
                 </div>
-                <button type="submit" class="login-button" id="loginButton" onclick="checkPassword()"><span id="loginButtonText">Login</span></button>
+                
+                <button type="submit" class="login-button" id="loginButton" onclick="checkPassword()">
+                    <span id="loginButtonText">Login</span>
+                </button>
             </form>
         </div>
     </div>
@@ -189,19 +741,6 @@
     <div class="admin-content" id="adminContent">
         <div class="container">
             <div class="main-content" id="mainContent">
-                
-                <!-- Database Selector -->
-                <div class="db-selector-wrapper">
-                    <div class="db-selector">
-                        <button class="db-option active" onclick="switchDictionary('dictionary', this)">
-                            <i class="fas fa-book"></i> Dictionary 1
-                        </button>
-                        <button class="db-option" onclick="switchDictionary('dictionary_2', this)">
-                            <i class="fas fa-book-medical"></i> Dictionary 2
-                        </button>
-                    </div>
-                </div>
-
                 <div class="modern-section">
                     <h2 class="modern-section-title">Add New Word <span class="word-count" id="dictionaryCount">(0)</span></h2>
                     <div class="interactive-card">
@@ -215,7 +754,11 @@
                                 <label for="definitionInput">Definition</label>
                                 <div class="editor-toolbar">
                                     <select class="font-size-dropdown" id="formatDropdown" onchange="formatHeading(this.value)">
-                                        <option value="">Normal</option><option value="h1">Heading 1</option><option value="h2">Heading 2</option><option value="h3">Heading 3</option><option value="h4">Heading 4</option>
+                                        <option value="">Normal</option>
+                                        <option value="h1">Heading 1</option>
+                                        <option value="h2">Heading 2</option>
+                                        <option value="h3">Heading 3</option>
+                                        <option value="h4">Heading 4</option>
                                     </select>
                                     <button type="button" class="editor-btn" onclick="formatText('bold')"><b>B</b></button>
                                     <button type="button" class="editor-btn" onclick="formatText('italic')"><i>I</i></button>
@@ -243,7 +786,7 @@
                     </div>
                 </div>
 
-                <!-- Edit Definition Section -->
+                <!-- NEW: Edit Definition Section -->
                 <div class="modern-section">
                     <h2 class="modern-section-title">Edit Definition</h2>
                     <div class="interactive-card">
@@ -277,17 +820,17 @@
                     <h2 class="modern-section-title">Utilities</h2>
                     <div class="interactive-card">
                         <div class="utility-buttons">
-                            <button class="btn" onclick="exportData()">Export Current Dictionary</button>
-                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="margin-top: 15px;">Import to Current Dictionary</button>
+                            <button class="btn" onclick="exportData()">Export Dictionary</button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="margin-top: 15px;">Import Dictionary</button>
                             <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
                         </div>
                         
                         <div class="status-container">
-                            <div id="connectionStatus" class="success-box"><strong>✓ Supabase Connected!</strong></div>
+                            <div id="connectionStatus" class="success-box"><strong>✓ Supabase Connected!</strong> Ready to sync.</div>
                             <div id="syncIndicator" class="sync-box">
                                 <i class="fas fa-sync fa-spin"></i> <span>Syncing to cloud...</span>
                             </div>
-                            <div class="info-box"><strong>💡 Active Table:</strong> <span id="activeTableLabel">dictionary</span></div>
+                            <div class="info-box"><strong>💡 Tip:</strong> Updates are saved locally first, then synced to cloud.</div>
                         </div>
                     </div>
                 </div>
@@ -297,80 +840,75 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        if (typeof marked !== 'undefined') { marked.setOptions({ breaks: true, gfm: true }); }
+        // Initialize Marked.js options for handling breaks and standard GitHub flavor
+        if (typeof marked !== 'undefined') {
+            marked.setOptions({
+                breaks: true, // Converts line breaks to <br>
+                gfm: true     // Enables GitHub Flavored Markdown
+            });
+        }
 
+        // Supabase Configuration
         const SUPABASE_URL = 'https://jlzzxruwxyzswzgppkgq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impsenp4cnV3eHl6c3d6Z3Bwa2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE5MjEyNDksImV4cCI6MjA3NzQ5NzI0OX0.fgL70q1wRSWH4OOn3x_Gh76EZA0JIxGJsWfMTPpSBZM';
 
         let supabaseClient;
         const SESSION_DURATION = 24 * 60 * 60 * 1000;
         const CORRECT_PASSWORD = "murali";
-        
-        // GLOBAL STATE
-        let currentTableName = 'dictionary'; // Default table
-        let dictionary = []; 
-        let quickAddList = [];
-        let editingWordId = null; 
-        let searchIndex = null;
-        let isSupabaseConfigured = false; 
-        let supabaseInitialized = false;
+        let dictionary = [], quickAddList = [], editingWordId = null, searchIndex = null;
+        let isSupabaseConfigured = false, supabaseInitialized = false;
 
-        // Safe Storage Logic
+        // Safe Storage
         const SafeStorage = {
             isAvailable: false,
             memoryStorage: {},
-            init() { try { const test='__test__'; localStorage.setItem(test,test); localStorage.removeItem(test); this.isAvailable=true; } catch(e){ console.warn('localStorage unavailable'); } },
-            setItem(key, value) { try { if(this.isAvailable) localStorage.setItem(key,value); this.memoryStorage[key]=value; } catch(e){ this.memoryStorage[key]=value; } },
-            getItem(key) { try { if(this.isAvailable) { const val=localStorage.getItem(key); if(val!==null) return val; } return this.memoryStorage[key]||null; } catch(e){ return this.memoryStorage[key]||null; } }
+            init() {
+                try {
+                    const test = '__test__';
+                    localStorage.setItem(test, test);
+                    localStorage.removeItem(test);
+                    this.isAvailable = true;
+                } catch(e) {
+                    console.warn('localStorage unavailable');
+                }
+            },
+            setItem(key, value) {
+                try {
+                    if (this.isAvailable) localStorage.setItem(key, value);
+                    this.memoryStorage[key] = value;
+                } catch(e) {
+                    this.memoryStorage[key] = value;
+                }
+            },
+            getItem(key) {
+                try {
+                    if (this.isAvailable) {
+                        const value = localStorage.getItem(key);
+                        if (value !== null) return value;
+                    }
+                    return this.memoryStorage[key] || null;
+                } catch(e) {
+                    return this.memoryStorage[key] || null;
+                }
+            }
         };
         SafeStorage.init();
 
-        // --- UPDATED FUNCTION: SWITCH DICTIONARY ---
-        async function switchDictionary(tableName, btnElement) {
-            // 1. Update Global State
-            currentTableName = tableName;
-            
-            // 2. Update UI (Toggle Buttons)
-            document.querySelectorAll('.db-option').forEach(btn => btn.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-            
-            document.getElementById('activeTableLabel').textContent = currentTableName;
-            
-            // 3. Clear existing UI state
-            dictionary = [];
-            document.getElementById('editSearchResults').innerHTML = '';
-            document.getElementById('editDefinitionSearchResults').innerHTML = '';
-            
-            // 4. Update UI immediately from local storage (Fast)
-            loadFromLocalStorage();
-
-            // 5. Trigger Cloud Sync in background (Slow)
-            if(isSupabaseConfigured) {
-                syncWithSupabase();
-            }
-        }
-
-        // --- LOAD LOCAL STORAGE (INSTANT) ---
-        function loadFromLocalStorage() {
-            // Note: We use the currentTableName as the key so the lists are separate
-            const localDict = SafeStorage.getItem(currentTableName);
-            dictionary = localDict ? JSON.parse(localDict) : [];
-            
-            // Also load quick add list (optional: separate lists or shared?)
-            // Keeping it simple: shared list for now, or use separate if desired
-            const localQuickAdd = SafeStorage.getItem('quickAddList');
-            quickAddList = localQuickAdd ? JSON.parse(localQuickAdd) : [];
-            
-            buildSearchIndex();
-            updateWordCount();
-            displayQuickAddList();
-        }
-
+        // Password Authentication
         function checkPassword() {
             const passwordInput = document.getElementById('password');
-            if (!passwordInput.value) { showError('Please enter a password'); return; }
-            if (passwordInput.value === CORRECT_PASSWORD) {
-                const session = { authenticated: true, expires: Date.now() + SESSION_DURATION };
+            const password = passwordInput.value;
+
+            if (!password) {
+                showError('Please enter a password');
+                return;
+            }
+
+            if (password === CORRECT_PASSWORD) {
+                const session = {
+                    authenticated: true,
+                    expires: Date.now() + SESSION_DURATION
+                };
                 sessionStorage.setItem('adminSession', JSON.stringify(session));
                 unlockAdmin();
             } else {
@@ -381,14 +919,18 @@
         }
 
         function showError(message) {
-            const el = document.getElementById('errorMessage');
-            el.textContent = message; el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 3000);
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => errorMessage.classList.remove('show'), 3000);
         }
 
         function checkAuth() {
             const session = JSON.parse(sessionStorage.getItem('adminSession') || 'null');
-            if (session && Date.now() < session.expires) { unlockAdmin(); return true; }
+            if (session && Date.now() < session.expires) {
+                unlockAdmin();
+                return true;
+            }
             return false;
         }
 
@@ -398,15 +940,30 @@
             initializeAdmin();
         }
 
-        function autoLowerCase(input) { input.value = input.value.toLowerCase(); }
-        function handlePaste(event) { setTimeout(() => { const input = event.target; input.value = input.value.toLowerCase(); updateDefinitionHeader(); checkExistingWord(); }, 0); }
+        function autoLowerCase(input) {
+            input.value = input.value.toLowerCase();
+        }
+
+        function handlePaste(event) {
+            setTimeout(() => {
+                const input = event.target;
+                input.value = input.value.toLowerCase();
+                updateDefinitionHeader(); 
+                checkExistingWord(); 
+            }, 0);
+        }
 
         function updateDefinitionHeader() {
             const wordInput = document.getElementById('wordInput');
             const editor = document.getElementById('definitionInput');
             let word = wordInput.value.trim();
-            if (!word) return;
+            
+            if (!word) {
+                return;
+            }
+
             let capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+            
             let firstChild = editor.firstChild;
             if (firstChild && firstChild.nodeType === Node.ELEMENT_NODE && firstChild.tagName === 'H1') {
                 firstChild.textContent = capitalizedWord;
@@ -417,76 +974,174 @@
             }
         }
 
+        // UPDATED Toggle Logic: Remove all H1s, Remove FIRST H2, convert others to COLLAPSED toggles
         function convertH2ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
-            const h1Elements = doc.querySelectorAll('h1'); h1Elements.forEach(h1 => h1.remove());
-            const firstH2 = doc.querySelector('h2'); if (firstH2) firstH2.remove();
+            
+            // 1. Remove all H1s
+            const h1Elements = doc.querySelectorAll('h1');
+            h1Elements.forEach(h1 => h1.remove());
+
+            // 2. Remove the FIRST H2 found in the pasted text
+            const firstH2 = doc.querySelector('h2');
+            if (firstH2) {
+                firstH2.remove();
+            }
+
+            // 3. Convert remaining H2s to toggles (Collapsed by default)
             const h2Elements = doc.querySelectorAll('h2');
+    
             h2Elements.forEach(h2 => {
+                // Format heading text
                 let headingText = h2.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
                     headingText = headingText.toLowerCase();
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1);
                     h2.textContent = headingText;
                 }
-                const toggleWrapper = document.createElement('div'); toggleWrapper.className = 'toggle-wrapper';
-                const toggleHeader = document.createElement('button'); toggleHeader.className = 'toggle-header';
-                toggleHeader.innerHTML = `<i class="fas fa-chevron-right toggle-icon"></i><span class="toggle-title">${h2.innerHTML}</span>`;
-                const toggleContent = document.createElement('div'); toggleContent.className = 'toggle-content';
+        
+                const toggleWrapper = document.createElement('div');
+                toggleWrapper.className = 'toggle-wrapper';
+        
+                const toggleHeader = document.createElement('button');
+                toggleHeader.className = 'toggle-header';
+                // Modern Chevron Icon (Not active by default)
+                toggleHeader.innerHTML = `
+                    <i class="fas fa-chevron-right toggle-icon"></i>
+                    <span class="toggle-title">${h2.innerHTML}</span>
+                `;
+        
+                const toggleContent = document.createElement('div');
+                toggleContent.className = 'toggle-content';
+                // Note: No 'expanded' class added here -> Collapsed by default
+        
                 let nextSibling = h2.nextElementSibling;
                 while (nextSibling && nextSibling.tagName !== 'H2') {
-                    const temp = nextSibling; nextSibling = nextSibling.nextElementSibling; toggleContent.appendChild(temp);
+                    const temp = nextSibling;
+                    nextSibling = nextSibling.nextElementSibling;
+                    toggleContent.appendChild(temp);
                 }
-                if (toggleContent.children.length === 0) toggleContent.innerHTML = '<p>No content available.</p>';
-                toggleHeader.addEventListener('click', function(e) { e.stopPropagation(); e.preventDefault(); this.classList.toggle('active'); toggleContent.classList.toggle('expanded'); });
-                toggleWrapper.appendChild(toggleHeader); toggleWrapper.appendChild(toggleContent);
+        
+                if (toggleContent.children.length === 0) {
+                    toggleContent.innerHTML = '<p>No content available.</p>';
+                }
+        
+                toggleHeader.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+            
+                    this.classList.toggle('active');
+                    toggleContent.classList.toggle('expanded');
+                });
+        
+                toggleWrapper.appendChild(toggleHeader);
+                toggleWrapper.appendChild(toggleContent);
                 h2.parentNode.replaceChild(toggleWrapper, h2);
             });
+    
             return doc.body.innerHTML;
         }
 
         function activateTogglesInEditor() {
             const editor = document.getElementById('definitionInput');
             const toggleHeaders = editor.querySelectorAll('.toggle-header');
+            
             toggleHeaders.forEach(header => {
                 const newHeader = header.cloneNode(true);
                 header.parentNode.replaceChild(newHeader, header);
-                newHeader.addEventListener('click', function(e) { e.stopPropagation(); e.preventDefault(); this.classList.toggle('active'); const content = this.nextElementSibling; content.classList.toggle('expanded'); });
+                
+                newHeader.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('expanded');
+                });
             });
         }
 
         function cleanPastedHtml(html) {
-            const parser = new DOMParser(); const doc = parser.parseFromString(html, 'text/html');
-            doc.querySelectorAll('hr').forEach(hr => hr.remove());
-            doc.querySelectorAll('*').forEach(el => {
-                el.removeAttribute('style'); el.removeAttribute('class');
-                if (!['H1','H2','H3','H4','H5','H6'].includes(el.tagName)) { el.style.fontSize = '16px'; el.style.lineHeight = '1.6'; el.style.color = 'var(--text-secondary)'; }
-                if (el.tagName === 'P' || el.tagName === 'SPAN' || el.tagName === 'DIV') { if (!el.hasAttribute('style')) { el.style.color = 'var(--text-secondary)'; el.style.fontSize = '16px'; el.style.lineHeight = '1.6'; } }
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const hrElements = doc.querySelectorAll('hr');
+            hrElements.forEach(hr => hr.remove());
+            
+            const allElements = doc.querySelectorAll('*');
+            allElements.forEach(el => {
+                el.removeAttribute('style');
+                el.removeAttribute('class');
+                
+                if (!['H1','H2','H3','H4','H5','H6'].includes(el.tagName)) {
+                    el.style.fontSize = '16px';
+                    el.style.lineHeight = '1.6';
+                    el.style.color = 'var(--text-secondary)';
+                }
+                
+                if (el.tagName === 'P' || el.tagName === 'SPAN' || el.tagName === 'DIV') {
+                    if (!el.hasAttribute('style')) {
+                        el.style.color = 'var(--text-secondary)';
+                        el.style.fontSize = '16px';
+                        el.style.lineHeight = '1.6';
+                    }
+                }
             });
+            
             return doc.body.innerHTML;
         }
 
         function buildSearchIndex() {
-            searchIndex = dictionary.map(item => ({ id: item.id, word: item.word, wordLower: item.word.toLowerCase(), definition: item.definition, definitionText: item.definition.replace(/<[^>]*>/g,'').toLowerCase() }));
+            searchIndex = dictionary.map(item => ({
+                id: item.id,
+                word: item.word,
+                wordLower: item.word.toLowerCase(),
+                definition: item.definition,
+                definitionText: item.definition.replace(/<[^>]*>/g,'').toLowerCase()
+            }));
         }
 
-        function updateWordCount() { document.getElementById('dictionaryCount').textContent = `(${dictionary.length})`; }
+        function updateWordCount() {
+            document.getElementById('dictionaryCount').textContent = `(${dictionary.length})`;
+        }
+
+        function loadFromLocalStorage() {
+            const localDict = SafeStorage.getItem('dictionary');
+            dictionary = localDict ? JSON.parse(localDict) : [];
+            buildSearchIndex();
+            updateWordCount();
+            
+            const localQuickAdd = SafeStorage.getItem('quickAddList');
+            quickAddList = localQuickAdd ? JSON.parse(localQuickAdd) : [];
+            
+            return dictionary.length > 0;
+        }
 
         async function initializeSupabase() {
             try {
                 const { createClient } = supabase;
                 supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                const { data, error } = await supabaseClient
+                    .from('dictionary')
+                    .select('id')
+                    .limit(1);
+                
+                if (error) throw error;
+                
                 isSupabaseConfigured = supabaseInitialized = true;
+                document.getElementById('connectionStatus').innerHTML = '<strong>✓ Supabase Connected!</strong> Dictionary syncing across devices.';
                 await syncWithSupabase();
             } catch(error) {
                 console.error('Supabase init error:', error);
                 document.getElementById('connectionStatus').innerHTML = `<strong>⚠ Supabase Connection Failed:</strong> ${error.message}`;
                 document.getElementById('connectionStatus').style.background = 'rgba(244, 67, 54, 0.1)';
+                document.getElementById('connectionStatus').style.borderLeftColor = 'var(--error-color)';
+                document.getElementById('connectionStatus').style.color = 'var(--error-color)';
             }
         }
 
-        // --- ORIGINAL SYNC LOGIC (RESTORED EXACTLY AS IT WAS) ---
+        // --- UPDATED SYNC LOGIC FOR LARGE DATASETS (>1000 items) ---
         async function syncWithSupabase() {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
             showSyncStatus(true);
@@ -500,7 +1155,7 @@
                 // Loop to fetch data in chunks until we have everything
                 while (hasMore) {
                     const { data, error } = await supabaseClient
-                        .from(currentTableName) // DYNAMIC TABLE NAME
+                        .from('dictionary')
                         .select('*')
                         .order('word', { ascending: true })
                         .range(rangeStart, rangeStart + rangeStep - 1);
@@ -542,68 +1197,121 @@
                     
                     buildSearchIndex();
                     updateWordCount();
-                    SafeStorage.setItem(currentTableName, JSON.stringify(dictionary)); // Saved to specific table key
-                } else {
-                    // Handle empty table case
-                    dictionary = [];
-                    buildSearchIndex();
-                    updateWordCount();
-                    SafeStorage.setItem(currentTableName, JSON.stringify([]));
+                    SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
                 }
             } catch(error) {
                 console.error('Sync error:', error);
-                document.getElementById('dictionaryCount').textContent = '(Offline/Error)';
             } finally {
                 showSyncStatus(false);
             }
         }
 
-        function showSyncStatus(isSyncing) { document.getElementById('syncIndicator').style.display = isSyncing ? 'flex' : 'none'; }
+        // 1. Sync Indicator Logic
+        function showSyncStatus(isSyncing) {
+            const indicator = document.getElementById('syncIndicator');
+            if (isSyncing) {
+                indicator.style.display = 'flex';
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
 
+        // 2. Pure Cloud Save (Background Task)
         async function saveToSupabase(wordItem) {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
-            showSyncStatus(true);
+            
+            showSyncStatus(true); // Show spinner
+            
             try {
                 const { error } = await supabaseClient
-                    .from(currentTableName)
-                    .upsert([{ id: wordItem.id, word: wordItem.word, definition: wordItem.definition, date_added: wordItem.dateAdded, date_modified: wordItem.dateModified }], { onConflict: 'id' });
+                    .from('dictionary')
+                    .upsert([{
+                        id: wordItem.id,
+                        word: wordItem.word,
+                        definition: wordItem.definition,
+                        date_added: wordItem.dateAdded,
+                        date_modified: wordItem.dateModified
+                    }], {
+                        onConflict: 'id'
+                    });
+                
                 if (error) throw error;
-            } catch(error) { console.error('Background Save error:', error); } finally { showSyncStatus(false); }
+                
+            } catch(error) {
+                console.error('Background Save error:', error);
+            } finally {
+                showSyncStatus(false); // Hide spinner
+            }
         }
         
+        // 3. Pure Cloud Delete (Background Task)
         async function deleteFromSupabase(id) {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
+            
             showSyncStatus(true);
             try {
                 const { error } = await supabaseClient
-                    .from(currentTableName)
+                    .from('dictionary')
                     .delete()
                     .eq('id', id);
+                
                 if (error) throw error;
-            } catch(error) { console.error('Background Delete error:', error); } finally { showSyncStatus(false); }
+            } catch(error) {
+                console.error('Background Delete error:', error);
+            } finally {
+                showSyncStatus(false);
+            }
         }
 
         function checkExistingWord() {
             const wordInput = document.getElementById('wordInput');
             const warning = document.getElementById('wordWarning');
             const word = wordInput.value.trim().toLowerCase();
-            if (!word) { warning.style.display = 'none'; return; }
+            
+            if (!word) {
+                warning.style.display = 'none';
+                return;
+            }
+            
             const exists = dictionary.some(item => item.word.toLowerCase() === word);
             warning.style.display = exists ? 'block' : 'none';
         }
 
-        function formatText(command, value = null) { document.execCommand(command, false, value); document.getElementById('definitionInput').focus(); updateFormatDropdown(); }
-        function formatHeading(tag) { if (tag) document.execCommand('formatBlock', false, `<${tag}>`); else document.execCommand('formatBlock', false, '<p>'); document.getElementById('definitionInput').focus(); updateFormatDropdown(); }
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('definitionInput').focus();
+            updateFormatDropdown();
+        }
+
+        function formatHeading(tag) {
+            if (tag) {
+                document.execCommand('formatBlock', false, `<${tag}>`);
+            } else {
+                document.execCommand('formatBlock', false, '<p>');
+            }
+            document.getElementById('definitionInput').focus();
+            updateFormatDropdown();
+        }
+
         function updateFormatDropdown() {
+            const editor = document.getElementById('definitionInput');
             const dropdown = document.getElementById('formatDropdown');
+            
             try {
                 const selection = window.getSelection();
                 if (selection.rangeCount > 0) {
                     const parentElement = selection.getRangeAt(0).startContainer.parentElement;
                     const tagName = parentElement.tagName.toLowerCase();
-                    if (['h1', 'h2', 'h3', 'h4'].includes(tagName)) dropdown.value = tagName; else dropdown.value = '';
+                    
+                    if (['h1', 'h2', 'h3', 'h4'].includes(tagName)) {
+                        dropdown.value = tagName;
+                    } else {
+                        dropdown.value = '';
+                    }
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.log('Could not update format dropdown');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -611,144 +1319,319 @@
             if (editor) {
                 editor.addEventListener('paste', function(e) {
                     e.preventDefault();
+                    
                     const html = (e.clipboardData || window.clipboardData).getData('text/html');
                     const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+                    
                     let processedHtml = '';
-                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
-                        processedHtml = marked.parse(text); processedHtml = processedHtml.replace(/<hr[^>]*>/gi, '');
+                    
+                    // --- NEW LOGIC: Prefer Marked.js for text/markdown content ---
+                    if (text && (text.includes('# ') || text.includes('## ') || text.includes('### ') || text.includes('#### ') || text.includes('**') || text.includes('- ') || text.includes('* ') || /^\d+\.\s/.test(text))) {
+                        // Use Marked.js to parse the markdown text into HTML
+                        // This handles nested bullets and numbered lists automatically
+                        processedHtml = marked.parse(text);
+                        
+                        // Fix: Remove divider lines (<hr>) generated by Markdown
+                        processedHtml = processedHtml.replace(/<hr[^>]*>/gi, '');
                     } else if (html) {
+                        // If it's not markdown but has HTML (copy from website/word), clean it
                         processedHtml = cleanPastedHtml(html);
                     } else {
-                        const lines = text.split('\n'); let paragraphs = []; let currentParagraph = [];
-                        for (let line of lines) { const trimmedLine = line.trim(); if (trimmedLine === '') { if (currentParagraph.length > 0) { paragraphs.push(currentParagraph.join('<br>')); currentParagraph = []; } } else { currentParagraph.push(trimmedLine); } }
-                        if (currentParagraph.length > 0) paragraphs.push(currentParagraph.join('<br>'));
-                        if (paragraphs.length > 1) processedHtml = paragraphs.map(p => `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${p}</p>`).join('');
-                        else if (paragraphs.length === 1) processedHtml = `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${paragraphs[0]}</p>`;
-                        else processedHtml = '';
+                        // Plain text fallback
+                        const lines = text.split('\n');
+                        let paragraphs = [];
+                        let currentParagraph = [];
+                        
+                        for (let line of lines) {
+                            const trimmedLine = line.trim();
+                            if (trimmedLine === '') {
+                                if (currentParagraph.length > 0) {
+                                    paragraphs.push(currentParagraph.join('<br>'));
+                                    currentParagraph = [];
+                                }
+                            } else {
+                                currentParagraph.push(trimmedLine);
+                            }
+                        }
+                        if (currentParagraph.length > 0) {
+                            paragraphs.push(currentParagraph.join('<br>'));
+                        }
+                        
+                        if (paragraphs.length > 1) {
+                            processedHtml = paragraphs.map(p => `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${p}</p>`).join('');
+                        } else if (paragraphs.length === 1) {
+                            processedHtml = `<p style="color: var(--text-secondary); font-size: 16px; line-height: 1.6;">${paragraphs[0]}</p>`;
+                        } else {
+                            processedHtml = '';
+                        }
                     }
+                    
                     processedHtml = convertH2ToToggles(processedHtml);
                     document.execCommand('insertHTML', false, processedHtml);
                     setTimeout(activateTogglesInEditor, 0);
                 });
-                editor.addEventListener('input', updateFormatDropdown); editor.addEventListener('click', updateFormatDropdown); editor.addEventListener('keyup', updateFormatDropdown);
+                
+                editor.addEventListener('input', updateFormatDropdown);
+                editor.addEventListener('click', updateFormatDropdown);
+                editor.addEventListener('keyup', updateFormatDropdown);
             }
         });
 
         function enhanceEditorFormatting() {
             const editor = document.getElementById('definitionInput');
-            editor.addEventListener('click', function(e) { if (e.target.closest('.toggle-content') || e.target.closest('.toggle-header')) { setTimeout(() => { editor.focus(); }, 0); } });
-            document.addEventListener('selectionchange', function() { const selection = window.getSelection(); if (selection.rangeCount > 0) { const range = selection.getRangeAt(0); if (range.startContainer && editor.contains(range.startContainer)) updateFormatDropdown(); } });
+            editor.addEventListener('click', function(e) {
+                if (e.target.closest('.toggle-content') || e.target.closest('.toggle-header')) {
+                    setTimeout(() => {
+                        editor.focus();
+                    }, 0);
+                }
+            });
+            
+            document.addEventListener('selectionchange', function() {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const selectedNode = range.startContainer;
+                    if (selectedNode && editor.contains(selectedNode)) {
+                        updateFormatDropdown();
+                    }
+                }
+            });
         }
 
+        // --- UPDATED SUBMIT HANDLER ---
         document.getElementById('addWordForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            
             const wordInput = document.getElementById('wordInput');
             const definitionInput = document.getElementById('definitionInput');
+            
             const word = wordInput.value.trim().toLowerCase(); 
             let definition = definitionInput.innerHTML.trim();
-            if (!word || !definition) { alert('Please fill in all fields'); return; }
+            
+            if (!word || !definition) {
+                alert('Please fill in all fields');
+                return;
+            }
             
             let wordObjectToSync;
+
+            // 1. Update LOCAL Data First (Optimistic Update)
             if (editingWordId !== null) {
                 const index = dictionary.findIndex(item => item.id === editingWordId);
                 if (index !== -1) {
+                    // Update object in place
                     dictionary[index].word = word;
                     dictionary[index].definition = definition;
                     dictionary[index].dateModified = new Date().toISOString();
+                    
                     wordObjectToSync = dictionary[index];
                 }
                 editingWordId = null;
             } else {
-                const newWord = { id: Date.now(), word: word, definition: definition, dateAdded: new Date().toISOString(), dateModified: new Date().toISOString() };
+                const newWord = {
+                    id: Date.now(),
+                    word: word,
+                    definition: definition,
+                    dateAdded: new Date().toISOString(),
+                    dateModified: new Date().toISOString()
+                };
                 dictionary.push(newWord);
+                
                 wordObjectToSync = newWord;
             }
+            
+            // 2. Sort and Save Local Storage immediately
             dictionary.sort((a, b) => a.word.localeCompare(b.word));
             buildSearchIndex();
-            SafeStorage.setItem(currentTableName, JSON.stringify(dictionary)); // Use current table key
+            SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
             updateWordCount();
-            wordInput.value = ''; definitionInput.innerHTML = ''; document.getElementById('wordWarning').style.display = 'none';
-            if (wordObjectToSync) saveToSupabase(wordObjectToSync);
+            
+            // 3. Clear UI immediately (User feels "Done!")
+            wordInput.value = '';
+            definitionInput.innerHTML = '';
+            document.getElementById('wordWarning').style.display = 'none';
+
+            // 4. Trigger Cloud Sync in Background (Do not await this!)
+            if (wordObjectToSync) {
+                saveToSupabase(wordObjectToSync); // This runs separately
+            }
         });
 
         function editWord(id) {
             const word = dictionary.find(item => item.id === id);
             if (!word) return;
+            
             editingWordId = id;
             document.getElementById('wordInput').value = word.word;
             document.getElementById('definitionInput').innerHTML = word.definition;
+            
+            // Clear searches
             document.getElementById('editSearchInput').value = '';
             document.getElementById('editSearchResults').innerHTML = '';
             document.getElementById('editDefinitionSearchInput').value = '';
             document.getElementById('editDefinitionSearchResults').innerHTML = '';
+            
             setTimeout(activateTogglesInEditor, 0);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function deleteWord(id) {
             if (!confirm('Are you sure you want to delete this word?')) return;
+            
             const wordIndex = dictionary.findIndex(item => item.id === id);
             if (wordIndex === -1) return;
+            
+            // 1. Remove from Local Data immediately
             dictionary.splice(wordIndex, 1);
             buildSearchIndex();
-            SafeStorage.setItem(currentTableName, JSON.stringify(dictionary)); // Use current table key
+            SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
             updateWordCount();
-            searchWordsToEdit(); searchDefinitionsToEdit();
+            
+            // Update search results immediately if open
+            searchWordsToEdit(); 
+            searchDefinitionsToEdit(); // Update definition search results too
+            
+            // 2. Trigger Cloud Delete in Background (No await)
             deleteFromSupabase(id);
         }
 
         function searchWordsToEdit() {
             const query = document.getElementById('editSearchInput').value.trim().toLowerCase();
             const resultsDiv = document.getElementById('editSearchResults');
-            if (!query) { resultsDiv.innerHTML = ''; return; }
-            const matches = dictionary.filter(item => item.word.toLowerCase().includes(query)).slice(0, 5);
-            if (matches.length === 0) { resultsDiv.innerHTML = '<div class="no-results" style="padding:10px;color:var(--text-muted);">No matches found</div>'; return; }
+            
+            if (!query) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
+            const matches = dictionary.filter(item => 
+                item.word.toLowerCase().includes(query)
+            ).slice(0, 5);
+            
+            if (matches.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-results" style="padding:10px;color:var(--text-muted);">No matches found</div>';
+                return;
+            }
+            
             let html = '';
             matches.forEach(item => {
                 const preview = item.definition.replace(/<[^>]*>/g, '').substring(0, 100) + '...';
-                html += `<div class="edit-result-item"><div class="edit-result-word">${item.word}</div><div class="edit-result-definition">${preview}</div><div style="margin-top: 10px; display: flex; gap: 10px;"><button class="editor-btn" onclick="editWord(${item.id})" style="font-size: 12px; padding: 5px 10px;">Edit</button><button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: rgba(239, 68, 68, 0.2); color: var(--error);">Delete</button></div></div>`;
+                html += `
+                    <div class="edit-result-item">
+                        <div class="edit-result-word">${item.word}</div>
+                        <div class="edit-result-definition">${preview}</div>
+                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                            <button class="editor-btn" onclick="editWord(${item.id})" style="font-size: 12px; padding: 5px 10px;">Edit</button>
+                            <button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: rgba(239, 68, 68, 0.2); color: var(--error);">Delete</button>
+                        </div>
+                    </div>
+                `;
             });
             resultsDiv.innerHTML = html;
         }
 
+        /* --- NEW FUNCTION: Search Definitions --- */
         function searchDefinitionsToEdit() {
             const query = document.getElementById('editDefinitionSearchInput').value.trim().toLowerCase();
             const resultsDiv = document.getElementById('editDefinitionSearchResults');
-            if (!query) { resultsDiv.innerHTML = ''; return; }
+            
+            if (!query) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
+            // Use the pre-built searchIndex (created in buildSearchIndex()) which already has 
+            // stripped definition text (definitionText) for faster searching.
+            // If searchIndex isn't ready for some reason, we fallback to filtering dictionary directly.
+            
             let matches = [];
-            if (searchIndex && searchIndex.length > 0) matches = searchIndex.filter(item => item.definitionText.includes(query)).slice(0, 10);
-            else matches = dictionary.filter(item => { const cleanDef = item.definition.replace(/<[^>]*>/g, '').toLowerCase(); return cleanDef.includes(query); }).slice(0, 10);
-            if (matches.length === 0) { resultsDiv.innerHTML = '<div class="no-results" style="padding:10px;color:var(--text-muted);">No matches found in definitions</div>'; return; }
+            
+            if (searchIndex && searchIndex.length > 0) {
+                matches = searchIndex.filter(item => 
+                    item.definitionText.includes(query)
+                ).slice(0, 10); // Limit to 10 results
+            } else {
+                matches = dictionary.filter(item => {
+                    const cleanDef = item.definition.replace(/<[^>]*>/g, '').toLowerCase();
+                    return cleanDef.includes(query);
+                }).slice(0, 10);
+            }
+            
+            if (matches.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-results" style="padding:10px;color:var(--text-muted);">No matches found in definitions</div>';
+                return;
+            }
+            
             let html = '';
             matches.forEach(match => {
+                // Find the original item in the dictionary to get correct formatting/ID
                 const item = dictionary.find(d => d.id === match.id) || match;
                 const defText = item.definition.replace(/<[^>]*>/g, '');
-                const index = defText.toLowerCase().indexOf(query);
-                let snippet = index !== -1 ? (index > 0 ? '...' : '') + defText.substring(Math.max(0, index - 40), Math.min(defText.length, index + query.length + 40)) + (index + query.length + 40 < defText.length ? '...' : '') : defText.substring(0, 100) + '...';
-                html += `<div class="edit-result-item"><div class="edit-result-word">${item.word}</div><div class="edit-result-definition" style="font-style:italic; color: var(--primary);">Match: "${snippet}"</div><div style="margin-top: 10px; display: flex; gap: 10px;"><button class="editor-btn" onclick="editWord(${item.id})" style="font-size: 12px; padding: 5px 10px;">Edit</button><button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: rgba(239, 68, 68, 0.2); color: var(--error);">Delete</button></div></div>`;
+                const lowerDef = defText.toLowerCase();
+                
+                // Create a "Context Snippet" around the found word
+                const index = lowerDef.indexOf(query);
+                let snippet = '';
+                
+                if (index !== -1) {
+                    const start = Math.max(0, index - 40);
+                    const end = Math.min(defText.length, index + query.length + 40);
+                    snippet = (start > 0 ? '...' : '') + defText.substring(start, end) + (end < defText.length ? '...' : '');
+                } else {
+                    snippet = defText.substring(0, 100) + '...';
+                }
+
+                html += `
+                    <div class="edit-result-item">
+                        <div class="edit-result-word">${item.word}</div>
+                        <div class="edit-result-definition" style="font-style:italic; color: var(--primary);">Match: "${snippet}"</div>
+                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                            <button class="editor-btn" onclick="editWord(${item.id})" style="font-size: 12px; padding: 5px 10px;">Edit</button>
+                            <button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: rgba(239, 68, 68, 0.2); color: var(--error);">Delete</button>
+                        </div>
+                    </div>
+                `;
             });
             resultsDiv.innerHTML = html;
         }
 
-        // --- QUICK ADD FUNCTIONS ---
         function searchWordsForQuickAdd() {
             const query = document.getElementById('quickAddSearch').value.trim().toLowerCase();
             const resultsDiv = document.getElementById('quickAddSearchResults');
             const warning = document.getElementById('quickAddWarning');
+            
             warning.style.display = 'none';
-            if (!query) { resultsDiv.innerHTML = ''; return; }
+            
+            if (!query) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
             const exists = dictionary.some(item => item.word.toLowerCase() === query);
-            if (exists) { warning.style.display = 'block'; }
+            if (exists) {
+                warning.style.display = 'block';
+            }
         }
 
         function addToQuickList() {
             const input = document.getElementById('quickAddSearch');
             const word = input.value.trim().toLowerCase();
+            
             if (!word) return;
+            
             const exists = dictionary.some(item => item.word.toLowerCase() === word.toLowerCase());
-            if (exists) { alert('This word already exists in the dictionary'); return; }
+            if (exists) {
+                alert('This word already exists in the dictionary');
+                return;
+            }
+            
             const inList = quickAddList.some(item => item.toLowerCase() === word.toLowerCase());
-            if (inList) { alert('This word is already in the quick list'); return; }
+            if (inList) {
+                alert('This word is already in the quick list');
+                return;
+            }
+            
             quickAddList.push(word);
             SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
             displayQuickAddList();
@@ -759,11 +1642,22 @@
         function displayQuickAddList() {
             const listDiv = document.getElementById('quickAddList');
             const countSpan = document.getElementById('quickAddCount');
+            
             countSpan.textContent = `(${quickAddList.length})`;
-            if (quickAddList.length === 0) { listDiv.innerHTML = '<div class="quick-add-empty" style="color:var(--text-muted);text-align:center;">No words yet</div>'; return; }
+            
+            if (quickAddList.length === 0) {
+                listDiv.innerHTML = '<div class="quick-add-empty" style="color:var(--text-muted);text-align:center;">No words yet</div>';
+                return;
+            }
+            
             let html = '';
             quickAddList.forEach((word, index) => {
-                html += `<div class="quick-add-item"><div class="quick-add-word">${word}</div><button class="quick-add-remove" onclick="removeFromQuickList(${index})">Remove</button></div>`;
+                html += `
+                    <div class="quick-add-item">
+                        <div class="quick-add-word">${word}</div>
+                        <button class="quick-add-remove" onclick="removeFromQuickList(${index})">Remove</button>
+                    </div>
+                `;
             });
             listDiv.innerHTML = html;
         }
@@ -775,7 +1669,9 @@
         }
 
         function refreshQuickList() {
-            quickAddList = quickAddList.filter(word => !dictionary.some(item => item.word.toLowerCase() === word.toLowerCase()));
+            quickAddList = quickAddList.filter(word => 
+                !dictionary.some(item => item.word.toLowerCase() === word.toLowerCase())
+            );
             SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
             displayQuickAddList();
         }
@@ -786,7 +1682,7 @@
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `${currentTableName}_${new Date().toISOString().split('T')[0]}.json`;
+            link.download = `dictionary_${new Date().toISOString().split('T')[0]}.json`;
             link.click();
             URL.revokeObjectURL(url);
         }
@@ -794,49 +1690,84 @@
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
+            
             const reader = new FileReader();
             reader.onload = async function(e) {
                 try {
                     const imported = JSON.parse(e.target.result);
-                    if (!Array.isArray(imported)) { alert('Invalid file format'); return; }
-                    
-                    if(confirm(`This will REPLACE all data in the "${currentTableName}" table. Are you sure?`)) {
-                        dictionary = imported;
-                        buildSearchIndex();
-                        if (isSupabaseConfigured && supabaseInitialized) {
-                            try {
-                                const { error: deleteError } = await supabaseClient.from(currentTableName).delete().neq('id', 0);
-                                if (deleteError) throw deleteError;
-                                const supabaseData = dictionary.map(item => ({ id: item.id, word: item.word, definition: item.definition, date_added: item.dateAdded, date_modified: item.dateModified }));
-                                const CHUNK_SIZE = 100;
-                                const totalChunks = Math.ceil(supabaseData.length / CHUNK_SIZE);
-                                for (let i = 0; i < totalChunks; i++) {
-                                    const start = i * CHUNK_SIZE;
-                                    const end = start + CHUNK_SIZE;
-                                    const chunk = supabaseData.slice(start, end);
-                                    const { error: insertError } = await supabaseClient.from(currentTableName).insert(chunk);
-                                    if (insertError) throw insertError;
-                                }
-                            } catch(error) { console.error('Supabase import error:', error); alert('Error importing to cloud: ' + error.message); }
-                        }
-                        SafeStorage.setItem(currentTableName, JSON.stringify(dictionary));
-                        updateWordCount();
-                        alert('Dictionary imported successfully!');
+                    if (!Array.isArray(imported)) {
+                        alert('Invalid file format');
+                        return;
                     }
-                } catch (error) { alert('Error importing file: ' + error.message); }
+                    
+                    dictionary = imported;
+                    buildSearchIndex();
+                    
+                    if (isSupabaseConfigured && supabaseInitialized) {
+                        try {
+                            // 1. Delete all existing data first
+                            const { error: deleteError } = await supabaseClient
+                                .from('dictionary')
+                                .delete()
+                                .neq('id', 0); // Delete everything where ID is not 0 (effectively everything)
+                            
+                            if (deleteError) throw deleteError;
+                            
+                            // 2. Prepare data
+                            const supabaseData = dictionary.map(item => ({
+                                id: item.id,
+                                word: item.word,
+                                definition: item.definition,
+                                date_added: item.dateAdded,
+                                date_modified: item.dateModified
+                            }));
+                            
+                            // 3. Chunking for Import (Batch Insert)
+                            const CHUNK_SIZE = 100; // Insert 100 items at a time
+                            const totalChunks = Math.ceil(supabaseData.length / CHUNK_SIZE);
+                            
+                            for (let i = 0; i < totalChunks; i++) {
+                                const start = i * CHUNK_SIZE;
+                                const end = start + CHUNK_SIZE;
+                                const chunk = supabaseData.slice(start, end);
+                                
+                                const { error: insertError } = await supabaseClient
+                                    .from('dictionary')
+                                    .insert(chunk);
+                                
+                                if (insertError) throw insertError;
+                            }
+                        } catch(error) {
+                            console.error('Supabase import error:', error);
+                            alert('Error importing to cloud: ' + error.message);
+                        }
+                    }
+                    
+                    SafeStorage.setItem('dictionary', JSON.stringify(dictionary));
+                    updateWordCount();
+                    alert('Dictionary imported successfully!');
+                } catch (error) {
+                    alert('Error importing file: ' + error.message);
+                }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
 
         function initializeAdmin() {
-            // Load initial data for the default table (Dictionary 1)
-            switchDictionary('dictionary', document.querySelector('.db-option'));
+            loadFromLocalStorage();
+            displayQuickAddList();
+            initializeSupabase();
             enhanceEditorFormatting();
         }
 
-        if (checkAuth()) { /* Already authenticated */ }
-        document.getElementById('password').addEventListener('keypress', function(e) { if (e.key === 'Enter') checkPassword(); });
+        if (checkAuth()) {
+            // Already authenticated
+        }
+
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
     </script>
 </body>
 </html>
