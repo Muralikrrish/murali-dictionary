@@ -78,43 +78,12 @@
         .admin-content { display: none; padding: 40px 0 80px; }
         .admin-content.unlocked { display: block; }
 
-        /* --- TABLE TOGGLE (NEW) --- */
-        .db-selector-wrapper {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-        .db-selector {
-            display: flex;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--glass-border);
-            padding: 4px;
-            border-radius: 50px;
-            backdrop-filter: blur(8px);
-        }
-        .db-option {
-            padding: 10px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-            background: transparent;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .db-option.active {
-            background: var(--primary);
-            color: var(--bg-deep);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .db-option:hover:not(.active) {
-            color: var(--text-main);
-            background: rgba(255,255,255,0.05);
-        }
+        /* --- TABLE TOGGLE --- */
+        .db-selector-wrapper { display: flex; justify-content: center; margin-bottom: 30px; }
+        .db-selector { display: flex; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--glass-border); padding: 4px; border-radius: 50px; backdrop-filter: blur(8px); }
+        .db-option { padding: 10px 24px; border-radius: 40px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-muted); transition: all 0.3s ease; background: transparent; border: none; display: flex; align-items: center; gap: 8px; }
+        .db-option.active { background: var(--primary); color: var(--bg-deep); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .db-option:hover:not(.active) { color: var(--text-main); background: rgba(255,255,255,0.05); }
 
         /* Modern Section Styling */
         .modern-section { margin-bottom: 40px; position: relative; }
@@ -165,6 +134,17 @@
         .edit-result-word, .quick-add-result-word { font-weight: 700; color: var(--text-main); margin-bottom: 5px; font-size: 16px; }
         .edit-result-definition { color: var(--text-muted); font-size: 14px; }
         #editSearchResults, #quickAddSearchResults, #quickAddList, #editDefinitionSearchResults { max-height: 300px; overflow-y: auto; margin-top: 15px; }
+
+        .quick-add-item { background: rgba(255, 255, 255, 0.03); padding: 12px 15px; margin-bottom: 8px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .quick-add-word { color: var(--text-main); font-weight: 600; }
+        .quick-add-remove { background: rgba(239, 68, 68, 0.2); color: var(--error); border: 1px solid var(--error); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+        .quick-add-remove:hover { background: var(--error); color: white; }
+        .quick-add-controls { display: flex; gap: 12px; margin-top: 16px; }
+        .quick-add-btn { flex: 1; background: var(--text-main); color: var(--bg-deep); border: none; padding: 10px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .quick-add-btn:hover { background: white; transform: translateY(-2px); }
+        .quick-add-refresh { background: transparent; color: var(--text-main); border: 1px solid rgba(255,255,255,0.2); }
+        .quick-add-refresh:hover { background: rgba(255,255,255,0.05); border-color: var(--text-main); }
+        #quickAddList { background: rgba(0,0,0,0.2); border-radius: var(--radius-md); padding: 10px; }
 
         .status-container { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
         .info-box, .success-box, .sync-box { padding: 12px 16px; border-radius: var(--radius-md); font-size: 14px; display: flex; align-items: center; gap: 10px; }
@@ -275,6 +255,24 @@
                     </div>
                 </div>
 
+                <!-- Quick Add Section -->
+                <div class="modern-section">
+                    <h2 class="modern-section-title">Quick Add <span id="quickAddCount">(0)</span></h2>
+                    <div class="interactive-card">
+                        <div class="form-group">
+                            <label for="quickAddSearch">Search Word</label>
+                            <input type="text" id="quickAddSearch" placeholder="Type a word..." oninput="searchWordsForQuickAdd()">
+                            <div id="quickAddWarning" style="color:var(--warning);font-size:13px;margin-top:8px;display:none">⚠️ Word exists</div>
+                        </div>
+                        <div class="quick-add-controls">
+                            <button class="quick-add-btn" onclick="addToQuickList()">Add to List</button>
+                            <button class="quick-add-btn quick-add-refresh" onclick="refreshQuickList()">Refresh</button>
+                        </div>
+                        <div id="quickAddSearchResults"></div>
+                        <div id="quickAddList"><div class="quick-add-empty" style="color:var(--text-muted);text-align:center;">No words yet</div></div>
+                    </div>
+                </div>
+
                 <div class="modern-section">
                     <h2 class="modern-section-title">Utilities</h2>
                     <div class="interactive-card">
@@ -311,6 +309,7 @@
         // GLOBAL STATE
         let currentTableName = 'dictionary'; // Default table
         let dictionary = []; 
+        let quickAddList = [];
         let editingWordId = null; 
         let searchIndex = null;
         let isSupabaseConfigured = false; 
@@ -337,27 +336,34 @@
             
             document.getElementById('activeTableLabel').textContent = currentTableName;
             
-            // 3. Clear data state from view
+            // 3. Clear existing UI state
             dictionary = [];
             document.getElementById('editSearchResults').innerHTML = '';
             document.getElementById('editDefinitionSearchResults').innerHTML = '';
             
-            // 4. Reload Data from correct source (Optimistic Load)
-            const storageKey = currentTableName;
-            
-            // Attempt to load from local storage first for speed
-            const localData = SafeStorage.getItem(storageKey);
-            if (localData) {
-                dictionary = JSON.parse(localData);
-            }
-            
-            // Build index and update UI IMMEDIATELY 
-            // (Previously, this waited for cloud sync if local was empty, causing "(Loading...)" to stick)
-            buildSearchIndex();
-            updateWordCount(); 
+            // 4. Update UI immediately from local storage (Fast)
+            loadFromLocalStorage();
 
-            // 5. Trigger Cloud Sync for the new table
-            await syncWithSupabase();
+            // 5. Trigger Cloud Sync in background (Slow)
+            if(isSupabaseConfigured) {
+                syncWithSupabase();
+            }
+        }
+
+        // --- LOAD LOCAL STORAGE (INSTANT) ---
+        function loadFromLocalStorage() {
+            // Note: We use the currentTableName as the key so the lists are separate
+            const localDict = SafeStorage.getItem(currentTableName);
+            dictionary = localDict ? JSON.parse(localDict) : [];
+            
+            // Also load quick add list (optional: separate lists or shared?)
+            // Keeping it simple: shared list for now, or use separate if desired
+            const localQuickAdd = SafeStorage.getItem('quickAddList');
+            quickAddList = localQuickAdd ? JSON.parse(localQuickAdd) : [];
+            
+            buildSearchIndex();
+            updateWordCount();
+            displayQuickAddList();
         }
 
         function checkPassword() {
@@ -480,19 +486,21 @@
             }
         }
 
-        // --- UPDATED SYNC LOGIC ---
+        // --- ORIGINAL SYNC LOGIC (RESTORED EXACTLY AS IT WAS) ---
         async function syncWithSupabase() {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
             showSyncStatus(true);
+            
             try {
                 let allData = [];
                 let rangeStart = 0;
-                const rangeStep = 1000;
+                const rangeStep = 1000; // Supabase fetches 1000 items max per request
                 let hasMore = true;
 
+                // Loop to fetch data in chunks until we have everything
                 while (hasMore) {
                     const { data, error } = await supabaseClient
-                        .from(currentTableName) 
+                        .from(currentTableName) // DYNAMIC TABLE NAME
                         .select('*')
                         .order('word', { ascending: true })
                         .range(rangeStart, rangeStart + rangeStep - 1);
@@ -501,21 +509,42 @@
                     
                     if (data && data.length > 0) {
                         allData = [...allData, ...data];
-                        if (data.length < rangeStep) hasMore = false; else rangeStart += rangeStep;
+                        
+                        if (data.length < rangeStep) {
+                            // If we got fewer items than requested, we reached the end
+                            hasMore = false;
+                        } else {
+                            // Prepare to fetch the next chunk
+                            rangeStart += rangeStep;
+                        }
                     } else {
                         hasMore = false;
                     }
                 }
                 
                 if (allData.length > 0) {
-                    dictionary = allData.map(item => ({ id: item.id, word: item.word, definition: item.definition, dateAdded: item.date_added, dateModified: item.date_modified }));
-                    const uniqueWords = new Map(); dictionary.forEach(item => uniqueWords.set(item.id, item)); dictionary = Array.from(uniqueWords.values());
+                    // Map to our internal structure
+                    dictionary = allData.map(item => ({
+                        id: item.id,
+                        word: item.word,
+                        definition: item.definition,
+                        dateAdded: item.date_added,
+                        dateModified: item.date_modified
+                    }));
+                    
+                    // Deduplicate based on ID just in case
+                    const uniqueWords = new Map();
+                    dictionary.forEach(item => uniqueWords.set(item.id, item));
+                    dictionary = Array.from(uniqueWords.values());
+
+                    // Sort
                     dictionary.sort((a, b) => a.word.localeCompare(b.word));
+                    
                     buildSearchIndex();
                     updateWordCount();
-                    SafeStorage.setItem(currentTableName, JSON.stringify(dictionary)); 
+                    SafeStorage.setItem(currentTableName, JSON.stringify(dictionary)); // Saved to specific table key
                 } else {
-                    // Table is empty
+                    // Handle empty table case
                     dictionary = [];
                     buildSearchIndex();
                     updateWordCount();
@@ -523,9 +552,7 @@
                 }
             } catch(error) {
                 console.error('Sync error:', error);
-                // FIX: Update UI on error to unblock the view
                 document.getElementById('dictionaryCount').textContent = '(Offline/Error)';
-                alert(`Error syncing with "${currentTableName}". Check if the table exists and permissions are set.`);
             } finally {
                 showSyncStatus(false);
             }
@@ -701,6 +728,56 @@
                 html += `<div class="edit-result-item"><div class="edit-result-word">${item.word}</div><div class="edit-result-definition" style="font-style:italic; color: var(--primary);">Match: "${snippet}"</div><div style="margin-top: 10px; display: flex; gap: 10px;"><button class="editor-btn" onclick="editWord(${item.id})" style="font-size: 12px; padding: 5px 10px;">Edit</button><button class="editor-btn" onclick="deleteWord(${item.id})" style="font-size: 12px; padding: 5px 10px; background: rgba(239, 68, 68, 0.2); color: var(--error);">Delete</button></div></div>`;
             });
             resultsDiv.innerHTML = html;
+        }
+
+        // --- QUICK ADD FUNCTIONS ---
+        function searchWordsForQuickAdd() {
+            const query = document.getElementById('quickAddSearch').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('quickAddSearchResults');
+            const warning = document.getElementById('quickAddWarning');
+            warning.style.display = 'none';
+            if (!query) { resultsDiv.innerHTML = ''; return; }
+            const exists = dictionary.some(item => item.word.toLowerCase() === query);
+            if (exists) { warning.style.display = 'block'; }
+        }
+
+        function addToQuickList() {
+            const input = document.getElementById('quickAddSearch');
+            const word = input.value.trim().toLowerCase();
+            if (!word) return;
+            const exists = dictionary.some(item => item.word.toLowerCase() === word.toLowerCase());
+            if (exists) { alert('This word already exists in the dictionary'); return; }
+            const inList = quickAddList.some(item => item.toLowerCase() === word.toLowerCase());
+            if (inList) { alert('This word is already in the quick list'); return; }
+            quickAddList.push(word);
+            SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+            displayQuickAddList();
+            input.value = '';
+            document.getElementById('quickAddWarning').style.display = 'none';
+        }
+
+        function displayQuickAddList() {
+            const listDiv = document.getElementById('quickAddList');
+            const countSpan = document.getElementById('quickAddCount');
+            countSpan.textContent = `(${quickAddList.length})`;
+            if (quickAddList.length === 0) { listDiv.innerHTML = '<div class="quick-add-empty" style="color:var(--text-muted);text-align:center;">No words yet</div>'; return; }
+            let html = '';
+            quickAddList.forEach((word, index) => {
+                html += `<div class="quick-add-item"><div class="quick-add-word">${word}</div><button class="quick-add-remove" onclick="removeFromQuickList(${index})">Remove</button></div>`;
+            });
+            listDiv.innerHTML = html;
+        }
+
+        function removeFromQuickList(index) {
+            quickAddList.splice(index, 1);
+            SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+            displayQuickAddList();
+        }
+
+        function refreshQuickList() {
+            quickAddList = quickAddList.filter(word => !dictionary.some(item => item.word.toLowerCase() === word.toLowerCase()));
+            SafeStorage.setItem('quickAddList', JSON.stringify(quickAddList));
+            displayQuickAddList();
         }
 
         function exportData() {
