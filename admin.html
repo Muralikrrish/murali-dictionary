@@ -210,7 +210,7 @@
         <div class="container">
             <div class="main-content" id="mainContent">
                 
-                <!-- NEW: Database Selector -->
+                <!-- Database Selector -->
                 <div class="db-selector-wrapper">
                     <div class="db-selector">
                         <button class="db-option active" onclick="switchDictionary('dictionary', this)">
@@ -326,7 +326,7 @@
         };
         SafeStorage.init();
 
-        // --- NEW FUNCTION: SWITCH DICTIONARY ---
+        // --- UPDATED FUNCTION: SWITCH DICTIONARY ---
         async function switchDictionary(tableName, btnElement) {
             // 1. Update Global State
             currentTableName = tableName;
@@ -337,23 +337,24 @@
             
             document.getElementById('activeTableLabel').textContent = currentTableName;
             
-            // 3. Clear current list from view to avoid confusion
+            // 3. Clear data state from view
             dictionary = [];
-            document.getElementById('dictionaryCount').textContent = '(Loading...)';
             document.getElementById('editSearchResults').innerHTML = '';
             document.getElementById('editDefinitionSearchResults').innerHTML = '';
             
-            // 4. Reload Data from correct source
-            // We use different localStorage keys for different tables so they don't mix
-            const storageKey = currentTableName; // 'dictionary' or 'dictionary_2'
+            // 4. Reload Data from correct source (Optimistic Load)
+            const storageKey = currentTableName;
             
             // Attempt to load from local storage first for speed
             const localData = SafeStorage.getItem(storageKey);
             if (localData) {
                 dictionary = JSON.parse(localData);
-                buildSearchIndex();
-                updateWordCount();
             }
+            
+            // Build index and update UI IMMEDIATELY 
+            // (Previously, this waited for cloud sync if local was empty, causing "(Loading...)" to stick)
+            buildSearchIndex();
+            updateWordCount(); 
 
             // 5. Trigger Cloud Sync for the new table
             await syncWithSupabase();
@@ -471,8 +472,6 @@
                 const { createClient } = supabase;
                 supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 isSupabaseConfigured = supabaseInitialized = true;
-                
-                // Initial load
                 await syncWithSupabase();
             } catch(error) {
                 console.error('Supabase init error:', error);
@@ -481,7 +480,7 @@
             }
         }
 
-        // --- UPDATED SYNC LOGIC: Uses 'currentTableName' ---
+        // --- UPDATED SYNC LOGIC ---
         async function syncWithSupabase() {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
             showSyncStatus(true);
@@ -492,7 +491,6 @@
                 let hasMore = true;
 
                 while (hasMore) {
-                    // DYNAMIC TABLE NAME
                     const { data, error } = await supabaseClient
                         .from(currentTableName) 
                         .select('*')
@@ -515,7 +513,7 @@
                     dictionary.sort((a, b) => a.word.localeCompare(b.word));
                     buildSearchIndex();
                     updateWordCount();
-                    SafeStorage.setItem(currentTableName, JSON.stringify(dictionary)); // Save to specific table key
+                    SafeStorage.setItem(currentTableName, JSON.stringify(dictionary)); 
                 } else {
                     // Table is empty
                     dictionary = [];
@@ -525,6 +523,9 @@
                 }
             } catch(error) {
                 console.error('Sync error:', error);
+                // FIX: Update UI on error to unblock the view
+                document.getElementById('dictionaryCount').textContent = '(Offline/Error)';
+                alert(`Error syncing with "${currentTableName}". Check if the table exists and permissions are set.`);
             } finally {
                 showSyncStatus(false);
             }
@@ -532,7 +533,6 @@
 
         function showSyncStatus(isSyncing) { document.getElementById('syncIndicator').style.display = isSyncing ? 'flex' : 'none'; }
 
-        // --- UPDATED SAVE: Uses 'currentTableName' ---
         async function saveToSupabase(wordItem) {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
             showSyncStatus(true);
@@ -544,7 +544,6 @@
             } catch(error) { console.error('Background Save error:', error); } finally { showSyncStatus(false); }
         }
         
-        // --- UPDATED DELETE: Uses 'currentTableName' ---
         async function deleteFromSupabase(id) {
             if (!isSupabaseConfigured || !supabaseInitialized) return;
             showSyncStatus(true);
