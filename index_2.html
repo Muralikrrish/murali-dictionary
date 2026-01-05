@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pearls of Knowledge - Search & Spotlight</title>
-<meta name="description" content="A simplified visual dictionary featuring search and word spotlight.">
+<title>Pearls of Knowledge - Dictionary 2</title>
+<meta name="description" content="A simplified visual dictionary querying the secondary database table.">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script>
@@ -166,7 +166,7 @@ body{background-color:var(--bg-deep);color:var(--text-main);font-family:'Plus Ja
         
         <!-- SEARCH RESULTS (Hidden by default) -->
         <section class="modern-section search-results-section" id="searchResultsSection" style="display:none;">
-            <h2 class="modern-section-title"><span>Search Results</span></h2>
+            <h2 class="modern-section-title"><span>Search Results (Table 2)</span></h2>
             <div class="words-list" id="wordsList"></div>
         </section>
 
@@ -228,21 +228,47 @@ function convertH2ToToggles(htmlString){const parser=new DOMParser();const doc=p
 document.addEventListener('click',function(e){const header=e.target.closest('.toggle-header');if(header){e.preventDefault();e.stopPropagation();playSelectSound();const content=header.nextElementSibling;const isActive=header.classList.contains('active');if(!isActive){header.classList.add('active');content.classList.add('expanded');setTimeout(()=>header.scrollIntoView({behavior:'smooth',block:'start'}),350)}else{header.classList.remove('active');content.classList.remove('expanded')}}});
 function createExpandableDefinition(definitionHTML){return`<div class="word-entry"><div class="word-definition">${convertH2ToToggles(definitionHTML)}</div><div style="display:flex; justify-content:center; margin-top:20px;"><button class="action-btn" onclick="showNewRandomWord()">Show another word</button></div></div>`}
 
-/* --- WORD SPOTLIGHT LOGIC --- */
+/* --- WORD SPOTLIGHT LOGIC (REFACTORED) --- */
 async function fetchWordSpotlight(scrollToTop=false){
     const ws=document.getElementById('wordSpotlightDisplay');
     if(scrollToTop){smoothScrollTo('wordSpotlightSection')}
     ws.innerHTML='<div class="skeleton-loading"><div class="skeleton-word"></div><div class="skeleton-line extra-long"></div></div>';
     if(isSupabaseConfigured){
         try{
-            const{data,error}=await supabaseClient.rpc('get_random_word');
-            if(error)throw error;
-            if(data&&data.length>0){
+            // CHANGED: We now avoid the RPC 'get_random_word' because it points to the old table.
+            // Instead, we manually check the new table 'dictionary_2'.
+            
+            // 1. Get the total count of rows in the new table
+            const { count, error: countError } = await supabaseClient
+                .from('dictionary_2')
+                .select('*', { count: 'exact', head: true });
+            
+            if (countError) throw countError;
+
+            // 2. If the table is empty (count is 0), show a message and STOP.
+            if (count === 0) {
+                ws.innerHTML='<div class="no-words" style="text-align:center; padding: 20px; color: var(--text-muted);"><p><i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><br>No words found in dictionary_2 yet.</p></div>';
+                return;
+            }
+
+            // 3. If we have words, pick a random index
+            const randomIndex = Math.floor(Math.random() * count);
+
+            // 4. Fetch the single word at that random index
+            const { data, error } = await supabaseClient
+                .from('dictionary_2')
+                .select('*')
+                .range(randomIndex, randomIndex)
+                .limit(1);
+
+            if(error) throw error;
+            if(data && data.length > 0){
                 ws.innerHTML=createExpandableDefinition(data[0].definition);
                 return
             }
-        }catch(e){console.warn('Spotlight RPC fetch failed',e)}
+        }catch(e){console.warn('Spotlight fetch failed',e)}
     }
+    // Fallback if something fails or is not configured
     ws.innerHTML='<div class="no-words"><p>Loading vocabulary from the stars...</p></div>'
 }
 function showNewRandomWord(){playButtonSound();fetchWordSpotlight(true)}
@@ -250,7 +276,45 @@ function showNewRandomWord(){playButtonSound();fetchWordSpotlight(true)}
 /* --- SEARCH LOGIC --- */
 function setupSearch(){const searchInput=document.getElementById('searchInput');const searchBtn=document.getElementById('searchBtn');const clearBtn=document.getElementById('clearBtn');const autocompleteDropdown=document.getElementById('autocompleteDropdown');let typingTimer;const toggleClearBtn=()=>{const hasText=searchInput.value.trim().length>0;clearBtn.classList.toggle('visible',hasText)};searchInput.addEventListener('focus',function(){if(window.innerWidth<=768){setTimeout(()=>{const y=document.querySelector('.search-container').getBoundingClientRect().top+window.pageYOffset-24;window.scrollTo({top:y,behavior:'smooth'})},300)}});searchBtn.addEventListener('click',function(){playButtonSound();clearTimeout(typingTimer);const query=searchInput.value.trim().toLowerCase();if(query){if(window.innerWidth<768){searchInput.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}});clearBtn.addEventListener('click',function(){playClearSound();searchInput.value='';toggleClearBtn();searchInput.focus();autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none'});searchInput.addEventListener('input',function(){toggleClearBtn();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query.length===0){autocompleteDropdown.classList.remove('show');document.getElementById('searchResultsSection').style.display='none';return}typingTimer=setTimeout(()=>{fetchAutocompleteSuggestions(query)},300)});searchInput.addEventListener('keydown',function(e){if(e.key==='Escape')autocompleteDropdown.classList.remove('show');if(e.key==='Enter'){playButtonSound();clearTimeout(typingTimer);const query=this.value.trim().toLowerCase();if(query){if(window.innerWidth<768){this.blur()}autocompleteDropdown.classList.remove('show');displaySearchResults(query)}}});document.addEventListener('click',function(e){if(!e.target.closest('.search-container'))autocompleteDropdown.classList.remove('show')})}
 
-async function fetchAutocompleteSuggestions(query){const autocompleteDropdown=document.getElementById('autocompleteDropdown');autocompleteDropdown.innerHTML=`<div style="padding: 12px;"><div class="skeleton-loading"><div class="skeleton-line medium" style="margin-bottom: 8px;"></div><div class="skeleton-line short"></div></div></div>`;autocompleteDropdown.classList.add('show');try{const{data,error}=await supabaseClient.rpc('fuzzy_search',{search_term:query});if(error)throw error;let matches=data||[];const hasExactMatch=matches.some(item=>item.word.toLowerCase()===query.toLowerCase());if(window.innerWidth<768){const limit=hasExactMatch?7:5;if(matches.length>limit){matches=matches.slice(0,limit)}}let html='';matches.forEach(item=>{const word=item.word;html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${word}</div><div class="autocomplete-hint"><i class="fas fa-chevron-right"></i></div></div>`});if(!hasExactMatch){html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g,"\\'")}')"><div class="autocomplete-word"><i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>Search for "<strong>${query}</strong>"</div><div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div></div>`}autocompleteDropdown.innerHTML=html}catch(err){autocompleteDropdown.classList.remove('show')}}
+async function fetchAutocompleteSuggestions(query){
+    const autocompleteDropdown=document.getElementById('autocompleteDropdown');
+    autocompleteDropdown.innerHTML=`<div style="padding: 12px;"><div class="skeleton-loading"><div class="skeleton-line medium" style="margin-bottom: 8px;"></div><div class="skeleton-line short"></div></div></div>`;
+    autocompleteDropdown.classList.add('show');
+    try{
+        // Query dictionary_2 directly
+        const {data, error} = await supabaseClient
+            .from('dictionary_2')
+            .select('word')
+            .ilike('word', `${query}%`)
+            .limit(10);
+            
+        if(error) throw error;
+        
+        let matches=data||[];
+        const hasExactMatch=matches.some(item=>item.word.toLowerCase()===query.toLowerCase());
+        
+        if(window.innerWidth<768){
+            const limit=hasExactMatch?7:5;
+            if(matches.length>limit){matches=matches.slice(0,limit)}
+        }
+        
+        let html='';
+        if(matches.length === 0) {
+            html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g,"\\'")}')"><div class="autocomplete-word"><i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>Search for "<strong>${query}</strong>"</div><div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div></div>`;
+        } else {
+            matches.forEach(item=>{
+                const word=item.word;
+                html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${word.replace(/'/g,"\\'")}')"><div class="autocomplete-word">${word}</div><div class="autocomplete-hint"><i class="fas fa-chevron-right"></i></div></div>`
+            });
+            if(!hasExactMatch){
+                html+=`<div class="autocomplete-item" onclick="selectAutocompleteItem('${query.replace(/'/g,"\\'")}')"><div class="autocomplete-word"><i class="fas fa-search" style="margin-right: 8px; color: var(--primary); opacity: 0.8;"></i>Search for "<strong>${query}</strong>"</div><div class="autocomplete-hint"><i class="fas fa-arrow-right"></i></div></div>`
+            }
+        }
+        autocompleteDropdown.innerHTML=html;
+    } catch(err) {
+        autocompleteDropdown.classList.remove('show');
+    }
+}
 
 function selectAutocompleteItem(word){playSelectSound();document.getElementById('searchInput').value=word;document.getElementById('autocompleteDropdown').classList.remove('show');displaySearchResults(word.toLowerCase())}
 
