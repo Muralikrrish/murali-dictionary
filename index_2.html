@@ -247,7 +247,7 @@ async function fetchWordSpotlight(scrollToTop=false){
 
             // 2. If the table is empty (count is 0), show a message and STOP.
             if (count === 0) {
-                ws.innerHTML='<div class="no-words" style="text-align:center; padding: 20px; color: var(--text-muted);"><p><i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><br>No words found in dictionary_2 yet.</p></div>';
+                ws.innerHTML='<div class="no-words" style="text-align:center; padding: 20px; color: var(--text-muted);"><p><i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><br>Word not found in dictionary.</p></div>';
                 return;
             }
 
