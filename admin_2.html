@@ -710,7 +710,7 @@
         <div class="login-container">
             <div class="login-header">
                 <div class="lock-icon">🔒</div>
-                <h1>Admin Access</h1>
+                <h1>Admin Access (Dict 2)</h1>
                 <p>Enter password to continue</p>
             </div>
             
@@ -742,7 +742,7 @@
         <div class="container">
             <div class="main-content" id="mainContent">
                 <div class="modern-section">
-                    <h2 class="modern-section-title">Add New Word<span class="word-count" id="dictionaryCount">(0)</span></h2>
+                    <h2 class="modern-section-title">Add New Word (Dict 2) <span class="word-count" id="dictionaryCount">(0)</span></h2>
                     <div class="interactive-card">
                         <form id="addWordForm">
                             <div class="form-group">
@@ -769,7 +769,7 @@
                                 </div>
                                 <div id="definitionInput" class="editor-content" contenteditable="true" placeholder="Enter definition..."></div>
                             </div>
-                            <button type="submit" class="btn">Add to Dictionary</button>
+                            <button type="submit" class="btn">Add to Dictionary 2</button>
                         </form>
                     </div>
                 </div>
@@ -820,8 +820,8 @@
                     <h2 class="modern-section-title">Utilities</h2>
                     <div class="interactive-card">
                         <div class="utility-buttons">
-                            <button class="btn" onclick="exportData()">Export Dictionary</button>
-                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="margin-top: 15px;">Import to Dictionary</button>
+                            <button class="btn" onclick="exportData()">Export Dictionary 2</button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" style="margin-top: 15px;">Import to Dictionary 2</button>
                             <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
                         </div>
                         
@@ -974,8 +974,8 @@
             }
         }
 
-        // UPDATED Toggle Logic: Remove all H1s, Remove FIRST H2, convert others to COLLAPSED toggles
-        function convertH2ToToggles(htmlString) {
+        // UPDATED Toggle Logic: Remove all H1s, convert ALL H3s to COLLAPSED toggles
+        function convertH3ToToggles(htmlString) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlString, 'text/html');
             
@@ -983,22 +983,19 @@
             const h1Elements = doc.querySelectorAll('h1');
             h1Elements.forEach(h1 => h1.remove());
 
-            // 2. Remove the FIRST H2 found in the pasted text
-            const firstH2 = doc.querySelector('h2');
-            if (firstH2) {
-                firstH2.remove();
-            }
+            // NOTE: The logic to remove the first header (formerly H2, now H3) has been removed as requested.
+            // All H3s will now be converted to toggles.
 
-            // 3. Convert remaining H2s to toggles (Collapsed by default)
-            const h2Elements = doc.querySelectorAll('h2');
+            // 2. Convert ALL H3s to toggles (Collapsed by default)
+            const h3Elements = doc.querySelectorAll('h3');
     
-            h2Elements.forEach(h2 => {
+            h3Elements.forEach(h3 => {
                 // Format heading text
-                let headingText = h2.textContent;
+                let headingText = h3.textContent;
                 if (headingText === headingText.toUpperCase() && headingText !== headingText.toLowerCase()) {
                     headingText = headingText.toLowerCase();
                     headingText = headingText.charAt(0).toUpperCase() + headingText.slice(1);
-                    h2.textContent = headingText;
+                    h3.textContent = headingText;
                 }
         
                 const toggleWrapper = document.createElement('div');
@@ -1009,15 +1006,15 @@
                 // Modern Chevron Icon (Not active by default)
                 toggleHeader.innerHTML = `
                     <i class="fas fa-chevron-right toggle-icon"></i>
-                    <span class="toggle-title">${h2.innerHTML}</span>
+                    <span class="toggle-title">${h3.innerHTML}</span>
                 `;
         
                 const toggleContent = document.createElement('div');
                 toggleContent.className = 'toggle-content';
                 // Note: No 'expanded' class added here -> Collapsed by default
         
-                let nextSibling = h2.nextElementSibling;
-                while (nextSibling && nextSibling.tagName !== 'H2') {
+                let nextSibling = h3.nextElementSibling;
+                while (nextSibling && nextSibling.tagName !== 'H3') {
                     const temp = nextSibling;
                     nextSibling = nextSibling.nextElementSibling;
                     toggleContent.appendChild(temp);
@@ -1037,7 +1034,7 @@
         
                 toggleWrapper.appendChild(toggleHeader);
                 toggleWrapper.appendChild(toggleContent);
-                h2.parentNode.replaceChild(toggleWrapper, h2);
+                h3.parentNode.replaceChild(toggleWrapper, h3);
             });
     
             return doc.body.innerHTML;
@@ -1372,7 +1369,7 @@
                         }
                     }
                     
-                    processedHtml = convertH2ToToggles(processedHtml);
+                    processedHtml = convertH3ToToggles(processedHtml);
                     document.execCommand('insertHTML', false, processedHtml);
                     setTimeout(activateTogglesInEditor, 0);
                 });
